@@ -1,0 +1,129 @@
+<%
+include("/model/common.jag");
+/*<!--
+ ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");
+ ~ you may not use this file except in compliance with the License.
+ ~ You may obtain a copy of the License at
+ ~
+ ~      http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~ Unless required by applicable law or agreed to in writing, software
+ ~ distributed under the License is distributed on an "AS IS" BASIS,
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ~ See the License for the specific language governing permissions and
+ ~ limitations under the License.
+ -->*/
+ if (request.isSecure()) {//check whether the request is secure or not
+
+    var authSuccess = session.get("authSuccess");
+    if(!authSuccess){
+        var queryParameters = request.getQueryString();
+        if(queryParameters == "null" || queryParameters == null){
+            response.sendRedirect("login?requestUrl=" + request.getRequestURI());
+        } else{
+            response.sendRedirect("login?requestUrl=" + request.getRequestURI() + "%3F" + request.getQueryString());
+        }
+    } else {
+        TLCPromocionSEL = 'class="active"';
+        //include("/model/myTasksModel.jag");
+        include("/template/partials/header.jag");
+        include("/template/partials/navigation.jag");
+    }
+
+} else {
+    //request is not secured, therefore need redirect to the secure channel
+    var queryStr = '';
+    if (request.getQueryString() != null) {
+        queryStr = '?' + request.getQueryString();
+    }
+    response.sendRedirect(application.get('serverAddress') + request.getRequestURI() + queryStr);
+}
+ %>
+
+
+<div class="col-sm-10" >
+    <div class="pageheader">
+        <div class="media">
+            <div class="pageicon pull-left">
+                <i class="fa fa-th-list"></i>
+            </div>
+            <div class="media-body">
+                <ul class="breadcrumb">
+                    <li><a href="irAdminRiesgos"><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li><a>Archivos generados SITI</a></li>
+                </ul>
+                <h4>Archivos generados SITI</h4>
+            </div>
+        </div><!-- media -->
+    </div><!-- pageheader -->
+
+    <div class="contentpanel">
+        <div class="panel panel-primary-head">
+            <form id="frmConsultaArchivos" method="POST" action="consultaArchivosSiti">
+                <table class="table table-bordered" style="width:70%;">
+                    <tr>
+                        <td>
+                            <table style="font-size:small">
+                                <tr>
+                                    <td>Fecha desde:</td>
+                                    <td><input type="text" id="txtFechaDesde" name="txtFechaDesde" readonly /></td>
+                                    <td style="width:130px; text-align:right">Fecha hasta:</td>
+                                    <td><input type="text" id="txtFechaHasta" name="txtFechaHasta" readonly /></td>
+                                    <td style="width:90px; text-align:right"><input id="btnAceptar" type="submit" value="Aceptar" </td>
+                                    <td style="text-align:left">&nbsp;<input id="btnBorrar" type="button" style="width:60px" value="Borrar" onclick="location.href='irWorkflow'"/></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            <div id="divCargando" style="display: none;" align="center">
+                <img alt="" src="resources/plantilla/images/loaders/loader17.gif">&nbsp;&nbsp;<p>Cargando datos, por favor espere...</p>
+            </div>
+            <br>
+                <div id="divArchivos">
+
+
+                    <input type="hidden" id="fechaDesde" name="fechaDesde" />
+                    <input type="hidden" id="fechaHasta" name="fechaHasta" />
+                    <input type="hidden" id="archivoDescarga" name="archivoDescarga" value = ""/>
+                    <table class="table table-bordered" style="width:70%; font-size:small">
+                        <thead>
+                            <tr>
+                                <th style="text-align:center;">Fecha</th>
+                                <th style="text-align:center;">Archivo</th>
+                                <th style="text-align:center;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:forEach items="${lstArchivos}" var="archivo" varStatus="status">					   		
+                                <tr>
+
+
+                                    <td><input style="border: none;"  value="${archivo.fecha}"/></td>
+                                    <td><input style="border: none; width:250px;"   value="${archivo.nombreArchivo}"/></td>
+                                    <td>
+                                        <input type="button" onclick="descargaArchivo('${archivo.rutaCompleta}');" value="Descargar" />
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                    <table style="text-align:center; width:70%; font-size:small;">
+                        <tr>
+                            <td align="left">Fecha de la consulta: <%=fechaActual%></td>
+                        </tr>
+                        <tr>
+                            <td align="left">Consulta realizada por: <%=usuario.getNombre()%></td>
+                        </tr>
+                        <tr id="trBotones">
+                            <td style="text-align:center;"><input id="btnImprimir" type="button" value="Imprimir"/></td>
+                        </tr>
+                    </table>
+                </div> <!-- divArchivos -->
+        </div><!-- panel-heading -->
+    </div><!-- contentpanel -->
+</div>
+

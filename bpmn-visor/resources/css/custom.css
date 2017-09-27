@@ -1,0 +1,17 @@
+.gritter-center {
+	position:fixed;
+	left:40%;
+	right:37%;
+	top: 10%;
+}
+
+.selectLargo {
+	width: 400px;
+}
+
+.textAreaJustificacion {
+	width: 80%;
+}
+.manual {
+	background-color: #F2F5A9;
+}

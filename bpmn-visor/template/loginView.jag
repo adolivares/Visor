@@ -1,0 +1,66 @@
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>Pre-Vinculación de Matriz de Riesgos</title>
+
+        
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+        <script src="js/html5shiv.js"></script>
+        <script src="js/respond.min.js"></script>
+        <![endif]-->
+
+    </head>
+
+    <body class="signin">
+        <section>            
+            <div class="panel panel-signin">
+                <div class="panel-body">
+                 	<div class="logo text-center">
+                        <img src="resources/plantilla/images/Logo_Investa2.jpg" alt="InvestaBank"  >
+                    </div>
+                    <br />
+                    <h5 class="text-center mb5">PRE VINCULACIÓN DE MATRIZ DE RIESGOS</h5>
+                    <p class="text-center">Prevención de Lavado de Dinero </p>
+                    
+                    <div class="mb30"></div>
+                    <form method="POST" action="auth">
+                       
+						<div class="input-group mb15">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+							<input name="username" type="text" class="form-control" placeholder='<%=i18n.localize("user.name", "Username")%>' autofocus/>
+                        </div><!-- input-group -->
+                        <div class="input-group mb15">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                           <input name="password" type="password" class="form-control" placeholder='<%=i18n.localize("password", "Password")%>'/>
+                        </div><!-- input-group -->  
+                        <div class="wr-input-control padding-bottom-double padding-left-double padding-right-double">
+							<br>
+                            <button class="wr-btn grey-bg col-xs-6 col-md-6 col-lg-6  btn"  type="submit"><%=i18n.localize("login", "Login")%></button>
+                        </div>
+                    </form>
+                    
+                </div><!-- panel-body -->
+                <div class="panel-footer">
+					<% if (message != "") { %>
+                                <div class="alert alert-danger" role="alert">
+									<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+									<%=message%>
+								</div>
+                    <% } %>
+                </div><!-- panel-footer -->
+            </div><!-- panel -->
+            
+        </section>
+
+
+        
+
+    </body>
+</html>

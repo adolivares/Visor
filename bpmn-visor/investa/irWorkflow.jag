@@ -1,0 +1,383 @@
+<%
+include("/model/common.jag");
+/*<!--
+ ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");
+ ~ you may not use this file except in compliance with the License.
+ ~ You may obtain a copy of the License at
+ ~
+ ~      http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~ Unless required by applicable law or agreed to in writing, software
+ ~ distributed under the License is distributed on an "AS IS" BASIS,
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ~ See the License for the specific language governing permissions and
+ ~ limitations under the License.
+ -->*/
+ if (request.isSecure()) {//check whether the request is secure or not
+
+    var authSuccess = session.get("authSuccess");
+    if(!authSuccess){
+        var queryParameters = request.getQueryString();
+        if(queryParameters == "null" || queryParameters == null){
+            response.sendRedirect("login?requestUrl=" + request.getRequestURI());
+        } else{
+            response.sendRedirect("login?requestUrl=" + request.getRequestURI() + "%3F" + request.getQueryString());
+        }
+    } else {
+        TLCPromocionSEL = 'class="active"';
+        //include("/model/myTasksModel.jag");
+        include("/template/partials/header.jag");
+        include("/template/partials/navigation.jag");
+    }
+
+} else {
+    //request is not secured, therefore need redirect to the secure channel
+    var queryStr = '';
+    if (request.getQueryString() != null) {
+        queryStr = '?' + request.getQueryString();
+    }
+    response.sendRedirect(application.get('serverAddress') + request.getRequestURI() + queryStr);
+}
+ %>
+ 
+<div class="col-sm-10" >
+    <div class="pageheader">
+        <div class="media">
+            <div class="pageicon pull-left">
+                <i class="fa fa-th-list"></i>
+            </div>
+            <div class="media-body">
+                <ul class="breadcrumb">
+                    <li><a href="irAdminRiesgos"><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li><a>Workflow</a></li>
+                </ul>
+                <h4>Workflow</h4>
+            </div>
+        </div><!-- media -->
+    </div><!-- pageheader -->
+
+    <div class="contentpanel">
+
+
+        <div class="panel panel-primary-head">
+            <form id="frmConsulta" method="POST" action="consultaPersonasWorkflow">
+                <table class="table table-bordered">
+                    <tr>
+                        <td>
+                            <table style="font-size:small">
+                                <tr>
+                                    <td>Fecha desde:</td>
+                                    <td><input type="text" id="txtFechaDesde" name="txtFechaDesde" readonly /></td>
+                                    <td style="width:130px; text-align:right">Fecha hasta:</td>
+                                    <td><input type="text" id="txtFechaHasta" name="txtFechaHasta" readonly /></td>
+                                    <td style="width:90px; text-align:right"><input id="btnAceptar" type="submit" value="Aceptar" /></td>
+                                    <td style="text-align:left">&nbsp;<input id="btnBorrar" type="button" style="width:60px" value="Borrar" onclick="location.href='irWorkflow'"/></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            <div id="divCargando" style="display: none;" align="center">
+                <img alt="" src="resources/plantilla/images/loaders/loader17.gif">&nbsp;&nbsp;<p>Cargando datos, por favor espere...</p>
+            </div>
+            <br>
+                <div id="divWorkflow">
+                    <c:if test="${sitiWorkflow != null}">							
+                        <form:form action="altaPersonaWorkflow" method="post" modelAttribute="sitiWorkflow">
+
+                            <input type="hidden" id="fechaDesde" name="fechaDesde" />
+                            <input type="hidden" id="fechaHasta" name="fechaHasta" />
+                            <input type="hidden" id="txtDisabledAll" />
+                            <table id="tblExpediente" class="table table-bordered" style="font-size:x-small">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="6">Nombre:<br>
+                                                <form:select path="idPersona" id="selNombre" style="width: 300px;" required="required">
+                                                    <form:option value="">- Seleccione -</form:option>
+                                                    <form:options items="${mapPersonas}"/>
+                                                </form:select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Folio:<br><form:input type="text" path="folio" style="width: 180px;" readonly="true" class="enable"/></td>
+                                        <td>Oficio:<br><form:input type="text" path="numeroOficio" style="width: 180px;" readonly="true" class="enable"/></td>
+                                        <td>Expediente:<br><form:input type="text" path="numeroExpediente" style="width: 180px;" readonly="true" class="enable"/></td>
+                                        <td>Solicitud Siara:<br><form:input type="text" path="solicitudSiara" maxlength="30" style="width: 180px;" required="required" class="enable"/></td>
+                                        <td colspan="2">Area:<br><form:input type="text" path="descArea" style="width: 180px;" readonly="true" class="enable"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Autoridad nombre:<br>
+                                                <form:select path="idAutoridadNombre" id="selAutoridadNombre" style="width: 180px;" required="required" class="enable">
+                                                    <form:option value="">- Seleccione -</form:option>
+                                                    <form:options items="${mapCatAutoridad}"/>
+                                                </form:select>
+                                        </td>
+                                        <td>Tiene aseguramiento:<br>
+                                                <form:select path="tieneAseguramiento"  id="selTieneAseguramiento" style="width: 180px;" required="required" class="enable">
+                                                    <form:option value="">- Seleccione -</form:option>
+                                                    <form:option value="true">SI</form:option>
+                                                    <form:option value="false">NO</form:option>
+                                                </form:select>
+                                        </td>
+                                        <td>Monto asegurado:<br><form:input path="montoAsegurado" maxlength="15" style="width: 180px;" class="solo-numero enable"/></td>
+                                        <td>Nombre documento:<br><form:input type="text" path="archivo" style="width:180px" readonly="true" class="enable"/></td>
+                                        <td colspan="2"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tipo de persona:<br>
+                                                <form:select path="tipoPersona" id="selTipoPersona" style="width: 180px;" required="required" class="enable">
+                                                    <form:option value="">- Seleccione -</form:option>
+                                                    <form:options items="${mapCatTipoPersona}"/>	
+                                                </form:select>
+                                        </td>
+                                        <td>Nombre:<br><form:input path="nombre" style="width: 180px;" maxlength="300" required="required" class="enable"/></td>
+                                        <td>Apellido paterno:<br><form:input path="apellidoPaterno" style="width: 180px;" maxlength="60" class="enable"/></td>
+                                        <td>Apellido materno:<br><form:input path="apellidoMaterno" style="width: 180px;" maxlength="60" class="enable"/></td>
+                                        <td>RFC:<br><form:input path="rfc" maxlength="13" style="width: 180px;" class="enable"/></td>
+                                        <td>Caracter:<br>
+                                                <form:select path="idCaracter" id="selCaracter" style="width: 180px;" required="required" class="enable">
+                                                    <form:option value="">- Seleccione -</form:option>
+                                                    <form:options items="${mapCatTipoCaracter}"/>	
+                                                </form:select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6" style="text-align:center"><b>Calificación del cliente:</b><br>
+                                                <form:radiobutton path="idStatus" value="4" class="enable"/>&nbsp;Falso positivo
+                                                &nbsp;&nbsp;<form:radiobutton path="idStatus" value="5" class="enable"/>&nbsp;Positivo positivo
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6">Resultado de la investigación:<br>
+                                                <form:textarea path="resultadoInv" rows="4" maxlength="1000" style="width:100%" required="required" class="enable"></form:textarea>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table style="text-align:center; width:100%; font-size:small;">
+                                <tr>
+                                    <td colspan="2" align="left">Fecha de la consulta: <%=fechaActual%></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" align="left">Consulta realizada por: <%=usuario.getNombre()%></td>
+                                </tr>
+                                <tr id="trBotones">
+                                    <td style="text-align:right;"><input id="btnGuardar" type="button" value="Guardar" class="enable"/></td>
+                                    <td style="text-align:left;">&nbsp;<input id="btnImprimir" type="button" value="Imprimir"/></td>
+                                </tr>
+                            </table>
+                        </form:form>
+                    </c:if>
+                </div> <!-- divWorkflow -->
+        </div><!-- panel-heading -->
+    </div><!-- contentpanel -->
+</div><!-- fin 10 -->
+
+
+<script>
+$(document).ready(function(){
+    $("#txtFechaDesde").datepicker({dateFormat: "dd/mm/yy"});
+    $("#txtFechaHasta").datepicker({dateFormat: "dd/mm/yy"});
+
+	//Habilitamos o deshabilitamos los controles
+	if($("#txtDisabledAll").val() == "disabled"){
+		$(".enable").prop("disabled", true);
+	}
+
+    $("#selNombre").change(function(){
+        if($("#selNombre option:selected").val() !== "") {
+	   		var form = $(document.createElement('form'));
+	   		$(form).attr("action", "consultaDatosWorkflow");
+	   		$(form).attr("method", "POST");
+	
+	   		var inputFechaDesde = $("<input>").attr("type", "hidden").attr("name", "txtFechaDesde").val($("#txtFechaDesde").val());
+	   		var inputFechaHasta = $("<input>").attr("type", "hidden").attr("name", "txtFechaHasta").val($("#txtFechaHasta").val());
+	   		var selPersona = $("<input>").attr("type", "hidden").attr("name", "idPersona").val($("#selNombre option:selected").val());
+	
+	   		$(form).append($(inputFechaDesde));
+	   		$(form).append($(inputFechaHasta));
+	   		$(form).append($(selPersona));
+	
+	   		form.appendTo(document.body);
+	   		$(form).submit();
+    	} else {
+    		$("#tblExpediente").find("input").val("");
+    		$("#selAutoridadNombre").val("");
+    		$("#selTieneAseguramiento").val("");
+    		$("#selTipoPersona").val("");
+    		$("#selCaracter").val("");
+    		$("input:radio").prop("checked", false);
+    		$("#resultadoInv").val("");
+    		$(".enable").prop("disabled", true);
+        }
+    });
+
+    $("#frmConsulta").submit(function () {
+        var mensaje="";
+        if($("#txtFechaDesde").val().length==0) {
+           mensaje += (mensaje == "") ? "" : "\n";
+       	   mensaje += "Debe seleccionar la fecha desde.";
+        }
+
+        if($("#txtFechaHasta").val().length==0) {
+            mensaje += (mensaje == "") ? "" : "\n";
+            mensaje += "Debe seleccionar la fecha hasta.";
+        }
+
+        if($("#txtFechaDesde").val().length!=0 && $("#txtFechaHasta").val().length!=0) {
+            if(getDiferenciaDias($("#txtFechaDesde").datepicker("getDate"),$("#txtFechaHasta").datepicker("getDate"))<0) {
+           	    mensaje += (mensaje == "") ? "" : "\n";
+          	    mensaje += "La fecha desde no puede ser mayor a la fecha hasta.";
+            }
+        }
+
+        if(mensaje.trim().length != 0) {
+ 	        alert(mensaje);
+ 	        return false;
+ 	    }
+
+        $("#divCargando").show();
+        return true;
+    });
+            
+    $("#btnGuardar").click(function () {
+        var mensaje="";
+
+        if($("#selNombre option:selected").val() == "") {
+            mensaje += (mensaje == "") ? "" : "\n";
+            mensaje += "Debe seleccionar el nombre.";
+        }
+
+        if(!$('input[name="idStatus"]').is(':checked')) {
+            mensaje += (mensaje == "") ? "" : "\n";
+            mensaje += "Debe seleccionar el estatus de la investigación.";
+        }
+        
+        if($('input:radio[name=idStatus]:checked').val() == 5){
+	        if($('#sitiWorkflow').find('[name="solicitudSiara"]').val().trim().length == 0) {  
+	       	    mensaje += (mensaje == "") ? "" : "\n";
+	       	    mensaje += "El campo solicitud siara es obligatorio.";
+	        }
+	        
+	        if($('#selAutoridadNombre').val() == ''){
+	            mensaje += (mensaje == "") ? "" : "\n";
+	            mensaje += "El campo autoridad nombre es obligatorio.";
+	        }
+	
+	        if($('#selTieneAseguramiento').val() == ''){
+	            mensaje += (mensaje == "") ? "" : "\n";
+	            mensaje += "El campo tiene aseguramiento es obligatorio.";
+	        }
+	
+	        if($('#selTieneAseguramiento').val() == "true") {
+	            if($('#sitiWorkflow').find('[name="montoAsegurado"]').val().trim()==""){
+	                mensaje += (mensaje == "") ? "" : "\n";
+	                mensaje += "Debe de capturar el monto asegurado.";
+	            }
+	        }
+	
+			if($('#sitiWorkflow').find('[name="nombre"]').val().trim().length == 0) {
+	       	    mensaje += (mensaje == "") ? "" : "\n";
+	       	    mensaje += "El campo nombre es obligatorio.";
+	        } else if(contienePalabrasError($('#sitiWorkflow').find('[name="nombre"]').val())){
+	        	mensaje += (mensaje == "") ? "" : "\n";
+	       	    mensaje += "El nombre contiene palabras erroneas. Verifique.";
+	        }
+	
+	        if($('#selTipoPersona').val() != 1 && $('#selTipoPersona').val() != 2) {
+	            mensaje += (mensaje == "") ? "" : "\n";
+	            mensaje += "El campo tipo persona debe ser física o moral.";
+	        }
+	
+	        if($('#selTipoPersona').val() == 1){
+	            if($('#sitiWorkflow').find('[name="apellidoPaterno"]').val().trim().length == 0) {  
+	          	   mensaje += (mensaje == "") ? "" : "\n";
+	          	   mensaje += "El campo apellido paterno es obligatorio.";
+	            } else if(contienePalabrasError($('#sitiWorkflow').find('[name="apellidoPaterno"]').val())){
+	            	mensaje += (mensaje == "") ? "" : "\n";
+	           	    mensaje += "El apellido paterno contiene palabras erroneas. Verifique.";
+		        }
+	            if($('#sitiWorkflow').find('[name="apellidoMaterno"]').val().trim().length == 0) {  
+	           	   mensaje += (mensaje == "") ? "" : "\n";
+	           	   mensaje += "El campo apellido materno es obligatorio.";
+	            } else if(contienePalabrasError($('#sitiWorkflow').find('[name="apellidoMaterno"]').val())){
+	            	mensaje += (mensaje == "") ? "" : "\n";
+	           	    mensaje += "El apellido materno contiene palabras erroneas. Verifique.";
+		        }
+	            if(!valida_rfc($('#sitiWorkflow').find('[name="rfc"]').val(), 1, false)) { 
+	            	   mensaje += (mensaje == "") ? "" : "\n";
+	            	   mensaje += "El campo rfc para personas físicas es incorrecto. Favor de verificar";
+	             }
+	        } else if($('#selTipoPersona').val() == 2){
+	             if($('#sitiWorkflow').find('[name="apellidoPaterno"]').val().trim().length > 0) {  
+	                 mensaje += (mensaje == "") ? "" : "\n";
+	                 mensaje += "El campo apellido paterno debe ser vacio.";
+	              }
+	             if($('#sitiWorkflow').find('[name="apellidoMaterno"]').val().trim().length > 0) {  
+	                 mensaje += (mensaje == "") ? "" : "\n";
+	                 mensaje += "El campo apellido materno debe ser vacio.";
+	             }
+	             if(!valida_rfc($('#sitiWorkflow').find('[name="rfc"]').val(), 2, false)) {  
+	          	   mensaje += (mensaje == "") ? "" : "\n";
+	          	   mensaje += "El campo rfc para personas morales es incorrecto. Favor de verificar";
+	           }
+	        }
+	
+	        if($('#selCaracter').val() == ''){
+	            mensaje += (mensaje == "") ? "" : "\n";
+	            mensaje += "El campo caracter es obligatorio.";
+	        }
+        }
+
+        if($("#resultadoInv").val().trim() == "") {
+            mensaje += (mensaje == "") ? "" : "\n";
+            mensaje += "Debe proporcionar el resultado de la investigación.";
+        }
+
+        if(mensaje.trim().length != 0) {
+ 	        alert(mensaje);
+ 	        return false;
+ 	    }
+
+        if($('input:radio[name=idStatus]:checked').val() == 4){
+            if($("#selAutoridadNombre option:selected").val()==""){
+            	$("#descAutoridadNombre").val($("#descAutoridadNombreAnt").val());
+            }
+            if($("#selTieneAseguramiento option:selected").val()==""){
+            	$("#selTieneAseguramiento").val($("#tieneAseguramientoAnt").val());
+            }
+            if($("#selTipoPersona option:selected").val()==""){
+            	$("#descTipoPersona").val($("#descTipoPersonaAnt").val());
+            }
+            if($("#selCaracter option:selected").val()==""){
+            	$("#descCaracter").val($("#descCaracterAnt").val());
+            }
+        } else{
+            $("#descAutoridadNombre").val($("#selAutoridadNombre option:selected").text());
+            $("#descTipoPersona").val($("#selTipoPersona option:selected").text());
+            $("#descCaracter").val($("#selCaracter option:selected").text());
+        }
+
+        $("#sitiWorkflow").submit();
+     });
+
+	$("#btnImprimir").click(function (){
+		$("#trBotones").hide();
+		$("#divWorkflow").printArea();
+		$("#trBotones").show();
+	});
+
+    function getDiferenciaDias(f1,f2) {
+        var fecha1 = f1.getTime();
+        var fecha2 = f2.getTime();
+        var dif = fecha2 - fecha1;
+        var dias = Math.floor(dif / (1000 * 60 * 60 * 24));
+        return dias;
+    }    
+
+});
+
+</script>

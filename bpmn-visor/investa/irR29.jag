@@ -1,0 +1,412 @@
+<%
+include("/model/common.jag");
+/*<!--
+ ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");
+ ~ you may not use this file except in compliance with the License.
+ ~ You may obtain a copy of the License at
+ ~
+ ~      http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~ Unless required by applicable law or agreed to in writing, software
+ ~ distributed under the License is distributed on an "AS IS" BASIS,
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ~ See the License for the specific language governing permissions and
+ ~ limitations under the License.
+ -->*/
+ if (request.isSecure()) {//check whether the request is secure or not
+
+    var authSuccess = session.get("authSuccess");
+    if(!authSuccess){
+        var queryParameters = request.getQueryString();
+        if(queryParameters == "null" || queryParameters == null){
+            response.sendRedirect("login?requestUrl=" + request.getRequestURI());
+        } else{
+            response.sendRedirect("login?requestUrl=" + request.getRequestURI() + "%3F" + request.getQueryString());
+        }
+    } else {
+        TLCPromocionSEL = 'class="active"';
+        //include("/model/myTasksModel.jag");
+        include("/template/partials/header.jag");
+        include("/template/partials/navigation.jag");
+    }
+
+} else {
+    //request is not secured, therefore need redirect to the secure channel
+    var queryStr = '';
+    if (request.getQueryString() != null) {
+        queryStr = '?' + request.getQueryString();
+    }
+    response.sendRedirect(application.get('serverAddress') + request.getRequestURI() + queryStr);
+}
+ %>
+
+
+<div class="col-sm-12" >
+    <%if(1 == 1){%>
+    <div class="mainpanel">
+        <div class="pageheader">
+            <div class="media">
+                <div class="pageicon pull-left">
+                    <i class="fa fa-file"></i>
+                </div>
+                <div class="media-body">
+                    <ul class="breadcrumb">
+                        <li><a href="irAdminRiesgos"><i class="glyphicon glyphicon-home"></i></a></li>
+                        <li><a>Reporte R29</a></li>
+                    </ul>
+                    <h4>Reporte R29</h4>
+                </div>
+            </div><!-- media -->
+        </div><!-- pageheader -->
+        <div class="contentpanel">
+            <div id="divPanelPrimaryHead" class="panel panel-primary-head">
+                <div id="divCargando" align="center" style="display: none;">
+                    <img alt="" src="resources/plantilla/images/loaders/loader17.gif">&nbsp;&nbsp;<p>Cargando datos, por favor espere...</p>
+                </div>
+                <p class="mb20"></p>
+                
+                <div id="divFormR29" >
+                    < form action="altaR29" method="POST" modelAttribute="r29">
+                        < input type="hidden" path="idRegistro"/>
+                        <input type="hidden" id="idOpcion" name="idOpcion" />
+                        <input type="hidden" id="idRegistroXML" name="idRegistroXML" />
+                        <input type="hidden" id="razonSocialTit" value = "0"/>
+                        <input type="hidden" id="razonSocialCot" value = "0"/>
+                        <table>
+                            <tr>
+                                <td colspan="3" align="center" bgcolor="#E7CBEB"><b>I. SECCIÓN IDENTIFICADOR DEL REPORTE</b></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td style="width: 50%;" >1. PERIODO (AAAAMM)</td>
+                                <td>
+                                    <input path="identificador.periodo" maxlength="6" style="width: 30%;" required="required"/></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>2. CLAVE DE LA INSTITUCIÓN</td>
+                                <td><select path="identificador.claveInstitucion" style="width: 30%;" required="required">
+                                        < option value="">- Seleccione - </ option>
+                                        <c:forEach var="item" items="${mapCatInstitucion}">
+                                            <c:choose>
+                                                <c:when test="${item.key == r29.getIdentificador().getClaveInstitucion()}">
+                                                    < option value="${item.key}" selected='true'>${item.value}</ option>	
+                                                </c:when>
+                                                <c:otherwise>
+                                                    < option value="${item.key}">${item.value}</ option>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </c:forEach>
+                                    </select></td>
+                            </tr>
+                            <tr>
+                                <td></td>	
+                                <td>3. REPORTE</td>
+                                <td><input path="identificador.reporte" maxlength="4" style="width: 30%;" required="required"/> </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" align="center" bgcolor="#E7CBEB"><b>II. SECCIÓN DATOS DEL REQUERIMIENTO DE ASEGURAMIENTO</b></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>4. MEDIO DE SOLICITUD DEL REQUERIMIENTO</td>
+                                <td><select path="datosRequerimientoAsegurado.medioSolicitud" style="width: 30%;" required="required">
+                                        <option value="">- Seleccione - </ option>
+                                        <options items="${mapCatsolicitudRequerimiento}"/>	
+                                    </select></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>5. CLAVE DE AUTORIDAD ESPECÍFICA QUE EMITIÓ EL REQUERIMIENTO</td>
+                                <td><select path="datosRequerimientoAsegurado.claveAutoridadEspecificaEmitio" id='claveAutoridadEspecificaEmitio' style="width: 30%;" required="required" onchange="javascript:CambiaAutoridad(this, this.value);">
+                                        <option value="">- Seleccione - </option>
+                                        <c:forEach var="item" items="${mapCatAutoridad}">
+                                            <c:choose>
+                                                <c:when test="${item.key == r29.getDatosRequerimientoAsegurado().getClaveAutoridadEspecificaEmitio()}">
+                                                    < option value="${item.key}" selected='true'>${item.value}</ option>	
+                                                </c:when>
+                                                <c:otherwise>
+                                                    < option value="${item.key}">${item.value}</ option>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </c:forEach>												
+                                    </select></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>6. DESCRIPCIÓN DE LA AUTORIDAD ESPECÍFICA QUE EMITIÓ EL REQUERIMIENTO</td>
+                                <td><input path="datosRequerimientoAsegurado.descripcionAutoridadEspecificaEmitio" style="width: 30%;" id='descripcionAutoridadEspecificaEmitio' maxlength="250" required="required"/> </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>7. NÚMERO DE OFICIO EMITIDO POR LA AUTORIDAD</td>
+                                <td><input path="datosRequerimientoAsegurado.numeroOficioEmitidoAutoridad" maxlength="30" style="width: 30%;" required="required"/> </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>8. FECHA DE SOLICITUD DEL ASEGURAMIENTO (AAAAMMDD)</td>
+                                <td><input path="datosRequerimientoAsegurado.fechaSolicitud" maxlength="8" style="width: 30%;" required="required"/> </td>
+                            </tr> 
+                            <tr>
+                                <td></td>
+                                <td>9. FOLIO SIARA (SOLICITUD A CNBV) O REFERENCIA (SOLICITUD DIRECTA)</td>
+                                <td><input  maxlength="30" style="width: 30%;" required="required"/> </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>10. MONTO SOLICITADO POR LA AUTORIDAD A ASEGURAR</td>
+                                <td><input  maxlength="25" style="width: 30%;" required="required" class="solo-numero"/> </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" align="center" bgcolor="#E7CBEB"><b>III. SECCIÓN DATOS DEL TITULAR A QUIEN SE LE APLICARÁ EL REQUERIMIENTO</b></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>11. PERSONALIDAD JURÍDICA DEL TITULAR</td>
+                                <td><select  style="width: 30%;" required="required">
+                                        < option value="">- Seleccione - </ option>
+                                        <c:forEach var="item" items="${mapCatPersonalidadJuridica}">
+                                            <c:choose>
+                                                <c:when test="${item.key == r29.getDatosTitular().getPersonalidadJuridica()}">
+                                                    < option value="${item.key}" selected='true'>${item.value}</ option>	
+                                                </c:when>
+                                                <c:otherwise>
+                                                    < option value="${item.key}">${item.value}</ option>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </c:forEach>
+                                    </ select></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>12. CARÁCTER DEL TITULAR</td>
+                                <td><select  style="width: 30%;" required="required">
+                                        < option value="">- Seleccione - </ option>
+                                        < options items="${mapCatTipoCaracter}"/>	
+                                    </ select></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>13. CLAVE DEL REGISTRO FEDERAL DE CONTRIBUYENTES CON HOMOCLAVE (RFC) DEL TITULAR</td>
+                                <td><input  maxlength="13" style="width: 30%;" required="required"/> </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>14. RAZÓN SOCIAL DEL TITULAR</td>
+                                <td><input  style="width: 30%;" maxlength="250"/> </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>15. NOMBRE(S) DEL TITULAR</td>
+                                <td><input  style="width: 30%;" maxlength="100"/> </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>16. APELLIDO PATERNO DEL TITULAR</td>
+                                <td><input  style="width: 30%;" maxlength="100"/> </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>17. APELLIDO MATERNO DEL TITULAR</td>
+                                <td><input  style="width: 30%;" maxlength="100"/> </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="3" align="center" bgcolor="#E7CBEB"><b>IV. SECCIÓN DATOS DEL COTITULAR</b></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>18. PERSONALIDAD JURÍDICA DEL COTITULAR</td>
+                                <td><select  style="width: 30%;" required="required">
+                                        < option value="">- Seleccione - </ option>
+                                        < options items="${mapCatPersonalidadJuridica}"/>	
+                                    </select></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>19. CARÁCTER DEL COTITULAR</td>
+                                <td><select  style="width: 30%;" required="required">
+                                        < option value="">- Seleccione - </ option>
+                                        < options items="${mapCatTipoCaracter}"/>	
+                                    </select></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>20. CLAVE DEL REGISTRO FEDERAL DE CONTRIBUYENTES CON HOMOCLAVE (RFC) DEL COTITULAR</td>
+                                <td><input  maxlength="13" style="width: 30%;" required="required"/> </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>21. RAZÓN SOCIAL DEL COTITULAR</td>
+                                <td><input style="width: 30%;" maxlength="250"/> </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>22. NOMBRE(S) DEL COTITULAR</td>
+                                <td><input path="datosCotitular.nombres" style="width: 30%;" maxlength="100"/> </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>23. APELLIDO PATERNO DEL COTITULAR</td>
+                                <td><input path="datosCotitular.apellidoPaterno" style="width: 30%;" maxlength="100"/> </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>24. APELLIDO MATERNO DEL COTITULAR</td>
+                                <td><input path="datosCotitular.apellidoMaterno" style="width: 30%;" maxlength="100"/> </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="3" align="center" bgcolor="#E7CBEB"><b>V. SECCIÓN INFORMACIÓN DE LA CUENTA</b></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>25. CLAVE DE LA SUCURSAL</td>
+                                <td><input path="informacionCuenta.claveSucursal" maxlength="30" style="width: 30%;" required="required"/> </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>26. ESTADO INEGI</td>
+
+                                <td><select path="informacionCuenta.estadoInegi" id="estadoInegi" name="estadoInegi" style="width: 60%;" required="required" >
+                                        <option value="">- Seleccione - </ option>
+                                        <options items="${mapCatEstados}"/>	
+                                    </select></td>
+
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>27. LOCALIDAD INEGI</td>
+                                <td><select path="informacionCuenta.localidadInegi" id="localidadInegi" name="localidadInegi" style="width: 60%;" required="required">
+                                        <option value="">- Seleccione - </option>
+                                    </select></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>28. CÓDIGO POSTAL DE LA SUCURSAL</td>
+                                <td id="tdCodPostal" style="display:none;">< input path="informacionCuenta.codigoPostalLocalidad" id="codigoPostalLocalidad" maxlength="5" style="width: 30%;"/> </td>
+                                <td id="tdCodPostalSel">
+									<select id="codigoPostal" name="codigoPostal" style="width: 60%;">
+                                        <option value="">- Seleccione - </option>
+                                    </select></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>29. MODALIDAD</td>
+
+                                <td><select path="informacionCuenta.modalidad" style="width: 30%;" required="required">
+                                        <option value="">- Seleccione - </option>
+                                        <options items="${mapCatModalidad}"/>	
+                                    </select></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>30. TIPO O NIVEL DE CUENTA</td>
+
+                                <td><select path="informacionCuenta.tipoCuenta" style="width: 60%;" required="required">
+                                        <option value="">- Seleccione - </option>
+                                        <options items="${mapCatNivelCuenta}"/>	
+                                    </select></td>
+
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>31. NÚMERO DE CUENTA</td>
+                                <td><input path="informacionCuenta.numeroCuenta" maxlength="30" style="width: 30%;" required="required"/> </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>32. DESCRIPCIÓN DEL PRODUCTO</td>
+
+                                <td><select path="informacionCuenta.descripcionProducto" style="width: 60%;" required="required">
+                                        <option value="">- Seleccione - </option>
+                                        <options items="${mapCatProductoFinan}"/>	
+                                    </select></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>33. MONEDA DE LA CUENTA</td>
+
+                                <td><select path="informacionCuenta.monedaCuenta" style="width: 30%;" required="required">
+                                        <option value="">- Seleccione - </option>	
+                                    </select></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>34. MONTO INICIAL CON EL QUE SE ASEGURÓ LA CUENTA</td>
+                                <td><input path="informacionCuenta.montoInicialAseguradoCuenta" maxlength="25" style="width: 30%;" required="required" class="solo-numero"/> </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="3" align="center" bgcolor="#E7CBEB"><b>VI. SECCIÓN DATOS DE LA OPERACIÓN</b></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>35. TIPO DE OPERACIÓN</td>
+
+                                <td><select path="datosOperacion.tipoOperacion" style="width: 30%;" required="required">
+                                        <option value="">- Seleccione - </ option>
+                                        <options items="${mapCatTipoOperacion}"/>	
+                                    </select></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>36. NÚMERO DE OFICIO EMITIDO POR LA AUTORIDAD REQUIRIENDO LA OPERACIÓN</td>
+                                <td><input path="datosOperacion.numeroOficioEmitido" maxlength="25" style="width: 30%;" required="required"/> </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>37. FECHA DE REQUERIMIENTO DE LA OPERACIÓN POR LA AUTORIDAD (AAAAMMDD)</td>
+                                <td><input path="datosOperacion.fechaRequerimiento" maxlength="8" style="width: 30%;" required="required"/> </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>38. FOLIO SIARA (CUANDO NO ES DIRECTO)</td>
+                                <td><input path="datosOperacion.folioSiara" maxlength="30" style="width: 30%;" required="required"/> </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>39. FECHA DE APLICACIÓN DEL MOVIMIENTO POR PARTE DE LA ENTIDAD (AAAAMMDD)</td>
+                                <td><input path="datosOperacion.fechaAplicacion" maxlength="8" style="width: 30%;" required="required"/> </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>40. MONTO DE LA OPERACIÓN REQUERIDO POR LA AUTORIDAD</td>
+                                <td><input path="datosOperacion.montoRequeridoAutoridad" maxlength="25" style="width: 30%;" required="required" class="solo-numero"/> </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>41. MONEDA DE LA OPERACIÓN REQUERIDO POR LA AUTORIDAD</td>
+
+                                <td><select path="datosOperacion.monedaRequeridoAutoridad" style="width: 30%;" required="required">
+                                        <option value="">- Seleccione - </ option>
+                                        <options items="${mapCatMoneda}"/>	
+                                    </select></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>42. SALDO DE LA CUENTA DESPUÉS DE LA OPERACIÓN REQUERIDA POR LA AUTORIDAD</td>
+                                <td><input path="datosOperacion.saldoCuentaRequeridoAutoridad" maxlength="25" style="width: 30%;" required="required" class="solo-numero"/> </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="3" align="center" ><input type="submit" value="Guardar"></td>
+                            </tr>
+                        </table>          	
+                    </ form>
+                </div><!-- divFormR29 -->
+            </div><!-- divPanelPrimaryHead -->
+            <div id="divCerrar" style="display:none;">
+                <table id="tblCerrar" style="text-align:center" style="width: 40%">
+                    <tr>
+                        <td align="center" style="width: 100%;"><input type="button" id="btnCerrarVentana" name="btnCerrarVentana" class="btn btn-primary" value="Cerrar"/></td>
+                    </tr>
+                </table>          	
+            </div><!-- divCerrar -->
+            <%}%>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,590 @@
+<%
+include("/model/common.jag");
+/*<!--
+ ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");
+ ~ you may not use this file except in compliance with the License.
+ ~ You may obtain a copy of the License at
+ ~
+ ~      http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~ Unless required by applicable law or agreed to in writing, software
+ ~ distributed under the License is distributed on an "AS IS" BASIS,
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ~ See the License for the specific language governing permissions and
+ ~ limitations under the License.
+ -->*/
+ if (request.isSecure()) {//check whether the request is secure or not
+
+    var authSuccess = session.get("authSuccess");
+    if(!authSuccess){
+        var queryParameters = request.getQueryString();
+        if(queryParameters == "null" || queryParameters == null){
+            response.sendRedirect("login?requestUrl=" + request.getRequestURI());
+        } else{
+            response.sendRedirect("login?requestUrl=" + request.getRequestURI() + "%3F" + request.getQueryString());
+        }
+    } else {
+        TLCPromocionSEL = 'class="active"';
+        //include("/model/myTasksModel.jag");
+        include("/template/partials/header.jag");
+        include("/template/partials/navigation.jag");
+    }
+
+} else {
+    //request is not secured, therefore need redirect to the secure channel
+    var queryStr = '';
+    if (request.getQueryString() != null) {
+        queryStr = '?' + request.getQueryString();
+    }
+    response.sendRedirect(application.get('serverAddress') + request.getRequestURI() + queryStr);
+}
+ %>
+
+
+<div class="col-sm-10" >
+     
+                    <div class="pageheader">
+                        <div class="media">
+                            <div class="pageicon pull-left">
+                                <i class="fa fa-th-list"></i>
+                            </div>
+                            <div class="media-body">
+                                <ul class="breadcrumb">
+                                    <li><a href="irAdminRiesgos"><i class="glyphicon glyphicon-home"></i></a></li>
+                                    <li><a>Alta expediente</a></li>
+                                </ul>
+                                <h4>Alta expediente</h4>
+                            </div>
+                        </div><!-- media -->
+                    </div><!-- pageheader -->
+
+                    <div class="contentpanel">
+						<c:if test="${message != null && !empty message}">
+						    <c:if test="${status == 0}">
+							   <div style="margin: 0 auto;" class="alert alert-success">${message}</div>
+							</c:if>
+						    <c:if test="${status != 0}">
+							   <div style="margin: 0 auto;" class="alert alert-danger">${message}</div>
+							</c:if>
+						</c:if>
+                        <div id="divPanelPrimaryHead" class="panel panel-primary-head">
+							<div id="divCargando" align="center">
+                          		<img alt="" src="resources/plantilla/images/loaders/loader17.gif">&nbsp;&nbsp;<p>Cargando datos, por favor espere...</p>
+                          	</div>
+                        	<br>
+							<div id="divFormExpSiti" style="display: none;">
+                            <form:form action="irAltaExpediente" method="POST" modelAttribute="sitiExpediente">
+                            	<form:input type="hidden" path="idExpediente"/>
+                            	<form:input type="hidden" path="descArea"/>
+                            	<form:input type="hidden" path="contieneLocalizados"/>
+                            	<input type="hidden" id="txtDisabledAlta" value="<%=request.getAttribute("disabledAlta").toString()%>"/>
+                            	<input type="hidden" id="txtDisabledBusqueda" value="<%=request.getAttribute("disabledBusqueda").toString()%>"/>
+                            	<input type="hidden" id="usuario" name="usuario" value="<%=usuario.getUsuario()%>"/>
+                            	<input type="hidden" id="tipoOperacion" name="tipoOperacion" value="<%=request.getAttribute("tipoOperacion").toString()%>"/>
+                            	<input type="hidden" id="numeroExpedienteOri" name="numeroExpedienteOri" value="<%=request.getAttribute("numeroExpedienteOri").toString()%>"/>
+                            	<input type="hidden" id="esExpedienteNuevo" name="esExpedienteNuevo" value="<%=request.getAttribute("esExpedienteNuevo").toString()%>"/>
+                            	<table id="tblExpediente" style="width: 100%; font-size:x-small">
+                            		<tr style="height: 30px;">
+                            			<td colspan="4" style="padding: 2px;" bgcolor="#F1D0BC"><b>OFICIO:&nbsp;&nbsp;</b>
+                            			    <input id="txtNumeroOficio" name="txtNumeroOficio" maxlength="30" style="width: 200px;" value="<%=request.getAttribute("numeroOficio").toString()%>"/>&nbsp;&nbsp;
+                            			    <input type="button"  id="btnBuscarOficio" value="Buscar"/>
+                            			</td>
+                            		</tr>
+                            		<tr>
+                            			<td style="height: 20px;"></td>
+                            		</tr>
+                            		<tr>
+                            			<td style="padding: 2px;" colspan="4" align="center" bgcolor="#E7CBEB"><b>ALTA DE EXPEDIENTE</b></td>
+                            		</tr>
+                            		<tr valign="bottom">
+                            			<td>FOLIO</td>
+                            			<td>AÑO</td>
+                            			<td>OFICIO</td>
+                            			<td>NÚMERO DE EXPEDIENTE</td>
+                            		</tr>
+                            		<tr style="height: 30px;" valign="top">
+                            			<td><form:input path="folio" maxlength="30" style="width: 200px;" required="required"/></td>
+                            			<td><form:input path="anio" maxlength="4" style="width: 200px;" required="required" class="solo-numero"/></td>
+                            			<td><form:input path="numeroOficio" maxlength="30" style="width: 200px;" required="required"/></td>
+                            			<td><form:input path="numeroExpediente" maxlength="30" style="width: 200px;" required="required"/></td>
+                            		</tr>
+                            		<tr valign="bottom">
+                            			<td style="width: 100px;">FECHA PUBLICACION (AAAAMMDD)</td>
+                            			<td>DIAS DE PLAZO</td>
+                            			<td>ÁREA</td>
+                            			<td></td>
+                            		</tr>
+                            		<tr style="height: 30px;" valign="top">
+                            			<td><form:input path="fechaPublicacion" maxlength="8" style="width: 200px;" required="required" class="solo-numero" /></td>
+                            			<td><form:input path="diasPlazo" maxlength="5" style="width: 200px;" required="required" class="solo-numero"/></td>
+										<td><form:select path="idArea" id="selArea" style="width: 200px;" required="required">
+												<form:option value="">- Seleccione -</form:option>
+												<form:options items="${mapCatAreas}"/>
+											</form:select>
+										</td>
+                            		</tr>
+                            		<tr>
+                            			<td style="padding: 2px;" colspan="4" align="center" bgcolor="#E7CBEB">&nbsp;</td>
+                            		</tr>
+                            	</table>
+                            	<br/>
+								<table id="tblPersonas" class="table table-bordered" style="font-size:x-small">
+                            		<thead>
+										<tr>
+										    <th style="display:none; text-align:center;">ID PERSONA</th>
+											<th style="text-align:center;">TIPO DE PERSONA</th>
+											<th style="text-align:center;">NOMBRE</th>
+											<th style="text-align:center;">APELLIDO PATERNO</th>
+											<th style="text-align:center;">APELLIDO MATERNO</th>
+											<th style="display:none; text-align:center;"></th>
+											<th style="text-align:center;"></th>
+										</tr>
+                            		    <tr>
+                            		       <td style="display:none;"></td>
+										   <td><select id="selTipoPersona" style="width: 130px;">
+												  <option value="">- Seleccione -</option>
+                           						  <c:forEach var="item" items="${mapCatTipoPersona}">
+                       								<option value="${item.key}">${item.value}</option>
+                           						  </c:forEach>
+											   </select>
+										    </td>
+                            			    <td><input id="txtNombre" style="width: 250px;" maxlength="300"/> </td>
+                            			    <td><input id="txtApellidoPaterno" style="width: 250px;" maxlength="60"/> </td>
+                            			    <td><input id="txtApellidoMaterno" style="width: 250px;" maxlength="60"/> </td>
+                            			    <td style="display:none;"></td>
+										    <td><input type="button" id="btnAgregar" value="Agregar"/>&nbsp;<input type="button" id="btnActualizar" value="Actualizar" disabled="disabled"/></td>
+                            		    </tr>
+                            		</thead>
+                            		<tbody>
+								    <c:forEach items="${sitiExpediente.personas}" var="persona" varStatus="status">
+								        <tr id="trLinea${status.index}">
+											<td style="display:none;"><form:input style="border: none;" readonly="true" path="personas[${status.index}].idRegPersona"/></td>
+											<td><form:input style="border: none;" readonly="true" path="personas[${status.index}].descTipoPersona"/></td>
+											<td><form:input style="border: none;width: 250px;" readonly="true" path="personas[${status.index}].nombre"/></td>
+											<td><form:input style="border: none;width: 250px;" readonly="true" path="personas[${status.index}].apellidoPaterno"/></td>
+											<td><form:input style="border: none;width: 250px;" readonly="true" path="personas[${status.index}].apellidoMaterno"/></td>
+											<td style="display:none;"><form:input style="border: none;" readonly="true" path="personas[${status.index}].nuevo_actualizar"/></td>
+											<td><c:if test="${sitiExpediente.personas[status.index].idStatus == 1 || sitiExpediente.personas[status.index].idStatus == 2}">
+											        <input type="button" value="Editar" id="btnEditar${status.index}" onclick="editarPersona('${status.index}', '${sitiExpediente.personas[status.index].tipoPersona}');"/>
+											    </c:if>
+											</td>
+								        </tr>
+								    </c:forEach>
+                            		</tbody>
+                            	</table>
+                            	<br/>
+								<table id="tblCuentas" class="table table-bordered" style="font-size:x-small;">
+                            		<thead>
+                            			<tr>
+                            				<th style="padding: 1px;" colspan="4" align="center" bgcolor="#E7CBEB">&nbsp;</th>
+                            		    </tr>
+										<tr>
+										    <th style="display:none; text-align:center;">ID CUENTA</th>
+										    <th style="text-align:center;">CUENTA</th>
+										    <th style="display:none; text-align:center;"></th>
+										    <th style="text-align:center;"></th>
+										    <th style="width:800px;"></th>
+										</tr>
+										<tr>
+										    <td style="display:none;"></td>
+                            			    <td><input id="txtCuenta" style="width: 250px;" maxlength="300"/></td>
+                            			    <td style="display:none;"></td>
+										    <td><input type="button" id="btnAgregarCuenta" value="Agregar"/>&nbsp;<input type="button" id="btnActualizarCuenta" value="Actualizar" disabled="disabled"/></td>
+										    <td></td>
+                            		    </tr>
+                            		</thead>
+                            		<tbody>
+								    <c:forEach items="${sitiExpediente.cuentas}" var="cuenta" varStatus="status">
+								        <tr id="trLineaCuenta${status.index}">
+										    <td style="display:none;"><form:input style="border: none;" readonly="true" path="cuentas[${status.index}].idRegCuenta"/></td>
+											<td><form:input style="border: none;" readonly="true" path="cuentas[${status.index}].numeroCuenta"/></td>
+											<td style="display:none;"><form:input style="border: none;" readonly="true" path="cuentas[${status.index}].nuevo_actualizar"/></td>
+											<td><input type="button" value="Editar" id="btnEditarCuenta${status.index}" onclick="editarCuenta('${status.index}');"/></td>
+											<td></td>
+								        </tr>
+								    </c:forEach>
+                            		</tbody>
+                            	</table>
+                            	<br/>
+                            	<table style="text-align:center; width:100%; font-size:small;">
+                           		    <tr>
+                           				<td colspan="4" align="left">Fecha de alta: <%=fechaActual%></td>
+                           			</tr>
+                           		    <tr>
+                           				<td colspan="4" align="left">Alta realizada por: <%=usuario.getNombre()%></td>
+                           			</tr>
+                           		    <tr id="trBotones">
+	                           			<td style="text-align:right; width:45%;"><input type="submit" id="btnGuardar" value="Guardar"></td>
+	                           			<td style="text-align:center; width:7%;"><input type="button"  id="btnNuevo" value="Nuevo" style="width:65px" ></td>
+                           				<td style="text-align:left; width:6%;"><input type="button" value="Borrar" style="width:65px" onclick="location.href='irAltaExpediente';"/></td>
+                           				<td style="text-align:left;"><input id="btnImprimir" type="button" value="Imprimir"/></td>
+                           			</tr>
+                            	</table>
+                            </form:form>
+                            </div><!-- divFormExpSiti -->
+                        </div><!-- divPanelPrimaryHead -->
+                    </div><!-- contentpanel -->
+                
+</div>
+
+<script>
+var lineaEditar = -1;
+var lineaEditarCuenta = -1;
+$(document).ready(function() {
+	var linea = $('#tblPersonas tbody tr').length;
+	var lineaCuenta = $('#tblCuentas tbody tr').length;
+	var tipoPersonaAnt = "";
+
+	$('#divCargando').hide();
+    $('#divFormExpSiti').show();
+
+	//Habilitamos o deshabilitamos los controles
+	if($("#txtDisabledAlta").val() == "disabled"){
+		$("#tblExpediente").find("input,select").prop("disabled", "disabled");
+		$("#tblPersonas").find("input,button,select").prop("disabled", "disabled");
+		$("#tblCuentas").find("input,button").prop("disabled", "disabled");
+		$("#btnGuardar").prop("disabled", "disabled");
+	}
+
+	if($("#txtDisabledBusqueda").val() == "disabled"){
+		$('#txtNumeroOficio').prop("readonly", "readonly");
+		$('#btnBuscarOficio').prop("disabled", "disabled");
+		$('#sitiExpediente').find('[name="numeroOficio"]').prop("readonly","true");
+		$('#sitiExpediente').find('[name="numeroExpediente"]').prop("readonly","true");
+	}
+	
+    $("#sitiExpediente").submit(function () {
+        var mensaje="";
+        var fecha = new Date();
+        var anio = fecha.getFullYear().toString();
+        var mes = fecha.getMonth()+1;
+        var dia = fecha.getDate();
+        var fechaTmp = anio.toString() + (mes < 10 ? "0" : "") + mes.toString() + (dia < 10 ? "0" : "") + dia.toString();
+
+        if($('#sitiExpediente').find('[name="folio"]').val().trim().length == 0) {  
+       	    mensaje += (mensaje == "") ? "" : "\n";
+       	    mensaje += "El campo folio es obligatorio.";
+        }
+
+        if($('#sitiExpediente').find('[name="anio"]').val().trim().length == 0) {  
+       	    mensaje += (mensaje == "") ? "" : "\n";
+       	    mensaje += "El campo año es obligatorio.";
+        } else if($('#sitiExpediente').find('[name="anio"]').val().length != 4) {  
+       	    mensaje += (mensaje == "") ? "" : "\n";
+       	    mensaje += "El campo año debe ser de 4 dígitos.";
+        }
+
+        if($('#sitiExpediente').find('[name="numeroOficio"]').val().trim().length == 0) {  
+       	    mensaje += (mensaje == "") ? "" : "\n";
+       	    mensaje += "El campo oficio es obligatorio.";
+        }
+
+        if($('#sitiExpediente').find('[name="numeroExpediente"]').val().trim().length == 0) {
+       	    mensaje += (mensaje == "") ? "" : "\n";
+       	    mensaje += "El campo número de expediente es obligatorio.";
+        }
+        
+        if(!validate_fecha($('#sitiExpediente').find('[name="fechaPublicacion"]').val())) {
+     	   mensaje += (mensaje == "") ? "" : "\n";
+     	   mensaje += "El campo fecha de publicación es una fecha inválida.";
+        } else {
+            if($('#sitiExpediente').find('[name="fechaPublicacion"]').val() > fechaTmp ){
+         	   mensaje += (mensaje == "") ? "" : "\n";
+         	   mensaje += "El campo fecha de publicación no puede ser mayor a la fecha actual.";
+            }
+        }
+
+        if($('#sitiExpediente').find('[name="diasPlazo"]').val().trim().length == 0) {  
+       	    mensaje += (mensaje == "") ? "" : "\n";
+       	    mensaje += "El campo días de plazo es obligatorio.";
+        }
+
+        if($('#selArea').val() == ''){
+            mensaje += (mensaje == "") ? "" : "\n";
+            mensaje += "El campo área es obligatorio.";
+        }
+        
+		if(lineaEditar != -1){
+     	   mensaje += (mensaje == "") ? "" : "\n";
+     	   mensaje += "Existen registros de personas sin actualizar. Favor de actualizarlo y posteriormente presionar el botón de guardar.";
+  		} else {
+   	        if($('#selTipoPersona').val() != "" || $('#txtNombre').val().length != 0
+   	             || $('#txtApellidoPaterno').val().length > 0 || $('#txtApellidoMaterno').val().length > 0) {  
+   	        	    mensaje += (mensaje == "") ? "" : "\n";
+   	        	    mensaje += "Los campos de la captura de las personas deben estar vacios o presione el boton Agregar para agregarlo a la lista.";
+   	        }
+       	}
+
+		if(lineaEditarCuenta != -1){
+	     	   mensaje += (mensaje == "") ? "" : "\n";
+	     	   mensaje += "Existen registros de cuentas sin actualizar. Favor de actualizarlo y posteriormente presionar el botón de guardar.";
+	  	} else {
+	   	    if($('#txtCuenta').val().length != 0) {  
+	   	   	    mensaje += (mensaje == "") ? "" : "\n";
+	   	   	    mensaje += "Los campos de la captura de las cuentas deben estar vacios o presione el boton Agregar para agregarlo a la lista.";
+	   	    }
+       }
+
+	   if(mensaje.trim().length != 0) {
+ 	       alert(mensaje);
+ 	       return false;
+ 	   }
+
+       $("#descArea").val($("#selArea option:selected").text());
+       $("#tipoOperacion").val(2);
+
+       return true;
+     });
+    
+    $('#btnNuevo').click(function () {
+    	var form = $(document.createElement('form'));
+    	$(form).attr("action", "nuevaAltaExpedienteSiti");
+    	$(form).attr("method", "POST");
+
+    	$(form).append($("<input>").attr("type", "hidden").attr("name", "fechaPublicacion").val($('#sitiExpediente').find('[name="fechaPublicacion"]').val()));
+    	$(form).append($("<input>").attr("type", "hidden").attr("name", "anio").val($('#sitiExpediente').find('[name="anio"]').val().trim()));
+    	$(form).append($("<input>").attr("type", "hidden").attr("name", "idArea").val($('#selArea').val()));
+
+    	form.appendTo(document.body);
+    	$(form).submit();
+     });
+
+    $('#btnBuscarOficio').click(function () {
+        if($('#txtNumeroOficio').val().trim().length == 0){
+			alert("Debe proporcionar el número de oficio a buscar.");
+        } else {
+        	var form = $(document.createElement('form'));
+        	$(form).attr("action", "irAltaExpediente");
+        	$(form).attr("method", "POST");
+
+        	$(form).append($("<input>").attr("type", "hidden").attr("name", "usuario").val($('#usuario').val()));
+        	$(form).append($("<input>").attr("type", "hidden").attr("name", "tipoOperacion").val(1));
+        	$(form).append($("<input>").attr("type", "hidden").attr("name", "numeroOficio").val($('#txtNumeroOficio').val().toUpperCase()));
+        	$(form).append($("<input>").attr("type", "hidden").attr("name", "numeroExpedienteOri").val(''));
+        	$(form).append($("<input>").attr("type", "hidden").attr("name", "esExpedienteNuevo").val(''));
+        	form.appendTo(document.body);
+        	$(form).submit();
+        }
+    });
+
+    $('#btnAgregar').click(function () {
+		if(validaDatosPersona()){
+			var tdNuevos = '<td style="display:none;"><input type="text" style="border: none;" readonly id="personas' + linea + '.idRegPersona" name="personas[' + linea + '].idRegPersona" value="0"/></td>';
+			tdNuevos += '<td><input type="text" style="border: none;" readonly id="personas' + linea + '.descTipoPersona" name="personas[' + linea + '].descTipoPersona" value="' + $("#selTipoPersona option:selected").text() + '"/></td>';
+			tdNuevos += '<td><input type="text" style="border: none;width: 250px;" readonly id="personas' + linea + '.nombre" name="personas[' + linea + '].nombre" value="' + $("#txtNombre").val() + '"/></td>';
+			tdNuevos += '<td><input type="text" style="border: none;width: 250px;" readonly id="personas' + linea + '.apellidoPaterno" name="personas[' + linea + '].apellidoPaterno" value="' + $("#txtApellidoPaterno").val() + '"/></td>';
+			tdNuevos += '<td><input type="text" style="border: none;width: 250px;" readonly id="personas' + linea + '.apellidoMaterno" name="personas[' + linea + '].apellidoMaterno" value="' + $("#txtApellidoMaterno").val() + '"/></td>';
+			tdNuevos += '<td style="display:none;"><input type="text" style="border: none;" readonly id="personas' + linea + '.nuevo_actualizar" name="personas[' + linea + '].nuevo_actualizar" value="N"/></td>';
+			tdNuevos += '<td><input type="button" value="Editar" id="btnEditar' + linea + '" onclick="editarPersona(' + linea + ',' + $("#selTipoPersona option:selected").val() + ');"/></td>';
+	
+			$('#tblPersonas tbody').append('<tr id="trLinea' + linea +'">' + tdNuevos + '</tr>');
+
+			$('#selTipoPersona').val("");
+			$("#txtNombre").val("");
+			$("#txtApellidoPaterno").val("");
+			$("#txtApellidoMaterno").val("");
+			$('#btnActualizar').prop("disabled", true);
+			tipoPersonaAnt= "";
+			linea++;
+		}
+    });
+
+    $('#btnAgregarCuenta').click(function () {
+		if(validaDatosCuenta()){
+			var tdNuevos = '<td style="display:none;"><input type="text" style="border: none;" readonly id="cuentas' + lineaCuenta + '.idRegCuenta" name="cuentas[' + lineaCuenta + '].idRegCuenta" value="0"/></td>';
+			tdNuevos += '<td><input type="text" style="border: none;" readonly id="cuentas' + lineaCuenta + '.numeroCuenta" name="cuentas[' + lineaCuenta + '].numeroCuenta" value="' + $("#txtCuenta").val().trim() + '"/></td>';
+			tdNuevos += '<td style="display:none;"><input type="text" style="border: none;" readonly id="cuentas' + lineaCuenta + '.nuevo_actualizar" name="cuentas[' + lineaCuenta + '].nuevo_actualizar" value="N"/></td>';
+			tdNuevos += '<td><input type="button" value="Editar" id="btnEditarCuenta' + lineaCuenta + '" onclick="editarCuenta(' + lineaCuenta + ');"/></td>';
+			tdNuevos += '<td></td>';
+	
+			$('#tblCuentas tbody').append('<tr id="trLineaCuenta' + lineaCuenta +'">' + tdNuevos + '</tr>');
+
+			$("#txtCuenta").val("");
+			$('#btnActualizarCuenta').prop("disabled", true);
+			lineaCuenta++;
+		}
+    });
+
+    $('#btnActualizar').click(function () {
+		if(validaDatosPersona()){
+			var nuevo_actualizar = "N";
+			if($('#sitiExpediente').find('[name="personas[' + lineaEditar + '].idRegPersona"]').val() > 0) {
+				nuevo_actualizar = "A";
+			}
+			$('#trLinea' + lineaEditar).css("background-color", "#FFFFFF");
+			$('#sitiExpediente').find('[name="personas[' + lineaEditar + '].descTipoPersona"]').val($("#selTipoPersona option:selected").text());
+			$('#sitiExpediente').find('[name="personas[' + lineaEditar + '].nombre"]').val($("#txtNombre").val());
+			$('#sitiExpediente').find('[name="personas[' + lineaEditar + '].apellidoPaterno"]').val($("#txtApellidoPaterno").val());
+			$('#sitiExpediente').find('[name="personas[' + lineaEditar + '].apellidoMaterno"]').val($("#txtApellidoMaterno").val());
+			$('#sitiExpediente').find('[name="personas[' + lineaEditar + '].nuevo_actualizar"]').val(nuevo_actualizar);
+			var td = $('#btnEditar' + lineaEditar).parent();
+			td.html("");
+			var botonNuevo = '<input type="button" value="Editar" id="btnEditar' + lineaEditar + '" onclick="editarPersona(' + lineaEditar + ',' + $("#selTipoPersona option:selected").val() + ');"/>';
+			td.append(botonNuevo);
+			$('#tblPersonas tbody :button').prop("disabled", false);
+			$('#btnActualizar').prop("disabled", true);
+			$('#btnAgregar').prop("disabled", false);
+			lineaEditar = -1;
+
+			$('#selTipoPersona').val("");
+			$("#txtNombre").val("");
+			$("#txtApellidoPaterno").val("");
+			$("#txtApellidoMaterno").val("");
+			tipoPersonaAnt= "";
+		}
+    });
+
+    $('#btnActualizarCuenta').click(function () {
+		if(validaDatosCuenta()){
+			var nuevo_actualizar = "N";
+			if($('#sitiExpediente').find('[name="cuentas[' + lineaEditarCuenta + '].idRegCuenta"]').val() > 0) {
+				nuevo_actualizar = "A";
+			}
+			$('#trLineaCuenta' + lineaEditarCuenta).css("background-color", "#FFFFFF");
+			$('#sitiExpediente').find('[name="cuentas[' + lineaEditarCuenta + '].numeroCuenta"]').val($("#txtCuenta").val().trim());
+			$('#sitiExpediente').find('[name="cuentas[' + lineaEditarCuenta + '].nuevo_actualizar"]').val(nuevo_actualizar);
+			var td = $('#btnEditarCuenta' + lineaEditarCuenta).parent();
+			td.html("");
+			var botonNuevo = '<input type="button" value="Editar" id="btnEditarCuenta' + lineaEditarCuenta + '" onclick="editarCuenta(' + lineaEditarCuenta + ');"/>';
+			td.append(botonNuevo);
+			$('#tblCuentas tbody :button').prop("disabled", false);
+			$('#btnActualizarCuenta').prop("disabled", true);
+			$('#btnAgregarCuenta').prop("disabled", false);
+			lineaEditarCuenta = -1;
+
+			$("#txtCuenta").val("");
+		}
+    });
+
+    $("#selTipoPersona").on('blur', function() {
+        var habilitar = true;
+    	if($('#selTipoPersona').val() == 2) {
+    		habilitar = false;
+    	}
+
+		if(tipoPersonaAnt != $('#selTipoPersona').val()) {
+			$("#txtApellidoPaterno").prop( "disabled", !habilitar);
+			$("#txtApellidoMaterno").prop( "disabled", !habilitar);
+			$("#txtApellidoPaterno").val("");
+			$("#txtApellidoMaterno").val("");
+		}
+		tipoPersonaAnt = $('#selTipoPersona').val();
+		
+    });
+	
+    function validaDatosPersona(){
+        var mensaje="";
+
+        if($('#txtNombre').val().length == 0) {  
+       	    mensaje += (mensaje == "") ? "" : "\n";
+       	    mensaje += "El campo nombre es obligatorio.";
+        } else if(contienePalabrasError($('#txtNombre').val())){
+        	mensaje += (mensaje == "") ? "" : "\n";
+       	    mensaje += "El nombre contiene palabras erroneas. Verifique.";
+        }
+
+        if($('#selTipoPersona').val() != 1 && $('#selTipoPersona').val() != 2) {
+            mensaje += (mensaje == "") ? "" : "\n";
+            mensaje += "El campo tipo persona debe ser física o moral.";
+        }
+
+        if($('#selTipoPersona').val() == 1){
+            if(contienePalabrasError($('#txtApellidoPaterno').val())){
+            	mensaje += (mensaje == "") ? "" : "\n";
+           	    mensaje += "El apellido paterno contiene palabras erroneas. Verifique.";
+	        }
+
+            if(contienePalabrasError($('#txtApellidoMaterno').val())){
+            	mensaje += (mensaje == "") ? "" : "\n";
+           	    mensaje += "El apellido materno contiene palabras erroneas. Verifique.";
+	        }
+        } else if($('#selTipoPersona').val() == 2){
+             if($('#txtApellidoPaterno').val().length > 0) {
+                 mensaje += (mensaje == "") ? "" : "\n";
+                 mensaje += "El campo apellido paterno debe ser vacio.";
+              }
+             if($('#txtApellidoMaterno').val().length > 0) {  
+                 mensaje += (mensaje == "") ? "" : "\n";
+                 mensaje += "El campo apellido materno debe ser vacio.";
+             }
+        }
+
+        if(mensaje.trim().length != 0) {
+ 	       alert(mensaje);
+ 	       return false;
+ 	   }
+
+ 	   return true;
+    }
+
+    function validaDatosCuenta(){
+        var mensaje="";
+
+        if($('#txtCuenta').val().trim().length == 0) {
+       	    mensaje += (mensaje == "") ? "" : "\n";
+       	    mensaje += "El campo cuenta es obligatorio.";
+        }
+
+        if(mensaje.trim().length != 0) {
+ 	       alert(mensaje);
+ 	       return false;
+ 	   }
+
+ 	   return true;
+    }
+
+    $("#btnImprimir").click(function (){
+		$("#trBotones").hide();
+		$("#divFormExpSiti").printArea();
+		$("#trBotones").show();
+	});
+
+   	function validate_fecha(fecha){
+        var patron=new RegExp("^(19|20)([0-9]{2})([0-9]{1,2})([0-9]{1,2})$");
+        if(fecha.search(patron)==0){	
+            var year = fecha.substring(0,4);
+            var month = fecha.substring(4,6);
+            var day = fecha.substring(6,8);
+            var dteDate=new Date(year,month-1,day);
+            if((day==dteDate.getDate()) && ((month-1)==dteDate.getMonth()) && (year==dteDate.getFullYear())){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    $('.solo-numero').keyup(function (){
+        this.value = (this.value + '').replace(/[^0-9]/g, '');
+    });    
+});
+
+function editarPersona(idLinea, idTipoPersona){
+	$('#selTipoPersona').val(idTipoPersona);
+	$("#txtNombre").val($('#sitiExpediente').find('[name="personas[' + idLinea + '].nombre"]').val());
+	$("#txtApellidoPaterno").val($('#sitiExpediente').find('[name="personas[' + idLinea + '].apellidoPaterno"]').val());
+	$("#txtApellidoMaterno").val($('#sitiExpediente').find('[name="personas[' + idLinea + '].apellidoMaterno"]').val());
+	if(idTipoPersona == 1) {
+		$("#txtApellidoPaterno").prop( "disabled", false);
+		$("#txtApellidoMaterno").prop( "disabled", false);
+	} else if(idTipoPersona == 2) {
+		$("#txtApellidoPaterno").prop( "disabled", true);
+		$("#txtApellidoMaterno").prop( "disabled", true);
+	}
+	$('#trLinea' + idLinea).css("background-color", "#F6E3CE");
+	$('#tblPersonas tbody :button').prop("disabled", true);
+	$('#btnAgregar').prop("disabled", true);
+	$('#btnActualizar').prop("disabled", false);
+	lineaEditar = idLinea;
+}
+
+function editarCuenta(idLineaCuenta){
+	$("#txtCuenta").val($('#sitiExpediente').find('[name="cuentas[' + idLineaCuenta + '].numeroCuenta"]').val().trim());
+	$('#trLineaCuenta' + idLineaCuenta).css("background-color", "#F6E3CE");
+	$('#tblCuentas tbody :button').prop("disabled", true);
+	$('#btnAgregarCuenta').prop("disabled", true);
+	$('#btnActualizarCuenta').prop("disabled", false);
+	lineaEditarCuenta = idLineaCuenta;
+}
+</script>

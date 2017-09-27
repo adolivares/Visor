@@ -1,0 +1,266 @@
+<%
+include("/model/common.jag");
+/*<!--
+ ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");
+ ~ you may not use this file except in compliance with the License.
+ ~ You may obtain a copy of the License at
+ ~
+ ~      http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~ Unless required by applicable law or agreed to in writing, software
+ ~ distributed under the License is distributed on an "AS IS" BASIS,
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ~ See the License for the specific language governing permissions and
+ ~ limitations under the License.
+ -->*/
+ if (request.isSecure()) {//check whether the request is secure or not
+
+    var authSuccess = session.get("authSuccess");
+    if(!authSuccess){
+        var queryParameters = request.getQueryString();
+        if(queryParameters == "null" || queryParameters == null){
+            response.sendRedirect("login?requestUrl=" + request.getRequestURI());
+        } else{
+            response.sendRedirect("login?requestUrl=" + request.getRequestURI() + "%3F" + request.getQueryString());
+        }
+    } else {
+        TLCPromocionSEL = 'class="active"';
+        //include("/model/myTasksModel.jag");
+        include("/template/partials/header.jag");
+        include("/template/partials/navigation.jag");
+    }
+
+} else {
+    //request is not secured, therefore need redirect to the secure channel
+    var queryStr = '';
+    if (request.getQueryString() != null) {
+        queryStr = '?' + request.getQueryString();
+    }
+    response.sendRedirect(application.get('serverAddress') + request.getRequestURI() + queryStr);
+}
+ %>
+
+
+<div class="col-sm-10" >
+	<div class="pageheader">
+                        <div class="media">
+                            <div class="pageicon pull-left">
+                                <i class="fa fa-th-list"></i>
+                            </div>
+                            <div class="media-body">
+                                <ul class="breadcrumb">
+                                    <li><a href="irAdminRiesgos"><i class="glyphicon glyphicon-home"></i></a></li>
+                                    <li><a>Consulta de errores de la carga del expediente</a></li>
+                                </ul>
+                                <h4>Consulta de errores de la carga del expediente</h4>
+                            </div>
+                        </div><!-- media -->
+                    </div><!-- pageheader -->
+                    
+                    <div class="contentpanel">
+						
+                    
+                        <p class="mb20"></p>
+                        <div class="panel panel-primary-head">
+                            <form action="consultaErroresExp" method="POST" modelAttribute="exp">
+                            	<input type="hidden" path="descArea"/>
+                            	<input type="hidden" path="persona.descTipoPersona"/>
+                            	<input type="hidden" path="contieneLocalizados"/>
+                            	<input type="hidden" path="contieneErrores"/>
+                            	<input type="hidden" path="registroConErrores"/>
+                            	<input type="hidden" path="persona.registroConErrores"/>
+                            	<input type="hidden" path="persona.contieneAlias"/>
+                            	<input type="hidden" path="persona.idRegSolEsp"/>
+                            	<input type="hidden" id="tipoConsulta" name="tipoConsulta"/>
+                            	<input type="hidden" id="totalPersonas" name="totalPersonas" />
+                            	
+                            	<table style="font-size:small">
+                            		<tr>
+                            			<td style="width: 160px">Fecha desde:</td>
+                            			<td style="width: 160px">Fecha hasta:</td>
+                            			<td colspan="2"></td>
+                            		</tr>
+                            		<tr>
+                            			<td><input type="text" id="txtFechaDesde" name="txtFechaDesde" readonly /></td>
+                            			<td><input type="text" id="txtFechaHasta" name="txtFechaHasta" readonly /></td>
+                            			<td align="right"><input id="btnAceptar" type="submit" value="Aceptar" ></td>
+                            			<td align="left">&nbsp;<input id="btnBorrar" type="button" value="Borrar" onclick="location.href='irConsultaErroresExp'"></td>
+                            	</table>
+                            	<div id="divCargando" style="display: none;" align="center">
+                            		<img alt="" src="resources/plantilla/images/loaders/loader17.gif">&nbsp;&nbsp;<p>Cargando datos, por favor espere...</p>
+                            	</div>
+								<div id="divExpediente">
+								<BR>
+								<%if(1==0){%>
+                            	  <table class="table table-bordered" style="font-size:x-small" id="tblExpediente">
+									<tr>
+										<td colspan="5">EXPEDIENTES: <form:select path="idExpediente" id="selExpediente" style="width: 180px;">
+										       <form:option value="">- Seleccione -</form:option>
+										       <form:options items="${mapExpedientes}"/>
+										    </form:select>   
+										</td>
+									</tr>
+                            		<tr valign="bottom">
+                            			<td style="width: 100px;">FOLIO</td>
+                            			<td>AÑO</td>
+                            			<td>OFICIO</td>
+                            			<td>NÚMERO DE EXPEDIENTE</td>
+                            		</tr>
+                            		<tr style="height: 30px;" valign="top">
+                            			<td><form:input path="folio" maxlength="30" style="width: 200px;"/></td>
+                            			<td><form:input path="anio" maxlength="4" style="width: 140px;" class="solo-numero"/></td>
+                            			<td><form:input path="numeroOficio" maxlength="30" style="width: 140px;"/></td>
+                            			<td><form:input path="numeroExpediente" maxlength="30" style="width: 200px;"/></td>
+                            		</tr>
+                            		<tr valign="bottom">
+                            			<td style="width: 100px;">FECHA PUBLICACION (AAAA-MM-DD)</td>
+                            			<td>DIAS DE PLAZO</td>
+                            			<td>ÁREA</td>
+                            			<td></td>
+                            		</tr>
+                            		<tr style="height: 30px;" valign="top">
+                            			<td><form:input path="fechaPublicacion" maxlength="10" style="width: 140px;" required="required"/></td>
+                            			<td><form:input path="diasPlazo" maxlength="5" style="width: 200px;" required="required" class="solo-numero"/></td>
+										<td><form:select path="idArea" id="selArea" style="width: 200px;">
+												<form:option value="">- Seleccione -</form:option>
+												<form:options items="${mapCatAreas}"/>
+											</form:select>
+										</td>
+										<td></td>
+                            		</tr>
+                            	  </table>
+                            	  <%if(1==0){%>
+								  <table id="tblPersonas" class="table table-bordered" style="font-size:x-small">
+									<tr>
+										<td colspan="6">PERSONAS: <form:select path="persona.idRegPersona" id="selPersonas" style="width: 250px;">
+										       <form:option value="0">- Seleccione -</form:option>
+										       <form:options items="${mapPersonas}"/>
+										    </form:select>   
+										</td>
+									</tr>
+                            	  
+									<tr>
+										<td style="text-align:center;"  style="">TIPO DE PERSONA</td>
+										<td style="text-align:center;">NOMBRE</td>
+										<td style="text-align:center;">APELLIDO PATERNO</td>
+										<td style="text-align:center;">APELLIDO MATERNO</td>
+									</tr>
+                            		<tr>
+										<td><form:select path="persona.tipoPersona" id="selTipoPersona" style="width: 130px;" required="required">
+												<form:option value="">- Seleccione -</form:option>
+												<form:options items="${mapCatTipoPersona}"/>
+											</form:select>
+										</td>
+                            			<td><form:input path="persona.nombre" style="width: 130px;" maxlength="300" required="required"/> </td>
+                            			<td><form:input path="persona.apellidoPaterno" style="width: 130px;" maxlength="60"/> </td>
+                            			<td><form:input path="persona.apellidoMaterno" style="width: 130px;" maxlength="60"/> </td>
+                            		</tr>
+                            	  </table>
+								  <%}%>
+								  <br/>
+                            	  <%if(1==0){%>
+								  <!--c:if test="${exp.persona.contieneAlias == 1 || exp.persona.contieneAlias == 2}"-->
+								  <table id="tblPersonasAlias" class="table table-bordered" style="font-size:x-small">
+                            		<thead>
+										<tr>
+											<th colspan="7" style="text-align:center;" bgcolor="#E7CBEB">CAPTURA DE ALIAS O NUEVAS PERSONAS</th>
+										</tr>
+										<tr>
+											<th style="text-align:center;">TIPO DE PERSONA</th>
+											<th style="text-align:center;">NOMBRE</th>
+											<th style="text-align:center;">APELLIDO PATERNO</th>
+											<th style="text-align:center;">APELLIDO MATERNO</th>
+											<th style="text-align:center;"></th>
+										</tr>
+                            		<tr>
+										<td><select id="selTipoPersonaAlias" style="width: 130px;">
+												<option value="">- Seleccione -</option>
+                           						<c:forEach var="item" items="${mapCatTipoPersona}">
+                       								<option value="${item.key}">${item.value}</option>
+                           						</c:forEach>
+											</select>
+										</td>
+                            			<td><input id="txtNombre" style="width: 130px;" maxlength="300"/> </td>
+                            			<td><input id="txtApellidoPaterno" style="width: 130px;" maxlength="60"/> </td>
+                            			<td><input id="txtApellidoMaterno" style="width: 130px;" maxlength="60"/> </td>
+										<td><input type="button" id="btnAgregar" value="Agregar"/>&nbsp;<input type="button" id="btnActualizar" value="Actualizar" disabled="disabled"/></td>
+                            		</tr>
+                            		</thead>
+                            		<tbody>
+								    <c:forEach items="${exp.personas}" var="persona" varStatus="status">
+								        <tr>
+											<td><form:input style="border: none;" readonly="true" path="personas[${status.index}].descTipoPersona"/></td>
+											<td><form:input style="border: none;" readonly="true" path="personas[${status.index}].nombre"/></td>
+											<td><form:input style="border: none;" readonly="true" path="personas[${status.index}].apellidoPaterno"/></td>
+											<td><form:input style="border: none;" readonly="true" path="personas[${status.index}].apellidoMaterno"/></td>
+								        </tr>
+								    </c:forEach>
+                            		</tbody>
+                            	  </table>
+								<%}%>
+                            	
+                            	<br/>
+								<table id="tblCuentas" class="table table-bordered" style="font-size:x-small;">
+                            		<thead>
+                            			<tr>
+                            				<th style="padding: 1px;" colspan="4" align="center" bgcolor="#E7CBEB">&nbsp;</th>
+                            		    </tr>
+										<tr>
+										    <th style="display:none; text-align:center;">ID CUENTA</th>
+										    <th style="text-align:center;">CUENTA</th>
+										    <th style="text-align:center;"></th>
+										    <th style="width:800px;"></th>
+										</tr>
+										<tr>
+										    <td style="display:none;"></td>
+                            			    <td><input id="txtCuenta" style="width: 250px;" maxlength="50"/></td>
+										    <td><input type="button" id="btnAgregarCuenta" value="Agregar"/>&nbsp;<input type="button" id="btnActualizarCuenta" value="Actualizar" disabled="disabled"/></td>
+										    <td></td>
+                            		    </tr>
+                            		</thead>
+                            		<tbody>
+								    
+                            		</tbody>
+                            	</table>
+								<br/>
+                            	<%if(1==0){%>
+                            	<table class="table table-bordered" id="tblErrores">
+                            		<tr>
+                            			<td style="font-size:12px; color:white" bgcolor="#FE2E2E">
+                            			<c:if test="${(exp.registroConErrores == 1)}">
+                            				<c:forEach items="${exp.errores}" var="error">
+                            					<li>${error.descripcion}</li>
+                            				</c:forEach>
+                            			</c:if>
+                            			<c:if test="${(exp.persona.registroConErrores == 1)}">
+                            				<c:forEach items="${exp.persona.errores}" var="error">
+                            					<li>${error.descripcion}</li>
+                            				</c:forEach>
+                            			</c:if>
+                            			</td>
+                            		</tr>
+                            	</table>
+                            	<%}%>
+                            	<br/>
+                            	<table style="text-align:center; width:100%; font-size:small;">
+                           		    <tr>
+                           				<td colspan="2" align="left">Fecha de la consulta: <%=fechaActual%></td>
+                           			</tr>
+                           		    <tr>
+                           				<td colspan="2" align="left">Consulta realizada por: <%=usuario.getNombre()%></td>
+                           			</tr>
+                           		    <tr id="trBotones">
+                           				<td style="text-align:right;"><input id="btnGuardar" type="button" value="Guardar"/></td>
+                           				<td style="text-align:left;">&nbsp;&nbsp;<input id="btnImprimir" type="button" value="Imprimir"/></td>
+                           			</tr>
+                            	</table>
+                            	<%}%>
+                            	</div> <!-- divLocalizados -->
+							
+                        </div><!-- panel-heading -->
+                    </div><!-- contentpanel -->
+                </div><!-- mainpanel -->
+</div>
+
