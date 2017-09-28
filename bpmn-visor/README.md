@@ -1,9 +1,9 @@
-bpmn-explorer
+bpmn-Visor
 ==============
 
 BPMN Humantask Jaggery App UI
 
-Configuring bpmn-Explorer for tenants
+Configuring bpmn-Visor for tenants
 ===============================================
 
 1. Make a copy of  <BPS_HOME>/repository/deployment/server/jaggeryapps/bpmn-explorer directory
