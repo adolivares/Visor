@@ -26,4 +26,4 @@ Configuring bpmn-Visor for tenants
 
 4. Copy <BPS_HOME>/repository/deployment/server/webapps/bpmn.war file to <BPS_HOME>/repository/tenants/<TENANT_ID>/webapps directory
 
-5. Then goto url https://<HOST>:<PORT>/t/<TENANT_DOMAIN>/jaggeryapps/bpmn-visor/ using favourite web browser
+5. Then goto url https://<HOST>:<PORT>/t/<TENANT_DOMAIN>/jaggeryapps/bpmn-visor/ using favourite web 
