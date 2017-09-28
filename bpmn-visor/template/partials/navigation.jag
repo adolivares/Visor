@@ -97,7 +97,7 @@
                     <li><a href='irBandejaEntrada'>Bandeja de Entrada</a></li>  
                     <li><a href='irConsultaLocalizados'>Consultas</a></li> 
                     <li><a href='irDescargaR29'>Autorizaciones</a></li> 
-                    <li><a href='irDescargaR29'>Administración de catalogo</a></li> 
+                    <li><a href='irAdministraCatalogos'>Administración de catalogo</a></li> 
                     <li><a href='irDescargaR29'>Perfilamiento</a></li> 
                     <li><a href='irDescargaR29'>Generador de notificaciones</a></li> 
                 </ul> 
