@@ -1,0 +1,22 @@
+<data name="dsBpmnVisor" serviceNamespace="dsBpmnVisor" transports="http https local">
+   <config enableOData="false" id="dsVisor">
+      <property name="driverClassName">oracle.jdbc.driver.OracleDriver</property>
+      <property name="url">jdbc:oracle:thin:@45.40.139.98:1521:XE</property>
+      <property name="username">VISOR</property>
+      <property name="password">qwerty01</property>
+   </config>
+   <query id="qConsultaEvaluacion" useConfig="dsVisor">
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.get_mb_cat_evaluacion(?)}</sql>
+      <result element="getEvaluacion" rowName="resultado">
+         <element column="ID_MB_CAT_EVALUACION" name="id_mb_cat_evaluacion" xsdType="string"/>
+         <element column="DESCRIPCION" name="descripcion" xsdType="string"/>
+      </result>
+      <param defaultValue="#{NULL}" name="idEvaluacion" ordinal="2" sqlType="STRING"/>
+      <param name="cliente" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
+   </query>
+   <operation name="qConsultaEvaluacion">
+      <call-query href="qConsultaEvaluacion">
+         <with-param name="idEvaluacion" query-param="idEvaluacion"/>
+      </call-query>
+   </operation>
+</data>
