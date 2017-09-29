@@ -1,4 +1,3 @@
-
 <%
 include("/model/common.jag");
 /*<!--
@@ -41,11 +40,6 @@ include("/model/common.jag");
     }
     response.sendRedirect(application.get('serverAddress') + request.getRequestURI() + queryStr);
 }
-
-  
-  
-
-
  %>
  
 		<link href="resources/plantilla/css/select2.css" rel="stylesheet" />
@@ -279,8 +273,8 @@ include("/model/common.jag");
 				var ventanaDetalle = window.open(url, "nuevo", "directories=no, location=no, menubar=no, scrollbars=yes, statusbar=no, tittlebar=no, width=1000, height=600");
 				ventanaDetalle.focus();
 			}
-            jQuery(document).ready(function(){   				
-				
+            jQuery(document).ready(function(){               
+       
             	$('#buscando').hide();
                                 
                 $(".buscar" ).click(function() {
