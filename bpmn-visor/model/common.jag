@@ -130,6 +130,12 @@ var URL_ESB = "http://localhost:8280/services/"
 var URL_ESB_API = "http://localhost:8280/"
 //START COMMON FUNCTIONS
 
+//GROUPS///////////////
+var GRUPO_PROMOTOR = "QA_Promotor";
+var GRUPO_ANALISTA = "QA_AnalistaCredito";
+var GRUPO_DIR_CRED = "QA_DirectorCredito";
+var GRUPO_OPERADOR = "QA_Operador";
+
 /**
  * Function to get common error message display content
  */
