@@ -1,3 +1,4 @@
+
 <%
 include("/model/common.jag");
 /*<!--
@@ -118,19 +119,25 @@ include("/model/common.jag");
 			<table width="40%">
 				<tr>
 					<td style="padding:2%" valign="top">
+						<p>Asignaci&oacute;n</p>
 						<select id="slcAsignacion"  onchange="showModal(this)">	
 							<option value="0">- Seleccione -</option>
-							<option value="1">Escalar</option>
-							<option value="2">Delegar</option>
+								<%if (!bDirector){%>																																								  
+									<option value="1">Escalar</option>
+								<%} 
+								if (!bAnalista){%>																																								  
+									<option value="2">Delegar</option>
+								<%}%>
 						</select>
 					</td>
-					<td style="padding:2%">
-						<label><input type="checkbox" id="cbOficial" > Env&iacute;o a Oficial de cumplimiento</label><br>
-						<label><input type="checkbox" id="cbOficial" > Env&iacute;o a Gerente de cumplimiento</label><br>
-						<label><input type="checkbox" id="cbOficial" > Env&iacute;o a Director de cumplimiento</label><br>
+					<td style="padding:2%">						
+						<div id="envAnalista1" style="display:none;"><label><input type="checkbox" id="cbAnalista1" > Env&iacute;o a Analista de cumplimiento</label></div>
+						<div id="envGerente1" style="display:none;"><label><input type="checkbox" id="cbGerente1" > Env&iacute;o a Gerente de cumplimiento</label></div>
+						<div id="envOficial1" style="display:none;"><label><input type="checkbox" id="cbOficial1" > Env&iacute;o a Oficial de cumplimiento</label></div>					
+						<div id="envDirector1" style="display:none;"><label><input type="checkbox" id="cbDirector1" > Env&iacute;o a Director de cumplimiento</label></div>
 					</td>
 					<td style="padding:2%" valign="bottom">
-						<input type="button" value="Enviar" id="btnEnviarAsig" name="btnEnviar" data-toggle="modal" data-target="#MyModal" >
+						<input style="display:none;" type="button" value="Enviar" id="btnEnviarAsig" name="btnEnviar" data-toggle="modal" data-target="#MyModal" >
 					</td>
 				</tr>
 			</table>
@@ -156,6 +163,31 @@ include("/model/common.jag");
 
                 </tbody>
             </table>
+			<table width="40%">
+				<tr>
+					<td style="padding:2%" valign="top">
+						<p>Asignaci&oacute;n</p>
+						<select id="slcAsignacion"  onchange="showModalBatch(this)">	
+							<option value="0">- Seleccione -</option>
+								<%if (!bDirector){%>																																								  
+									<option value="1">Escalar</option>
+								<%} 
+								if (!bAnalista){%>																																								  
+									<option value="2">Delegar</option>
+								<%}%>
+						</select>
+					</td>
+					<td style="padding:2%">						
+						<div id="envAnalista2" style="display:none;"><label><input type="checkbox" id="cbAnalista2" > Env&iacute;o a Analista de cumplimiento</label></div>
+						<div id="envGerente2" style="display:none;"><label><input type="checkbox" id="cbGerente2" > Env&iacute;o a Gerente de cumplimiento</label></div>
+						<div id="envOficial2" style="display:none;"><label><input type="checkbox" id="cbOficial2" > Env&iacute;o a Oficial de cumplimiento</label></div>					
+						<div id="envDirector2" style="display:none;"><label><input type="checkbox" id="cbDirector2" > Env&iacute;o a Director de cumplimiento</label></div>
+					</td>
+					<td style="padding:2%" valign="bottom">
+						<input style="display:none;" type="button" value="Enviar" id="btnEnviarAsigBatch" name="btnEnviar" data-toggle="modal" data-target="#MyModal" >
+					</td>
+				</tr>
+			</table>			
 			<div class="modal fade col-centered in" id="MyModal1" tabindex="-1" role="dialog">
 			  <div class="modal-dialog " role="document">
 				<div class="modal-content">
@@ -178,7 +210,7 @@ include("/model/common.jag");
 							<td></td>
 						<tr>
 						<tr>
-							<td style="padding:2%" valign="top">Justificaci&oacuten</td>
+							<td style="padding:2%" valign="top">Justificaci&oacute;n</td>
 							<td><textarea id="txtaJustif" rows="4" cols="50" ></textarea></td>									
 						<tr>
 					</table>
@@ -212,7 +244,7 @@ include("/model/common.jag");
 							<td></td>
 						<tr>						
 						<tr>
-							<td style="padding:2%" VALIGN="TOP">Justificaci&oacuten</td>
+							<td style="padding:2%" VALIGN="TOP">Justificaci&oacute;n</td>
 							<td><textarea id="txtaJustif" rows="4" cols="50" ></textarea></td>									
 						<tr>
 						<tr>
@@ -230,7 +262,6 @@ include("/model/common.jag");
 			</div>
         </div><!-- panel-heading -->
     </div><!-- contentpanel -->
-</div>
  </section>
 
 <script src='resources/plantilla/js/jquery-1.11.1.min.js'></script>
@@ -252,8 +283,7 @@ include("/model/common.jag");
 
         <script>
         
-        $(document).ready(function() {
-			$("#btnDelegar").hide();
+        $(document).ready(function() {	
             $('#example').DataTable({
             	 "scrollY": 400,
                  "scrollX": true
@@ -266,15 +296,59 @@ include("/model/common.jag");
 			
 			function showModal(modal){
 				var target = "#MyModal" + modal.value;
+				var tab = 1;
+				 displayEnvio(modal, tab);
+				 $("#btnEnviarAsig").css("display","block");
 				 $('#btnEnviarAsig').attr('data-target',target);
+			}
+			
+			function showModalBatch(modal){
+				var tab = 2;
+				var target = "#MyModal" + modal.value;
+				displayEnvio(modal, tab);
+				 $("#btnEnviarAsigBatch").css("display","block");
+				 $('#btnEnviarAsigBatch').attr('data-target',target);
+			}
+			
+			function displayEnvio(modal, tab){
+				if(modal.value === '0'){
+					$("#envGerente" + tab).css("display","none");
+					$("#envOficial" + tab).css("display","none");
+					$("#envDirector" + tab).css("display","none");
+					$("#envAnalista" + tab).css("display","none");
+				}					
+				if(modal.value === '1'){
+					<%if(bAnalista){%>
+						$("#envGerente" + tab).css("display","block");
+						$("#envOficial" + tab).css("display","block");
+						$("#envDirector" + tab).css("display","block");
+					<%}else if(bGerente){%>
+						$("#envOficial" + tab).css("display","block");
+						$("#envDirector" + tab).css("display","block");
+					<%}else if(bOficial){%>
+						$("#envDirector" + tab).css("display","block");
+					<%}%>
+				}
+				if(modal.value === '2'){
+					<%if(bDirector){%>
+						$("#envGerente" + tab).css("display","block");
+						$("#envOficial" + tab).css("display","block");
+						$("#envAnalista" + tab).css("display","block");
+					<%}else if(bOficial){%>
+						$("#envAnalista" + tab).css("display","block");
+						$("#envGerente" + tab).css("display","block");
+					<%}else if(bGerente){%>
+						$("#envAnalista" + tab).css("display","block");
+					<%}%>
+				}
 			}
 			
 			function abrirVentana(url) {
 				var ventanaDetalle = window.open(url, "nuevo", "directories=no, location=no, menubar=no, scrollbars=yes, statusbar=no, tittlebar=no, width=1000, height=600");
 				ventanaDetalle.focus();
 			}
-            jQuery(document).ready(function(){               
-       
+            jQuery(document).ready(function(){   				
+				
             	$('#buscando').hide();
                                 
                 $(".buscar" ).click(function() {

@@ -32,6 +32,10 @@ var userManager = new carbon.user.UserManager(server, tenantId);
 var user = session.get("user");
 var DirectorCredito = "";
 var operador = "";
+var bDirector = false;
+var bAnalista = false;
+var bOficial = false;
+var bGerente = false;
 
 try {
     var resultRole = userManager.getClaim("INVESTA.COM/" + user, "http://wso2.org/claims/role", "default");
@@ -61,11 +65,20 @@ try {
 
     
 } catch(e) {
-    
+    log.error(e);
 }
+
+if(groups.indexOf("TLCAnalistaCredito") >= 0 || groups.indexOf(GRUPO_ANALISTA) >= 0 ){
+	bAnalista = true;
+}else if(groups.indexOf("TLCDirCredito") >= 0 || groups.indexOf(GRUPO_DIR_CRED)>= 0){
+	bDirector = true;
+}																																								  
+
 log.info("operador: " + operador);
 log.info("groups: " + groups);
 log.info("groups: " + groups.indexOf(GRUPO_ANALISTA));
+
+
 %>
 <br><br><br>
 <div class="col-sm-2" >
@@ -79,7 +92,7 @@ log.info("groups: " + groups.indexOf(GRUPO_ANALISTA));
                 <small class='text-muted'> </small>  
             </div>  
         </div><!-- media -->  
-		<%if (groups.indexOf("TLCAnalistaCredito") >= 0 || groups.indexOf(GRUPO_ANALISTA) >= 0 || groups.indexOf("TLCDirCredito") >= 0 || groups.indexOf(GRUPO_DIR_CRED)>= 0){%>
+		<%if (groups.indexOf("TLCAnalistaCredito") >= 0 || groups.indexOf(GRUPO_ANALISTA) >= 0 || groups.indexOf("TLCDirCredito") >= 0 || groups.indexOf(GRUPO_DIR_CRED)>= 0){%>																																								  
         <ul class='nav nav-pills nav-stacked'>  
 			<li class='parent active'><a href='#'><i class='fa fa-bars'></i> <span>Visor</span></a>  
                 <ul class='children'>  
@@ -87,7 +100,7 @@ log.info("groups: " + groups.indexOf(GRUPO_ANALISTA));
                     <li><a href='irBandejaEntrada'>Bandeja de Entrada</a></li>  
                     <li><a href='irConsultaLocalizados'>Consultas</a></li> 
                     <li><a href='irDescargaR29'>Autorizaciones</a></li> 
-                    <li><a href='irDescargaR29'>Administración de catalogo</a></li> 
+                    <li><a href='irAdministraCatalogos'>Administración de catalogo</a></li> 
                     <li><a href='irDescargaR29'>Perfilamiento</a></li> 
                     <li><a href='irDescargaR29'>Generador de notificaciones</a></li> 
                 </ul> 
