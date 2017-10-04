@@ -27,8 +27,6 @@ include("/model/common.jag");
             response.sendRedirect("login?requestUrl=" + request.getRequestURI() + "%3F" + request.getQueryString());
         }
     } else {
-        //TLCPromocionSEL = 'class="active"';
-        //include("/model/myTasksModel.jag");
         include("/template/partials/header.jag");
         include("/template/partials/navigation.jag");
     }
@@ -66,9 +64,9 @@ include("/model/common.jag");
             <div class="media-body">
                 <ul class="breadcrumb">
                     <li><a href="irBandejaEntrada"><i class="glyphicon glyphicon-home"></i></a></li>
-                    <li><a>Coincidencias en listas</a></li>
+                    <li><a>Bandeja de entrada</a></li>
                 </ul>
-                <h4>Coincidencias en listas</h4>
+                <h4>Coincidencias en Listas</h4>
             </div>
         </div><!-- media -->
     </div><!-- pageheader -->
@@ -92,174 +90,250 @@ include("/model/common.jag");
                 </div><!-- panel -->
             </div><!-- panel-heading -->
 			
-            <h1>Coincidencias Asignadas</h1>
+            <h1>Calificaci&oacute;n de Coincidencias en Listas</h1>
             <table id="example" cellspacing="0" class="table table-striped table-bordered" style="font-size: x-small"  width="100%">
                 <thead>
                     <tr>
                         <th style="display:none;"></th>                                    	
-                        <th>Fecha</th>                                     	
-                        <th>Id Consulta</th>
+                        <th>Fecha consulta</th>                                     	
+                        <th>Id Búsqueda</th>
                         <th>Id Cliente</th>
-                        <th>Nombre Cliente</th>                                        
-                        <th>Encontrado en lista</th>   
-                        <th>Porcentaje de Busqueda</th>                                     
+                        <th>Nombre</th>  
+						<th>Apellido paterno</th>  
+						<th>Apellido materno</th>
+                        <th>Relación</th>  
+						<th>Aplicación</th>  						
+                        <th>Resultado / Calificación</th>                                     
                         <th>Tipo lista</th>                                              
-                        <th style="width: 35px">Porcentaje Coincidencia</th>  
-                        <th>Aplicación</th>                                         
-                        <th>Ver</th>                     
-                        <th>Tipo Persona</th>                                                          
-                        <th></th>                                                          
-                        <th></th>                                                          
+                        <th>Porcentaje búsqueda</th> 
+						<th>Porcentaje coincidencia</th>      
+                        <th>Ver Detalle</th>                     
+                        <th style="width: 7px"><input type="checkbox" id="cbAnalista1" ></th>                                                          
+                        <th></th>
                     </tr>
                 </thead>
-                <tbody>
-
+				<tbody>					
                 </tbody>
             </table>
-			<table width="100%">
+			</br>
+			<input type="button" value="Detalle" id="btnDetalle" name="btnDetalle" data-toggle="modal" data-target="#MyModal" >
+			<input type="button" value="Elimina" id="btn" name="btn" data-toggle="modal" data-target="#EliminacionModal" >			
+			<table width="80%" class="table-content">
 				<tr>
-					<td style="padding:2%; width:7%" valign="top">
-						<p>Asignaci&oacute;n</p>
-						<select id="slcAsignacion"  onchange="showModal(this)">	
-							<option value="0">- Seleccione -</option>
-								<%if (!bDirector){%>																																								  
-									<option value="1">Escalar</option>
-								<%} 
-								if (!bAnalista){%>																																								  
-									<option value="2">Delegar</option>
-								<%}%>
-						</select>
+					<td valign="top" align="right">
+						<p>Comentario</p>
+						<input class="btn btn-primary" type="button" value="Ver Comentarios" id="btnComentarios" name="btnComentarios" data-toggle="modal" data-target="#ComentariosModal" >
 					</td>
-					<td style="padding:2%; width:10%">						
-						<div id="envAnalista1" style="display:none;"><label><input type="checkbox" id="cbAnalista1" > Env&iacute;o a Analista de cumplimiento</label></div>
-						<div id="envGerente1" style="display:none;"><label><input type="checkbox" id="cbGerente1" > Env&iacute;o a Gerente de cumplimiento</label></div>
-						<div id="envOficial1" style="display:none;"><label><input type="checkbox" id="cbOficial1" > Env&iacute;o a Oficial de cumplimiento</label></div>					
-						<div id="envDirector1" style="display:none;"><label><input type="checkbox" id="cbDirector1" > Env&iacute;o a Director de cumplimiento</label></div>
+					<td colspan="2">						
+						<textarea id="txaComentario" rows="3" cols="150" ></textarea>	
 					</td>
-					<td style="padding:2%; width:10%" valign="bottom">
-						<input style="display:none;" type="button" value="Enviar" id="btnEnviarAsig" name="btnEnviar" data-toggle="modal" data-target="#MyModal" >
+					<td>
+						<input class="btn btn-primary" type="button" value="Guardar Comentarios" id="btnGuardaComent" name="btnGuardaComent">
+					</td>					
+				</tr>
+				<tr>
+					<td align="right" >						
+						<div class="fileUpload btn btn-primary">
+							<span>Seleccionar Archivo</span>
+							<input id="uploadBtn" type="file" class="upload" />
+						</div>
 					</td>
-					<td style="padding:2%; width:10%" valign="top"><a href="irCalificacionCoincidencias"><button style="float:right" type="button" class="btn btn-primary">Analizar</button></a></td>
+					<td colspan="2">	
+						<input type="text" id="txtPathArchivo" style="width:100%"/>
+					</td>
+					<td>
+						<input class="btn btn-primary" type="button" value="Subir Archivo" id="btnUpArchivo" name="btnUpArchivo">
+					</td>					
+				</tr>
+				<tr>
+					<td>
+						Archivos subidos
+					</td>
+					<td>						
+						<textarea id="txaComentario" rows="7" cols="60" ></textarea>	
+					</td>
+					<td align="right" valign="bottom">					
+						Calificar <select id="cboCalificar">
+									<option>- Seleccione -</option>
+								</select>
+					</td>	
+					<td valign="bottom">
+						<input class="btn btn-primary" type="button" value="Enviar a CRM" id="btnEnviaCRM" name="btnEnviaCRM">
+					</td>
 				</tr>
 			</table>
-            <h1>Coincidencias Asignadas BATCH</h1>
-            <table id="example2" class="table table-striped table-bordered" cellspacing="0" style="font-size: x-small"  width="100%">
-                <thead>
-                    <tr>
-                        <th style="display:none;"></th> 
-                        <th>Fecha</th> 
-                        <th>Id Consulta</th>                                    	
-                        <th>Id Beneficiario</th>
-                        <th>Nombre Beneficiario</th>                                        
-                        <th>Encontrado en lista</th>   
-                        <th>Porcentaje de Busqueda</th>                                     
-                        <th>Tipo lista</th>                                                                         
-                        <th style="width: 35px">Porcentaje Coincidencia</th> 
-                        <th>Aplicación</th>                                          
-                        <th>Ver</th>                     
-                        <th>Tipo Persona</th>                                                          
-                    </tr>
-                </thead>
-                <tbody>
-
-                </tbody>
-            </table>
-			<table width="100%">
-				<tr>
-					<td style="padding:2%; width:7%" valign="top">
-						<p>Asignaci&oacute;n</p>
-						<select id="slcAsignacion"  onchange="showModalBatch(this)">	
-							<option value="0">- Seleccione -</option>
-								<%if (!bDirector){%>																																								  
-									<option value="1">Escalar</option>
-								<%} 
-								if (!bAnalista){%>																																								  
-									<option value="2">Delegar</option>
-								<%}%>
-						</select>
-					</td>
-						<td style="padding:2%; width:10%">							
-						<div id="envAnalista2" style="display:none;"><label><input type="checkbox" id="cbAnalista2" > Env&iacute;o a Analista de cumplimiento</label></div>
-						<div id="envGerente2" style="display:none;"><label><input type="checkbox" id="cbGerente2" > Env&iacute;o a Gerente de cumplimiento</label></div>
-						<div id="envOficial2" style="display:none;"><label><input type="checkbox" id="cbOficial2" > Env&iacute;o a Oficial de cumplimiento</label></div>					
-						<div id="envDirector2" style="display:none;"><label><input type="checkbox" id="cbDirector2" > Env&iacute;o a Director de cumplimiento</label></div>
-					</td>
-					<td style="padding:2%; width:10%" valign="bottom">
-						<input style="display:none;" type="button" value="Enviar" id="btnEnviarAsigBatch" name="btnEnviar" data-toggle="modal" data-target="#MyModal" >
-					</td>
-					<td style="padding:2%; width:10%" valign="top">
-						<a href="irCalificacionCoincidencias"><button style="float:right" type="button" class="btn btn-primary">Analizar</button></a>
-					</td>
-				</tr>
-			</table>			
-			<div class="modal fade col-centered in" id="MyModal1" tabindex="-1" role="dialog">
+            
+			<div class="modal fade col-centered in" id="MyModal" tabindex="-1" role="dialog">
 			  <div class="modal-dialog " role="document">
-				<div class="modal-content">
+				<div class="modal-content" style="width:170%">
 				  <div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title" id="H2">SOLICITUD DE ESCALAMIENTO</h4>
+					<h4 class="modal-title" id="H2">" NOMBRE "</h4>
 				  </div>
-				  <div class="modal-body col-centered">
-					<table style="margin-left:auto; margin-right:auto;">	
-						<tr>
-							<td style="padding:2%">Fecha de b&uacute;squeda</td>
-							<td></td>
-						</tr>
-						<tr>
-							<td style="padding:2%">Cliente</td>
-							<td></td>
-						</tr>
-						<tr>
-							<td style="padding:2%">ID Cliente</td>
-							<td></td>
-						</tr>
-						<tr>
-							<td style="padding:2%" valign="top">Justificaci&oacute;n</td>
-							<td><textarea id="txtaJustif" rows="4" cols="50" ></textarea></td>									
-						</tr>
-					</table>
+				  <div class="modal-body col-centered">	
+					<div><h4>Coincidencias</h4></div>		  
+					<div style="float:left;" class="list">				
+						<table id="listCoincidencias"  class="table-striped table-bordered table-list" style="margin-left:auto;  margin-right:auto;">
+							<thead>
+								<tr><th>LISTA</th>
+									<th>CATEGORIA</th>
+									<th>%</th>
+									<th>FOLIO</th>
+								</tr>
+							</thead>
+							<tbody>	
+								<tr style="cursor:pointer;">
+									<td>GRIS</td>
+									<td>JUDICIALES</td>
+									<td>95</td>
+									<td valign="top">818</td>		
+								</tr>
+								<tr style="cursor:pointer;">
+									<td>GRIS</td>
+									<td>JUDICIALES</td>
+									<td>95</td>
+									<td valign="top">819</td>		
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div style="margin-top:-4%; margin-left:37%"><h4>LISTA GRIS</h4>
+						<hr>
+					</div>
+					<div id="detalleList" style="float:left; width:70%;">					
+						<table style="margin-right:auto; width:100%" class="table-content">
+							<tr><td>FOLIO:</td>
+								<td><input type="text" id="txtFolio" disabled = "disabled"></td>
+							</tr>
+							<tr><td>FECHA:</td>
+								<td><input type="text" id="txtFecha" disabled = "disabled"></td>
+							</tr>
+							<tr><td>DIAS:</td>
+								<td><input type="text" id="txtDias" disabled = "disabled"></td>
+							</tr>
+							<tr><td>C055016:</td>
+								<td><input type="text" id="txtC055016" disabled = "disabled"></td>
+							</tr>
+							<tr><td>NOMBRE:</td>
+								<td><input type="text" id="txtNombre" disabled = "disabled"></td>
+							</tr>
+							<tr><td>APELLIDO PATERNO:</td>
+								<td><input type="text" id="txtApPat" disabled = "disabled"></td>
+							</tr>
+							<tr><td>APELLIDO MATERNO:</td>
+								<td><input type="text" id="txtApMat" disabled = "disabled"></td>
+							</tr>
+							<tr><td>CARACTER:</td>
+								<td><input type="text" id="txtCaracter" disabled = "disabled"></td>
+							</tr>
+							<tr><td>COMPLEMENTARIOS:</td>
+								<td><input type="text" id="txtComplementario" disabled = "disabled"></td>
+							</tr>
+							<tr><td>TIPO PERSONA:</td>
+								<td><input type="text" id="txtTipoPersona" disabled = "disabled"></td>
+							</tr>
+							<tr><td>REFERNCIA:</td>
+								<td><input type="text" id="txtReferencia" disabled = "disabled"></td>
+							</tr>
+							<tr><td>NUMERO EXPEDIENTE:</td>
+								<td><input type="text" id="txExpediente" disabled = "disabled"></td>
+							</tr>
+							<tr>
+								<td style="width:28%">OBSERVACIONES <p>(máximo 1000 caracteres)</p></td>
+								<td><textarea id="txaObservaciones" rows="5" cols="83" ></textarea></td>									
+							</tr>							
+							<tr><td>Fecha de la consulta:</td>
+								<td></td>
+							</tr>
+							<tr><td>Consulta realizada por:</td>
+								<td></td>
+							</tr>
+						</table>
+					</div>
 				  </div>
+				  <div class="table-clear"></div>
 				  <div class="modal-footer">
-					   <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-					  <button type="button" class="btn btn-default" data-dismiss="modal">Escalar</button>
+					   <button type="button" class="btn btn-default" data-dismiss="modal">Guardar</button>
+					  <button type="button" class="btn btn-default" data-dismiss="modal">Generar PDF</button>
 				  </div>
 				</div>
 			  </div>
 			</div>
-			<div class="modal fade col-centered" id="MyModal2" tabindex="-1" role="dialog">
+			<div class="modal fade col-centered" id="ComentariosModal" tabindex="-1" role="dialog">
 			  <div class="modal-dialog " role="document">
 				<div class="modal-content">
 				  <div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title" id="H2">DELEGACI&Oacute;N DE INVESTIGACI&Oacute;N</h4>
+					<h4 class="modal-title" id="H2">"NOMBRE"</h4>
+					<h4 class="modal-title" id="H2">Log de cometarios</h4>
 				  </div>
 				  <div class="modal-body col-centered">
-					<table style="margin-left:auto; margin-right:auto;">	
-						<tr>
-							<td style="padding:2%">Fecha de b&uacute;squeda</td>
-							<td></td>
-						</tr>
-						<tr>
-							<td style="padding:2%">Cliente</td>
-							<td></td>
-						</tr>
-						<tr>
-							<td style="padding:2%">ID Cliente</td>
-							<td></td>
-						</tr>						
-						<tr>
-							<td style="padding:2%" VALIGN="TOP">Justificaci&oacute;n</td>
-							<td><textarea id="txtaJustif" rows="4" cols="50" ></textarea></td>									
-						</tr>
-						<tr>
-							<td style="padding:2%">Receptor</td>
-							<td><select style="width:305px"></select></td>
-						</tr>
-					</table>
+					<div class="list-Coment">
+						<table id="listComentarios"  class="table-striped table-bordered table-content" style="margin-left:auto;  margin-right:auto; width:100%">
+							<thead>
+								<tr><th>Fecha búsqueda</th>
+									<th>Hora búsqueda</th>
+									<th>Comentarios </th>
+									<th>Usuario</th>
+								</tr>
+							</thead>
+							<tbody>	
+								<tr>
+									<td>03/10/2017</td>
+									<td>13:30</td>
+									<td>["Nombre del cliente"],[IdCliente (si tiene)],[Lista (si aplica)],[Categoría (si aplica)], Comentario</td>
+									<td>12345678</td>		
+								</tr>
+								<tr>
+									<td>03/10/2017</td>
+									<td>13:30</td>
+									<td>["Nombre del cliente"],[IdCliente (si tiene)],[Lista (si aplica)],[Categoría (si aplica)], Comentario</td>
+									<td>12345678</td>		
+								</tr
+							</tbody>
+						</table>
+					</div>
+				  </div>
+				  <div class="modal-footer">
+					   <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+				  </div>
+				</div>
+			  </div>
+			</div>
+			<div class="modal fade col-centered" id="EliminacionModal" tabindex="-1" role="dialog">
+			  <div class="modal-dialog " role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h5 id="H1">Ésta persona ya fue calificada. ¿Deseas solicitar la eliminación de la calificación?
+						<p>(Favor de introducir una justificación)</p>	
+					</h5>
+					<h4 class="modal-title" id="H2">SOLICITUD DE ELIMINACIÓN DE CALIFICACIÓN</h4>
+				  </div>
+				  <div class="modal-body col-centered">
+					<div class="list-Coment">
+						<table style="margin-right:auto; width:100%" class="table-content">
+							<tr><td align="right">Fecha de Búsqueda:</td>
+								<td></td>
+							</tr>
+							<tr><td align="right">Cliente:</td>
+								<td></td>
+							</tr>
+							<tr><td align="right">ID Cliente:</td>
+								<td></td>
+							</tr>
+							<tr><td align="right">Presona Calificada:</td>
+								<td></td>
+							</tr>
+							<tr><td align="right" valign="top">Justificación:</td>
+								<td><textarea id="txaJustificaElim" rows="5" cols="60" ></textarea></td>		
+							</tr>	
+						</table>
+					</div>
 				  </div>
 				  <div class="modal-footer">
 					   <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-					  <button type="button" class="btn btn-default" data-dismiss="modal">Delegar</button>
+					  <button type="button" class="btn btn-default" data-dismiss="modal">Solicitar</button>
 				  </div>
 				</div>
 			  </div>
@@ -288,6 +362,10 @@ include("/model/common.jag");
         <script>
         
         $(document).ready(function() {	
+			document.getElementById("uploadBtn").onchange = function () {
+				document.getElementById("txtPathArchivo").value = this.value;
+			};
+		
             $('#example').DataTable({
             	 "scrollY": 400,
                  "scrollX": true
@@ -296,56 +374,13 @@ include("/model/common.jag");
             	 "scrollY": 400,
                  "scrollX": true
             });
-        } );
+        } );			
 			
-			function showModal(modal){
-				var target = "#MyModal" + modal.value;
-				var tab = 1;
-				 displayEnvio(modal, tab);
-				 $("#btnEnviarAsig").css("display","block");
-				 $('#btnEnviarAsig').attr('data-target',target);
-			}
-			
-			function showModalBatch(modal){
-				var tab = 2;
-				var target = "#MyModal" + modal.value;
-				displayEnvio(modal, tab);
-				 $("#btnEnviarAsigBatch").css("display","block");
-				 $('#btnEnviarAsigBatch').attr('data-target',target);
-			}
-			
-			function displayEnvio(modal, tab){
-				if(modal.value === '0'){
-					$("#envGerente" + tab).css("display","none");
-					$("#envOficial" + tab).css("display","none");
-					$("#envDirector" + tab).css("display","none");
-					$("#envAnalista" + tab).css("display","none");
-				}					
-				if(modal.value === '1'){
-					<%if(bAnalista){%>
-						$("#envGerente" + tab).css("display","block");
-						$("#envOficial" + tab).css("display","block");
-						$("#envDirector" + tab).css("display","block");
-					<%}else if(bGerente){%>
-						$("#envOficial" + tab).css("display","block");
-						$("#envDirector" + tab).css("display","block");
-					<%}else if(bOficial){%>
-						$("#envDirector" + tab).css("display","block");
-					<%}%>
-				}
-				if(modal.value === '2'){
-					<%if(bDirector){%>
-						$("#envGerente" + tab).css("display","block");
-						$("#envOficial" + tab).css("display","block");
-						$("#envAnalista" + tab).css("display","block");
-					<%}else if(bOficial){%>
-						$("#envAnalista" + tab).css("display","block");
-						$("#envGerente" + tab).css("display","block");
-					<%}else if(bGerente){%>
-						$("#envAnalista" + tab).css("display","block");
-					<%}%>
-				}
-			}
+		
+			$('#listCoincidencias tbody').on( 'click', 'tr', function () {
+				 var folio = $(this).find("td").eq(3).html();
+				 console.log(folio);  
+			});
 			
 			function abrirVentana(url) {
 				var ventanaDetalle = window.open(url, "nuevo", "directories=no, location=no, menubar=no, scrollbars=yes, statusbar=no, tittlebar=no, width=1000, height=600");
