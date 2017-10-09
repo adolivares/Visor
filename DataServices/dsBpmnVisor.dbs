@@ -14,9 +14,105 @@
       <param defaultValue="#{NULL}" name="idEvaluacion" ordinal="2" sqlType="STRING"/>
       <param name="cliente" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
    </query>
+   <query id="qGetMBConsulta" useConfig="dsVisor">
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.get_mb_consulta(?,?)}</sql>
+      <result element="getMBConsulta" rowName="resultado">
+         <element column="ID_MB_CONSULTA" name="id_mb_consulta" xsdType="string"/>
+         <element column="ID_CLIENTE_CRM" name="id_cliente_crm" xsdType="string"/>
+         <element column="ID_APLICACION" name="id_aplicacion" xsdType="string"/>
+         <element column="ID_USUARIO" name="id_usuario" xsdType="string"/>
+         <element column="FECHA_CONSULTA" name="fecha_consulta" xsdType="dateTime"/>
+         <element column="STATUS_CONSULTA" name="status_consulta" xsdType="string"/>
+         <element column="STATUS_DESCRIPCION" name="status_descripcion" xsdType="string"/>
+         <element column="PORCENTAJE_BUSQUEDA" name="porcentaje_busqueda" xsdType="string"/>
+         <element column="MODO_BUSQUEDA" name="modo_busqueda" xsdType="string"/>
+         <element column="STATUS_HALLAZGO" name="status_hallazgo" xsdType="string"/>
+         <element column="STATUS_RESP_CRM" name="status_resp_crm" xsdType="string"/>
+         <element column="STATUS_DESC_CRM" name="status_desc_crm" xsdType="string"/>
+         <element column="TIPO_TRANS" name="tipo_trans" xsdType="string"/>
+         <element column="ID_CLIENTE" name="id_cliente" xsdType="integer"/>
+         <element column="TIPO_BUSQUEDA" name="tipo_busqueda" xsdType="integer"/>
+		 <call-query href="qGetMBConsultaCliente">
+            <with-param name="idConsulta" query-param="ID_MB_CONSULTA"/>
+         </call-query>
+      </result>
+      <param defaultValue="#{NULL}" name="idConsulta" ordinal="2" sqlType="STRING"/>
+      <param defaultValue="#{NULL}" name="tipoBusqueda" ordinal="3" sqlType="STRING"/>
+      <param name="cliente" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
+   </query>
+   <query id="qGetMBConsultaCliente" useConfig="dsVisor">
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.get_mb_consulta_cliente(?)}</sql>
+      <result element="getMBConsultaCliente" rowName="resultado">
+         <element column="ID_MB_CONSULTA_CLIENTE" name="id_mb_consulta_cliente" xsdType="string"/>
+         <element column="ID_MB_CONSULTA" name="id_mb_consulta" xsdType="string"/>
+         <element column="NOMBRE_CLIENTE" name="nombre_cliente" xsdType="string"/>
+         <element column="APATERNO_CLIENTE" name="apaterno_cliente" xsdType="string"/>
+         <element column="AMATERNO_CLIENTE" name="amaterno_cliente" xsdType="string"/>
+         <element column="ENCONTRADO_LISTA" name="encontrado_listas" xsdType="string"/>
+         <element column="NOMBRE_ENCONTRADO" name="nombre_encontrado" xsdType="string"/>
+         <element column="TIPO_LISTA" name="tipo_listas" xsdType="string"/>
+         <element column="TABLA_CORRELATIVO" name="tabla_correlativos" xsdType="string"/>
+         <element column="PORCENTAJE_COINCIDENCIA" name="porcentaje_coincidencias" xsdType="string"/>
+         <element column="ID_MB_CAT_EVALUACION" name="id_mb_cat_evaluacion" xsdType="string"/>
+      </result>
+      <param defaultValue="#{NULL}" name="idConsulta" ordinal="2" sqlType="STRING"/>
+      <param name="cliente" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
+   </query>
+   <query id="qGetMBConsultaBeneficiario" useConfig="dsVisor">
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.get_mb_consulta_beneficiario(?)}</sql>
+      <result element="getMBConsultaBeneficiario" rowName="resultado">
+         <element column="ID_MB_CONSULTA_BENEFICIARIO" name="id_mb_consulta_beneficiario" xsdType="string"/>
+         <element column="ID_MB_CONSULTA" name="id_mb_consulta" xsdType="string"/>
+         <element column="NOMBRE_BENEFICIARIO" name="nombre_beneficiario" xsdType="string"/>
+         <element column="APATERNO_BENEFICIARIO" name="apaterno_beneficiario" xsdType="string"/>
+         <element column="AMATERNO_BENEFICIARIO" name="amaterno_beneficiario" xsdType="string"/>
+         <element column="ENCONTRADO_LISTA" name="encontrado_listas" xsdType="string"/>
+         <element column="NOMBRE_ENCONTRADO" name="nombre_encontrado" xsdType="string"/>
+         <element column="TIPO_LISTA" name="tipo_listas" xsdType="string"/>
+         <element column="TABLA_CORRELATIVO" name="tabla_correlativos" xsdType="string"/>
+         <element column="PORCENTAJE_COINCIDENCIA" name="porcentaje_coincidencias" xsdType="string"/>
+         <element column="ID_MB_CAT_EVALUACION" name="id_mb_cat_evaluacion" xsdType="string"/>
+         <element column="ID_BENEFICIARIO" name="id_beneficiario" xsdType="integer"/>
+      </result>
+      <param defaultValue="#{NULL}" name="idConsulta" ordinal="2" sqlType="STRING"/>
+      <param name="cliente" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
+   </query>
+   <query id="qConsultaRelacion" useConfig="dsVisor">
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.get_visor_relacion(?)}</sql>
+      <result element="getRelacion" rowName="resultado">
+         <element column="ID_RELACION" name="id_relacion" xsdType="string"/>
+         <element column="ANALISTA" name="analista" xsdType="string"/>
+         <element column="GERENTE" name="gerente" xsdType="string"/>
+         <element column="OFICIAL" name="oficial" xsdType="string"/>
+         <element column="DIRECTOR" name="director" xsdType="string"/>
+      </result>
+      <param defaultValue="#{NULL}" name="idRelacion" ordinal="2" sqlType="STRING"/>
+      <param name="cliente" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
+   </query>
    <operation name="qConsultaEvaluacion">
       <call-query href="qConsultaEvaluacion">
          <with-param name="idEvaluacion" query-param="idEvaluacion"/>
+      </call-query>
+   </operation>
+   <operation name="qConsultaRelacion">
+      <call-query href="qConsultaRelacion">
+         <with-param name="idRelacion" query-param="idRelacion"/>
+      </call-query>
+   </operation>
+   <operation name="qGetMBConsulta">
+      <call-query href="qGetMBConsulta">
+         <with-param name="idConsulta" query-param="idConsulta"/>
+         <with-param name="tipoBusqueda" query-param="tipoBusqueda"/>
+      </call-query>
+   </operation>
+   <operation name="qGetMBConsultaCliente">
+      <call-query href="qGetMBConsultaCliente">
+         <with-param name="idConsulta" query-param="idConsulta"/>
+      </call-query>
+   </operation>
+   <operation name="qGetMBConsultaBeneficiario">
+      <call-query href="qGetMBConsultaBeneficiario">
+         <with-param name="idConsulta" query-param="idConsulta"/>
       </call-query>
    </operation>
 </data>
