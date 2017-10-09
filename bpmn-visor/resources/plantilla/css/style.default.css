@@ -3760,8 +3760,8 @@ body.signin {
   font-family: Arial;
   color: #ffffff;
   background: #4a0061;
-  border: solid #4a0061 2px;
   text-decoration: none;
+  padding: 5px 10px;
 }
 .container{
 	width:1100px;

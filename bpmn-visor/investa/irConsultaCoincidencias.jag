@@ -1,0 +1,202 @@
+<%
+include("/model/common.jag");
+/*<!--
+ ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");
+ ~ you may not use this file except in compliance with the License.
+ ~ You may obtain a copy of the License at
+ ~
+ ~      http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~ Unless required by applicable law or agreed to in writing, software
+ ~ distributed under the License is distributed on an "AS IS" BASIS,
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ~ See the License for the specific language governing permissions and
+ ~ limitations under the License.
+ -->*/
+ if (request.isSecure()) {//check whether the request is secure or not
+
+    var authSuccess = session.get("authSuccess");
+    if(!authSuccess){
+        var queryParameters = request.getQueryString();
+        if(queryParameters == "null" || queryParameters == null){
+            response.sendRedirect("login?requestUrl=" + request.getRequestURI());
+        } else{
+            response.sendRedirect("login?requestUrl=" + request.getRequestURI() + "%3F" + request.getQueryString());
+        }
+    } else {
+        //TLCPromocionSEL = 'class="active"';
+        //include("/model/myTasksModel.jag");
+        include("/template/partials/header.jag");
+        include("/template/partials/navigation.jag");
+        include("/controller/localizadosController.jag");
+    }
+
+} else {
+    //request is not secured, therefore need redirect to the secure channel
+    var queryStr = '';
+    if (request.getQueryString() != null) {
+        queryStr = '?' + request.getQueryString();
+    }
+    response.sendRedirect(application.get('serverAddress') + request.getRequestURI() + queryStr);
+}
+ %>
+
+ <script type="text/javascript" src="resources/plantilla/js/jquery-ui-1.10.3.min.js"></script>		
+		
+    
+
+<div class="col-sm-10" >
+    <div class="pageheader">
+        <div class="media">
+            <div class="pageicon pull-left">
+                <i class="fa fa-th-list"></i>
+            </div>
+            <div class="media-body">
+                <ul class="breadcrumb">
+                    <li><a href="irAdminRiesgos"><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li><a>Bandeja de entrada</a></li>
+                </ul>
+                <h4>Coincidencias en Listas</h4>
+            </div>
+        </div><!-- media -->
+    </div><!-- pageheader -->
+
+    <div class="contentpanel">
+        <p class="mb20"></p>
+        <div class="panel panel-primary-head">
+            <form id="frmConsultaCoincidencias" name="frmConsultaCoincidencias">
+			 <h1>Consulta de Coincidencias en Listas</h1>
+                <table style="font-size:small; width:100%" class="table-content">
+                    <tr>
+						<td style="width: 4%">Fechas </td>
+                        <td style="width: 13%">Desde: <input style="width: 55%;" type="text" id="txtFechaDesde" name="txtFechaDesde" readonly /></td>
+                        <td style="width: 13%">Hasta: <input style="width: 55%;" type="text" id="txtFechaHasta" name="txtFechaHasta" readonly /></td>
+						<td style="width: 17%">ID Cliente: <input type="text" id="txtIdCliente" name="txtIdCliente" readonly /></td>
+                        <td style="width: 18%">Aplicación: <input type="text" id="txtAplicacion" name="txtAplicacion" readonly /></td>
+						<td style="width: 13%"><div><img src="images/buscar.png" onclick="consulta();" style="cursor:pointer;"/></div></td>
+                    </tr>
+                </table>
+			</form>
+                <div id="divCargando" style="display: none;" align="center">
+                    <img alt="" src="resources/plantilla/images/loaders/loader17.gif">&nbsp;&nbsp;<p>Cargando datos, por favor espere...</p>
+                </div>
+        </div><!-- panel-heading -->
+    </div><!-- contentpanel -->
+</div>
+<script src="resources/plantilla/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+
+    $("#txtFechaDesde").datepicker({dateFormat: "dd/mm/yy"});
+    $("#txtFechaHasta").datepicker({dateFormat: "dd/mm/yy"});
+})
+	function getTime() {
+		var d = new Date().toString();
+
+		var dateStr = d.substring(0, d.indexOf(":",20));    
+		return dateStr;
+	}
+    function consulta() {
+       /* alert('aqui');
+		if (document.frmConsultaLocalizados.txtFechaDesde.value == "" || document.frmConsultaLocalizados.txtFechaHasta.value =="") {
+			alert("Campos vacios");
+			document.frmConsultaLocalizados.txtFechaDesde.focus();
+			document.frmConsultaLocalizados.txtFechaHasta.focus();
+			exit(0);
+		}
+		$("#divCargando").show();
+		var id = Math.floor(Math.random()*100000);
+        var curtime = getTime();*/
+
+       var mensaje="";
+        $("#divLocalizados").hide();
+        if($("#txtFechaDesde").val().length==0) {
+           mensaje += (mensaje == "") ? "" : "\n";
+       	   mensaje += "Debe seleccionar la <strong>fecha desde</strong>.";
+        }
+
+        if($("#txtFechaHasta").val().length==0) {
+            mensaje += (mensaje == "") ? "" : "\n";
+            mensaje += "Debe seleccionar la <strong>fecha hasta</strong>.";
+        }
+
+        if($("#txtFechaDesde").val().length!=0 && $("#txtFechaHasta").val().length!=0) {
+            if(getDiferenciaDias($("#txtFechaDesde").datepicker("getDate"),$("#txtFechaHasta").datepicker("getDate"))<0) {
+           	    mensaje += (mensaje == "") ? "" : "\n";
+          	    mensaje += "<strong>La fecha desde no puede ser mayor a la fecha hasta</strong>.";
+            }
+        }
+
+        if(mensaje.trim().length != 0) {
+ 	        //alert(mensaje);
+			$("#idMsg").html('<div class="alert alert-danger">'+
+				mensaje+
+				'</div>');
+			$('#ModalInfo').modal('show');
+ 	        return false;
+ 	    }
+
+        $("#divCargando").show();
+        var FechaDesde = encodeURI(document.frmConsultaCoincidencias.txtFechaDesde.value);
+        var FechaHasta = encodeURI(document.frmConsultaCoincidencias.txtFechaHasta.value);		
+		location.href='consultaCoincidencias?txtFechaDesde='+FechaDesde+'&&txtFechaHasta='+FechaHasta;
+	
+	//	location.href='consultaLocalizados?txtFechaDesde='+FechaDesde+'&&txtFechaHasta='+FechaHasta;
+		/*var payload = '<ifac:getLocalizados xmlns:ifac="http://ifaces.mrpld.investabank.com/">';
+			payload += '<fechaDesde>14/06/2017</fechaDesde>';
+			payload += '<fechaHasta>19/09/2017</fechaHasta>';
+			payload += '</ifac:getLocalizados>';
+        
+        $.ajax({
+            url: '/commons/postSOAP',
+            type: 'post',
+            headers: {'Destino':'SITI', 'SOAPAction':'http://process.mrpld.investabank.com/IfaceSiti/getLocalizados'},
+            dataType: 'xml',
+            complete: SibamexResp,
+            error: function (xhr, status, error) {},
+            data: payload
+        });*/
+        /*$.get("localizadosController.jag", { text: textNew, time: curtime, action: "add", id:id },
+   function(data){
+        $(data).hide().prependTo(".feed").fadeIn("slow");
+        $("#message").hide();
+		
+		$("#textboxmain").val("");
+   });*/
+
+
+};
+/*function SibamexResp(xmlHttpRequest, status){
+		var estatus = "";
+        numeroLinea = "";
+        var mensajeError = "";
+		alert(xmlHttpRequest.responseText);
+		$(xmlHttpRequest.responseText).find('return').each(function(){
+			estatus = $(this).find("codigoError").text();
+			numeroLinea = $(this).find("numeroLinea").text();
+            mensajeError = $(this).find("mensajeError").text();
+		})
+		
+
+	}
+
+ */
+ 
+	function getDiferenciaDias(f1,f2) {
+        var fecha1 = f1.getTime();
+        var fecha2 = f2.getTime();
+        var dif = fecha2 - fecha1;
+        var dias = Math.floor(dif / (1000 * 60 * 60 * 24));
+        return dias;
+    }
+
+ 
+
+
+
+</script>	
+</body>
+</html>
+

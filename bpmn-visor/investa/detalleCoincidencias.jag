@@ -1,0 +1,96 @@
+<div class="modal fade col-centered in" id="DetalleModal" tabindex="-1" role="dialog">
+	<div class="modal-dialog " role="document">
+		<div class="modal-content" style="width:170%">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="H2">" NOMBRE "</h4>
+			</div>
+			<div class="modal-body col-centered">	
+			<div><h4>Coincidencias</h4></div>		  
+			<div style="float:left;" class="list">				
+				<table id="listCoincidencias"  class="table-striped table-bordered table-list" style="margin-left:auto;  margin-right:auto;">
+					<thead>
+						<tr><th>LISTA</th>
+							<th>CATEGORIA</th>
+							<th>%</th>
+							<th>FOLIO</th>
+						</tr>
+					</thead>
+					<tbody>	
+						<tr style="cursor:pointer;">
+							<td>GRIS</td>
+							<td>JUDICIALES</td>
+							<td>95</td>
+							<td valign="top">818</td>		
+						</tr>
+						<tr style="cursor:pointer;">
+							<td>GRIS</td>
+							<td>JUDICIALES</td>
+							<td>95</td>
+							<td valign="top">819</td>		
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div style="margin-top:-4%; margin-left:37%"><h4>LISTA GRIS</h4>
+				<hr>
+			</div>
+			<div id="detalleList" style="float:left; width:70%;">					
+				<table style="margin-right:auto; width:100%" class="table-content">
+					<tr><td>FOLIO:</td>
+						<td><input type="text" id="txtFolio" disabled = "disabled"></td>
+					</tr>
+					<tr><td>FECHA:</td>
+						<td><input type="text" id="txtFecha" disabled = "disabled"></td>
+					</tr>
+					<tr><td>DIAS:</td>
+						<td><input type="text" id="txtDias" disabled = "disabled"></td>
+					</tr>
+					<tr><td>C055016:</td>
+						<td><input type="text" id="txtC055016" disabled = "disabled"></td>
+					</tr>
+					<tr><td>NOMBRE:</td>
+						<td><input type="text" id="txtNombre" disabled = "disabled"></td>
+					</tr>
+					<tr><td>APELLIDO PATERNO:</td>
+						<td><input type="text" id="txtApPat" disabled = "disabled"></td>
+					</tr>
+					<tr><td>APELLIDO MATERNO:</td>
+						<td><input type="text" id="txtApMat" disabled = "disabled"></td>
+					</tr>
+					<tr><td>CARACTER:</td>
+						<td><input type="text" id="txtCaracter" disabled = "disabled"></td>
+					</tr>
+					<tr><td>COMPLEMENTARIOS:</td>
+						<td><input type="text" id="txtComplementario" disabled = "disabled"></td>
+					</tr>
+					<tr><td>TIPO PERSONA:</td>
+						<td><input type="text" id="txtTipoPersona" disabled = "disabled"></td>
+					</tr>
+					<tr><td>REFERNCIA:</td>
+						<td><input type="text" id="txtReferencia" disabled = "disabled"></td>
+					</tr>
+					<tr><td>NUMERO EXPEDIENTE:</td>
+						<td><input type="text" id="txExpediente" disabled = "disabled"></td>
+					</tr>
+					<tr>
+						<td style="width:28%">OBSERVACIONES <p>(máximo 1000 caracteres)</p></td>
+						<td><textarea id="txaObservaciones" rows="5" cols="83" ></textarea></td>									
+					</tr>							
+					<tr><td>Fecha de la consulta:</td>
+						<td></td>
+					</tr>
+					<tr><td>Consulta realizada por:</td>
+						<td></td>
+					</tr>
+				</table>
+			</div>
+			</div>
+			<div class="table-clear"></div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Guardar</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Generar PDF</button>
+		  </div>
+		</div>
+	</div>
+</div>

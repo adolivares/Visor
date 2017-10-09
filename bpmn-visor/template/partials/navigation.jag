@@ -98,11 +98,11 @@ log.info("groups: " + groups.indexOf(GRUPO_ANALISTA));
                 <ul class='children'>  
                     <li ><a href='irR29'>Búsqueda por Nombre</a></li>  
                     <li><a href='irBandejaEntrada'>Bandeja de Entrada</a></li>  
-                    <li><a href='irConsultaLocalizados'>Consultas</a></li> 
-                    <li><a href='irDescargaR29'>Autorizaciones</a></li> 
+                    <li><a href='irConsultaCoincidencias'>Consultas</a></li> 
+                    <li><a href='irAutorizaciones'>Autorizaciones</a></li> 
                     <li><a href='irAdministraCatalogos'>Administración de catalogo</a></li> 
                     <li><a href='irDescargaR29'>Perfilamiento</a></li> 
-                    <li><a href='irDescargaR29'>Generador de notificaciones</a></li> 
+                    <li><a href='irConsultaLocalizados'>Generador de notificaciones</a></li> 
                 </ul> 
             </li>
             <!--li class='parent active'><a href='#'><i class='fa fa-bars'></i> <span>Reporte R29</span></a>  

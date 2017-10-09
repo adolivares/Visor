@@ -1,0 +1,41 @@
+<div class="modal fade col-centered" id="ComentariosModal" tabindex="-1" role="dialog">
+	<div class="modal-dialog " role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="H2">"NOMBRE"</h4>
+				<h4 class="modal-title" id="H2">Log de cometarios</h4>
+			</div>
+			<div class="modal-body col-centered">
+				<div class="list-Coment">
+					<table id="listComentarios"  class="table-striped table-bordered table-content" style="margin-left:auto;  margin-right:auto; width:100%">
+						<thead>
+							<tr><th>Fecha búsqueda</th>
+								<th>Hora búsqueda</th>
+								<th>Comentarios </th>
+								<th>Usuario</th>
+							</tr>
+						</thead>
+						<tbody>	
+							<tr>
+								<td>03/10/2017</td>
+								<td>13:30</td>
+								<td>["Nombre del cliente"],[IdCliente (si tiene)],[Lista (si aplica)],[Categoría (si aplica)], <p>Comentario</p></td>
+								<td>12345678</td>		
+							</tr>
+							<tr>
+								<td>03/10/2017</td>
+								<td>13:30</td>
+								<td>["Nombre del cliente"],[IdCliente (si tiene)],[Lista (si aplica)],[Categoría (si aplica)], <p>Comentario</p></td>
+								<td>12345678</td>		
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+			</div>
+		</div>
+	</div>
+</div>

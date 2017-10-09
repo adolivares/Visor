@@ -91,7 +91,7 @@ include("/model/common.jag");
                 </div><!-- panel -->
             </div><!-- panel-heading -->
 			
-            <h1>Calificaci&oacute;n de Coincidencias en Listas</h1>
+            <h1>Autorizaciones</h1>
             <table id="example" cellspacing="0" class="table table-striped table-bordered" style="font-size: x-small"  width="100%">
                 <thead>
                     <tr>
@@ -104,9 +104,8 @@ include("/model/common.jag");
 						<th>Apellido materno</th>
                         <th>Relación</th>  
 						<th>Aplicación</th>  						
-                        <th>Resultado / Calificación</th>                                     
-                        <th>Tipo lista</th>                                              
-                        <th>Porcentaje búsqueda</th> 
+                        <th>Resultado</th>                                     
+                        <th>Lista</th>               
 						<th>Porcentaje coincidencia</th>      
                         <th>Ver Detalle</th>                     
                         <th style="width: 7px"><input type="checkbox" id="cbAnalista1" ></th>                                                          
@@ -116,93 +115,28 @@ include("/model/common.jag");
 				<tbody>					
                 </tbody>
             </table>
-			
-			<input class="btn btn-primary" type="button" value="Detalle" id="btnDetalle" name="btnDetalle" data-toggle="modal" data-target="#DetalleModal" >
-			<input type="button" value="Elimina" id="btn" name="btn" data-toggle="modal" data-target="#EliminacionModal" >			
 			<br/>
-			<br/>
-			<table width="80%" class="table-content" id="tabBtn">
+			<input type="button" value="Detalle" id="btnDetalle" name="btnDetalle" data-toggle="modal" data-target="#DetalleModal" >
+			<table width="100%" class="table-content" id="tabBtn">
 				<tr>
 					<td valign="top" align="right">
 						<p>Comentario</p>
 						<input class="btn btn-primary" type="button" value="Ver Comentarios" id="btnComentarios" name="btnComentarios" data-toggle="modal" data-target="#ComentariosModal" >
 					</td>
-					<td colspan="2">						
-						<textarea id="txaComentario" rows="3" cols="125" ></textarea>	
+					<td style="width:30%">						
+						<textarea id="txaComentario" rows="3" cols="90" ></textarea>	
 					</td>
-					<td>
+					<td align="left">
 						<input class="btn btn-primary" type="button" value="Guardar Comentarios" id="btnGuardaComent" name="btnGuardaComent">
+					</td>
+					<td align="right">
+						<input class="btn btn-primary" type="button" value="Rechazar" id="btnRechazar" name="btnRechazar">
 					</td>					
-				</tr>
-				<tr>
-					<td align="right" >						
-						<div class="fileUpload btn btn-primary">
-							<span>Seleccionar Archivo</span>
-							<input id="uploadBtn" type="file" class="upload" accept="image/x-png,image/gif,image/jpeg" />
-						</div>
-					</td>
-					<td colspan="2">	
-						<input type="text" id="txtPathArchivo" style="width:100%"/>
-					</td>
 					<td>
-						<input class="btn btn-primary" type="button" value="Subir Archivo" id="btnUpArchivo" name="btnUpArchivo">
-					</td>					
-				</tr>
-				<tr>
-					<td>
-						Archivos subidos
-					</td>
-					<td>						
-						<textarea id="txaComentario" rows="7" cols="60" ></textarea>	
-					</td>
-					<td align="right" valign="bottom">					
-						Calificar <select id="cboCalificar">
-									<option>- Seleccione -</option>
-								</select>
-					</td>	
-					<td valign="bottom">
-						<input class="btn btn-primary" type="button" value="Enviar a CRM" id="btnEnviaCRM" name="btnEnviaCRM">
-					</td>
-				</tr>
+						<input class="btn btn-primary" type="button" value="Autorizar" id="btnAutorizar" name="btnAutorizar">
+					</td>										
+				</tr>				
 			</table>
-			<div class="modal fade col-centered" id="EliminacionModal" tabindex="-1" role="dialog">
-			  <div class="modal-dialog " role="document">
-				<div class="modal-content">
-				  <div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h5 id="H1">Ésta persona ya fue calificada. ¿Deseas solicitar la eliminación de la calificación?
-						<p>(Favor de introducir una justificación)</p>	
-					</h5>
-					<h4 class="modal-title" id="H2">SOLICITUD DE ELIMINACIÓN DE CALIFICACIÓN</h4>
-				  </div>
-				  <div class="modal-body col-centered">
-					<div class="list-Coment">
-						<table style="margin-right:auto; width:100%" class="table-content">
-							<tr><td align="right">Fecha de Búsqueda:</td>
-								<td></td>
-							</tr>
-							<tr><td align="right">Cliente:</td>
-								<td></td>
-							</tr>
-							<tr><td align="right">ID Cliente:</td>
-								<td></td>
-							</tr>
-							<tr><td align="right">Presona Calificada:</td>
-								<td></td>
-							</tr>
-							<tr><td align="right" valign="top">Justificación:</td>
-								<td><textarea id="txaJustificaElim" rows="5" cols="60" ></textarea></td>		
-							</tr>	
-						</table>
-					</div>
-				  </div>
-				  <div class="modal-footer">
-					   <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-					  <button type="button" class="btn btn-default" data-dismiss="modal">Solicitar</button>
-				  </div>
-				</div>
-			  </div>
-			</div>
         </div><!-- panel-heading -->
     </div><!-- contentpanel -->
  </section>
@@ -224,46 +158,24 @@ include("/model/common.jag");
 <script src="resources/plantilla/js/custom.js"></script>
          
 
-        <script>
-        
-        $(document).ready(function() {	
-		var myfile="";
-			document.getElementById("uploadBtn").onchange = function () {
-			   myfile= $( this ).val();
-			   var ext = myfile.split('.').pop();
-			   if(ext=="pdf" || ext=="jpg" || ext=="jepg"){
-				   alert(ext + " OK");
-			   } else{
-				   alert("Archivo no v&aacute;lido, favor de verificar");
-				   return
-			   }
-				document.getElementById("txtPathArchivo").value = this.value;
-				
-			};
+<script>
+
+	$(document).ready(function() {	
+	
+		$('#example').DataTable({
+			 "scrollY": 400,
+			 "scrollX": true
+		});           
+	} );			
 		
-            $('#example').DataTable({
-            	 "scrollY": 400,
-                 "scrollX": true
-            });
-            $('#example2').DataTable({
-            	 "scrollY": 400,
-                 "scrollX": true
-            });
-        } );			
-			
+	
 		
-			$('#listCoincidencias tbody').on( 'click', 'tr', function () {
-				 var folio = $(this).find("td").eq(3).html();
-				 console.log(folio);  
-			});
-			
-			
-            jQuery(document).ready(function(){   				
-				
-            	$('#buscando').hide();
-                                
-                $(".buscar" ).click(function() {
-        			$('#buscando').show();        			
-    			});
-            });
-        </script>
+	jQuery(document).ready(function(){   				
+		
+		$('#buscando').hide();
+						
+		$(".buscar" ).click(function() {
+			$('#buscando').show();        			
+		});
+	});
+</script>

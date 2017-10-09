@@ -28,7 +28,6 @@ var loggedUser = session.get("user");
 	<link href="resources/plantilla/css/style.default.css" rel="stylesheet">
 	<script src="resources/plantilla/js/jquery-1.11.1.min.js"></script>
         <script src="resources/plantilla/js/jquery-migrate-1.2.1.min.js"></script>
-        <script src="resources/plantilla/js/bootstrap.min.js"></script>
         <script src="resources/plantilla/js/modernizr.min.js"></script>
         <script src="resources/plantilla/js/pace.min.js"></script>
         <script src="resources/plantilla/js/retina.min.js"></script>
@@ -89,7 +88,7 @@ var loggedUser = session.get("user");
 		    <% } %>
 			
 <!-- Modal -->
-  <div class="modal fade" id="ModalInfo" role="dialog">
+  <div class="modal fade col-centered in" id="ModalInfo" role="dialog">
     <div class="modal-dialog ">
       <div class="modal-content">
         <div class="modal-body" align="center" >
