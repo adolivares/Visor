@@ -31,6 +31,7 @@ include("/model/common.jag");
         //include("/model/myTasksModel.jag");
         include("/template/partials/header.jag");
         include("/template/partials/navigation.jag");
+        include("Controller/CtrlVisorBandeja.jag");
     }
 
 } else {
@@ -41,6 +42,7 @@ include("/model/common.jag");
     }
     response.sendRedirect(application.get('serverAddress') + request.getRequestURI() + queryStr);
 }
+var xmlBandeja = getTablaBandejaEntrada("","");
  %>
  
 		<link href="resources/plantilla/css/select2.css" rel="stylesheet" />
@@ -97,23 +99,23 @@ include("/model/common.jag");
                 <thead>
                     <tr>
                         <th style="display:none;"></th>                                    	
-                        <th>Fecha</th>                                     	
+                        <th>Fecha de consulta</th>                                     	
                         <th>Id Consulta</th>
                         <th>Id Cliente</th>
-                        <th>Nombre Cliente</th>                                        
-                        <th>Encontrado en lista</th>   
-                        <th>Porcentaje de Busqueda</th>                                     
-                        <th>Tipo lista</th>                                              
-                        <th style="width: 35px">Porcentaje Coincidencia</th>  
-                        <th>Aplicación</th>                                         
-                        <th>Ver</th>                     
-                        <th>Tipo Persona</th>                                                          
+                        <th>Nombre</th>                                        
+                        <th>Apellido paterno</th>   
+                        <th>Apellido materno</th>                                     
+                        <th>Aplicación</th>                                              
+                        <th style="width: 35px">Resultado</th>  
+                        <th>Tipo de lista</th>                                         
+                        <th>Porcentaje de búsqueda</th>                     
+                        <th>Porcentaje de coincidencia</th>                                                          
                         <th></th>                                                          
                         <th></th>                                                          
                     </tr>
                 </thead>
                 <tbody>
-
+					<%=CrearSelectRango(xmlBandeja,1)%>
                 </tbody>
             </table>
 			<table width="100%">
@@ -122,10 +124,12 @@ include("/model/common.jag");
 						<p>Asignaci&oacute;n</p>
 						<select id="slcAsignacion"  onchange="showModal(this)">	
 							<option value="0">- Seleccione -</option>
-								<%if (!bDirector){%>																																								  
+								<%if (!bDirector){%>																							
 									<option value="1">Escalar</option>
-								<%} 
-								if (!bAnalista){%>																																								  
+								<%}else if (!bAnalista){%>																									
+									<option value="2">Delegar</option>
+								<%}else{%>
+									<option value="1">Escalar</option>
 									<option value="2">Delegar</option>
 								<%}%>
 						</select>
@@ -161,7 +165,7 @@ include("/model/common.jag");
                     </tr>
                 </thead>
                 <tbody>
-
+					<%=CrearSelectRango(xmlBandeja,2)%>
                 </tbody>
             </table>
 			<table width="100%">
@@ -170,10 +174,12 @@ include("/model/common.jag");
 						<p>Asignaci&oacute;n</p>
 						<select id="slcAsignacion"  onchange="showModalBatch(this)">	
 							<option value="0">- Seleccione -</option>
-								<%if (!bDirector){%>																																								  
+								<%if (!bDirector){%>																							
 									<option value="1">Escalar</option>
-								<%} 
-								if (!bAnalista){%>																																								  
+								<%}else if (!bAnalista){%>																									
+									<option value="2">Delegar</option>
+								<%}else{%>
+									<option value="1">Escalar</option>
 									<option value="2">Delegar</option>
 								<%}%>
 						</select>
