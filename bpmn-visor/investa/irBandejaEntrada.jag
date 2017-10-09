@@ -150,18 +150,20 @@ var xmlBandeja = getTablaBandejaEntrada("","");
             <table id="example2" class="table table-striped table-bordered" cellspacing="0" style="font-size: x-small"  width="100%">
                 <thead>
                     <tr>
-                        <th style="display:none;"></th> 
-                        <th>Fecha</th> 
-                        <th>Id Consulta</th>                                    	
-                        <th>Id Beneficiario</th>
-                        <th>Nombre Beneficiario</th>                                        
-                        <th>Encontrado en lista</th>   
-                        <th>Porcentaje de Busqueda</th>                                     
-                        <th>Tipo lista</th>                                                                         
-                        <th style="width: 35px">Porcentaje Coincidencia</th> 
-                        <th>Aplicación</th>                                          
-                        <th>Ver</th>                     
-                        <th>Tipo Persona</th>                                                          
+                        <th style="display:none;"></th>                                    	
+                        <th>Fecha de consulta</th>                                     	
+                        <th>Id Consulta</th>
+                        <th>Id Cliente</th>
+                        <th>Nombre</th>                                        
+                        <th>Apellido paterno</th>   
+                        <th>Apellido materno</th>                                     
+                        <th>Aplicación</th>                                              
+                        <th style="width: 35px">Resultado</th>  
+                        <th>Tipo de lista</th>                                         
+                        <th>Porcentaje de búsqueda</th>                     
+                        <th>Porcentaje de coincidencia</th>                                                          
+                        <th></th>                                                          
+                        <th></th>                                                         
                     </tr>
                 </thead>
                 <tbody>
