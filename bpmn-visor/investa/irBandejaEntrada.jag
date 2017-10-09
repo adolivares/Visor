@@ -296,6 +296,7 @@ var xmlBandeja = getTablaBandejaEntrada("","");
         <script>
         
         $(document).ready(function() {	
+		$('#buscando').hide();
             $('#example').DataTable({
             	 "scrollY": 400,
                  "scrollX": true
@@ -408,5 +409,6 @@ var xmlBandeja = getTablaBandejaEntrada("","");
                     },
                     
                 });
+				$('#buscando').hide();
             });
         </script>
