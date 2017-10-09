@@ -31,7 +31,7 @@
 			log.info('dentro '+aXML.*::tipo_busqueda.toString());
 			if(aXML.*::tipo_busqueda.toString() ==tipo){
 				result += '<tr>';
-				result += '<td>'+aXML.*::fecha_consulta.toString()+'</td>';
+				result += '<td>'+aXML.*::fecha_consulta.toString().substring(0,10)+'</td>';
 				result += '<td>'+aXML.*::id_mb_consulta.toString()+'</td>';
 				result += '<td>'+aXML.*::id_cliente_crm.toString()+'</td>';
 				result += '<td>'+aXML.*::getMBConsultaCliente.*::resultado.*::nombre_cliente.toString()+'</td>';
@@ -42,7 +42,7 @@
 				result += '<td>'+aXML.*::getMBConsultaCliente.*::resultado.*::tipo_listas.toString()+'</td>';
 				result += '<td>'+aXML.*::porcentaje_busqueda.toString()+'</td>';
 				result += '<td>'+aXML.*::getMBConsultaCliente.*::resultado.*::porcentaje_coincidencias.toString()+'</td>';
-				result += '<td><input type="radio" "/></td>';
+				result += '<td><input type="checkbox" "/></td>';
 				result += '<td><input type="image" id="delete" src="images/circulo-naranja.png" /></td>';
 				result += '</tr>';
 			}
