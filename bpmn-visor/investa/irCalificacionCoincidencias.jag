@@ -31,6 +31,7 @@ include("/model/common.jag");
         include("/template/partials/navigation.jag");
 		include("detalleCoincidencias.jag");
 		include("logComentarios.jag");
+		include("Controller/CtrlVisorCalificacion.jag");
     }
 
 } else {
@@ -41,6 +42,7 @@ include("/model/common.jag");
     }
     response.sendRedirect(application.get('serverAddress') + request.getRequestURI() + queryStr);
 }
+var xmlEvaluacion = getEvaluacionList("");
  %>
  
 		<link href="resources/plantilla/css/select2.css" rel="stylesheet" />
@@ -121,14 +123,14 @@ include("/model/common.jag");
 			<input type="button" value="Elimina" id="btn" name="btn" data-toggle="modal" data-target="#EliminacionModal" >			
 			<br/>
 			<br/>
-			<table width="80%" class="table-content" id="tabBtn">
+			<table width="98%" class="table-content" id="tabBtn">
 				<tr>
 					<td valign="top" align="right">
 						<p>Comentario</p>
 						<input class="btn btn-primary" type="button" value="Ver Comentarios" id="btnComentarios" name="btnComentarios" data-toggle="modal" data-target="#ComentariosModal" >
 					</td>
-					<td colspan="2">						
-						<textarea id="txaComentario" rows="3" cols="125" ></textarea>	
+					<td colspan="3">						
+						<textarea id="txaComentario" rows="3" cols="125" class="form-control"></textarea>	
 					</td>
 					<td>
 						<input class="btn btn-primary" type="button" value="Guardar Comentarios" id="btnGuardaComent" name="btnGuardaComent">
@@ -141,8 +143,8 @@ include("/model/common.jag");
 							<input id="uploadBtn" type="file" class="upload" accept="image/x-png,image/gif,image/jpeg" />
 						</div>
 					</td>
-					<td colspan="2">	
-						<input type="text" id="txtPathArchivo" style="width:100%"/>
+					<td colspan="3">	
+						<input type="text" id="txtPathArchivo" style="width:100%" class="form-control"/>
 					</td>
 					<td>
 						<input class="btn btn-primary" type="button" value="Subir Archivo" id="btnUpArchivo" name="btnUpArchivo">
@@ -153,14 +155,16 @@ include("/model/common.jag");
 						Archivos subidos
 					</td>
 					<td>						
-						<textarea id="txaComentario" rows="7" cols="60" ></textarea>	
+						<textarea id="txaComentario" rows="7" cols="60" class="form-control"	></textarea>	
 					</td>
-					<td align="right" valign="bottom">					
-						Calificar <select id="cboCalificar">
+					<td align="right" valign="bottom" style="padding-bottom:16px">Calificar</td>
+					<td valign="bottom">					
+						 <select id="cboCalificar" class="form-control">
 									<option>- Seleccione -</option>
+									<%=crearSelectEvaluacion(xmlEvaluacion,0)%>
 								</select>
 					</td>	
-					<td valign="bottom">
+					<td valign="bottom" style="padding-bottom:8px">
 						<input class="btn btn-primary" type="button" value="Enviar a CRM" id="btnEnviaCRM" name="btnEnviaCRM">
 					</td>
 				</tr>

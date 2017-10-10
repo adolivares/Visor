@@ -1,0 +1,41 @@
+<%
+	function getEvaluacionList(idEvaluacion){
+		var payload = <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dsb="dsBpmnVisor">
+						<soapenv:Header/>
+					    <soapenv:Body>
+						    <dsb:qConsultaEvaluacion>
+							    <dsb:idEvaluacion>{idEvaluacion}</dsb:idEvaluacion>
+						</dsb:qConsultaEvaluacion>
+						</soapenv:Body>
+					  </soapenv:Envelope>
+					  
+		var url = URL_ESB + "BpmnVisor";
+		var ws = new XMLHttpRequest();
+		var action = "urn:qConsultaEvaluacion";
+		ws.open("POST", url, false);
+		ws.setRequestHeader('SOAPAction', action);
+		ws.setRequestHeader('Content-Type','text/xml; charset=utf-8');
+
+		ws.send(payload.toXMLString());
+		var responseXML = new XML(ws.responseText);
+		log.info("RESPONSE XML Evaluacion: " + responseXML.toXMLString());
+		return responseXML;
+	}
+	
+	
+	function crearSelectEvaluacion(lista, id){
+		var result = "";
+		//log.info('aqui'+lista..*::getEvaluacion..*::resultado);
+		for each (var aXML in lista..*::getEvaluacion..*::resultado){
+			log.info('dentro '+ aXML.*::id_mb_cat_evaluacion.toString());
+			if(id == 0){
+				result += "<option value='" +  aXML.*::id_mb_cat_evaluacion.toString() + "'>" + aXML.*::descripcion.toString() + "</option>"
+			}else{
+				if(aXML.*::id_mb_cat_evaluacion.toString() == id)
+					result += "<option value='" +  aXML.*::id_mb_cat_evaluacion.toString() + "'>" + aXML.*::descripcion.toString() + "</option>"
+			}
+		}
+		return result;
+	}
+
+%>
