@@ -1,4 +1,3 @@
-
 <%
 include("/model/common.jag");
 /*<!--
@@ -42,7 +41,7 @@ include("/model/common.jag");
     }
     response.sendRedirect(application.get('serverAddress') + request.getRequestURI() + queryStr);
 }
-var xmlBandeja = getTablaBandejaEntrada("","");
+var xmlBandeja = getTablaBandejaEntrada("",Usuario_v);
  %>
  
 		<link href="resources/plantilla/css/select2.css" rel="stylesheet" />
@@ -115,7 +114,7 @@ var xmlBandeja = getTablaBandejaEntrada("","");
                     </tr>
                 </thead>
                 <tbody>
-					<%=CrearSelectRango(xmlBandeja,1)%>
+					<%=createTablaBandejaEntrada(xmlBandeja,1)%>
                 </tbody>
             </table>
 			<table width="100%">
@@ -135,13 +134,13 @@ var xmlBandeja = getTablaBandejaEntrada("","");
 						</select>
 					</td>
 					<td style="padding:2%; width:10%">						
-						<div id="envAnalista1" style="display:none;"><label><input type="checkbox" id="cbAnalista1" > Env&iacute;o a Analista de cumplimiento</label></div>
-						<div id="envGerente1" style="display:none;"><label><input type="checkbox" id="cbGerente1" > Env&iacute;o a Gerente de cumplimiento</label></div>
-						<div id="envOficial1" style="display:none;"><label><input type="checkbox" id="cbOficial1" > Env&iacute;o a Oficial de cumplimiento</label></div>					
-						<div id="envDirector1" style="display:none;"><label><input type="checkbox" id="cbDirector1" > Env&iacute;o a Director de cumplimiento</label></div>
+						<div id="envAnalista1" style="display:none;"><label><input type="checkbox" id="cbAnalista1" name="usuarios"> Env&iacute;o a Analista de cumplimiento</label></div>
+						<div id="envGerente1" style="display:none;"><label><input type="checkbox" id="cbGerente1" name="usuarios"> Env&iacute;o a Gerente de cumplimiento</label></div>
+						<div id="envOficial1" style="display:none;"><label><input type="checkbox" id="cbOficial1" name="usuarios"> Env&iacute;o a Oficial de cumplimiento</label></div>					
+						<div id="envDirector1" style="display:none;"><label><input type="checkbox" id="cbDirector1" name="usuarios"> Env&iacute;o a Director de cumplimiento</label></div>
 					</td>
 					<td style="padding:2%; width:10%" valign="bottom">
-						<input style="display:none;" type="button" value="Enviar" id="btnEnviarAsig" name="btnEnviar" data-toggle="modal" data-target="#MyModal" >
+						<input style="display:none;" type="button" value="Enviar" id="btnEnviarAsig" name="btnEnviar"  onclick="getDatos()">
 					</td>
 					<td style="padding:2%; width:10%" valign="top"><a href="irCalificacionCoincidencias"><button style="float:right" type="button" class="btn btn-primary">Analizar</button></a></td>
 				</tr>
@@ -167,7 +166,7 @@ var xmlBandeja = getTablaBandejaEntrada("","");
                     </tr>
                 </thead>
                 <tbody>
-					<%=CrearSelectRango(xmlBandeja,2)%>
+					<%=createTablaBandejaEntrada(xmlBandeja,2)%>
                 </tbody>
             </table>
 			<table width="100%">
@@ -193,7 +192,7 @@ var xmlBandeja = getTablaBandejaEntrada("","");
 						<div id="envDirector2" style="display:none;"><label><input type="checkbox" id="cbDirector2" > Env&iacute;o a Director de cumplimiento</label></div>
 					</td>
 					<td style="padding:2%; width:10%" valign="bottom">
-						<input style="display:none;" type="button" value="Enviar" id="btnEnviarAsigBatch" name="btnEnviar" data-toggle="modal" data-target="#MyModal" >
+						<input style="display:none;" type="button" value="Enviar" id="btnEnviarAsigBatch" name="btnEnviar" data-toggle="modal" data-target="#MyModal" onclick="getDatos()">
 					</td>
 					<td style="padding:2%; width:10%" valign="top">
 						<a href="irCalificacionCoincidencias"><button style="float:right" type="button" class="btn btn-primary">Analizar</button></a>
@@ -201,25 +200,28 @@ var xmlBandeja = getTablaBandejaEntrada("","");
 				</tr>
 			</table>			
 			<div class="modal fade col-centered in" id="MyModal1" tabindex="-1" role="dialog">
-			  <div class="modal-dialog " role="document">
+			  <div class="modal-dialog" role="document">
 				<div class="modal-content">
 				  <div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title" id="H2">SOLICITUD DE ESCALAMIENTO</h4>
+					<img alt="" src="resources/plantilla/images/logo_investa.png">
 				  </div>
 				  <div class="modal-body col-centered">
-					<table style="margin-left:auto; margin-right:auto;">	
+					<table style="margin-left:auto; margin-right:auto;">
+						<tr>
+							<td colspan="2"><h3   id="H2">SOLICITUD DE ESCALAMIENTO</h3></td>
+						</tr>					
 						<tr>
 							<td style="padding:2%">Fecha de b&uacute;squeda</td>
-							<td></td>
+							<td id="txtFecha"></td>
 						</tr>
 						<tr>
 							<td style="padding:2%">Cliente</td>
-							<td></td>
+							<td id="txtCliente"></td>
 						</tr>
 						<tr>
 							<td style="padding:2%">ID Cliente</td>
-							<td></td>
+							<td id="txtIdCliente"> </td>
 						</tr>
 						<tr>
 							<td style="padding:2%" valign="top">Justificaci&oacute;n</td>
@@ -239,13 +241,17 @@ var xmlBandeja = getTablaBandejaEntrada("","");
 				<div class="modal-content">
 				  <div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title" id="H2">DELEGACI&Oacute;N DE INVESTIGACI&Oacute;N</h4>
+					<img alt="" src="resources/plantilla/images/logo_investa.png">
 				  </div>
 				  <div class="modal-body col-centered">
 					<table style="margin-left:auto; margin-right:auto;">	
 						<tr>
+							<td colspan="2"><h3 id="H2">DELEGACI&Oacute;N DE INVESTIGACI&Oacute;N</h3></td>
+							
+						</tr>
+						<tr>
 							<td style="padding:2%">Fecha de b&uacute;squeda</td>
-							<td></td>
+							<td ></td>
 						</tr>
 						<tr>
 							<td style="padding:2%">Cliente</td>
@@ -276,6 +282,7 @@ var xmlBandeja = getTablaBandejaEntrada("","");
     </div><!-- contentpanel -->
  </section>
 
+
 <script src='resources/plantilla/js/jquery-1.11.1.min.js'></script>
 <script src='resources/plantilla/js/jquery.dataTables2.min.js'></script>
 <script src='resources/plantilla/js/dataTables.buttons.js'></script>
@@ -296,6 +303,7 @@ var xmlBandeja = getTablaBandejaEntrada("","");
         <script>
         
         $(document).ready(function() {	
+		$('#ModalCargando').modal('show');
 		$('#buscando').hide();
             $('#example').DataTable({
             	 "scrollY": 400,
@@ -312,7 +320,7 @@ var xmlBandeja = getTablaBandejaEntrada("","");
 				var tab = 1;
 				 displayEnvio(modal, tab);
 				 $("#btnEnviarAsig").css("display","block");
-				 $('#btnEnviarAsig').attr('data-target',target);
+				// $('#btnEnviarAsig').attr('data-target',target);
 			}
 			
 			function showModalBatch(modal){
@@ -361,6 +369,7 @@ var xmlBandeja = getTablaBandejaEntrada("","");
 				ventanaDetalle.focus();
 			}
             jQuery(document).ready(function(){   				
+				
 				
             	$('#buscando').hide();
                                 
@@ -411,4 +420,42 @@ var xmlBandeja = getTablaBandejaEntrada("","");
                 });
 				$('#buscando').hide();
             });
+			
+			function getDatos(){
+				var seleccion = $("#slcAsignacion option:selected").val();
+				var bandera = false;
+				var index= 0;
+				if (! $("input[name=tabla"+seleccion+"]").is(":checked") ) {
+					 alert("Por Favor Seleccionar un elemento de la tabla de coincidencias");
+					 return false;
+				}
+				if (! $("input[name=usuarios]").is(":checked") ) {
+					 alert("Por Favor Seleccionar uno o los usuarios de escalamiento");
+					 return false;
+				}
+				$("input[name=tabla"+seleccion+"]").each(function (index) {  
+				   if($(this).is(':checked')){
+					   if(!bandera){
+						    index += '*'+$(this).val()+'\n';
+							bandera = true;
+					   }else{
+						   alert("Por Favor Seleccionar solo un elemento de la tabla de coincidencias");
+						   return false;
+					   }
+					  
+				   }
+				});
+				if(seleccion ==1){
+					
+					var tr = $("#example >tbody").find("tr").eq(index);
+					$("#txtFecha").html(tr.find("td").eq(0).text());
+					$("#txtCliente").html(tr.find("td").eq(1).text());
+					$("#txtIdCliente").html(tr.find("td").eq(2).text());
+					$('#MyModal1').modal('show');
+				}else{
+					$('#MyModal2').modal('show');
+				}
+			}
         </script>
+		 </body>
+		 </html>

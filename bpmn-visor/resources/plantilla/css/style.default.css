@@ -3765,3 +3765,11 @@ body.signin {
 .container{
 	width:1100px;
 }
+
+	.modal-header{
+	background-color:#4b1060;
+	color : #FFFFFF;
+}
+.modal-title{
+	color : #FFFFFF;
+}		  

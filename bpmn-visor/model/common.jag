@@ -135,6 +135,11 @@ var GRUPO_PROMOTOR = "QA_Promotor";
 var GRUPO_ANALISTA = "QA_AnalistaCredito";
 var GRUPO_DIR_CRED = "QA_DirectorCredito";
 var GRUPO_OPERADOR = "QA_Operador";
+var bDirector = false;
+var bAnalista = false;
+var bOficial = false;
+var bGerente = false;
+var Usuario_v;
 
 /**
  * Function to get common error message display content

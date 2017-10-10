@@ -28,6 +28,7 @@ var loggedUser = session.get("user");
 	<link href="resources/plantilla/css/style.default.css" rel="stylesheet">
 	<script src="resources/plantilla/js/jquery-1.11.1.min.js"></script>
         <script src="resources/plantilla/js/jquery-migrate-1.2.1.min.js"></script>
+        <!--script src="resources/plantilla/js/bootstrap.min.js"></script-->
         <script src="resources/plantilla/js/modernizr.min.js"></script>
         <script src="resources/plantilla/js/pace.min.js"></script>
         <script src="resources/plantilla/js/retina.min.js"></script>
@@ -88,7 +89,7 @@ var loggedUser = session.get("user");
 		    <% } %>
 			
 <!-- Modal -->
-  <div class="modal fade col-centered in" id="ModalInfo" role="dialog">
+  <div class="modal fade" id="ModalInfo" role="dialog">
     <div class="modal-dialog ">
       <div class="modal-content">
         <div class="modal-body" align="center" >
@@ -98,5 +99,23 @@ var loggedUser = session.get("user");
           <button type="button" class="btn btn-default" data-dismiss="modal">Aceptar</button>
         </div>
       </div>
+    </div>
+  </div>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="ModalCargando" role="dialog">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h3 class="modal-title">&nbsp;</h3>
+		    </div>
+		    <div class="modal-body" align="center" >
+				 <p align="center"> <img alt="" src="resources/plantilla/images/loaders/loader17.gif">&nbsp;&nbsp;Consultando Cliente...</p>
+			</div>
+			<div class="modal-footer">
+				<!--button type="button" class="btn btn-default" data-dismiss="modal">Aceptar</button-->
+			</div>
+        </div>
     </div>
   </div>

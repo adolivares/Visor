@@ -4,16 +4,16 @@
 		var payload = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dsb="dsBpmnVisor">
 					   <soapenv:Header/>
 					   <soapenv:Body>
-						  <dsb:qGetMBConsulta>
-							 <dsb:idConsulta>{_idConsulta}</dsb:idConsulta>
-							 <dsb:tipoBusqueda>{_tipoBusqueda}</dsb:tipoBusqueda>
-						  </dsb:qGetMBConsulta>
+						  <dsb:qConsultaBandejaEntrada>
+							 <dsb:idMbConsulta>{_idConsulta}</dsb:idMbConsulta>
+							 <dsb:relacion>{_tipoBusqueda}</dsb:relacion>
+						  </dsb:qConsultaBandejaEntrada>
 					   </soapenv:Body>
 					</soapenv:Envelope>;
 
 		var url = URL_ESB + "BpmnVisor";
 		var ws = new XMLHttpRequest();
-		var action = "urn:qGetMBConsulta";
+		var action = "urn:qConsultaBandejaEntrada";
 		ws.open("POST", url, false);
 		ws.setRequestHeader('SOAPAction', action);
 		ws.setRequestHeader('Content-Type','text/xml; charset=utf-8');
@@ -24,28 +24,30 @@
 		return responseXML;
 	}
 	
-	function CrearSelectRango(lista,tipo) {
+	function createTablaBandejaEntrada(lista,tipo) {
 		var result = "";
-		//log.info('aqui'+lista..*::getMBConsulta..*::resultado);
-		for each (var aXML in lista..*::getMBConsulta..*::resultado){
-			log.info('dentro '+aXML.*::tipo_busqueda.toString());
-			if(aXML.*::tipo_busqueda.toString() ==tipo){
+		var id =0;
+		//log.info('aqui'+lista..*::getBandejaEntrada..*::resultadoBandeja);
+		for each (var aXML in lista..*::getBandejaEntrada..*::resultadoBandeja){
+			log.info('dentro '+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::tipo_busqueda.toString());
+			if(aXML.*::getMBConsulta.*::resultadoMbConsulta.*::tipo_busqueda.toString() ==tipo){
 				result += '<tr>';
-				result += '<td>'+aXML.*::fecha_consulta.toString().substring(0,10)+'</td>';
-				result += '<td>'+aXML.*::id_mb_consulta.toString()+'</td>';
-				result += '<td>'+aXML.*::id_cliente_crm.toString()+'</td>';
-				result += '<td>'+aXML.*::getMBConsultaCliente.*::resultado.*::nombre_cliente.toString()+'</td>';
-				result += '<td>'+aXML.*::getMBConsultaCliente.*::resultado.*::apaterno_cliente.toString()+'</td>';
-				result += '<td>'+aXML.*::getMBConsultaCliente.*::resultado.*::amaterno_cliente.toString()+'</td>';
-				result += '<td>'+aXML.*::id_aplicacion.toString()+'</td>';
+				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::fecha_consulta.toString().substring(0,10)+'</td>';
+				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::id_mb_consulta.toString()+'</td>';
+				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::id_cliente_crm.toString()+'</td>';
+				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::getMBConsultaCliente.*::resultado.*::nombre_cliente.toString()+'</td>';
+				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::getMBConsultaCliente.*::resultado.*::apaterno_cliente.toString()+'</td>';
+				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::getMBConsultaCliente.*::resultado.*::amaterno_cliente.toString()+'</td>';
+				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::id_aplicacion.toString()+'</td>';
 				result += '<td>-+</td>';
-				result += '<td>'+aXML.*::getMBConsultaCliente.*::resultado.*::tipo_listas.toString()+'</td>';
-				result += '<td>'+aXML.*::porcentaje_busqueda.toString()+'</td>';
-				result += '<td>'+aXML.*::getMBConsultaCliente.*::resultado.*::porcentaje_coincidencias.toString()+'</td>';
-				result += '<td><input type="checkbox" "/></td>';
+				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::getMBConsultaCliente.*::resultado.*::tipo_listas.toString()+'</td>';
+				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::porcentaje_busqueda.toString()+'</td>';
+				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::getMBConsultaCliente.*::resultado.*::porcentaje_coincidencias.toString()+'</td>';
+				result += '<td><input type="checkbox" name="tabla'+tipo+'" value="'+id+'"/></td>';
 				result += '<td><input type="image" id="delete" src="images/circulo-naranja.png" /></td>';
 				result += '</tr>';
 			}
+			id++;
 		}
 		return result;
 	}

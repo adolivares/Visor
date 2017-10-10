@@ -16,7 +16,7 @@
    </query>
    <query id="qGetMBConsulta" useConfig="dsVisor">
       <sql>{? = call VISOR_PKG_BPMN_VISOR.get_mb_consulta(?,?)}</sql>
-      <result element="getMBConsulta" rowName="resultado">
+      <result element="getMBConsulta" rowName="resultadoMbConsulta">
          <element column="ID_MB_CONSULTA" name="id_mb_consulta" xsdType="string"/>
          <element column="ID_CLIENTE_CRM" name="id_cliente_crm" xsdType="string"/>
          <element column="ID_APLICACION" name="id_aplicacion" xsdType="string"/>
@@ -32,7 +32,7 @@
          <element column="TIPO_TRANS" name="tipo_trans" xsdType="string"/>
          <element column="ID_CLIENTE" name="id_cliente" xsdType="integer"/>
          <element column="TIPO_BUSQUEDA" name="tipo_busqueda" xsdType="integer"/>
-		 <call-query href="qGetMBConsultaCliente">
+         <call-query href="qGetMBConsultaCliente">
             <with-param name="idConsulta" query-param="ID_MB_CONSULTA"/>
          </call-query>
       </result>
@@ -42,7 +42,7 @@
    </query>
    <query id="qGetMBConsultaCliente" useConfig="dsVisor">
       <sql>{? = call VISOR_PKG_BPMN_VISOR.get_mb_consulta_cliente(?)}</sql>
-      <result element="getMBConsultaCliente" rowName="resultado">
+      <result element="getMBConsultaCliente" rowName="resultadoConsultaCliente">
          <element column="ID_MB_CONSULTA_CLIENTE" name="id_mb_consulta_cliente" xsdType="string"/>
          <element column="ID_MB_CONSULTA" name="id_mb_consulta" xsdType="string"/>
          <element column="NOMBRE_CLIENTE" name="nombre_cliente" xsdType="string"/>
@@ -60,7 +60,7 @@
    </query>
    <query id="qGetMBConsultaBeneficiario" useConfig="dsVisor">
       <sql>{? = call VISOR_PKG_BPMN_VISOR.get_mb_consulta_beneficiario(?)}</sql>
-      <result element="getMBConsultaBeneficiario" rowName="resultado">
+      <result element="getMBConsultaBeneficiario" rowName="resultadoConsultaBeneficiario">
          <element column="ID_MB_CONSULTA_BENEFICIARIO" name="id_mb_consulta_beneficiario" xsdType="string"/>
          <element column="ID_MB_CONSULTA" name="id_mb_consulta" xsdType="string"/>
          <element column="NOMBRE_BENEFICIARIO" name="nombre_beneficiario" xsdType="string"/>
@@ -79,7 +79,7 @@
    </query>
    <query id="qConsultaRelacion" useConfig="dsVisor">
       <sql>{? = call VISOR_PKG_BPMN_VISOR.get_visor_relacion(?)}</sql>
-      <result element="getRelacion" rowName="resultado">
+      <result element="getRelacion" rowName="resultadoRelacion">
          <element column="ID_RELACION" name="id_relacion" xsdType="string"/>
          <element column="ANALISTA" name="analista" xsdType="string"/>
          <element column="GERENTE" name="gerente" xsdType="string"/>
@@ -87,6 +87,26 @@
          <element column="DIRECTOR" name="director" xsdType="string"/>
       </result>
       <param defaultValue="#{NULL}" name="idRelacion" ordinal="2" sqlType="STRING"/>
+      <param name="cliente" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
+   </query>
+   <query id="qConsultaBandejaEntrada" useConfig="dsVisor">
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.get_visor_bandeja(?,?)}</sql>
+      <result element="getBandejaEntrada" rowName="resultadoBandeja">
+         <element column="ID_BANDEJA_VISOR" name="id_bandeja_visor" xsdType="string"/>
+         <element column="ID_RELACION" name="id_relacion" xsdType="string"/>
+         <element column="ID_MB_CONSULTA" name="id_mb_consulta" xsdType="string"/>
+         <element column="FECHA_ALTA" name="fecha_alta" xsdType="string"/>
+         <element column="FECHA_MODIFICADO" name="fecha_modificado" xsdType="string"/>
+         <element column="ESTATUS" name="estatus" xsdType="string"/>
+		 <call-query href="qGetMBConsulta">
+            <with-param name="idConsulta" query-param="ID_MB_CONSULTA"/>
+         </call-query>
+		 <call-query href="qConsultaRelacion">
+            <with-param name="idRelacion" query-param="ID_RELACION"/>
+         </call-query>
+      </result>
+      <param defaultValue="#{NULL}" name="idMbConsulta" ordinal="2" sqlType="STRING"/>
+      <param defaultValue="#{NULL}" name="relacion" ordinal="3" sqlType="STRING"/>
       <param name="cliente" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
    </query>
    <operation name="qConsultaEvaluacion">
@@ -113,6 +133,12 @@
    <operation name="qGetMBConsultaBeneficiario">
       <call-query href="qGetMBConsultaBeneficiario">
          <with-param name="idConsulta" query-param="idConsulta"/>
+      </call-query>
+   </operation>
+   <operation name="qConsultaBandejaEntrada">
+      <call-query href="qConsultaBandejaEntrada">
+         <with-param name="idMbConsulta" query-param="idMbConsulta"/>
+         <with-param name="relacion" query-param="relacion"/>
       </call-query>
    </operation>
 </data>

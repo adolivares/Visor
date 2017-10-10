@@ -31,7 +31,7 @@ include("/model/common.jag");
         include("/template/partials/navigation.jag");
 		include("detalleCoincidencias.jag");
 		include("logComentarios.jag");
-		include("Controller/CtrlVisorCalificacion.jag");
+		include("Controller/CtrlVisorCalificacion.jag");										  
     }
 
 } else {
@@ -42,7 +42,7 @@ include("/model/common.jag");
     }
     response.sendRedirect(application.get('serverAddress') + request.getRequestURI() + queryStr);
 }
-var xmlEvaluacion = getEvaluacionList("");
+	var xmlEvaluacion = getEvaluacionList("");									  
  %>
  
 		<link href="resources/plantilla/css/select2.css" rel="stylesheet" />

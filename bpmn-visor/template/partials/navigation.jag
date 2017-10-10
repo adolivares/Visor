@@ -32,10 +32,7 @@ var userManager = new carbon.user.UserManager(server, tenantId);
 var user = session.get("user");
 var DirectorCredito = "";
 var operador = "";
-var bDirector = false;
-var bAnalista = false;
-var bOficial = false;
-var bGerente = false;
+
 
 try {
     var resultRole = userManager.getClaim("INVESTA.COM/" + user, "http://wso2.org/claims/role", "default");
@@ -65,20 +62,18 @@ try {
 
     
 } catch(e) {
-    log.error(e);
+    
 }
-
 if(groups.indexOf("TLCAnalistaCredito") >= 0 || groups.indexOf(GRUPO_ANALISTA) >= 0 ){
 	bAnalista = true;
+	Usuario_v ='ANALISTA';
 }else if(groups.indexOf("TLCDirCredito") >= 0 || groups.indexOf(GRUPO_DIR_CRED)>= 0){
 	bDirector = true;
-}																																								  
-
+	Usuario_v ='DIRECTOR';
+}
 log.info("operador: " + operador);
 log.info("groups: " + groups);
 log.info("groups: " + groups.indexOf(GRUPO_ANALISTA));
-
-
 %>
 <br><br><br>
 <div class="col-sm-2" >
@@ -89,10 +84,10 @@ log.info("groups: " + groups.indexOf(GRUPO_ANALISTA));
             </a>  
             <div class='media-body'>  
                 <h4 class='media-heading'><%=loggedUser%>  </h4>
-                <small class='text-muted'> </small>  
+                <small class='text-muted'><%=Usuario_v%> </small>  
             </div>  
         </div><!-- media -->  
-		<%if (groups.indexOf("TLCAnalistaCredito") >= 0 || groups.indexOf(GRUPO_ANALISTA) >= 0 || groups.indexOf("TLCDirCredito") >= 0 || groups.indexOf(GRUPO_DIR_CRED)>= 0){%>																																								  
+		<%if (groups.indexOf("TLCAnalistaCredito") >= 0 || groups.indexOf(GRUPO_ANALISTA) >= 0 || groups.indexOf("TLCDirCredito") >= 0 || groups.indexOf(GRUPO_DIR_CRED)>= 0){%>
         <ul class='nav nav-pills nav-stacked'>  
 			<li class='parent active'><a href='#'><i class='fa fa-bars'></i> <span>Visor</span></a>  
                 <ul class='children'>  
