@@ -724,13 +724,6 @@ a:focus {
 .bg-light {
     background-color: #ccc;
 }
-
-.modal-content {
-    width: 150%;
-    margin-left: -25%;
-}
-
-
 /******** 5. MESSAGES STYLES *********/
 /*************************************/
 
@@ -2378,7 +2371,7 @@ a:focus {
 .table-content > thead > tr > td, 
 .table-content > tbody > tr > td
 {
-	padding: 5px;
+	padding: 3px;
 }
 
 #detalleList input{
@@ -2388,7 +2381,10 @@ a:focus {
 .table-list > tbody > tr > td{
 	font-size:12px;
 }
-
+.table-list > thead{
+	background-color:#4b1060;
+	color:#ffffff;
+}
 .table-clear{
 	clear:both;
 	margin-top:5%;
@@ -2409,6 +2405,9 @@ a:focus {
 	max-height: 500px;	
 }
 
+#listComentarios > tbody {
+	font-size: 12px;
+}
 
 
 

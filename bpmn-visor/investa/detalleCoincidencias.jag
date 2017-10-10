@@ -1,6 +1,6 @@
 <div class="modal fade col-centered in" id="DetalleModal" tabindex="-1" role="dialog">
-	<div class="modal-dialog " role="document">
-		<div class="modal-content" style="width:170%">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				<h4 class="modal-title" id="H2">" NOMBRE "</h4>
@@ -35,7 +35,7 @@
 			<div style="margin-top:-4%; margin-left:37%"><h4>LISTA GRIS</h4>
 				<hr>
 			</div>
-			<div id="detalleList" style="float:left; width:70%;">					
+			<div id="detalleList" style="float:left; width:67%; margin-left:3%">					
 				<table style="margin-right:auto; width:100%" class="table-content">
 					<tr><td>FOLIO:</td>
 						<td><input type="text" id="txtFolio" disabled = "disabled"></td>
@@ -75,7 +75,7 @@
 					</tr>
 					<tr>
 						<td style="width:28%">OBSERVACIONES <p>(máximo 1000 caracteres)</p></td>
-						<td><textarea id="txaObservaciones" rows="5" cols="83" ></textarea></td>									
+						<td><textarea id="txaObservaciones" rows="5" cols="68" class="form-control"></textarea></td>									
 					</tr>							
 					<tr><td>Fecha de la consulta:</td>
 						<td></td>
