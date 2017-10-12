@@ -1,4 +1,3 @@
-
 <%
 include("/model/common.jag");
 /*<!--
@@ -27,11 +26,12 @@ include("/model/common.jag");
             response.sendRedirect("login?requestUrl=" + request.getRequestURI() + "%3F" + request.getQueryString());
         }
     } else {
+        //TLCPromocionSEL = 'class="active"';
+        //include("/model/myTasksModel.jag");
         include("/template/partials/header.jag");
-        include("/template/partials/navigation.jag");
+        include("/template/partials/navigation.jag");		
 		include("detalleCoincidencias.jag");
 		include("logComentarios.jag");
-		include("Controller/CtrlVisorCalificacion.jag");
     }
 
 } else {
@@ -42,10 +42,10 @@ include("/model/common.jag");
     }
     response.sendRedirect(application.get('serverAddress') + request.getRequestURI() + queryStr);
 }
-var xmlEvaluacion = getEvaluacionList("");
  %>
  
 		<link href="resources/plantilla/css/select2.css" rel="stylesheet" />
+        <link href="http://themepixels.com/demo/webpage/chain/css/style.datatables.css" rel="stylesheet">
         <link href="resources/plantilla/css/dataTables.responsive.css" rel="stylesheet">
 
         <link rel='stylesheet prefetch' href='resources/plantilla/css/jquery.dataTables.min.css'> 
@@ -69,7 +69,7 @@ var xmlEvaluacion = getEvaluacionList("");
                     <li><a href="irBandejaEntrada"><i class="glyphicon glyphicon-home"></i></a></li>
                     <li><a>Bandeja de entrada</a></li>
                 </ul>
-                <h4>Coincidencias en Listas</h4>
+                <h4>Coincidencias en listas</h4>
             </div>
         </div><!-- media -->
     </div><!-- pageheader -->
@@ -93,124 +93,47 @@ var xmlEvaluacion = getEvaluacionList("");
                 </div><!-- panel -->
             </div><!-- panel-heading -->
 			
-            <h1>Calificaci&oacute;n de Coincidencias en Listas</h1>
+            <h1>Consulta del Detallde de Coincidencias en Listas</h1>
             <table id="example" cellspacing="0" class="table table-striped table-bordered" style="font-size: x-small"  width="100%">
                 <thead>
                     <tr>
                         <th style="display:none;"></th>                                    	
-                        <th>Fecha consulta</th>                                     	
-                        <th>Id Búsqueda</th>
+                        <th>Fecha de consulta</th>    
+						<th>Id Búsqueda</th>
                         <th>Id Cliente</th>
-                        <th>Nombre</th>  
-						<th>Apellido paterno</th>  
-						<th>Apellido materno</th>
-                        <th>Relación</th>  
-						<th>Aplicación</th>  						
-                        <th>Resultado / Calificación</th>                                     
-                        <th>Tipo lista</th>                                              
-                        <th>Porcentaje búsqueda</th> 
-						<th>Porcentaje coincidencia</th>      
-                        <th>Ver Detalle</th>                     
-                        <th style="width: 7px"><input type="checkbox" id="cbAnalista1" ></th>                                                          
-                        <th></th>
+                        <th>Nombre o Razón Social</th>                                        
+                        <th>Apellido paterno</th>   
+                        <th>Apellido materno</th> 
+						<th>Relación</th>
+                        <th>Aplicación</th>                                              
+                        <th style="width: 35px">Resultado / Calificación</th>  
+                        <th>Tipo de lista</th>                                         
+                        <th>Porcentaje de búsqueda</th>                     
+                        <th>Detalle</th>  
+						<th>Fecha de consulta</th>
+                        <th></th>                                                          
+                        <th></th>                                                          
                     </tr>
                 </thead>
-				<tbody>					
+                <tbody>
+				
                 </tbody>
             </table>
-			
 			<input class="btn btn-primary" type="button" value="Detalle" id="btnDetalle" name="btnDetalle" data-toggle="modal" data-target="#DetalleModal" >
-			<input type="button" value="Elimina" id="btn" name="btn" data-toggle="modal" data-target="#EliminacionModal" >			
-			<br/>
-			<br/>
-			<table width="98%" class="table-content" id="tabBtn">
+			<br/><br/>
+			<table style="float:right" >
 				<tr>
-					<td valign="top" align="right">
-						<p>Comentario</p>
-						<input style="width:100%"  class="btn btn-primary" type="button" value="Ver Comentarios" id="btnComentarios" name="btnComentarios" data-toggle="modal" data-target="#ComentariosModal" >
-					</td>
-					<td colspan="3">						
-						<textarea id="txaComentario" rows="3" cols="125" class="form-control"></textarea>	
-					</td>
-					<td>
-						<input style="width:100%"  class="btn btn-primary" type="button" value="Guardar Comentarios" id="btnGuardaComent" name="btnGuardaComent">
-					</td>					
+					<td align="right" width="50%" style="padding:2%;"><input style="width:55%" class="btn btn-primary" type="button" value="Ver Comentarios" id="btnComentarios" name="btnComentarios" data-toggle="modal" data-target="#ComentariosModal" ></td>					
 				</tr>
 				<tr>
-					<td align="right" >						
-						<div class="fileUpload btn btn-primary" style="width:100%" >
-							<span>Seleccionar Archivo</span>
-							<input style="width:50%" id="uploadBtn" type="file" class="upload" accept="image/x-png,image/gif,image/jpeg" />
-						</div>
-					</td>
-					<td colspan="3">	
-						<input style="width:100%" type="text" id="txtPathArchivo" style="width:100%" class="form-control"/>
-					</td>
-					<td>
-						<input style="width:100%"  class="btn btn-primary" type="button" value="Subir Archivo" id="btnUpArchivo" name="btnUpArchivo">
-					</td>					
-				</tr>
-				<tr>
-					<td align="right">
-						Archivos subidos
-					</td>
-					<td>						
-						<textarea id="txaComentario" rows="7" cols="60" class="form-control"	></textarea>	
-					</td>
-					<td align="right" valign="bottom" style="padding-bottom:16px">Calificar</td>
-					<td valign="bottom">					
-						 <select id="cboCalificar" class="form-control">
-									<option>- Seleccione -</option>
-									<%=crearSelectEvaluacion(xmlEvaluacion,0)%>
-								</select>
-					</td>	
-					<td valign="bottom" style="padding-bottom:8px">
-						<input style="width:100%"  class="btn btn-primary" type="button" value="Enviar a CRM" id="btnEnviaCRM" name="btnEnviaCRM">
-					</td>
+					 <td align="right" width="50%" style="padding:2%;"><input style="width:55%" class="btn btn-primary" type="button" value="Generar PDF" id="btnPDF" name="btnPDF"> </td>
 				</tr>
 			</table>
-			<div class="modal fade col-centered" id="EliminacionModal" tabindex="-1" role="dialog">
-			  <div class="modal-dialog " role="document">
-				<div class="modal-content">
-				  <div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h5 id="H1">Ésta persona ya fue calificada. ¿Deseas solicitar la eliminación de la calificación?
-						<p>(Favor de introducir una justificación)</p>	
-					</h5>
-					<h4 class="modal-title" id="H2">SOLICITUD DE ELIMINACIÓN DE CALIFICACIÓN</h4>
-				  </div>
-				  <div class="modal-body col-centered">
-					<div class="list-Coment">
-						<table style="margin-right:auto; width:100%" class="table-content">
-							<tr><td align="right">Fecha de Búsqueda:</td>
-								<td></td>
-							</tr>
-							<tr><td align="right">Cliente:</td>
-								<td></td>
-							</tr>
-							<tr><td align="right">ID Cliente:</td>
-								<td></td>
-							</tr>
-							<tr><td align="right">Presona Calificada:</td>
-								<td></td>
-							</tr>
-							<tr><td align="right" valign="top">Justificación:</td>
-								<td><textarea id="txaJustificaElim" rows="5" cols="60" ></textarea></td>		
-							</tr>	
-						</table>
-					</div>
-				  </div>
-				  <div class="modal-footer">
-					   <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-					  <button type="button" class="btn btn-default" data-dismiss="modal">Solicitar</button>
-				  </div>
-				</div>
-			  </div>
-			</div>
         </div><!-- panel-heading -->
     </div><!-- contentpanel -->
  </section>
- </div>
+</div>
+
 <script src='resources/plantilla/js/jquery-1.11.1.min.js'></script>
 <script src='resources/plantilla/js/jquery.dataTables2.min.js'></script>
 <script src='resources/plantilla/js/dataTables.buttons.js'></script>
@@ -231,50 +154,109 @@ var xmlEvaluacion = getEvaluacionList("");
         <script>
         
         $(document).ready(function() {	
-		var mensaje="";
-		var myfile="";
-			document.getElementById("uploadBtn").onchange = function () {
-				mensaje="";
-				myfile= $( this ).val();
-				var ext = myfile.split('.').pop();
-				if(ext !="pdf" || ext !="jpg" || ext !="jepg"){			
-					mensaje = "Debe seleccionar un archivo válido.";					
+		$('#ModalCargando').modal('show');
+		$('#buscando').hide();
+          
+        } );
+			
+			function showModal(modal){
+				var target = "#MyModal" + modal.value;
+				var tab = 1;
+				 displayEnvio(modal, tab);
+				 $("#btnEnviarAsig").css("display","block");
+				// $('#btnEnviarAsig').attr('data-target',target);
+			}
+			
+			function showModalBatch(modal){
+				var tab = 2;
+				var target = "#MyModal" + modal.value;
+				displayEnvio(modal, tab);
+				 $("#btnEnviarAsigBatch").css("display","block");
+				 $('#btnEnviarAsigBatch').attr('data-target',target);
+			}
+			
+			function displayEnvio(modal, tab){
+				if(modal.value === '0'){
+					$("#envGerente" + tab).css("display","none");
+					$("#envOficial" + tab).css("display","none");
+					$("#envDirector" + tab).css("display","none");
+					$("#envAnalista" + tab).css("display","none");
+				}					
+				if(modal.value === '1'){
+					<%if(bAnalista){%>
+						$("#envGerente" + tab).css("display","block");
+						$("#envOficial" + tab).css("display","block");
+						$("#envDirector" + tab).css("display","block");
+					<%}else if(bGerente){%>
+						$("#envOficial" + tab).css("display","block");
+						$("#envDirector" + tab).css("display","block");
+					<%}else if(bOficial){%>
+						$("#envDirector" + tab).css("display","block");
+					<%}%>
 				}
-				if(mensaje.trim().length != 0) {
-					//alert(mensaje);
-					$("#idMsg").html('<div class="alert alert-danger">'+
-						mensaje +
-						'</div>');
-					$('#ModalInfo').modal('show');
-					return false;
+				if(modal.value === '2'){
+					<%if(bDirector){%>
+						$("#envGerente" + tab).css("display","block");
+						$("#envOficial" + tab).css("display","block");
+						$("#envAnalista" + tab).css("display","block");
+					<%}else if(bOficial){%>
+						$("#envAnalista" + tab).css("display","block");
+						$("#envGerente" + tab).css("display","block");
+					<%}else if(bGerente){%>
+						$("#envAnalista" + tab).css("display","block");
+					<%}%>
 				}
-				document.getElementById("txtPathArchivo").value = this.value;
-				
-			};
-		
-            $('#example').DataTable({
-            	 "scrollY": 400,
-                 "scrollX": true
-            });
-            $('#example2').DataTable({
-            	 "scrollY": 400,
-                 "scrollX": true
-            });
-        } );			
+			}
 			
-		
-			$('#listCoincidencias tbody').on( 'click', 'tr', function () {
-				 var folio = $(this).find("td").eq(3).html();
-				 console.log(folio);  
-			});
-			
-			
+			function abrirVentana(url) {
+				var ventanaDetalle = window.open(url, "nuevo", "directories=no, location=no, menubar=no, scrollbars=yes, statusbar=no, tittlebar=no, width=1000, height=600");
+				ventanaDetalle.focus();
+			}
             jQuery(document).ready(function(){   				
+				
 				
             	$('#buscando').hide();
                                 
                 $(".buscar" ).click(function() {
         			$('#buscando').show();        			
-    			});
+    			});   
             });
+			
+			function getDatos(){
+				var seleccion = $("#slcAsignacion option:selected").val();
+				var bandera = false;
+				var index= 0;
+				if (! $("input[name=tabla"+seleccion+"]").is(":checked") ) {
+					 alert("Por Favor Seleccionar un elemento de la tabla de coincidencias");
+					 return false;
+				}
+				if (! $("input[name=usuarios]").is(":checked") ) {
+					 alert("Por Favor Seleccionar uno o los usuarios de escalamiento");
+					 return false;
+				}
+				$("input[name=tabla"+seleccion+"]").each(function (index) {  
+				   if($(this).is(':checked')){
+					   if(!bandera){
+						    index += '*'+$(this).val()+'\n';
+							bandera = true;
+					   }else{
+						   alert("Por Favor Seleccionar solo un elemento de la tabla de coincidencias");
+						   return false;
+					   }
+					  
+				   }
+				});
+				if(seleccion ==1){
+					
+					var tr = $("#example >tbody").find("tr").eq(index);
+					$("#txtFecha").html(tr.find("td").eq(0).text());
+					$("#txtCliente").html(tr.find("td").eq(1).text());
+					$("#txtIdCliente").html(tr.find("td").eq(2).text());
+					$('#MyModal1').modal('show');
+				}else{
+					$('#MyModal2').modal('show');
+				}
+			}
         </script>
+		 </body>
+		 </html>

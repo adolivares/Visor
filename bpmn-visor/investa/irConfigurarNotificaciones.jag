@@ -1,0 +1,295 @@
+
+<%
+include("/model/common.jag");
+/*<!--
+ ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");
+ ~ you may not use this file except in compliance with the License.
+ ~ You may obtain a copy of the License at
+ ~
+ ~      http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~ Unless required by applicable law or agreed to in writing, software
+ ~ distributed under the License is distributed on an "AS IS" BASIS,
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ~ See the License for the specific language governing permissions and
+ ~ limitations under the License.
+ -->*/
+ if (request.isSecure()) {//check whether the request is secure or not
+
+    var authSuccess = session.get("authSuccess");
+    if(!authSuccess){
+        var queryParameters = request.getQueryString();
+        if(queryParameters == "null" || queryParameters == null){
+            response.sendRedirect("login?requestUrl=" + request.getRequestURI());
+        } else{
+            response.sendRedirect("login?requestUrl=" + request.getRequestURI() + "%3F" + request.getQueryString());
+        }
+    } else {
+        include("/template/partials/header.jag");
+        include("/template/partials/navigation.jag");										  
+    }
+
+} else {
+    //request is not secured, therefore need redirect to the secure channel
+    var queryStr = '';
+    if (request.getQueryString() != null) {
+        queryStr = '?' + request.getQueryString();
+    }
+    response.sendRedirect(application.get('serverAddress') + request.getRequestURI() + queryStr);
+}								  
+ %>
+ 
+		<link href="resources/plantilla/css/select2.css" rel="stylesheet" />
+        <link href="resources/plantilla/css/dataTables.responsive.css" rel="stylesheet">
+
+        <link rel='stylesheet prefetch' href='resources/plantilla/css/jquery.dataTables.min.css'> 
+        <link rel='stylesheet prefetch' href='resources/plantilla/css/buttons.dataTables.min.css'>
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+        <script src="resources/plantilla/js/html5shiv.js"></script>
+        <script src="resources/plantilla/js/respond.min.js"></script>
+        <![endif]-->
+		
+    
+
+<div class="col-sm-10" >
+    <div class="pageheader">
+        <div class="media">
+            <div class="pageicon pull-left">
+                <i class="fa fa-th-list"></i>
+            </div>
+            <div class="media-body">
+                <ul class="breadcrumb">
+                    <li><a href="irBandejaEntrada"><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li><a>Bandeja de entrada</a></li>
+                </ul>
+                <h4>Configuracón de notificaciones</h4>
+            </div>
+        </div><!-- media -->
+    </div><!-- pageheader -->
+ <section>
+    <div class="contentpanel">
+        <p class="mb20"></p>
+        <div class="panel panel-primary-head">
+            <div>
+                <!--<h4 class="panel-title"></h4>-->
+                <div class="panel panel-primary" id="buscando">
+                    <div class="panel-heading">
+                        <div class="panel-btns">
+                            <a href="#" class="panel-minimize tooltips" data-toggle="tooltip" title="Minimize Panel"><i class="fa fa-minus"></i></a>
+                            <a href="#" class="panel-close tooltips" data-toggle="tooltip" title="Close Panel"><i class="fa fa-times"></i></a>
+                        </div><!-- panel-btns -->
+                        <h3 class="panel-title" align="center">Procesando</h3>
+                    </div>
+                    <div class="panel-body">
+                        <p align="center"> <img alt="" src="resources/plantilla/images/loaders/loader17.gif">&nbsp;&nbsp;Consultando Cliente...</p>
+                    </div><!-- panel-body -->
+                </div><!-- panel -->
+            </div><!-- panel-heading -->
+			<h2>Configuración de notificaciones</h2>
+			 <table id="example" cellspacing="0" class="table table-striped table-bordered" style="font-size: x-small; margin-right:auto; margin-left:auto; width:95%" >
+                <thead>
+                    <tr>
+                        <th style="display:none;"></th>                            	
+                        <th>Id Correo</th>
+                        <th>Perfil</th>  
+                        <th>Acción</th>    
+						<th>Destinatarios</th>  
+						<th>CC</th>  							
+                        <th></th>
+                    </tr>
+                </thead>
+				<tbody>					
+                </tbody>
+            </table>
+			<br/>
+			<table cellspacing="0" class="" style="margin-right:auto; margin-left:auto; width:95%">	
+				<tr><td>
+					<input class="btn btn-primary" type="button" value="Nuevo" id="btnNuevo" name="btnNuevo" data-toggle="modal" data-target="#NvoNotificaModal" >
+					<input class="btn btn-primary" type="button" value="Editar" id="btnEditar" name="btnEditar" data-toggle="modal" data-target="#EditNotificaModal" >
+				</td></tr>
+			</table>
+			<br/>
+			<br/>
+			<h2>Configuración de mensajes</h2>
+            <table id="example2" cellspacing="0" class="table table-striped table-bordered" style="font-size: x-small; margin-right:auto; margin-left:auto; width:95%" >
+                <thead>
+                    <tr>
+                        <th style="display:none;"></th>                            	
+                        <th>Acción</th>
+                        <th>Asunto</th>  
+                        <th>Texto</th> 					
+                        <th></th>
+                    </tr>
+                </thead>
+				<tbody>					
+                </tbody>
+            </table>
+			<br/>			
+			<table cellspacing="0" class="" style="margin-right:auto; margin-left:auto; width:95%">	
+				<tr><td>
+					<input class="btn btn-primary" type="button" value="Nuevo" id="btnNuevo" name="btnNuevo" data-toggle="modal" data-target="#NvoMensajeModal" >
+					<input class="btn btn-primary" type="button" value="Editar" id="btnEditar" name="btnEditar" data-toggle="modal" data-target="#NvoMensajeModal" >
+				</td></tr>
+			</table>
+			<div class="modal fade col-centered in" id="NvoNotificaModal" tabindex="-1" role="dialog">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title" id="H2"></h4>
+						</div>
+						<div class="modal-body col-centered">	
+						<div><h4></h4></div>	
+						<div><h4>Configuración de notificaciones</h4>
+							<hr>
+						</div>
+						<div id="detalleList" style="float:left; width:67%; margin-left:3%">					
+							<table style="margin-right:auto; width:100%" class="table-content">
+								
+								<tr><td>Perfil:</td>
+									<td><select id="cboPerfil">
+										<option>- Seleccione -</option>
+									</select></td>
+								</tr>
+								<tr><td>Acción:</td>
+									<td><select id="cboAccion">
+										<option>- Seleccione -</option>
+									</select></td>
+								</tr>
+								<tr><td>Destinatario:</td>
+									<td><input type="text" id="txtDestinatario"></td>
+								</tr>
+								<tr><td>CC:</td>
+									<td><input type="text" id="txtCC" ></td>
+								</tr>
+								
+							</table>
+						</div>
+						</div>
+						<div class="table-clear"></div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Guardar</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+					  </div>
+					</div>
+				</div>
+			</div>
+			<div class="modal fade col-centered in" id="EditNotificaModal" tabindex="-1" role="dialog">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title" id="H2"></h4>
+						</div>
+						<div class="modal-body col-centered">	
+						<div><h4></h4></div>	
+						<div><h4>Configuración de notificaciones</h4>
+							<hr>
+						</div>
+						<div id="detalleList" style="float:left; width:67%; margin-left:3%">					
+							<table style="margin-right:auto; width:100%" class="table-content">
+								<tr><td>Id Notificación:</td>
+									<td><input type="text" id="txtFolio" disabled = "disabled"></td>
+								</tr>
+								<tr><td>Perfil:</td>
+									<td><select id="cboPerfil">
+										<option>- Seleccione -</option>
+									</select></td>
+								</tr>
+								<tr><td>Acción:</td>
+									<td><select id="cboAccion">
+										<option>- Seleccione -</option>
+									</select></td>
+								</tr>
+								<tr><td>Destinatario:</td>
+									<td><input type="text" id="txtDestinatario"></td>
+								</tr>
+								<tr><td>CC:</td>
+									<td><input type="text" id="txtCC"></td>
+								</tr>
+								
+							</table>
+						</div>
+						</div>
+						<div class="table-clear"></div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Guardar</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+					  </div>
+					</div>
+				</div>
+			</div>
+			<div class="modal fade col-centered in" id="NvoMensajeModal" tabindex="-1" role="dialog">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title" id="H2"></h4>
+						</div>
+						<div class="modal-body col-centered">	
+						<div><h4></h4></div>	
+						<div><h4>Configuración de mensajes</h4>
+							<hr>
+						</div>
+						<div id="detalleList" style="float:left; width:67%; margin-left:3%">					
+							<table style="margin-right:auto; width:100%" class="table-content">
+								<tr><td>Acción:</td>
+									<td><select id="cboAccion">
+										<option>- Seleccione -</option>
+									</select></td>
+								</tr>
+								<tr><td>Asunto:</td>
+									<td><input type="text" id="txtAsunto"></td>
+								</tr>
+								<tr><td>Texto:</td>
+									<td><input type="text" id="txtFolio" ></td>
+								</tr>
+							</table>
+						</div>
+						</div>
+						<div class="table-clear"></div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Guardar</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+					  </div>
+					</div>
+				</div>
+			</div>
+        </div><!-- panel-heading -->
+    </div><!-- contentpanel -->
+ </section>
+ </div>
+<script src='resources/plantilla/js/jquery-1.11.1.min.js'></script>
+<script src='resources/plantilla/js/jquery.dataTables2.min.js'></script>
+<script src='resources/plantilla/js/dataTables.buttons.js'></script>
+<script src='resources/plantilla/js/buttons.flash.js'></script>
+<script src='resources/plantilla/js/jszip.js'></script>
+<script src='resources/plantilla/js/pdfmake.js'></script>
+<script src='resources/plantilla/js/vfs_fonts.js'></script>
+<script src='resources/plantilla/js/buttons.html5.js'></script>
+<script src='resources/plantilla/js/buttons.print.js'></script>
+<script src="resources/plantilla/js/bootstrap.min.js"></script>
+<script src="resources/plantilla//js/dataTables.responsive.js"></script>
+<script src="resources/plantilla/js/select2.min.js"></script>
+<script src="resources/plantilla/js/custom.js"></script>
+         
+
+<script>
+	
+	jQuery(document).ready(function(){   				
+		
+		$('#buscando').hide();
+						
+		$(".buscar" ).click(function() {
+			$('#buscando').show();        			
+		});
+	});
+	
+	function editar(){
+		
+	}
+	
+</script>
