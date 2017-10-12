@@ -1,11 +1,11 @@
-<data name="dsBpmnVisor" serviceNamespace="dsBpmnVisor" transports="http https local">
-   <config enableOData="false" id="dsVisor">
+<data name="dsBpmnVisor" transports="http local">
+   <config enableOData="false" id="visor">
       <property name="driverClassName">oracle.jdbc.driver.OracleDriver</property>
       <property name="url">jdbc:oracle:thin:@45.40.139.98:1521:XE</property>
       <property name="username">VISOR</property>
       <property name="password">qwerty01</property>
    </config>
-   <query id="qConsultaEvaluacion" useConfig="dsVisor">
+   <query id="qConsultaEvaluacion" useConfig="visor">
       <sql>{? = call VISOR_PKG_BPMN_VISOR.get_mb_cat_evaluacion(?)}</sql>
       <result element="getEvaluacion" rowName="resultado">
          <element column="ID_MB_CAT_EVALUACION" name="id_mb_cat_evaluacion" xsdType="string"/>
@@ -14,7 +14,7 @@
       <param defaultValue="#{NULL}" name="idEvaluacion" ordinal="2" sqlType="STRING"/>
       <param name="cliente" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
    </query>
-   <query id="qGetMBConsulta" useConfig="dsVisor">
+   <query id="qGetMBConsulta" useConfig="visor">
       <sql>{? = call VISOR_PKG_BPMN_VISOR.get_mb_consulta(?,?)}</sql>
       <result element="getMBConsulta" rowName="resultadoMbConsulta">
          <element column="ID_MB_CONSULTA" name="id_mb_consulta" xsdType="string"/>
@@ -40,7 +40,7 @@
       <param defaultValue="#{NULL}" name="tipoBusqueda" ordinal="3" sqlType="STRING"/>
       <param name="cliente" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
    </query>
-   <query id="qGetMBConsultaCliente" useConfig="dsVisor">
+   <query id="qGetMBConsultaCliente" useConfig="visor">
       <sql>{? = call VISOR_PKG_BPMN_VISOR.get_mb_consulta_cliente(?)}</sql>
       <result element="getMBConsultaCliente" rowName="resultadoConsultaCliente">
          <element column="ID_MB_CONSULTA_CLIENTE" name="id_mb_consulta_cliente" xsdType="string"/>
@@ -58,7 +58,7 @@
       <param defaultValue="#{NULL}" name="idConsulta" ordinal="2" sqlType="STRING"/>
       <param name="cliente" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
    </query>
-   <query id="qGetMBConsultaBeneficiario" useConfig="dsVisor">
+   <query id="qGetMBConsultaBeneficiario" useConfig="visor">
       <sql>{? = call VISOR_PKG_BPMN_VISOR.get_mb_consulta_beneficiario(?)}</sql>
       <result element="getMBConsultaBeneficiario" rowName="resultadoConsultaBeneficiario">
          <element column="ID_MB_CONSULTA_BENEFICIARIO" name="id_mb_consulta_beneficiario" xsdType="string"/>
@@ -77,7 +77,7 @@
       <param defaultValue="#{NULL}" name="idConsulta" ordinal="2" sqlType="STRING"/>
       <param name="cliente" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
    </query>
-   <query id="qConsultaRelacion" useConfig="dsVisor">
+   <query id="qConsultaRelacion" useConfig="visor">
       <sql>{? = call VISOR_PKG_BPMN_VISOR.get_visor_relacion(?)}</sql>
       <result element="getRelacion" rowName="resultadoRelacion">
          <element column="ID_RELACION" name="id_relacion" xsdType="string"/>
@@ -89,7 +89,7 @@
       <param defaultValue="#{NULL}" name="idRelacion" ordinal="2" sqlType="STRING"/>
       <param name="cliente" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
    </query>
-   <query id="qConsultaBandejaEntrada" useConfig="dsVisor">
+   <query id="qConsultaBandejaEntrada" useConfig="visor">
       <sql>{? = call VISOR_PKG_BPMN_VISOR.get_visor_bandeja(?,?)}</sql>
       <result element="getBandejaEntrada" rowName="resultadoBandeja">
          <element column="ID_BANDEJA_VISOR" name="id_bandeja_visor" xsdType="string"/>
@@ -98,16 +98,30 @@
          <element column="FECHA_ALTA" name="fecha_alta" xsdType="string"/>
          <element column="FECHA_MODIFICADO" name="fecha_modificado" xsdType="string"/>
          <element column="ESTATUS" name="estatus" xsdType="string"/>
-		 <call-query href="qGetMBConsulta">
+         <call-query href="qGetMBConsulta">
             <with-param name="idConsulta" query-param="ID_MB_CONSULTA"/>
          </call-query>
-		 <call-query href="qConsultaRelacion">
+         <call-query href="qConsultaRelacion">
             <with-param name="idRelacion" query-param="ID_RELACION"/>
          </call-query>
       </result>
       <param defaultValue="#{NULL}" name="idMbConsulta" ordinal="2" sqlType="STRING"/>
       <param defaultValue="#{NULL}" name="relacion" ordinal="3" sqlType="STRING"/>
       <param name="cliente" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
+   </query>
+   <query id="qEscalaDelega" useConfig="visor">
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.do_escalar_delegar(?,?,?,?,?,?,?)}</sql>
+      <result element="doEscalaDelegaResponse" rowName="resultado">
+         <element column="estatus" name="estatus" xsdType="string"/>
+      </result>
+      <param name="idBandeja" ordinal="2" sqlType="STRING"/>
+      <param name="tipo" ordinal="3" sqlType="STRING"/>
+      <param name="anali" ordinal="4" sqlType="STRING"/>
+      <param name="dir" ordinal="5" sqlType="STRING"/>
+      <param name="gerent" ordinal="6" sqlType="STRING"/>
+      <param name="ofici" ordinal="7" sqlType="STRING"/>
+      <param name="just" ordinal="8" sqlType="STRING"/>
+      <param name="estatus" ordinal="1" sqlType="INTEGER" type="OUT"/>
    </query>
    <operation name="qConsultaEvaluacion">
       <call-query href="qConsultaEvaluacion">
@@ -139,6 +153,17 @@
       <call-query href="qConsultaBandejaEntrada">
          <with-param name="idMbConsulta" query-param="idMbConsulta"/>
          <with-param name="relacion" query-param="relacion"/>
+      </call-query>
+   </operation>
+   <operation name="doEscalaDelega">
+      <call-query href="qEscalaDelega">
+         <with-param name="idBandeja" query-param="idBandeja"/>
+         <with-param name="tipo" query-param="tipo"/>
+         <with-param name="anali" query-param="anali"/>
+         <with-param name="dir" query-param="dir"/>
+         <with-param name="gerent" query-param="gerent"/>
+         <with-param name="ofici" query-param="ofici"/>
+         <with-param name="just" query-param="just"/>
       </call-query>
    </operation>
 </data>
