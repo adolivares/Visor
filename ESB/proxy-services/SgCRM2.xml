@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse"
+       name="SgCRM2"
+       transports="http"
+       startOnLoad="true">
+   <description/>
+   <target endpoint="wsSgCRM2"/>
+</proxy>
