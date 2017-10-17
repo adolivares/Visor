@@ -1,0 +1,81 @@
+<data name="dsBpmnVisorConsultaLog" transports="http https local">
+   <config enableOData="false" id="MSSQL">
+      <property name="driverClassName">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
+      <property name="url">jdbc:sqlserver://28.224.30.47:1433;databaseName=Monitor</property>
+      <property name="username">imonitorplus</property>
+      <property name="password">Investa-14</property>
+   </config>
+   <query id="getComentariosLGris" useConfig="MSSQL">
+      <sql>SELECT NOMBRE, OBSERVATIONS, CONVERT(char(10), OBSERVATIONS_DATE, 103) AS OBSERVATIONS_DATE, CONVERT(char(5), OBSERVATIONS_DATE, 108) AS HORA
+			  FROM MONITOR.dbo.TB_501_OBS
+			 WHERE TB_CORR = ?
+			 ORDER BY OBSERVATIONS_DATE DESC</sql>  
+	  <result element="getComentariosLGrisResp" rowName="resultadoComentariosLGris">
+		 <element column="nombre" name="nombre" xsdType="string"/>
+		 <element column="observations" name="observations" xsdType="string"/> 
+		 <element column="observations_date" name="observations_date" xsdType="string"/>		 
+		 <element column="Hora" name="hora" xsdType="string"/>		 
+      </result>
+      <param name="tbCorr" ordinal="1" sqlType="INTEGER"/>	  
+   </query>
+    <query id="getComentariosLNegra" useConfig="MSSQL">
+      <sql>SELECT CONCAT(NOMBRE, ' ', PATERNO, ' ', MATERNO) AS NOMBRE, OBSERVATIONS, CONVERT(char(10), OBSERVATIONS_DATE, 103) AS OBSERVATIONS_DATE, CONVERT(char(5), OBSERVATIONS_DATE, 108) AS HORA
+			  FROM MONITOR.dbo.TB_566_OBS
+			 WHERE TB_CORR = ?
+			 ORDER BY OBSERVATIONS_DATE DESC</sql>  
+	  <result element="getComentariosLNegraResp" rowName="resultadoComentariosLNegra">
+		 <element column="nombre" name="nombre" xsdType="string"/>
+		 <element column="observations" name="observations" xsdType="string"/> 
+		 <element column="observations_date" name="observations_date" xsdType="string"/>		 
+		 <element column="Hora" name="hora" xsdType="string"/>		 
+      </result>
+      <param name="tbCorrN" ordinal="1" sqlType="INTEGER"/>	  
+   </query>
+    <query id="getComentariosLSITI" useConfig="MSSQL">
+      <sql>SELECT CONCAT(NOMBRE, ' ', PATERNO, ' ', MATERNO) AS NOMBRE, OBSERVACIONES, CONVERT(char(10), FECHA_OBSERVACION, 103) AS FECHA_OBSERVACION, CONVERT(char(5), FECHA_OBSERVACION, 108) AS HORA
+			  FROM MONITOR.dbo.PLD_SITI_OBS
+			 WHERE ID_REG_PERSONA = ?
+			 ORDER BY FECHA_OBSERVACION DESC</sql>  
+	  <result element="getComentariosLSitiResp" rowName="resultadoComentariosLSiti">
+		 <element column="nombre" name="nombre" xsdType="string"/>
+		 <element column="observaciones" name="observations" xsdType="string"/> 
+		 <element column="fecha_observacion" name="fecha_observacion" xsdType="string"/>	
+		 <element column="Hora" name="hora" xsdType="string"/>				 
+      </result>
+      <param name="idreg" ordinal="1" sqlType="INTEGER"/>	  
+   </query>
+    <query id="getComentariosLWC" useConfig="MSSQL">
+      <sql> SELECT CONCAT(FIRST_NAME, ' ', LAST_NAME) AS NOMBRE,CATEGORY,OBSERVATIONS, CONVERT(char(10), OBSERVATIONS_DATE, 103) AS OBSERVATIONS_DATE, CONVERT(char(5), OBSERVATIONS_DATE, 108) AS HORA
+			   FROM MONITORP.dbo.VWWORLDCHECK_OBS
+			 WHERE UID = ?
+			 ORDER BY OBSERVATIONS_DATE DESC</sql>  
+	  <result element="getComentariosLWCResp" rowName="resultadoComentariosLWC">
+		 <element column="nombre" name="nombre" xsdType="string"/>
+		 <element column="category" name="category" xsdType="string"/>
+		 <element column="observations" name="observations" xsdType="string"/> 
+		 <element column="observations_date" name="observations_date" xsdType="string"/>	
+		 <element column="Hora" name="hora" xsdType="string"/>				 
+      </result>
+      <param name="uid" ordinal="1" sqlType="INTEGER"/>	  
+   </query>
+   <operation name="getComentariosLGris">
+      <call-query href="getComentariosLGris">
+         <with-param name="tbCorr" query-param="tbCorr"/>
+      </call-query>
+   </operation>
+    <operation name="getComentariosLNegra">
+      <call-query href="getComentariosLNegra">
+         <with-param name="tbCorrN" query-param="tbCorrN"/>
+      </call-query>
+   </operation>
+   <operation name="getComentariosLSITI">
+      <call-query href="getComentariosLSITI">
+         <with-param name="idreg" query-param="idreg"/>
+      </call-query>
+   </operation>
+   <operation name="getComentariosLWC">
+      <call-query href="getComentariosLWC">
+         <with-param name="uid" query-param="uid"/>
+      </call-query>
+   </operation>
+</data>
