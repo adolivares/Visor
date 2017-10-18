@@ -27,47 +27,13 @@
 		var result = "";
 		//log.info('aqui'+lista..*::getEvaluacion..*::resultado);
 		for each (var aXML in lista..*::getEvaluacion..*::resultado){
-			//log.info('dentro '+ aXML.*::id_mb_cat_evaluacion.toString());
+			log.info('dentro '+ aXML.*::id_mb_cat_evaluacion.toString());
 			if(id == 0){
 				result += "<option value='" +  aXML.*::id_mb_cat_evaluacion.toString() + "'>" + aXML.*::descripcion.toString() + "</option>"
 			}else{
 				if(aXML.*::id_mb_cat_evaluacion.toString() == id)
 					result += "<option value='" +  aXML.*::id_mb_cat_evaluacion.toString() + "'>" + aXML.*::descripcion.toString() + "</option>"
 			}
-		}
-		return result;
-	}
-	function createTablacoincidencia(lista) {
-		var result = "";
-		var id =0;
-		log.info('createTablacoincidencia '+lista..*::resultadoMbConsulta);
-		var fecha = lista..*::resultadoMbConsulta.*::fecha_consulta.toString();
-		var id_aplicacion = lista..*::resultadoMbConsulta.*::id_aplicacion.toString();
-		var id_cliente_crm = lista..*::resultadoMbConsulta.*::id_cliente_crm.toString();
-		var porcentaje_busqueda = lista..*::resultadoMbConsulta.*::porcentaje_busqueda.toString();
-		for each (var aXML in lista..*::getMBConsultaCliente..*::resultadoConsultaCliente){
-			
-				log.info('dentro '+aXML.*::getMBConsultaCliente..*::resultadoConsultaCliente.*::id_mb_consulta.toString() +' '+id);
-				
-				result += '<tr>';
-				result += '<td>'+fecha.substring(0,10)+'</td>';
-				result += '<td>'+aXML.*::id_mb_consulta.toString()+'</td>';
-				result += '<td>'+id_cliente_crm+'</td>';
-				result += '<td>'+aXML.*::nombre_cliente.toString()+'</td>';
-				result += '<td>'+aXML.*::apaterno_cliente.toString()+'</td>';
-				result += '<td>'+aXML.*::amaterno_cliente.toString()+'</td>';
-				result += '<td> </td>';
-				result += '<td>'+id_aplicacion+'</td>';
-				result += '<td>'+((aXML.*::id_mb_cat_evaluacion.toString() ==1)?'<span style="color:red;font-weight:bold">+</span>':'-')+'</td>';
-				result += '<td>'+aXML.*::tipo_listas.toString()+'</td>';
-				result += '<td>'+porcentaje_busqueda+'</td>';
-				result += '<td>'+aXML.*::porcentaje_coincidencias.toString()+'</td>';
-				result += '<td><input class="btn btn-primary" type="button" value="Detalle" id="btnDetalle'+id+'" name="btnDetalle" data-toggle="modal" data-target="#DetalleModal" ></td>';
-				result += '<td align="center"><input type="checkbox" name="tabla1" value="'+id+'"/></td>';
-				
-				result += '</tr>';
-			id++;
-			
 		}
 		return result;
 	}
