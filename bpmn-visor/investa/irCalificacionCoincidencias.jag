@@ -1,6 +1,7 @@
 
 <%
 include("/model/common.jag");
+var idConsultaRes = request.getParameter("idConsulta");
 /*<!--
  ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
@@ -31,7 +32,6 @@ include("/model/common.jag");
         include("/template/partials/navigation.jag");
 		include("detalleCoincidencias.jag");
 		include("logComentarios.jag");
-		include("Controller/CtrlVisorCalificacion.jag");
     }
 
 } else {
@@ -42,7 +42,30 @@ include("/model/common.jag");
     }
     response.sendRedirect(application.get('serverAddress') + request.getRequestURI() + queryStr);
 }
-var xmlEvaluacion = getEvaluacionList("");
+	include("Controller/CtrlVisorCalificacion.jag");	
+	
+	var xmlEvaluacion = getEvaluacionList("");	
+	var payload = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dsb="dsBpmnVisor">
+					   <soapenv:Header/>
+					   <soapenv:Body>
+						  <dsb:qGetMBConsulta>
+							 <dsb:idConsulta>{idConsultaRes}</dsb:idConsulta>
+							 <dsb:tipoBusqueda></dsb:tipoBusqueda>
+						  </dsb:qGetMBConsulta>
+					   </soapenv:Body>
+					</soapenv:Envelope>;
+
+    var url = URL_ESB + "BpmnVisor";
+    var ws = new XMLHttpRequest();
+    var action = "urn:qGetMBConsulta";
+    ws.open("POST", url, false);
+    ws.setRequestHeader('SOAPAction', action);
+    ws.setRequestHeader('Content-Type','text/xml; charset=utf-8');
+
+    ws.send(payload.toXMLString());
+    var responseXML = new XML(ws.responseText);
+	log.info("XML CONSULTA: " + responseXML.toXMLString());
+	
  %>
  
 		<link href="resources/plantilla/css/select2.css" rel="stylesheet" />
@@ -115,11 +138,12 @@ var xmlEvaluacion = getEvaluacionList("");
                         <th></th>
                     </tr>
                 </thead>
-				<tbody>					
+				<tbody>		
+					<%=createTablacoincidencia(responseXML)%>
                 </tbody>
             </table>
 			
-			<input class="btn btn-primary" type="button" value="Detalle" id="btnDetalle" name="btnDetalle" data-toggle="modal" data-target="#DetalleModal" >
+			<!--input class="btn btn-primary" type="button" value="Detalle" id="btnDetalle" name="btnDetalle" data-toggle="modal" data-target="#DetalleModal" -->
 			<input type="button" value="Elimina" id="btn" name="btn" data-toggle="modal" data-target="#EliminacionModal" >			
 			<br/>
 			<br/>
@@ -127,31 +151,31 @@ var xmlEvaluacion = getEvaluacionList("");
 				<tr>
 					<td valign="top" align="right">
 						<p>Comentario</p>
-						<input style="width:100%"  class="btn btn-primary" type="button" value="Ver Comentarios" id="btnComentarios" name="btnComentarios" data-toggle="modal" data-target="#ComentariosModal" >
+						<input class="btn btn-primary" type="button" value="Ver Comentarios" id="btnComentarios" name="btnComentarios" data-toggle="modal" data-target="#ComentariosModal" >
 					</td>
 					<td colspan="3">						
 						<textarea id="txaComentario" rows="3" cols="125" class="form-control"></textarea>	
 					</td>
 					<td>
-						<input style="width:100%"  class="btn btn-primary" type="button" value="Guardar Comentarios" id="btnGuardaComent" name="btnGuardaComent">
+						<input class="btn btn-primary" type="button" value="Guardar Comentarios" id="btnGuardaComent" name="btnGuardaComent">
 					</td>					
 				</tr>
 				<tr>
 					<td align="right" >						
-						<div class="fileUpload btn btn-primary" style="width:100%" >
+						<div class="fileUpload btn btn-primary">
 							<span>Seleccionar Archivo</span>
-							<input style="width:50%" id="uploadBtn" type="file" class="upload" accept="image/x-png,image/gif,image/jpeg" />
+							<input id="uploadBtn" type="file" class="upload" accept="image/x-png,image/gif,image/jpeg" />
 						</div>
 					</td>
 					<td colspan="3">	
-						<input style="width:100%" type="text" id="txtPathArchivo" style="width:100%" class="form-control"/>
+						<input type="text" id="txtPathArchivo" style="width:100%" class="form-control"/>
 					</td>
 					<td>
-						<input style="width:100%"  class="btn btn-primary" type="button" value="Subir Archivo" id="btnUpArchivo" name="btnUpArchivo">
+						<input class="btn btn-primary" type="button" value="Subir Archivo" id="btnUpArchivo" name="btnUpArchivo">
 					</td>					
 				</tr>
 				<tr>
-					<td align="right">
+					<td>
 						Archivos subidos
 					</td>
 					<td>						
@@ -165,7 +189,7 @@ var xmlEvaluacion = getEvaluacionList("");
 								</select>
 					</td>	
 					<td valign="bottom" style="padding-bottom:8px">
-						<input style="width:100%"  class="btn btn-primary" type="button" value="Enviar a CRM" id="btnEnviaCRM" name="btnEnviaCRM">
+						<input class="btn btn-primary" type="button" value="Enviar a CRM" id="btnEnviaCRM" name="btnEnviaCRM">
 					</td>
 				</tr>
 			</table>
@@ -231,23 +255,16 @@ var xmlEvaluacion = getEvaluacionList("");
         <script>
         
         $(document).ready(function() {	
-		var mensaje="";
 		var myfile="";
 			document.getElementById("uploadBtn").onchange = function () {
-				mensaje="";
-				myfile= $( this ).val();
-				var ext = myfile.split('.').pop();
-				if(ext !="pdf" || ext !="jpg" || ext !="jepg"){			
-					mensaje = "Debe seleccionar un archivo válido.";					
-				}
-				if(mensaje.trim().length != 0) {
-					//alert(mensaje);
-					$("#idMsg").html('<div class="alert alert-danger">'+
-						mensaje +
-						'</div>');
-					$('#ModalInfo').modal('show');
-					return false;
-				}
+			   myfile= $( this ).val();
+			   var ext = myfile.split('.').pop();
+			   if(ext=="pdf" || ext=="jpg" || ext=="jepg"){
+				   alert(ext + " OK");
+			   } else{
+				   alert("Archivo no v&aacute;lido, favor de verificar");
+				   return
+			   }
 				document.getElementById("txtPathArchivo").value = this.value;
 				
 			};
