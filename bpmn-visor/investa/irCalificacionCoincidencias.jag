@@ -1,7 +1,7 @@
 
 <%
 include("/model/common.jag");
-var idConsultaRes = request.getParameter("idConsulta");
+var idConsultaRes = request.getParameter("idConsulta");							   
 /*<!--
  ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
@@ -32,6 +32,7 @@ var idConsultaRes = request.getParameter("idConsulta");
         include("/template/partials/navigation.jag");
 		include("detalleCoincidencias.jag");
 		include("logComentarios.jag");
+		include("Controller/CtrlVisorCalificacion.jag");
     }
 
 } else {
@@ -42,7 +43,7 @@ var idConsultaRes = request.getParameter("idConsulta");
     }
     response.sendRedirect(application.get('serverAddress') + request.getRequestURI() + queryStr);
 }
-	include("Controller/CtrlVisorCalificacion.jag");	
+include("Controller/CtrlVisorCalificacion.jag");	
 	
 	var xmlEvaluacion = getEvaluacionList("");	
 	var payload = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dsb="dsBpmnVisor">
@@ -65,11 +66,10 @@ var idConsultaRes = request.getParameter("idConsulta");
     ws.send(payload.toXMLString());
     var responseXML = new XML(ws.responseText);
 	log.info("XML CONSULTA: " + responseXML.toXMLString());
-	
  %>
  
 		<link href="resources/plantilla/css/select2.css" rel="stylesheet" />
-        <link href="resources/plantilla/css/dataTables.responsive.css" rel="stylesheet">
+        <link href="resources/plantilla/css/dataTables.responsive.css" rel="stylesheet">		
 
         <link rel='stylesheet prefetch' href='resources/plantilla/css/jquery.dataTables.min.css'> 
         <link rel='stylesheet prefetch' href='resources/plantilla/css/buttons.dataTables.min.css'>
@@ -134,16 +134,15 @@ var idConsultaRes = request.getParameter("idConsulta");
                         <th>Porcentaje búsqueda</th> 
 						<th>Porcentaje coincidencia</th>      
                         <th>Ver Detalle</th>                     
-                        <th style="width: 7px"><input type="checkbox" id="cbAnalista1" ></th>                                                          
-                        <th></th>
+                        <th style="width: 7px"><input type="checkbox" id="cbAnalista1" ></th>  
                     </tr>
                 </thead>
-				<tbody>		
-					<%=createTablacoincidencia(responseXML)%>
+				<tbody>					
+					<%=createTablacoincidencia(responseXML)%>						  
                 </tbody>
             </table>
 			
-			<!--input class="btn btn-primary" type="button" value="Detalle" id="btnDetalle" name="btnDetalle" data-toggle="modal" data-target="#DetalleModal" -->
+			<input class="btn btn-primary" type="button" value="Detalle" id="btnDetalle" name="btnDetalle" data-toggle="modal" data-target="#DetalleModal" >
 			<input type="button" value="Elimina" id="btn" name="btn" data-toggle="modal" data-target="#EliminacionModal" >			
 			<br/>
 			<br/>
@@ -151,31 +150,31 @@ var idConsultaRes = request.getParameter("idConsulta");
 				<tr>
 					<td valign="top" align="right">
 						<p>Comentario</p>
-						<input class="btn btn-primary" type="button" value="Ver Comentarios" id="btnComentarios" name="btnComentarios" data-toggle="modal" data-target="#ComentariosModal" >
+						<input style="width:100%"  class="btn btn-primary" type="button" value="Ver Comentarios" id="btnComentarios" onclick="consulta()" name="btnComentarios" data-toggle="modal" data-target="#ComentariosModal">
 					</td>
 					<td colspan="3">						
 						<textarea id="txaComentario" rows="3" cols="125" class="form-control"></textarea>	
 					</td>
 					<td>
-						<input class="btn btn-primary" type="button" value="Guardar Comentarios" id="btnGuardaComent" name="btnGuardaComent">
+						<input style="width:100%"  class="btn btn-primary" type="button" value="Guardar Comentarios" id="btnGuardaComent" name="btnGuardaComent">
 					</td>					
 				</tr>
 				<tr>
 					<td align="right" >						
-						<div class="fileUpload btn btn-primary">
+						<div class="fileUpload btn btn-primary" style="width:100%" >
 							<span>Seleccionar Archivo</span>
-							<input id="uploadBtn" type="file" class="upload" accept="image/x-png,image/gif,image/jpeg" />
+							<input style="width:50%" id="uploadBtn" type="file" class="upload" accept="image/x-png,image/gif,image/jpeg" />
 						</div>
 					</td>
 					<td colspan="3">	
-						<input type="text" id="txtPathArchivo" style="width:100%" class="form-control"/>
+						<input style="width:100%" type="text" id="txtPathArchivo" style="width:100%" class="form-control"/>
 					</td>
 					<td>
-						<input class="btn btn-primary" type="button" value="Subir Archivo" id="btnUpArchivo" name="btnUpArchivo">
+						<input style="width:100%"  class="btn btn-primary" type="button" value="Subir Archivo" id="btnUpArchivo" name="btnUpArchivo">
 					</td>					
 				</tr>
 				<tr>
-					<td>
+					<td align="right">
 						Archivos subidos
 					</td>
 					<td>						
@@ -189,7 +188,7 @@ var idConsultaRes = request.getParameter("idConsulta");
 								</select>
 					</td>	
 					<td valign="bottom" style="padding-bottom:8px">
-						<input class="btn btn-primary" type="button" value="Enviar a CRM" id="btnEnviaCRM" name="btnEnviaCRM">
+						<input style="width:100%"  class="btn btn-primary" type="button" value="Enviar a CRM" id="btnEnviaCRM" name="btnEnviaCRM">
 					</td>
 				</tr>
 			</table>
@@ -255,21 +254,7 @@ var idConsultaRes = request.getParameter("idConsulta");
         <script>
         
         $(document).ready(function() {	
-		var myfile="";
-			document.getElementById("uploadBtn").onchange = function () {
-			   myfile= $( this ).val();
-			   var ext = myfile.split('.').pop();
-			   if(ext=="pdf" || ext=="jpg" || ext=="jepg"){
-				   alert(ext + " OK");
-			   } else{
-				   alert("Archivo no v&aacute;lido, favor de verificar");
-				   return
-			   }
-				document.getElementById("txtPathArchivo").value = this.value;
-				
-			};
-		
-            $('#example').DataTable({
+		$('#example').DataTable({
             	 "scrollY": 400,
                  "scrollX": true
             });
@@ -277,6 +262,28 @@ var idConsultaRes = request.getParameter("idConsulta");
             	 "scrollY": 400,
                  "scrollX": true
             });
+		var mensaje="";
+		var myfile="";
+		
+			document.getElementById("uploadBtn").onchange = function () {
+				mensaje="";
+				myfile= $( this ).val();
+				var ext = myfile.split('.').pop();
+				if(ext !="pdf" || ext !="jpg" || ext !="jepg"){			
+					mensaje = "Debe seleccionar un archivo válido.";					
+				}
+				if(mensaje.trim().length != 0) {
+					//alert(mensaje);
+					$("#idMsg").html('<div class="alert alert-danger">'+
+						mensaje +
+						'</div>');
+					$('#ModalInfo').modal('show');
+					return false;
+				}
+				document.getElementById("txtPathArchivo").value = this.value;
+				
+			};
+            
         } );			
 			
 		
@@ -284,14 +291,20 @@ var idConsultaRes = request.getParameter("idConsulta");
 				 var folio = $(this).find("td").eq(3).html();
 				 console.log(folio);  
 			});
+		
 			
+			function consulta(){
+				var id = 2090291;
+				tipo = "WC";
+				consultaComentarios(id, tipo);
+			}
 			
-            jQuery(document).ready(function(){   				
-				
+            jQuery(document).ready(function(){   
             	$('#buscando').hide();
-                                
                 $(".buscar" ).click(function() {
         			$('#buscando').show();        			
     			});
             });
+			
+			
         </script>
