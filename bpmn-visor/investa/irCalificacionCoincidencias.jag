@@ -127,7 +127,7 @@ var xmlEvaluacion = getEvaluacionList("");
 				<tr>
 					<td valign="top" align="right">
 						<p>Comentario</p>
-						<input style="width:100%"  class="btn btn-primary" type="button" value="Ver Comentarios" id="btnComentarios" name="btnComentarios" data-toggle="modal" data-target="#ComentariosModal" >
+						<input style="width:100%"  class="btn btn-primary" type="button" value="Ver Comentarios" id="btnComentarios" onclick="consulta()" name="btnComentarios" data-toggle="modal" data-target="#ComentariosModal">
 					</td>
 					<td colspan="3">						
 						<textarea id="txaComentario" rows="3" cols="125" class="form-control"></textarea>	
@@ -267,14 +267,20 @@ var xmlEvaluacion = getEvaluacionList("");
 				 var folio = $(this).find("td").eq(3).html();
 				 console.log(folio);  
 			});
+		
 			
+			function consulta(){
+				var id = 2090291;
+				tipo = "WC";
+				consultaComentarios(id, tipo);
+			}
 			
-            jQuery(document).ready(function(){   				
-				
+            jQuery(document).ready(function(){   
             	$('#buscando').hide();
-                                
                 $(".buscar" ).click(function() {
         			$('#buscando').show();        			
     			});
             });
+			
+			
         </script>
