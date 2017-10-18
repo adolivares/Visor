@@ -144,7 +144,7 @@ var xmlBandeja = getTablaBandejaEntrada("",Usuario_v);
 					<td style="padding:2%; width:10%" valign="bottom">
 						<input style="display:none;" type="button" value="Enviar" id="btnEnviarAsig" name="btnEnviar"  onclick="getDatos(1)">
 					</td>
-					<td style="padding:2%; width:10%" valign="top"><a href="irCalificacionCoincidencias"><button style="float:right" type="button" class="btn btn-primary">Analizar</button></a></td>
+					<td style="padding:2%; width:10%" valign="top"><button id="Analiza" style="float:right" type="button" class="btn btn-primary" >Analizar</button></td>
 				</tr>
 			</table>
             <h1>Coincidencias Asignadas BATCH</h1>
@@ -463,7 +463,7 @@ var xmlBandeja = getTablaBandejaEntrada("",Usuario_v);
 					$("#txtaJustif"+seleccion).val('');
 					$("#txtIDbandeja"+seleccion).val(tr.find("td").eq(0).text());
 					$("#txtFecha"+seleccion).html(tr.find("td").eq(1).text());
-					$("#txtCliente"+seleccion).html(tr.find("td").eq(2).text());
+					$("#txtCliente"+seleccion).html(tr.find("td").eq(4).text()+' '+tr.find("td").eq(5).text()+' '+tr.find("td").eq(6).text());
 					$("#txtIdCliente"+seleccion).html(tr.find("td").eq(3).text());
 					$('#MyModal'+seleccion).modal('show');
 				
@@ -534,6 +534,27 @@ var xmlBandeja = getTablaBandejaEntrada("",Usuario_v);
 					
 				});
 			}
+			
+			$("#Analiza").click(function() {
+				var index =0;
+				if (! $("input[name=tabla1]").is(":checked") ) {
+					
+					 $("#idMsg").html('<div class="alert alert-warning">'+
+						'Seleccionar un elemento de la tabla de coincidencias'+
+						'</div>');
+					$('#ModalInfo').modal('show');
+					 return false;
+				}
+				$("input[name=tabla1]").each(function (inde) {  
+				   if($(this).is(':checked')){
+						index = $(this).val();
+				   }
+				});
+				var tr ;
+									
+				tr = $("#example >tbody").find("tr").eq(index);
+				location.href='irCalificacionCoincidencias?idConsulta='+tr.find("td").eq(2).text();
+			});
 			
         </script>
 		 
