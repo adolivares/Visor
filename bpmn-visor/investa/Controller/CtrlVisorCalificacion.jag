@@ -40,14 +40,14 @@
 	function createTablacoincidencia(lista) {
 		var result = "";
 		var id =0;
-		log.info('createTablacoincidencia '+lista..*::resultadoMbConsulta);
+		//log.info('createTablacoincidencia '+lista..*::resultadoMbConsulta);
 		var fecha = lista..*::resultadoMbConsulta.*::fecha_consulta.toString();
 		var id_aplicacion = lista..*::resultadoMbConsulta.*::id_aplicacion.toString();
 		var id_cliente_crm = lista..*::resultadoMbConsulta.*::id_cliente_crm.toString();
 		var porcentaje_busqueda = lista..*::resultadoMbConsulta.*::porcentaje_busqueda.toString();
 		for each (var aXML in lista..*::getMBConsultaCliente..*::resultadoConsultaCliente){
 			
-				log.info('dentro '+aXML.*::getMBConsultaCliente..*::resultadoConsultaCliente.*::id_mb_consulta.toString() +' '+id);
+				//log.info('dentro '+aXML.*::getMBConsultaCliente..*::resultadoConsultaCliente.*::id_mb_consulta.toString() +' '+id);
 				
 				result += '<tr>';
 				result += '<td style="display:none">'+aXML.*::id_bandeja_visor.toString()+'</td>';
@@ -57,7 +57,7 @@
 				result += '<td>'+aXML.*::nombre_cliente.toString()+'</td>';
 				result += '<td>'+aXML.*::apaterno_cliente.toString()+'</td>';
 				result += '<td>'+aXML.*::amaterno_cliente.toString()+'</td>';
-				result += '<td>Beneficiario</td>';
+				result += '<td>CLIENTE</td>';
 				result += '<td>'+id_aplicacion+'</td>';
 				result += '<td>'+((aXML.*::id_mb_cat_evaluacion.toString() ==1)?'<span style="color:red;font-weight:bold">+</span>':'-')+'</td>';
 				result += '<td>'+aXML.*::tipo_listas.toString()+'</td>';
@@ -76,7 +76,7 @@
 		}
 		for each (var aXML in lista..*::getMBConsultaBeneficiario..*::resultadoConsultaBeneficiario){
 			
-				log.info('dentro '+aXML.*::getMBConsultaBeneficiario..*::resultadoConsultaBeneficiario.*::id_mb_consulta.toString() +' '+id);
+				//log.info('dentro '+aXML.*::getMBConsultaBeneficiario..*::resultadoConsultaBeneficiario.*::id_mb_consulta.toString() +' '+id);
 				
 				result += '<tr>';
 				result += '<td style="display:none">'+aXML.*::id_bandeja_visor.toString()+'</td>';
@@ -86,7 +86,7 @@
 				result += '<td>'+aXML.*::nombre_beneficiario.toString()+'</td>';
 				result += '<td>'+aXML.*::apaterno_beneficiario.toString()+'</td>';
 				result += '<td>'+aXML.*::amaterno_beneficiario.toString()+'</td>';
-				result += '<td> </td>';
+				result += '<td>BENEFICIARIO</td>';
 				result += '<td>'+id_aplicacion+'</td>';
 				result += '<td>'+((aXML.*::id_mb_cat_evaluacion.toString() ==1)?'<span style="color:red;font-weight:bold">+</span>':'-')+'</td>';
 				result += '<td>'+aXML.*::tipo_listas.toString()+'</td>';
@@ -98,9 +98,7 @@
 				}else{
 					result += '<td></td>';
 					result += '<td></td>';
-				}
-				
-								
+				}				
 				result += '</tr>';
 			id++;
 			

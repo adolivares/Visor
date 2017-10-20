@@ -31,7 +31,7 @@
 		for each (var aXML in lista..*::getBandejaEntrada..*::resultadoBandeja){
 			//log.info('dentro '+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::tipo_busqueda.toString());
 			if(aXML.*::getMBConsulta.*::resultadoMbConsulta.*::tipo_busqueda.toString() ==tipo){
-				log.info('dentro '+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::id_mb_consulta.toString() +' '+id);
+				//log.info('dentro '+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::id_mb_consulta.toString() +' '+id);
 				result += '<tr>';
 				result += '<td style="display:none">'+aXML.*::id_bandeja_visor.toString()+'</td>';
 				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::fecha_consulta.toString().substring(0,10)+'</td>';
