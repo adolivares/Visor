@@ -143,7 +143,6 @@ include("Controller/CtrlVisorCalificacion.jag");
                 </tbody>
             </table>
 			
-			<input class="btn btn-primary" type="button" value="Detalle" id="btnDetalle" name="btnDetalle" data-toggle="modal" data-target="#DetalleModal" >
 			<input type="button" value="Elimina" id="btn" name="btn" data-toggle="modal" data-target="#EliminacionModal" >			
 			<br/>
 			<br/>
@@ -274,7 +273,6 @@ include("Controller/CtrlVisorCalificacion.jag");
 					mensaje = "Debe seleccionar un archivo válido.";					
 				}
 				if(mensaje.trim().length != 0) {
-					//alert(mensaje);
 					$("#idMsg").html('<div class="alert alert-danger">'+
 						mensaje +
 						'</div>');
@@ -308,7 +306,6 @@ include("Controller/CtrlVisorCalificacion.jag");
 					//var id = 2090291;
 					var id = tr.find("td").eq(15).text();	
 					var tipo = tr.find("td").eq(10).text();
-					alert("tipo: "+ tipo + " id: " + id);
 					consultaComentarios(id, tipo);
 					
 					$('#ComentariosModal').modal('show');
@@ -374,9 +371,7 @@ include("Controller/CtrlVisorCalificacion.jag");
 					}else{
 						val = "";
 					}
-					
-					alert("tipo " + tipo + " id " + sId + " valid " + val)  
-					
+										
 					switch (tipo) {
 						case "1":
 							payload  = '<dat:qInsertaComentariosLN xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
@@ -425,7 +420,6 @@ include("Controller/CtrlVisorCalificacion.jag");
 			});
 			
 			function comentariosIRespon(xmlHttpRequest, status){
-			//alert(xmlHttpRequest.responseText);
 			//console.log("coment" + $(xmlHttpRequest.responseText).find('respComentariosLN').text());
 				var res = "";
 				if( $(xmlHttpRequest.responseText).find('respComentariosLN').text() != ''){
