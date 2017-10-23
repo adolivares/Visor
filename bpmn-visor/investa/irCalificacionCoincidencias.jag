@@ -1,7 +1,7 @@
 
 <%
 include("/model/common.jag");
-var user = session.get("user");
+var user = session.get("user");						   
 var idConsultaRes = request.getParameter("idConsulta");							   
 /*<!--
  ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
@@ -44,7 +44,6 @@ var idConsultaRes = request.getParameter("idConsulta");
     response.sendRedirect(application.get('serverAddress') + request.getRequestURI() + queryStr);
 }
 include("Controller/CtrlVisorCalificacion.jag");	
-
 	
 	var xmlEvaluacion = getEvaluacionList("");	
 	var payload = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dsb="dsBpmnVisor">
@@ -67,7 +66,6 @@ include("Controller/CtrlVisorCalificacion.jag");
     ws.send(payload.toXMLString());
     var responseXML = new XML(ws.responseText);
 	log.info("XML CONSULTA: " + responseXML.toXMLString());
-	
  %>
  
 		<link href="resources/plantilla/css/select2.css" rel="stylesheet" />
@@ -137,7 +135,7 @@ include("Controller/CtrlVisorCalificacion.jag");
 						<th>Porcentaje coincidencia</th>      
                         <th>Ver Detalle</th>                     
                         <th style="width: 7px"><input type="checkbox" id="cbAnalista1" ></th>  
-						<th style="display:none;"></th> 
+						<th style="display:none;"></th>   
                     </tr>
                 </thead>
 				<tbody>					
@@ -145,7 +143,7 @@ include("Controller/CtrlVisorCalificacion.jag");
                 </tbody>
             </table>
 			
-			<!--input class="btn btn-primary" type="button" value="Detalle" id="btnDetalle" name="btnDetalle" data-toggle="modal" data-target="#DetalleModal"-->
+			<input class="btn btn-primary" type="button" value="Detalle" id="btnDetalle" name="btnDetalle" data-toggle="modal" data-target="#DetalleModal" >
 			<input type="button" value="Elimina" id="btn" name="btn" data-toggle="modal" data-target="#EliminacionModal" >			
 			<br/>
 			<br/>
@@ -153,7 +151,7 @@ include("Controller/CtrlVisorCalificacion.jag");
 				<tr>
 					<td valign="top" align="right">
 						<p>Comentario</p>
-						<input style="width:100%"  class="btn btn-primary" type="button" value="Ver Comentarios" id="btnComentarios" onclick="consulta()" name="btnComentarios" data-toggle="modal" data-target="#ComentariosModal">
+						<input style="width:100%"  class="btn btn-primary" type="button" value="Ver Comentarios" id="btnComentarios" onclick="consulta()" name="btnComentarios">
 					</td>
 					<td colspan="3">						
 						<textarea id="txaComentario" rows="3" cols="125" class="form-control"></textarea>	
@@ -186,7 +184,7 @@ include("Controller/CtrlVisorCalificacion.jag");
 					<td align="right" valign="bottom" style="padding-bottom:16px">Calificar</td>
 					<td valign="bottom">					
 						 <select id="cboCalificar" class="form-control">
-									<option value="0">- Seleccione -</option>
+									<option>- Seleccione -</option>
 									<%=crearSelectEvaluacion(xmlEvaluacion,0)%>
 								</select>
 					</td>	
@@ -297,9 +295,170 @@ include("Controller/CtrlVisorCalificacion.jag");
 		
 			
 			function consulta(){
-				var id = 2090291;
-				tipo = "WC";
-				consultaComentarios(id, tipo);
+				var count = 0;
+				var index
+				if(validaCheck()){
+					$("input[name=tabla1]").each(function (inde) {  
+					   if($(this).is(':checked')){
+							index = $(this).val();
+					   }				  
+					});
+					
+				    var tr = $("#example >tbody").find("tr").eq(index);
+					//var id = 2090291;
+					var id = tr.find("td").eq(15).text();	
+					var tipo = tr.find("td").eq(10).text();
+					alert("tipo: "+ tipo + " id: " + id);
+					consultaComentarios(id, tipo);
+					
+					$('#ComentariosModal').modal('show');
+				}	
+			}
+			
+			function validaCheck(){
+				cont = 0;
+				if (! $("input[name=tabla1]").is(":checked") ) {
+					
+					 $("#idMsg").html('<div class="alert alert-warning">'+
+						'Seleccionar un elemento de la tabla de Calificación de coincidencias'+
+						'</div>');
+					$('#ModalInfo').modal('show');
+					 return false;
+				}
+				$("input[name=tabla1]").each(function (inde) {  
+				   if($(this).is(':checked')){
+						var index = $(this).val();
+						cont++;
+				   }
+				   if(cont > 1){
+					    $("#idMsg").html('<div class="alert alert-warning">'+
+						'Seleccione sólo un elemento de la tabla de Calificación de coincidencias'+
+						'</div>');
+						$('#ModalInfo').modal('show');
+						 return false;
+				   }
+				});
+				return true;
+			}
+			
+			$("#btnGuardaComent").click(function() {
+				var cont = 0;
+				var coment = $("#txaComentario").val();			
+				var tr;
+				var index;
+				
+				if(validaCheck()){
+					if(coment.trim() == ""){
+						 $("#idMsg").html('<div class="alert alert-warning">'+
+							'El campo Comentario no puede ser vacío'+
+							'</div>');
+						$('#ModalInfo').modal('show');
+						 return false;
+					}		
+					$("input[name=tabla1]").each(function (inde) {  
+					   if($(this).is(':checked')){
+							index = $(this).val();
+					   }				  
+					});
+					
+					tr = $("#example >tbody").find("tr").eq(index);
+					
+					
+					var tipo = tr.find("td").eq(10).text();
+					var sId = tr.find("td").eq(15).text();
+					var val = tr.find("td").eq(9).text();
+					if(val == "+"){
+						val = "positivo";
+					}else if(val == "-"){
+						val = "negativo";;
+					}else{
+						val = "";
+					}
+					
+					alert("tipo " + tipo + " id " + sId + " valid " + val)  
+					
+					switch (tipo) {
+						case "1":
+							payload  = '<dat:qInsertaComentariosLN xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
+							payload += '<dat:obs>' + coment + '</dat:obs>';
+							payload += '<dat:validation>'+ val +'</dat:validation>';
+							payload += '<dat:tbCorr>' + sId + '</dat:tbCorr>';
+							payload += '</dat:qInsertaComentariosLN>';
+							urn = 'urn:qInsertaComentariosLN';		
+							break;
+						case "2":
+							payload  = '<dat:qInsertaComentariosLG xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
+							payload += '<dat:obs>' + coment + '</dat:obs>';
+							payload += '<dat:validation>'+ val +'</dat:validation>';
+							payload += '<dat:tbCorr>' + sId + '</dat:tbCorr>';
+							payload += '</dat:qInsertaComentariosLG>';
+							urn = 'urn:qInsertaComentariosLG';
+							break;
+						case "3":
+							payload  = '<dat:qInsertaComentariosLS xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
+							payload += '<dat:obs>' + coment + '</dat:obs>';
+							payload += '<dat:validation>'+ val +'</dat:validation>';
+							payload += '<dat:idReg>' + sId + '</dat:idReg>';
+							payload += '</dat:qInsertaComentariosLS>';
+							urn = 'urn:qInsertaComentariosLS';
+							break;
+						case "4":
+							payload  = '<dat:qInsertaComentariosWC xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
+							payload += '<dat:obs>' + coment + '</dat:obs>';
+							payload += '<dat:validation>'+ val +'</dat:validation>';
+							payload += '<dat:uid>' + sId + '</dat:uid>';
+							payload += '</dat:qInsertaComentariosWC>';
+							urn = 'urn:qInsertaComentariosWC';
+					}		
+					
+				   $.ajax({
+							url: '/commons/postSOAP',
+							type: 'post',
+							headers: {'Destino':'BpmnVisorComentarios', 'SOAPAction':urn},
+							dataType: 'xml',
+							complete: comentariosIRespon,
+							error: function (xhr, status, error) {},
+							data: payload
+					});    
+					
+				}
+			});
+			
+			function comentariosIRespon(xmlHttpRequest, status){
+			//alert(xmlHttpRequest.responseText);
+			//console.log("coment" + $(xmlHttpRequest.responseText).find('respComentariosLN').text());
+				var res = "";
+				if( $(xmlHttpRequest.responseText).find('respComentariosLN').text() != ''){
+					$(xmlHttpRequest.responseText).find('respComentariosLN').each(function(){
+						 res = $(this).find("Value").text();
+					});
+				}else if($(xmlHttpRequest.responseText).find('respComentariosLG').text() != ''){
+						$(xmlHttpRequest.responseText).find('respComentariosLG').each(function(){
+							res = $(this).find("Value").text();
+						});
+				}else if($(xmlHttpRequest.responseText).find('respComentariosLS').text() != ''){
+						$(xmlHttpRequest.responseText).find('respComentariosLS').each(function(){
+							res = $(this).find("Value").text();
+						});
+				}else if($(xmlHttpRequest.responseText).find('respComentariosWC').text() != ''){
+						$(xmlHttpRequest.responseText).find('respComentariosWC').each(function(){
+							res = $(this).find("Value").text();
+						});
+				}
+				
+				if(res == 1){
+				$("#idMsg").html('<div class="alert alert-success">'+
+					'Se ha realizado la petición'+
+					'</div>');
+					$('#MyModal1').modal('hide');
+					$('#MyModal2').modal('hide');
+				}else{
+					$("#idMsg").html('<div class="alert alert-danger">'+
+					'Sucedio un error '+$(this).find("estatus").text()+
+					'</div>');
+				}
+				$('#ModalInfo').modal('show');
+			
 			}
 			
             jQuery(document).ready(function(){   
@@ -326,12 +485,12 @@ include("Controller/CtrlVisorCalificacion.jag");
 					$('#ModalInfo').modal('show');
 					 return false;
 				}
+	
 				$("input[name=tabla1]").each(function (inde) {  
 				   if($(this).is(':checked')){
-						index = $(this).val();
+						index = $(this).val();			 
 				   }
 				});
-				
 										
 				var tr = $("#example >tbody").find("tr").eq(index);
 				location.href='calificacionCoincidencias?idConsulta='+tr.find("td").eq(2).text()+
@@ -339,7 +498,9 @@ include("Controller/CtrlVisorCalificacion.jag");
 													  '&&idCliente='+tr.find("td").eq(3).text()+
 													  '&&tipoCliente='+tr.find("td").eq(7).text()+
 													  '&&idAplicacion='+tr.find("td").eq(8).text();
+				
 			});
+			
 			
 			
         </script>

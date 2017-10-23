@@ -1,0 +1,135 @@
+<data name="dsBpmnVisorConsultaLog" transports="http https local">
+   <config enableOData="false" id="MSSQL">
+      <property name="driverClassName">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
+      <property name="url">jdbc:sqlserver://28.224.30.47:1433;databaseName=Monitor</property>
+      <property name="username">imonitorplus</property>
+      <property name="password">Investa-14</property>
+      <property name="dataSourceProps"/>
+      <property name="dynamicUserAuthMapping"/>
+   </config>
+   <query id="getComentariosLNegra" useConfig="MSSQL">
+      <sql>SELECT NOMBRE, OBSERVATIONS, CONVERT(char(10), OBSERVATIONS_DATE, 103) AS OBSERVATIONS_DATE, CONVERT(char(5), OBSERVATIONS_DATE, 108) AS HORA			  FROM MONITOR.dbo.TB_501_OBS			 WHERE TB_CORR = ?			 ORDER BY OBSERVATIONS_DATE DESC</sql>
+      <result element="getComentariosLNegraResp" rowName="resultadoComentariosLNegra">
+         <element column="nombre" name="nombre" xsdType="string"/>
+         <element column="observations" name="observations" xsdType="string"/>
+         <element column="observations_date" name="observations_date" xsdType="string"/>
+         <element column="Hora" name="hora" xsdType="string"/>
+      </result>
+      <param name="tbCorr" ordinal="1" sqlType="INTEGER"/>
+   </query>
+   <query id="getComentariosLGris" useConfig="MSSQL">
+      <sql>SELECT CONCAT(NOMBRE, ' ', PATERNO, ' ', MATERNO) AS NOMBRE, OBSERVATIONS, CONVERT(char(10), OBSERVATIONS_DATE, 103) AS OBSERVATIONS_DATE, CONVERT(char(5), OBSERVATIONS_DATE, 108) AS HORA			  FROM MONITOR.dbo.TB_566_OBS			 WHERE TB_CORR = ?			 ORDER BY OBSERVATIONS_DATE DESC</sql>
+      <result element="getComentariosLGrisResp" rowName="resultadoComentariosLGris">
+         <element column="nombre" name="nombre" xsdType="string"/>
+         <element column="observations" name="observations" xsdType="string"/>
+         <element column="observations_date" name="observations_date" xsdType="string"/>
+         <element column="Hora" name="hora" xsdType="string"/>
+      </result>
+      <param name="tbCorrG" ordinal="1" sqlType="INTEGER"/>
+   </query>
+   <query id="getComentariosLSITI" useConfig="MSSQL">
+      <sql>SELECT CONCAT(NOMBRE, ' ', PATERNO, ' ', MATERNO) AS NOMBRE, OBSERVACIONES, CONVERT(char(10), FECHA_OBSERVACION, 103) AS FECHA_OBSERVACION, CONVERT(char(5), FECHA_OBSERVACION, 108) AS HORA			  FROM MONITOR.dbo.PLD_SITI_OBS			 WHERE ID_REG_PERSONA = ?			 ORDER BY FECHA_OBSERVACION DESC</sql>
+      <result element="getComentariosLSitiResp" rowName="resultadoComentariosLSiti">
+         <element column="nombre" name="nombre" xsdType="string"/>
+         <element column="observaciones" name="observations" xsdType="string"/>
+         <element column="fecha_observacion" name="fecha_observacion" xsdType="string"/>
+         <element column="Hora" name="hora" xsdType="string"/>
+      </result>
+      <param name="idreg" ordinal="1" sqlType="INTEGER"/>
+   </query>
+   <query id="getComentariosLWC" useConfig="MSSQL">
+      <sql>SELECT CONCAT(FIRST_NAME, ' ', LAST_NAME) AS NOMBRE,CATEGORY,OBSERVATIONS, CONVERT(char(10), OBSERVATIONS_DATE, 103) AS OBSERVATIONS_DATE, CONVERT(char(5), OBSERVATIONS_DATE, 108) AS HORA			   FROM MONITORP.dbo.VWWORLDCHECK_OBS			 WHERE UID = ?			 ORDER BY OBSERVATIONS_DATE DESC</sql>
+      <result element="getComentariosLWCResp" rowName="resultadoComentariosLWC">
+         <element column="nombre" name="nombre" xsdType="string"/>
+         <element column="category" name="category" xsdType="string"/>
+         <element column="observations" name="observations" xsdType="string"/>
+         <element column="observations_date" name="observations_date" xsdType="string"/>
+         <element column="Hora" name="hora" xsdType="string"/>
+      </result>
+      <param name="uid" ordinal="1" sqlType="INTEGER"/>
+   </query>
+   <query id="qInsertaComentariosLN" returnUpdatedRowCount="true" useConfig="MSSQL">
+      <sql>INSERT INTO TB_501_OBS SELECT TB_CORR,TB_DATEADD,TB_DAYS,C55016,NOMBRE,JUSTIFICACION,AUTESPNOMBRE,AUTNOMBRE,CNBV_AREACLAVE,CNBVACLAGG,CNBVADESCP,CNBV_DIASPLAZO,CNBV_DIASPLAGG,CNBVFECHPBL,CNBV_FOLIO,CNBV_FOLIOAGG,CNBVNROEXP,CNBV_NROOFICIO,CNBV_OFICIOYEAR,CNBVOFICIOYEARAGG,CNBVSOLICITUDSIARA,NOMBRESOLICITANTE,TREQUEQ,REFERENCIA1,REFERENCIA2,REFERENCIA3,SESPECPSC,SESPPSCOMP,SESPPSDOMICILIO,SESPPSMATERNO,SESPPSNOMBRE,SESPPSPATERNO,SESPPSPERSONA,SESPPSPERSONID,SESPPSPERIDAGG,SESPPSOLRELACION,SESPSESPID,SESPSESPIDAGG,TASEGURAMIENTO,DIA,MES,ANIO, ?, GETDATE(), ? &#13;	  FROM TB_501 WHERE TB_CORR = ?</sql>
+      <result element="ComentariosLNResp" rowName="respComentariosLN">
+         <element column="1" name="Value" xsdType="integer"/>
+      </result>
+      <param defaultValue="#{NULL}" name="obs" ordinal="1" sqlType="STRING"/>
+      <param defaultValue="#{NULL}" name="validation" ordinal="2" sqlType="STRING"/>
+      <param defaultValue="#{NULL}" name="tbCorr" ordinal="3" sqlType="INTEGER"/>
+   </query>
+   <query id="qInsertaComentariosLG" returnGeneratedKeys="true" returnUpdatedRowCount="true" useConfig="MSSQL">
+      <sql>INSERT INTO TB_566_OBS SELECT TB_CORR,TB_DATEADD,TB_DAYS,C55016,NOMBRE,PATERNO,MATERNO,CARACTER,COMPLEMENTARIOS,TIPOPERSONA,REFERENCIA,CNBV_NUMEROEXPEDIENT, ?, GETDATE(), ? 	  FROM TB_566 WHERE TB_CORR = ?</sql>
+      <result element="ComentariosLGResp" rowName="respComentariosLG" useColumnNumbers="true">
+         <element column="1" name="Value" xsdType="integer"/>
+      </result>
+      <param defaultValue="#{NULL}" name="obs" ordinal="1" sqlType="STRING"/>
+      <param defaultValue="#{NULL}" name="validation" ordinal="2" sqlType="STRING"/>
+      <param defaultValue="#{NULL}" name="tbCorr" ordinal="3" sqlType="INTEGER"/>
+   </query>
+   <query id="qInsertaComentariosLS" returnUpdatedRowCount="true" useConfig="MSSQL">
+      <sql>INSERT INTO PLD_SITI_OBS SELECT PER.ID_REG_PERSONA,PER.CARACTER,PER.PERSONA,PER.PATERNO,PER.MATERNO,PER.NOMBRE,PER.RFC,PER.RELACION,PER.DOMICILIO,PER.COMPLEMENTARIOS,EXP.CNBV_NUM_OFICIO,EXP.CNBV_NUM_EXPEDIENTE,EXP.CNBV_SOL_SIARA,EXP.CNBV_FOLIO,EXP.CNBV_OFICIO_YEAR,EXP.CNBV_AREA_CLAVE,EXP.CNBV_AREA_DESC,EXP.CNBV_FECHA_PUB,EXP.CNBV_DIAS_PLAZO,EXP.AUTORIDAD_NOMBRE,EXP.AUTORIDAD_ESP_NOMBRE,EXP.NOMBRE_SOLICITANTE,EXP.REFERENCIA,EXP.REFERENCIA1,EXP.REFERENCIA2,?,GETDATE(), ? FROM SITI_SOL_PERSONAS PER INNER JOIN SITI_SOLICITUD_ESP SE ON PER.ID_REG_SOL_ESP=SE.ID_REG_SOL_ESP INNER JOIN SITI_EXPEDIENTE EXP ON SE.ID_EXPEDIENTE=EXP.ID_EXPEDIENTE WHERE PER.ID_REG_PERSONA=?</sql>
+      <result element="UpdatedRowCount" rowName="respComentariosLS">
+         <element column="1" name="Value" xsdType="integer"/>
+      </result>
+      <param defaultValue="#{NULL}" name="obs" ordinal="1" sqlType="STRING"/>
+      <param defaultValue="#{NULL}" name="validation" ordinal="2" sqlType="STRING"/>
+      <param defaultValue="#{NULL}" name="idReg" ordinal="3" sqlType="INTEGER"/>
+   </query>
+   <query id="qInsertaComentariosWC" returnUpdatedRowCount="true" useConfig="MSSQL">
+      <sql>INSERT INTO MONITORP.dbo.VWWORLDCHECK_OBS SELECT UID,FIRST_NAME,LAST_NAME,ALIASES,ALTERNATIVE_SPELLING,CATEGORY,TITLE,SUB_CATEGORY,POSITION,AGE,DATE_OF_BIRTH,PLACE_OF_BIRTH,PASSPORTS,SOCIAL_SECURITY,LOCATIONS,COUNTRIES,TYPE_OF_PERSON,FURTHER_INFORMATION,ENTERED_DATE,UPDATED_DATE,KEYWORDS, ?, GETDATE(), ? 		   FROM MONITORP.dbo.VWWORLDCHECK 		   WHERE UID = ?</sql>
+      <result element="ComentariosWCResp" rowName="respComentariosWC">
+         <element column="1" name="Value" xsdType="integer"/>
+      </result>
+      <param defaultValue="#{NULL}" name="obs" ordinal="1" sqlType="STRING"/>
+      <param defaultValue="#{NULL}" name="validation" ordinal="2" sqlType="STRING"/>
+      <param defaultValue="#{NULL}" name="uid" ordinal="3" sqlType="INTEGER"/>
+   </query>
+   <operation name="qInsertaComentariosLS">
+      <call-query href="qInsertaComentariosLS">
+         <with-param name="obs" query-param="obs"/>
+         <with-param name="validation" query-param="validation"/>
+         <with-param name="idReg" query-param="idReg"/>
+      </call-query>
+   </operation>
+   <operation name="qInsertaComentariosWC">
+      <call-query href="qInsertaComentariosWC">
+         <with-param name="obs" query-param="obs"/>
+         <with-param name="validation" query-param="validation"/>
+         <with-param name="uid" query-param="uid"/>
+      </call-query>
+   </operation>
+   <operation name="qInsertaComentariosLN">
+      <call-query href="qInsertaComentariosLN">
+         <with-param name="obs" query-param="obs"/>
+         <with-param name="validation" query-param="validation"/>
+         <with-param name="tbCorr" query-param="tbCorr"/>
+      </call-query>
+   </operation>
+   <operation name="qInsertaComentariosLG">
+      <call-query href="qInsertaComentariosLG">
+         <with-param name="obs" query-param="obs"/>
+         <with-param name="validation" query-param="validation"/>
+         <with-param name="tbCorr" query-param="tbCorr"/>
+      </call-query>
+   </operation>
+   <operation name="getComentariosLGris">
+      <call-query href="getComentariosLGris">
+         <with-param name="tbCorrG" query-param="tbCorrG"/>
+      </call-query>
+   </operation>
+   <operation name="getComentariosLNegra">
+      <call-query href="getComentariosLNegra">
+         <with-param name="tbCorr" query-param="tbCorr"/>
+      </call-query>
+   </operation>
+   <operation name="getComentariosLSITI">
+      <call-query href="getComentariosLSITI">
+         <with-param name="idreg" query-param="idreg"/>
+      </call-query>
+   </operation>
+   <operation name="getComentariosLWC">
+      <call-query href="getComentariosLWC">
+         <with-param name="uid" query-param="uid"/>
+      </call-query>
+   </operation>
+</data>

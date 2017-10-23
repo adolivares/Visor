@@ -1,0 +1,154 @@
+
+
+<div class="modal fade col-centered" id="ComentariosModal" tabindex="-1" role="dialog">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="H4"><p></p></h4>
+				<h4 class="modal-title" id="H2">Log de comentarios</h4>
+			</div>
+			<div class="modal-body col-centered">
+				<div class="list-Coment">
+					<table id="listComentarios"  class="table-striped table-bordered table-content" style="margin-left:auto;  margin-right:auto; width:100%">
+						<thead>
+							<tr><th>Fecha búsqueda</th>
+								<th>Hora búsqueda</th>
+								<th>Comentarios </th>
+								<th>Usuario</th>
+							</tr>
+						</thead>
+						<tbody>	
+							
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+ <script>
+	function consultaComentarios(id, tipo){
+		var payload;
+		var urn;
+		 $('#listComentarios tbody tr').remove();
+		 $('#H4 p').remove("");
+		
+		switch (tipo) {
+			case "1":
+				payload  = '<dat:getComentariosLNegra xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
+				payload += '<dat:tbCorr>'+id+'</dat:tbCorr>';
+				payload += '</dat:getComentariosLNegra>';
+				urn = 'urn:getComentariosLNegra';
+				break;
+			case "2":
+				payload  = '<dat:getComentariosLGris xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
+				payload += '<dat:tbCorrG>'+id+'</dat:tbCorrG>';
+				payload += '</dat:getComentariosLGris>';
+				urn = 'urn:getComentariosLGris';
+				break;
+			case "3":
+				payload  = '<dat:getComentariosLSITI xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
+				payload += '<dat:idreg>'+id+'</dat:idreg>';
+				payload += '</dat:getComentariosLSITI>';
+				urn = 'urn:getComentariosLSITI';
+				break;
+			case "4":
+				payload  = '<dat:getComentariosLWC xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
+				payload += '<dat:uid>'+id+'</dat:uid>';
+				payload += '</dat:getComentariosLWC>';
+				urn = 'urn:getComentariosLWC';
+			
+		}		
+		
+	   $.ajax({
+				url: '/commons/postSOAP',
+				type: 'post',
+				headers: {'Destino':'BpmnVisorComentarios', 'SOAPAction':urn},
+				dataType: 'xml',
+				complete: comentariosRespon,
+				error: function (xhr, status, error) {},
+				data: payload
+		});    
+	}
+
+	function comentariosRespon(xmlHttpRequest, status){
+		//alert(xmlHttpRequest.responseText);
+		console.log("coment" + $(xmlHttpRequest.responseText).find('resultadoComentariosLNegra').text());
+		 var row = "";
+		 var nombre ="";
+		 var fecha = "";
+		 var hora = "";
+		 var comentario = "";
+		 var category = "";
+		if( $(xmlHttpRequest.responseText).find('resultadoComentariosLNegra').text() != ''){
+			
+			$(xmlHttpRequest.responseText).find('resultadoComentariosLNegra').each(function(){
+				 row = '<tr>'; 					
+				 fecha = $(this).find("observations_date").text();
+				 row += '<td>' + fecha +'</td>';
+				 hora = $(this).find("hora").text();
+				 row += '<td>' + hora +'</td>'; 
+				 nombre = $(this).find("nombre").text();
+				 comentario = $(this).find("observations").text();
+				 row += '<td><p>' + nombre + '</p><p>' + comentario +'</p></td>';
+				 row += '<td></td>';					 
+				  $('#listComentarios > tbody').append(row);
+			  
+			});
+			$('#H4').append('<p>' + nombre + '</p>');
+		}else if($(xmlHttpRequest.responseText).find('resultadoComentariosLGris').text() != ''){
+				$(xmlHttpRequest.responseText).find('resultadoComentariosLGris').each(function(){
+					 row = '<tr>'; 					
+					 fecha = $(this).find("observations_date").text();
+					 row += '<td>' + fecha +'</td>';
+					 hora = $(this).find("hora").text();
+					 row += '<td>' + hora +'</td>'; 
+					 nombre = $(this).find("nombre").text();
+					 comentario = $(this).find("observations").text();
+					 row += '<td><p>' + nombre + '</p><p>' + comentario +'</p></td>';
+					 row += '<td></td>';					 
+					  $('#listComentarios > tbody').append(row);
+					  
+				});
+				$('#H4').append('<p>' + nombre + '</p>');
+		}else if($(xmlHttpRequest.responseText).find('resultadoComentariosLSiti').text() != ''){
+				$(xmlHttpRequest.responseText).find('resultadoComentariosLSiti').each(function(){
+					 row = '<tr>'; 					
+					 fecha = $(this).find("fecha_observacion").text();
+					 row += '<td>' + fecha +'</td>';
+					 hora = $(this).find("hora").text();
+					 row += '<td>' + hora +'</td>'; 
+					 nombre = $(this).find("nombre").text();
+					 comentario = $(this).find("observations").text();
+					 row += '<td><p>' + nombre + '</p><p>' + comentario +'</p></td>';
+					 row += '<td></td>';					 
+					  $('#listComentarios > tbody').append(row);
+					  
+				});
+				$('#H4').append('<p>' + nombre + '</p>');
+		}else if($(xmlHttpRequest.responseText).find('resultadoComentariosLWC').text() != ''){
+				$(xmlHttpRequest.responseText).find('resultadoComentariosLWC').each(function(){
+					 row = '<tr>'; 					
+					 fecha = $(this).find("observations_date").text();
+					 row += '<td>' + fecha +'</td>';
+					 hora = $(this).find("hora").text();
+					 row += '<td>' + hora +'</td>'; 
+					 nombre = $(this).find("nombre").text();
+					 comentario = $(this).find("observations").text();
+					 category = $(this).find("category").text();
+					 row += '<td><p>' + nombre +', ' + category + '</p><p>' + comentario +'</p></td>';
+					 row += '<td></td>';					 
+					  $('#listComentarios > tbody').append(row);
+					  
+				});
+				$('#H4').append('<p>' + nombre + '</p>');
+		}
+		
+	}
+ </script>
