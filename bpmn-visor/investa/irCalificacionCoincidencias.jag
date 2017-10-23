@@ -1,6 +1,7 @@
 
 <%
 include("/model/common.jag");
+var user = session.get("user");
 var idConsultaRes = request.getParameter("idConsulta");							   
 /*<!--
  ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
@@ -32,7 +33,6 @@ var idConsultaRes = request.getParameter("idConsulta");
         include("/template/partials/navigation.jag");
 		include("detalleCoincidencias.jag");
 		include("logComentarios.jag");
-		include("Controller/CtrlVisorCalificacion.jag");
     }
 
 } else {
@@ -44,6 +44,7 @@ var idConsultaRes = request.getParameter("idConsulta");
     response.sendRedirect(application.get('serverAddress') + request.getRequestURI() + queryStr);
 }
 include("Controller/CtrlVisorCalificacion.jag");	
+
 	
 	var xmlEvaluacion = getEvaluacionList("");	
 	var payload = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dsb="dsBpmnVisor">
@@ -66,6 +67,7 @@ include("Controller/CtrlVisorCalificacion.jag");
     ws.send(payload.toXMLString());
     var responseXML = new XML(ws.responseText);
 	log.info("XML CONSULTA: " + responseXML.toXMLString());
+	
  %>
  
 		<link href="resources/plantilla/css/select2.css" rel="stylesheet" />
@@ -135,6 +137,7 @@ include("Controller/CtrlVisorCalificacion.jag");
 						<th>Porcentaje coincidencia</th>      
                         <th>Ver Detalle</th>                     
                         <th style="width: 7px"><input type="checkbox" id="cbAnalista1" ></th>  
+						<th style="display:none;"></th> 
                     </tr>
                 </thead>
 				<tbody>					
@@ -142,7 +145,7 @@ include("Controller/CtrlVisorCalificacion.jag");
                 </tbody>
             </table>
 			
-			<input class="btn btn-primary" type="button" value="Detalle" id="btnDetalle" name="btnDetalle" data-toggle="modal" data-target="#DetalleModal" >
+			<!--input class="btn btn-primary" type="button" value="Detalle" id="btnDetalle" name="btnDetalle" data-toggle="modal" data-target="#DetalleModal"-->
 			<input type="button" value="Elimina" id="btn" name="btn" data-toggle="modal" data-target="#EliminacionModal" >			
 			<br/>
 			<br/>
@@ -183,7 +186,7 @@ include("Controller/CtrlVisorCalificacion.jag");
 					<td align="right" valign="bottom" style="padding-bottom:16px">Calificar</td>
 					<td valign="bottom">					
 						 <select id="cboCalificar" class="form-control">
-									<option>- Seleccione -</option>
+									<option value="0">- Seleccione -</option>
 									<%=crearSelectEvaluacion(xmlEvaluacion,0)%>
 								</select>
 					</td>	
@@ -305,6 +308,38 @@ include("Controller/CtrlVisorCalificacion.jag");
         			$('#buscando').show();        			
     			});
             });
+			
+			$("#btnEnviaCRM").click(function() {
+				var califica = $('#cboCalificar').val();
+				if(califica==0){
+					 $("#idMsg").html('<div class="alert alert-warning">'+
+						'Seleccionar la calificación'+
+						'</div>');
+					$('#ModalInfo').modal('show');
+					 return false;
+				}
+				if (! $("input[name=tabla1]").is(":checked") ) {
+					
+					 $("#idMsg").html('<div class="alert alert-warning">'+
+						'Seleccionar un elemento de la tabla de coincidencias'+
+						'</div>');
+					$('#ModalInfo').modal('show');
+					 return false;
+				}
+				$("input[name=tabla1]").each(function (inde) {  
+				   if($(this).is(':checked')){
+						index = $(this).val();
+				   }
+				});
+				
+										
+				var tr = $("#example >tbody").find("tr").eq(index);
+				location.href='calificacionCoincidencias?idConsulta='+tr.find("td").eq(2).text()+
+													  '&&calificacion='+califica+
+													  '&&idCliente='+tr.find("td").eq(3).text()+
+													  '&&tipoCliente='+tr.find("td").eq(7).text()+
+													  '&&idAplicacion='+tr.find("td").eq(8).text();
+			});
 			
 			
         </script>

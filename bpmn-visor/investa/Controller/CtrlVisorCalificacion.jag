@@ -70,6 +70,7 @@
 					result += '<td></td>';
 					result += '<td align="center"></td>';
 				}
+				result += '<td style="display:none">'+aXML.*::tabla_correlativos.toString()+'</td>';
 				result += '</tr>';
 			id++;
 			
@@ -98,7 +99,8 @@
 				}else{
 					result += '<td></td>';
 					result += '<td></td>';
-				}				
+				}
+				result += '<td style="display:none">'+aXML.*::tabla_correlativos.toString()+'</td>';
 				result += '</tr>';
 			id++;
 			
