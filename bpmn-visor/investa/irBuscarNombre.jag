@@ -4,6 +4,9 @@ include("/model/common.jag");
 var nombre = request.getParameter("nombre");		
 var modo = request.getParameter("modo");
 
+if(nombre == null){
+	nombre = "";	
+}
 		
 /*<!--
  ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
@@ -33,7 +36,7 @@ var modo = request.getParameter("modo");
     } else {
         include("/template/partials/header.jag");
         include("/template/partials/navigation.jag");	
-		include("detalleBusquedaNombre.jag");
+		
     }
 
 } else {
@@ -43,7 +46,8 @@ var modo = request.getParameter("modo");
         queryStr = '?' + request.getQueryString();
     }
     response.sendRedirect(application.get('serverAddress') + request.getRequestURI() + queryStr);
-}		
+}
+include("detalleBusquedaNombre.jag");		
 include("Controller/CtrlConsultaNombre.jag");
 
  lista = (nombre == "" || nombre == "null" || nombre == null ) ? "" : consultaNombre(nombre, modo);
@@ -101,7 +105,7 @@ include("Controller/CtrlConsultaNombre.jag");
 				<div class="col-md-2" ><p>Nombre</p></div>
 			  </div>
 			  <div class="row">
-				<div class="col-md-4"><input style="width:100%" type="text" id="txtNombre" name="txtNombre" value="<%=nombre%>" /></div>
+				<div class="col-md-4"><input style="width:100%" type="text" id="txtNombre" name="txtNombre" value="<%=nombre.toUpperCase()%>" /></div>
 			  </div>
 			  <div class="row">
 				<div class="col-md-4" style="padding:1%"><label><input type="checkbox" id="chbModo" name="usuarios"> Modo permisivo</label></div>
@@ -159,10 +163,6 @@ include("Controller/CtrlConsultaNombre.jag");
 			location.href='irBuscarNombre?nombre=' + nombre + '&&modo='+modo;
 			
 			$('#example tbody tr').remove();
-		
-    //    $.get("irBuscarNombre", { name: nombre, mode: modo, action: ""},
-	//		   function(data){
-	//		   });
 		});
 		
 		function showDetail(obj){
@@ -176,6 +176,111 @@ include("Controller/CtrlConsultaNombre.jag");
 			consultaListas(folio, tipo);
 		}
 		
+		$("#btnGuardar").click(function(){
+			var idRegistro = $("#txtID").val();
+			var obs = $("#txaComentario").val();
+			var folio = $("#txaComentario").val();		
+			var porcentaje = $("#txaComentario").val();
+			var usuario = "<%=user%>";
+			var nombre = "<%=nombre%>";
+			
+			if(obs.trim() == ""){
+				 $("#idMsg").html('<div class="alert alert-warning">'+
+					'El campo Comentario no puede ser vacío'+
+					'</div>');
+				$('#ModalInfo').modal('show');
+				 return false;
+			}				
+			
+			if(idRegistro != ""){
+				actualizaObservacion(obs,usuario,idRegistro);
+			}else{				
+				altaObservacion(nombre, obs, usuario);
+			}
+		});
 		
+		function altaObservacion(nombre, obs, usuario){
+			
+			console.log("Usuario " +usuario);
+			var payload="";
+			
+			payload  = '<dat:qInsertaObsBusqueda xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
+					payload += '<dat:nombre>' +nombre+ '</dat:nombre>';
+					payload += '<dat:observaciones>'+ obs +'</dat:observaciones>';
+					payload += '<dat:usuario_alta>' + usuario + '</dat:usuario_alta>';
+					payload += '</dat:qInsertaObsBusqueda>';
+			 $.ajax({
+					url: '/commons/postSOAP',
+					type: 'post',
+					headers: {'Destino':'BpmnVisorComentarios', 'SOAPAction':'qInsertaObsBusqueda'},
+					dataType: 'xml',
+					complete: comentariosIRespon,
+					error: function (xhr, status, error) {},
+					data: payload
+			}); 
+		}
+		
+			function comentariosIRespon(xmlHttpRequest, status){
+			//console.log("coment" + $(xmlHttpRequest.responseText).find('respComentariosLN').text());
+				var res = "";
+				if( $(xmlHttpRequest.responseText).find('resultadoInsertBusquedaDet').text() != ''){
+					$(xmlHttpRequest.responseText).find('resultadoInsertBusquedaDet').each(function(){
+						 res = $(this).find("Value").text();
+					});
+				}
+				
+				if(res == 1){
+						$("#idMsg").html('<div class="alert alert-success">'+
+					'Se ha realizado la petición'+
+					'</div>');
+				}else{
+					$("#idMsg").html('<div class="alert alert-danger">'+
+					'Sucedio un error al guardar la Observación'+$(this).find("estatus").text()+
+					'</div>');
+				}
+				$('#ModalInfo').modal('show');
+			
+			}
+			
+			function actualizaObservacion(obs,usuario,idRegistro){
+				var payload="";
+				console.log("id " +idRegistro);
+				payload  = '<dat:qActualizaObsBusqueda xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
+						payload += '<dat:obs>' +obs+ '</dat:obs>';
+						payload += '<dat:usuario>'+ usuario +'</dat:usuario>';
+						payload += '<dat:id>' + idRegistro + '</dat:id>';
+						payload += '</dat:qActualizaObsBusqueda>';
+				 $.ajax({
+						url: '/commons/postSOAP',
+						type: 'post',
+						headers: {'Destino':'BpmnVisorComentarios', 'SOAPAction':'qActualizaObsBusqueda'},
+						dataType: 'xml',
+						complete: comentariosActRespon,
+						error: function (xhr, status, error) {},
+						data: payload
+				}); 
+			}
+			
+			function comentariosActRespon(xmlHttpRequest, status){
+			//console.log("coment" + $(xmlHttpRequest.responseText).find('respComentariosLN').text());
+				var res = "";
+				if( $(xmlHttpRequest.responseText).find('resultadoObsBusqueda').text() != ''){
+					$(xmlHttpRequest.responseText).find('resultadoObsBusqueda').each(function(){
+						 res = $(this).find("Value").text();
+					});
+				}
+				
+				if(res == 1){
+						$("#idMsg").html('<div class="alert alert-success">'+
+					'Se ha realizado la petición'+
+					'</div>');
+				}else{
+					$("#idMsg").html('<div class="alert alert-danger">'+
+					'Sucedio un error al guardar la Observación'+$(this).find("estatus").text()+
+					'</div>');
+				}
+				$('#ModalInfo').modal('show');
+			
+			}
 	
 </script>

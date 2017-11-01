@@ -20,7 +20,7 @@
 			<div class="table-clear"></div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Regresar</button>
-				<button id="btnGuardaComent" type="button" class="btn btn-default" data-dismiss="modal">Guardar</button>
+				<button id="btnGuardaComent" type="button" class="btn btn-default">Guardar</button>
 				<button type="button" class="btn btn-default" onclick="javascript:imprimir();" data-dismiss="modal">Imprimir</button>
 		  </div>
 		</div>
@@ -29,6 +29,8 @@
 
 <script src='resources/plantilla/js/jquery-1.11.1.min.js'></script>
 <script>
+
+
 function consultaListas(folio, tipo){
 	var payload ="";
 	var urn ="";
@@ -76,11 +78,12 @@ function listasRespon(xmlHttpRequest, status){
 	var dia = format.getDate();
 	var mm = format.getMonth()+1;
 	var anio = format.getFullYear();
+	var usuario = "<%=user%>";
 	$('#form').empty();
 	
 	console.log(dia+mm+anio);
 	if(dia < 10){
-		dd = '0'+ dd;
+		dia = '0'+ dia;
 	}
 	if(mm < 10){
 		mm = '0' + mm;
@@ -270,7 +273,7 @@ function listasRespon(xmlHttpRequest, status){
 			form += "			<td colspan=\"2\" style=\"font-size:13px;\">Fecha de la consulta: " + date + "</td>";
 			form += "       </tr>";
 			form += "	    <tr>";
-			form += "			<td colspan=\"2\" style=\"font-size:13px;\">Consulta realizada por: </td>";
+			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Consulta realizada por: "+usuario+"</td>";
 			form += "       </tr>";
 			form += "	</table>";
 			form += "	<br/>";
@@ -344,7 +347,7 @@ function listasRespon(xmlHttpRequest, status){
 			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Fecha de la consulta: " + date + "</td>";
 			form += "           </tr>";
 			form += "	        <tr>";
-			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Consulta realizada por: </td>";
+			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Consulta realizada por: "+usuario+"</td>";
 			form += "           </tr>";
 			form += "	</table>";
 			form += "	<br/>";
@@ -471,7 +474,7 @@ function listasRespon(xmlHttpRequest, status){
 			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Fecha de la consulta: " + date + "</td>";
 			form += "           </tr>";
 			form += "	        <tr>";
-			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Consulta realizada por: </td>";
+			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Consulta realizada por: "+usuario+"</td>";
 			form += "           </tr>";
 			form += "        </tbody>";
 			form += "    </table>";
@@ -491,6 +494,7 @@ function listasRespon(xmlHttpRequest, status){
 			form += "	<div id=\"detalleList\" style=\"float:left; width:100%; margin-left:3%\">";
 			form += "		<table style=\"margin-right:auto; width:100%\" class=\"table-content\">";
 			form += "   	    <tr><td style='display:none'><input type=\"text\" id=\"txtTipo\" value =\"4\"></td><td style='display:none'></td></tr>";
+			form += "   	    <tr><td style='display:none'><input type=\"text\" id=\"txtUser\" value =\""+usuario+"\"></td><td style='display:none'></td></tr>";
 			form += "	        <tr>";
 			form += "				<td width=\"22%\">FOLIO:</td>";
 			form += "	            <td width=\"95%\"><input id=\"txtFolio\" name=\"idFolio\" type=\"text\" value = \"" + $(this).find("uid").text()+ "\"disabled=\"true\" style=\"width:80%\"></td>";
@@ -583,7 +587,7 @@ function listasRespon(xmlHttpRequest, status){
 			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Fecha de la consulta: " + date + "</td>";
 			form += "           </tr>";
 			form += "	        <tr>";
-			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Consulta realizada por: </td>";
+			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Consulta realizada por: "+usuario+"</td>";
 			form += "           </tr>";
 			form += "        </tbody>";
 			form += "    </table>";
@@ -628,14 +632,15 @@ function imprimir() {
 	}	
 
 	$("#btnGuardaComent").click(function() {
+		var payload="";
 		var cont = 0;
 		var coment = $("#txtObservaciones").val();	
 		var sId = $("#txtFolio").val();
+		var tipo = $("#txtTipo").val();
 		var val = "";
 		var tr;
-		var index;
-		
-		
+		var index;		
+			
 			if(coment.trim() == ""){
 				 $("#idMsg").html('<div class="alert alert-warning">'+
 					'El campo Comentario no puede ser vacío'+
@@ -716,8 +721,7 @@ function imprimir() {
 				$("#idMsg").html('<div class="alert alert-success">'+
 					'Se ha realizado la petición'+
 					'</div>');
-					$('#MyModal1').modal('hide');
-					$('#MyModal2').modal('hide');
+				$('#txtObservaciones').prop('disabled', true);
 				}else{
 					$("#idMsg").html('<div class="alert alert-danger">'+
 					'Sucedio un error '+$(this).find("estatus").text()+
