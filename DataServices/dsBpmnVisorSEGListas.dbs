@@ -1,0 +1,80 @@
+<data name="dsBpmnVisorSEGListas" transports="http local">
+   <config enableOData="false" id="SEGListas">
+      <property name="driverClassName">oracle.jdbc.driver.OracleDriver</property>
+      <property name="url">jdbc:oracle:thin:@45.40.139.98:1521:XE</property>
+      <property name="username">VISOR</property>
+      <property name="password">qwerty01</property>
+   </config>  
+   <query id="qGetMBConsultaPerfil" useConfig="SEGListas">
+      <sql>{? = call VISOR_PKG_SEGL_LISTAS.get_segl_cat_perfil(?)}</sql>
+      <result element="getMBConsultaPerfil" rowName="resultadoConsultaPerfil">
+         <element column="ID_PERFIL" name="id_perfil" xsdType="string"/>
+         <element column="DESCRIPCION" name="descripcion" xsdType="string"/>
+         <element column="ESTATUS" name="estatus" xsdType="string"/>
+         <element column="FECHA_ALTA" name="fecha_alta" xsdType="string"/>
+         <element column="USUARIO_ALTA" name="usuario_alta" xsdType="string"/>
+         <element column="FECHA_MODIFICACION" name="fecha_modificacion" xsdType="string"/>
+         <element column="USUARIO_MODIFICACION" name="usuario_modificacion" xsdType="string"/>
+      </result>
+      <param defaultValue="#{NULL}" name="idPerfil" ordinal="2" sqlType="STRING"/>
+      <param name="perfil" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
+   </query>  
+   <query id="qGetMBConsultaCatListas" useConfig="SEGListas">
+      <sql>{? = call VISOR_PKG_SEGL_LISTAS.get_segl_cat_listas(?)}</sql>
+      <result element="getMBConsultaListas" rowName="resultadoConsultaListas">
+         <element column="ID_LISTA" name="id_lista" xsdType="string"/>
+         <element column="LISTA" name="lista" xsdType="string"/>
+         <element column="PORCENTAJE" name="porcentaje" xsdType="string"/>
+		 <element column="ESTATUS" name="estatus" xsdType="string"/>
+         <element column="FECHA_ALTA" name="fecha_alta" xsdType="string"/>
+         <element column="USUARIO_ALTA" name="usuario_alta" xsdType="string"/>
+         <element column="FECHA_MODIFICACION" name="fecha_modificacion" xsdType="string"/>
+         <element column="USUARIO_MODIFICACION" name="usuario_modificacion" xsdType="string"/>
+      </result>
+      <param defaultValue="#{NULL}" name="idLista" ordinal="2" sqlType="STRING"/>
+      <param name="listas" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
+   </query>    
+   <query id="qGetMBConsultaListaCategorias" useConfig="SEGListas">
+      <sql>{? = call VISOR_PKG_SEGL_LISTAS.get_segl_lista_categorias(?)}</sql>
+      <result element="getMBConsultaCategListas" rowName="resultadoConsultaListasCateg">
+         <element column="ID_CATEG_LISTAS" name="id_categListas" xsdType="string"/>
+         <element column="CATEGORIA" name="categoria" xsdType="string"/>
+      </result>
+      <param defaultValue="#{NULL}" name="idLista" ordinal="2" sqlType="STRING"/>
+      <param name="listaCat" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
+   </query>      
+   <query id="qGetMBConsultaCatPrioridad" useConfig="SEGListas">
+      <sql>{? = call VISOR_PKG_SEGL_LISTAS.get_segl_cat_prioridad(?)}</sql>
+      <result element="getMBConsultaCatPrioridad" rowName="resultadoConsultaCatPrioridad">
+         <element column="ID_PRIORIDAD" name="id_prioridad" xsdType="string"/>
+         <element column="DESCRIPCION" name="descripcion" xsdType="string"/>
+		 <element column="ESTATUS" name="estatus" xsdType="string"/>
+         <element column="FECHA_ALTA" name="fecha_alta" xsdType="string"/>
+         <element column="USUARIO_ALTA" name="usuario_alta" xsdType="string"/>
+         <element column="FECHA_MODIFICACION" name="fecha_modificacion" xsdType="string"/>
+         <element column="USUARIO_MODIFICACION" name="usuario_modificacion" xsdType="string"/>
+      </result>
+      <param defaultValue="#{NULL}" name="idPrioridad" ordinal="2" sqlType="STRING"/>
+      <param name="prioridad" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
+   </query>         
+   <operation name="qGetMBConsultaPerfil">
+      <call-query href="qGetMBConsultaPerfil">
+         <with-param name="idPerfil" query-param="idPerfil"/>
+      </call-query>
+   </operation> 
+   <operation name="qGetMBConsultaCatListas">
+      <call-query href="qGetMBConsultaCatListas">
+         <with-param name="idLista" query-param="idLista"/>
+      </call-query>
+   </operation>  
+   <operation name="qGetMBConsultaListaCategorias">
+      <call-query href="qGetMBConsultaListaCategorias">
+         <with-param name="idLista" query-param="idLista"/>
+      </call-query>
+   </operation> 
+   <operation name="qGetMBConsultaCatPrioridad">
+      <call-query href="qGetMBConsultaCatPrioridad">
+         <with-param name="idPrioridad" query-param="idPerfil"/>
+      </call-query>
+   </operation> 
+</data>

@@ -1,0 +1,80 @@
+<%
+	function getPerfiles(_idPerfil){
+		var payload = <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dat="http://ws.wso2.org/dataservice">
+					   <soapenv:Header/>
+					   <soapenv:Body>
+						  <dat:qGetMBConsultaPerfil>
+							 <dat:idPerfil>{_idPerfil}</dat:idPerfil>
+						  </dat:qGetMBConsultaPerfil>
+					   </soapenv:Body>
+					</soapenv:Envelope>;
+		
+		var url = URL_ESB + "BpmnVisorSEGListas";
+		var ws = new XMLHttpRequest();
+		var action = "urn:qGetMBConsultaPerfil";
+		ws.open("POST", url, false);
+		ws.setRequestHeader('SOAPAction', action);
+		ws.setRequestHeader('Content-Type','text/xml; charset=utf-8');
+		ws.send(payload.toXMLString());
+		var responseXML = new XML(ws.responseText);
+		log.info("RESPONSE XML PERFILES: " + responseXML.toXMLString());
+		return responseXML;
+	}
+	
+	function createSelectPerfiles(perfiles){
+		var result = "";
+		
+		if(perfiles..*::getMBConsultaPerfil..*::resultadoConsultaPerfil == null || perfiles..*::getMBConsultaPerfil..*::resultadoConsultaPerfil == ""){
+			log.info("Sin Perfiles");
+		}
+		//log.info('aqui'+perfiles..*::getMBConsultaPerfil..*::resultadoConsultaPerfil);
+		for each (var aXML in perfiles..*::getMBConsultaPerfil..*::resultadoConsultaPerfil){
+			log.info('dentro '+ aXML.*::id_perfil.toString());				
+			result += "<option value='" +  aXML.*::id_perfil.toString() + "'>" + aXML.*::descripcion.toString() + "</option>"				
+		}
+		return result;
+	}
+	
+	function getCatListas(_idListas){
+		var payload = <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dat="http://ws.wso2.org/dataservice">
+					   <soapenv:Header/>
+					   <soapenv:Body>
+						  <dat:qGetMBConsultaCatListas>
+							 <dat:idLista>{_idListas}</dat:idLista>
+						  </dat:qGetMBConsultaCatListas>
+					   </soapenv:Body>
+					</soapenv:Envelope>;
+		
+		var url = URL_ESB + "BpmnVisorSEGListas";
+		var ws = new XMLHttpRequest();
+		var action = "urn:qGetMBConsultaCatListas";
+		ws.open("POST", url, false);
+		ws.setRequestHeader('SOAPAction', action);
+		ws.setRequestHeader('Content-Type','text/xml; charset=utf-8');
+		ws.send(payload.toXMLString());
+		var responseXMLListas = new XML(ws.responseText);
+		log.info("RESPONSE XML LISTAS: " + responseXMLListas.toXMLString());
+		return responseXMLListas;
+	}
+	
+	function createTableListas(listas){
+		var result = "";
+			for each (var aXML in listas..*::getMBConsultaListas..*::resultadoConsultaListas){
+			//log.info('dentro '+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::tipo_busqueda.toString());			
+			
+			if(aXML == "" || aXML == null){
+				log.info('Cat Listas resultadoConsultaListas null '+ aXML);
+			}else{
+				result += '<tr>';
+				result += '<td style="display:none">'+aXML.*::id_lista.toString()+'</td>';
+				result += '<td>'+aXML.*::lista.toString()+'</td>';				
+				result += '<td>'+aXML.*::porcentaje.toString()+'</td>';				
+				result += '</tr>';		
+			}
+		}
+		
+		return result;
+	}
+	
+	
+%>
