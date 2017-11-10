@@ -43,6 +43,9 @@ include("/model/common.jag");
 	include("Controller/CtrlPerfilesBusqueda.jag");
 	var xmlCatListas = getCatListas("");
 	var xmlPerfiles = getPerfiles("");	
+	var xmlAplicacion = getAplicacion("");
+	var xmlOperacion = getOperacion("");
+	var xmlOrigen = getOrigen("");
 	
  %>
  
@@ -97,11 +100,11 @@ include("/model/common.jag");
 			<div class="row">            
 				<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 					 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-						<td align="right">Perfil:</td>
-								<td><select id="slPerfil" name="slPerfil">
+						<div>Perfil:</div>
+								<select id="slPerfil" name="slPerfil">
 									<option>- Seleccione -</Option>
 									<%=createSelectPerfiles(xmlPerfiles)%>
-								</select></td>
+								</select>
 					</div>
 					<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 						<table id="tblListas" class="table-striped table-bordered table-list">
@@ -144,7 +147,7 @@ include("/model/common.jag");
 						</table>
 					</div>
 				</div>
-			</div>
+			</div>			
 			<table style="width:60%; margin-left:auto; margin-right:auto;">
 				<tr>
 					<td align="right" style="padding:5%">
@@ -152,8 +155,55 @@ include("/model/common.jag");
 					</td>
 				</tr>				
 			</table>
-			<br/>
-			<br/>	
+			<div class="row"> 
+				
+				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+				<br/><br/>				
+				  <h3>Asignación de Perfiles a aplicaciones</h3>
+				  <hr>
+				  <br/><br/>
+					<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+								<div>Aplicaciónn:</div>
+										<select id="slAplicacion" name="slAplicacion">
+											<%=createSelectAplicacion(xmlAplicacion)%>
+										</select>
+					</div>
+					<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+								<div>Operación:</div>
+										<select id="slOperacion" name="slOperacion">
+											<%=createSelectOperacion(xmlOperacion)%>
+										</select>
+					</div>
+					<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+								<div>Origen del cliente:</div>
+										<select id="slOrigen" name="slOrigen">
+											<%=createSelectOrigen(xmlOrigen)%>
+										</select>
+					</div>
+					<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+								<table id="tblPerfil" class="table-striped table-bordered table-list">
+									<thead>
+										<th style="display:none;"></th>
+										<th>Perfil</th>
+										<th></th>
+									</thead>
+									<tbody>	
+										<%=createTablePerfiles(xmlPerfiles)%>
+									</tbody>							
+								</table>
+					</div>				
+					<br/> <br/>
+					<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+						<table style="width:60%; margin-left:auto; margin-right:auto; margin-bottom:10%;">
+							<tr>
+								<td style="padding:7%">
+									<input class="btn btn-primary" type="button" value="Aplicar" id="btnAplicarAsig" name="btnAplicarAsig" >
+								</td>
+							</tr>				
+						</table>					
+					</div>		
+				</div>	
+			</div>		
 			<div class="modal fade col-centered" id="PerfilModal" tabindex="-1" role="dialog">
 			  <div class="modal-dialog " role="document">
 				<div class="modal-content">
@@ -215,7 +265,10 @@ include("/model/common.jag");
 	
 	jQuery(document).ready(function(){   				
 		
-		var lista = "";		
+		var lista = "";	
+		var rowConfig = "";
+		var slct ="";
+		var cbPerfil="";
 		
 		$('#buscando').hide();
 						
@@ -230,15 +283,7 @@ include("/model/common.jag");
 			//console.log("Lista " + id);
 			$('#tblCategoria tbody tr').remove();
 			getCategorias(id);
-		});
-		
-		$('#btnAplicar').click(function(){
-			var row = $('#tblListas tbody tr').css('color');
-			alert(row);
-			
-		});
-		
-		
+		});	
 		
 	});
 	
@@ -288,8 +333,7 @@ include("/model/common.jag");
 	
 	//Consulta 
 	function actCategoria (element){
-		if (element.checked)
-		{
+		if (element.checked){
 			var dato = element.value;
 			slct = dato;			
 			getPrioridad();				
@@ -341,17 +385,10 @@ include("/model/common.jag");
 		}
 	}
 		
-	$('select').on('change', function (e) {
-		var selectedText = $("#slPerfil").find("option:selected").text();
-		perfil = selectedText;
-		var valueSelected = this.value;
-	   console.log(" selectedText " + selectedText);
-	
-	});
 	
 
 	function getDatos(elem){
-		var usuario = "<%=user%>";
+		
 		var idPrioridad = elem.value;
 		var transacion="false";
 		var sPerfil = $("#slPerfil").find("option:selected").text();
@@ -359,7 +396,10 @@ include("/model/common.jag");
 	
 		var	index = elem.parentNode.parentNode.rowIndex;
 		if ($("input[name=cbTransaccion" + index +"]").is(":checked") ) {
+			alert("true");
 			transacion = "true";
+		}else{
+			transacion = "false";
 		}
 		index = index -1;
 		var tr = $("#tblCategoria >tbody").find("tr").eq(index);		
@@ -368,6 +408,7 @@ include("/model/common.jag");
 		var indexList = $('tr.highlight').index();
 		var trList = $("#tblListas > tbody").find("tr").eq(indexList);		
 		var sLista = trList.find("td").eq(1).text();
+		var existe = false;
 		
 		//console.log(" idPrioridad " + idPrioridad);
 		//console.log("idListCateg " + idListCateg + " idPerfil " + idPerfil + " indexList " + indexList + " sLista " +sLista);
@@ -382,16 +423,20 @@ include("/model/common.jag");
 			
 				if(sPerfil == perfil && sLista == lista && sCategoria == categoria){
 					var answer = confirm("La configuracion ya existe. \n ¿Desea Actualizarla?");
-					
+					existe = true;					
 					if(answer){
-						addConfiguration(sPerfil, sLista, sCategoria, idPerfil, idListCateg, transacion, idPrioridad);
+						existe = false;
 					}else{
-						return;
+						existe = true;	
 					}
 				}else{
-					addConfiguration(sPerfil, sLista, sCategoria, idPerfil, idListCateg, transacion, idPrioridad);
-				}
+					existe = false;
+				}		
+				
 			});
+			if(!existe){
+				addConfiguration(sPerfil, sLista, sCategoria, idPerfil, idListCateg, transacion, idPrioridad);
+			}
 		}else{
 			addConfiguration(sPerfil, sLista, sCategoria, idPerfil, idListCateg, transacion, idPrioridad);
 		}
@@ -412,13 +457,213 @@ include("/model/common.jag");
 			row += '</tr>';	
 			
 			$("#tblConfiguracion > tbody").append(row);
+			row = "";
 		}else{
 			alert("Seleccione un Perfil");
 			return;
 		}
 	}
 	
+	$('#btnAplicar').click(function(){
+		var usuario = "<%=user%>";
+		if ($('table#tblConfiguracion tbody tr').length > 0){	
+			$("#tblConfiguracion tbody tr").each(function(){
+					var perfil = $(this).find('td').eq(3).text();
+					var lista = $(this).find('td').eq(4).text();
+					var transaccion = $(this).find('td').eq(5).text();
+					var prioridad =  $(this).find('td').eq(6).text();
+					var indexC = $(this).index()
+					rowConfig = indexC;
+					console.log(" indexC " + indexC)
+					aplicaConfiguracion(perfil, lista, transaccion, prioridad, prioridad, usuario,rowConfig);
+			});
+		}else{
+			alert("No existen Configuraciones de Perfiles de Búsqueda para aplicar.");
+		}
+		
+	});
 	
-
+	function aplicaConfiguracion(_perfil, _lista, _transaccion, _prioridad, _prioridad, _usuario, _rowConfig){
+		var payload  = '<dat:qInsertaConfiguracion xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
+			payload += '<dat:idPerfil>' + _perfil + '</dat:idPerfil>';
+			payload += '<dat:idlistaCateg>' + _lista + '</dat:idlistaCateg>';
+			payload += '<dat:transaccion>' + _transaccion + '</dat:transaccion>';
+			payload += '<dat:idPrioridad>' + _prioridad + '</dat:idPrioridad>';
+			payload += '<dat:estatusConf>1</dat:estatusConf>';
+			payload += '<dat:estatusAprob>0</dat:estatusAprob>';
+			payload += '<dat:usuarioAlta>' + _usuario + '</dat:usuarioAlta>';
+			payload += '</dat:qInsertaConfiguracion>';	
+		
+		$.ajax({
+			url: '/commons/postSOAP',
+			type: 'post',
+			headers: {'Destino':'BpmnVisorSEGListas', 'SOAPAction':'urn:qInsertaConfiguracion'},
+			dataType: 'xml',
+			complete: configuraciondResponse,
+			error: function (xhr, status, error) {},
+			data: payload
+		});  
+	}
+	
+	function configuraciondResponse(xmlHttpRequest, status){
+		 //alert(xmlHttpRequest.responseText);
+		$(xmlHttpRequest.responseText).find('resultadoConfiguracion').each(function(){
+		 if($(this).find("estatus").text()==1){
+			  $("#idMsg").html('<div class="alert alert-success">'+
+			  'Se ha realizado la petición ' +
+			  '</div>');
+			  var tr = $("#tblConfiguracion >tbody").find("tr").eq(rowConfig);
+			  tr.remove();
+			  
+		}else if($(this).find("estatus").text()==0){
+			  $("#idMsg").html('<div class="alert alert-danger">'+
+			  'La configuracion ya existe'+
+			  '</div>');
+		}else {
+			  $("#idMsg").html('<div class="alert alert-danger">'+
+			  'Sucedio un error '+$(this).find("codigoError").text()+
+			  '</div>');
+		 }
+		 $('#ModalInfo').modal('show');
+		 
+		});
+		return true;
+	}
+	
+	function validaDatos(element){
+		var valido=false;
+		if (element.checked){		
+			
+			var idApicacion = $('select[name=slAplicacion]').val();	
+			var idOperacion = $('select[name=slOperacion]').val();
+			var idOrigen = $('select[name=slOrigen]').val()
+			
+			if(idApicacion == 0){
+				 $("#idMsg").html('<div class="alert alert-danger">'+
+				  'Seleccione una Aplicación'+
+				  '</div>');
+				  valido=true;
+			}else if(idOperacion == 0){
+				 $("#idMsg").html('<div class="alert alert-danger">'+
+				  'Seleccione una Operación'+
+				  '</div>');
+				  valido=true;
+			}else if(idOrigen == 0){
+				 $("#idMsg").html('<div class="alert alert-danger">'+
+				  'Seleccione un Origen del Cliente'+
+				  '</div>');
+				  valido=true;
+			}	
+		}
+		
+		if(valido){
+			$(this).attr('checked', false);
+			$('#ModalInfo').modal('show');
+		}
+	}
+	
+	$('#btnAplicarAsig').click(function(){
+		var valido=true;
+		
+		var idAplicacion = $('select[name=slAplicacion]').val();	
+		var idOperacion = $('select[name=slOperacion]').val();
+		var idOrigen = $('select[name=slOrigen]').val()
+		var bPerfil = false;
+		
+		
+		if(idAplicacion == 0){
+			 $("#idMsg").html('<div class="alert alert-danger">'+
+			  'Seleccione una Aplicación'+
+			  '</div>');
+			  valido=false;
+		}else if(idOperacion == 0){
+			 $("#idMsg").html('<div class="alert alert-danger">'+
+			  'Seleccione una Operación'+
+			  '</div>');
+			  valido=false;
+		}else if(idOrigen == 0){
+			 $("#idMsg").html('<div class="alert alert-danger">'+
+			  'Seleccione un Origen del Cliente'+
+			  '</div>');
+			  valido=false;
+		}	
+		
+		if(!valido){
+			$('#ModalInfo').modal('show');
+			return;
+		}
+		
+		$('input[name=cbPerfil]').each(function(){
+			if ($(this).is(':checked') ) {
+				bPerfil = true;
+				cbPerfil = $(this).val();	
+				var indx = $(this).parent().parent().index();	
+				var tr = $("#tblPerfil > tbody").find("tr").eq(indx);
+				var idPerfil = tr.find("td").eq(0).text();	
+				console.log("idOrigen " + idOrigen);
+				altaAsignacion(idAplicacion, idOperacion, idOrigen, idPerfil);
+			}
+			
+			if(!bPerfil){
+				$("#idMsg").html('<div class="alert alert-danger">'+
+				'Seleccione un Perfil'+
+				'</div>');
+				return;
+			}
+			
+		});
+		
+		
+		
+		
+	});
+	
+		function altaAsignacion(_idAplicacion, _idOperacion, _idOrigen, _idPerfil){
+			var usuario = "<%=user%>";
+			console.log("idOrigen " + _idOrigen);
+			
+		var payload  = '<dat:qInsertaAsignacionPerfil xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
+			payload += '<dat:idAplicacion>' + _idAplicacion + '</dat:idAplicacion>';
+			payload += '<dat:idOperacion>' + _idOperacion + '</dat:idOperacion>';
+			payload += '<dat:idOrigen>' + _idOrigen + '</dat:idOrigen>';
+			payload += '<dat:idPerfil>' + _idPerfil + '</dat:idPerfil>';
+			payload += '<dat:usuarioAlta>' + usuario + '</dat:usuarioAlta>';
+			payload += '</dat:qInsertaAsignacionPerfil>';			
+			
+			console.log("payload " + payload);
+			
+		$.ajax({
+			url: '/commons/postSOAP',
+			type: 'post',
+			headers: {'Destino':'BpmnVisorSEGListas', 'SOAPAction':'urn:qInsertaAsignacionPerfil'},
+			dataType: 'xml',
+			complete: asignacionResponse,
+			error: function (xhr, status, error) {},
+			data: payload
+		});  
+	}
+	
+	function asignacionResponse(xmlHttpRequest, status){
+		 //alert(xmlHttpRequest.responseText);
+		$(xmlHttpRequest.responseText).find('qInsertaAsignacionResponse').each(function(){
+		 if($(this).find("estatus").text()==1){
+			  $("#idMsg").html('<div class="alert alert-success">'+
+			  'Se ha realizado la petición ' +
+			  '</div>');
+			   $("#cbPerfil" + cbPerfil).attr('checked',false);
+		}else if($(this).find("estatus").text()==0){
+			  $("#idMsg").html('<div class="alert alert-danger">'+
+			  'La configuracion ya existe'+
+			  '</div>');
+		}else {
+			  $("#idMsg").html('<div class="alert alert-danger">'+
+			  'Sucedio un error '+$(this).find("codigoError").text()+
+			  '</div>');
+		 }
+		 $('#ModalInfo').modal('show');
+		 
+		});
+		return true;
+	}
 	
 </script>
