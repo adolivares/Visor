@@ -131,15 +131,19 @@ var URL_ESB_API = "http://localhost:8280/"
 //START COMMON FUNCTIONS
 
 //GROUPS///////////////
-var GRUPO_PROMOTOR = "QA_Promotor";
-var GRUPO_ANALISTA = "QA_AnalistaCredito";
-var GRUPO_DIR_CRED = "QA_DirectorCredito";
-var GRUPO_OPERADOR = "QA_Operador";
+var GRUPO_ANALISTA = "QA_AnalistaCumplimiento";
+var GRUPO_DIR_CUMP = "QA_DirectorCumplimiento";
+var GRUPO_OFICIAL = "QA_OficialCumplimiento";
+var GRUPO_GERENTE = "QA_GerenteCumplimiento";
 var bDirector = false;
 var bAnalista = false;
 var bOficial = false;
 var bGerente = false;
 var Usuario_v;
+
+var loggerUsuario="";
+var UsuarioCRM="admin";
+var PasswordCRM="Investa_2014";
 
 /**
  * Function to get common error message display content
@@ -147,6 +151,6 @@ var Usuario_v;
 function getCommonErrorContent (errorMsg) {
     return errorMsg   + '<br><br> <div align="right">'
             + ' <button class="btn btn-info" onclick="window.history.back();">&lt;&lt; Go back to previous page</button> '
-            + ' <a class="btn btn-info" href="irBandejaEntrada">Go to home</a></div>';
+            + ' <a class="btn btn-info" href="irBandejaEntrada">ir a inicio</a></div>';
 }
 %>

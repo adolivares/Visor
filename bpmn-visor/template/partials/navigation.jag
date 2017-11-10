@@ -30,8 +30,10 @@ var url = 'https://localhost:9440/admin/services/';
 var server = new carbon.server.Server(url);
 var userManager = new carbon.user.UserManager(server, tenantId);
 var user = session.get("user");
-var DirectorCredito = "";
-var operador = "";
+var Director = "";
+var analista = "";
+var oficial = "";
+var gerente = "";
 
 
 try {
@@ -42,36 +44,69 @@ try {
 }
 
 try {
-    var tmp = userManager.getUserListOfRole("INVESTA.COM/" + GRUPO_DIR_CRED);
+    var tmp = userManager.getUserListOfRole("INVESTA.COM/" + GRUPO_DIR_CUMP);
 
     if (tmp.length == 1) {
-        DirectorCredito = tmp[0].split("/")[1];
+        Director = tmp[0].split("/")[1];
     }
 
     
 } catch(e) {
     log.error(e);
 }
-log.info("DirectorCredito: " + DirectorCredito);
+
 try {
-    var tmp = userManager.getUserListOfRole("INVESTA.COM/" + GRUPO_OPERADOR);
+    var tmp = userManager.getUserListOfRole("INVESTA.COM/" + GRUPO_ANALISTA);
 
     if (tmp.length == 1) {
-        operador = tmp[0].split("/")[1];
+        analista = tmp[0].split("/")[1];
     }
 
     
 } catch(e) {
-    
+    log.error(e);
 }
-if(groups.indexOf("TLCAnalistaCredito") >= 0 || groups.indexOf(GRUPO_ANALISTA) >= 0 ){
+
+try {
+    var tmp = userManager.getUserListOfRole("INVESTA.COM/" + GRUPO_OFICIAL);
+
+    if (tmp.length == 1) {
+        oficial = tmp[0].split("/")[1];
+    }
+
+    
+} catch(e) {
+    log.error(e);
+}
+try {
+    var tmp = userManager.getUserListOfRole("INVESTA.COM/" + GRUPO_GERENTE);
+
+    if (tmp.length == 1) {
+        gerente = tmp[0].split("/")[1];
+    }
+
+    
+} catch(e) {
+    log.error(e);
+}
+if(groups.indexOf(GRUPO_ANALISTA) >= 0 ){
 	bAnalista = true;
 	Usuario_v ='ANALISTA';
-}else if(groups.indexOf("TLCDirCredito") >= 0 || groups.indexOf(GRUPO_DIR_CRED)>= 0){
+}else if(groups.indexOf(GRUPO_DIR_CUMP)>= 0){
 	bDirector = true;
 	Usuario_v ='DIRECTOR';
+}else if(groups.indexOf(GRUPO_OFICIAL)>= 0){
+	bOficial = true;
+	Usuario_v ='OFICIAL';
+}else if(groups.indexOf(GRUPO_GERENTE)>= 0){
+	bGerente = true;
+	Usuario_v ='GERENTE';
 }
-log.info("operador: " + operador);
+
+log.info("analista: " + analista);
+log.info("Director: " + Director);
+log.info("gerente: " + gerente);
+log.info("oficial: " + oficial);
 log.info("groups: " + groups);
 log.info("groups: " + groups.indexOf(GRUPO_ANALISTA));
 %>
@@ -87,25 +122,20 @@ log.info("groups: " + groups.indexOf(GRUPO_ANALISTA));
                 <small class='text-muted'><%=Usuario_v%> </small>  
             </div>  
         </div><!-- media -->  
-		<%if (groups.indexOf("TLCAnalistaCredito") >= 0 || groups.indexOf(GRUPO_ANALISTA) >= 0 || groups.indexOf("TLCDirCredito") >= 0 || groups.indexOf(GRUPO_DIR_CRED)>= 0){%>
+		<!--%if (groups.indexOf(GRUPO_ANALISTA) >= 0 || groups.indexOf(GRUPO_DIR_CUMP)>= 0|| groups.indexOf(GRUPO_OFICIAL)>= 0|| groups.indexOf(GRUPO_GERENTE)>= 0){%-->
+		<%if (bAnalista || bDirector|| bOficial|| bGerente){%>
         <ul class='nav nav-pills nav-stacked'>  
 			<li class='parent active'><a href='#'><i class='fa fa-bars'></i> <span>Visor</span></a>  
                 <ul class='children'>  
-                    <li><a href='irBuscarNombre'>Búsqueda por Nombre</a></li>  
+                    <li ><a href='irBuscarNombre'>Búsqueda por Nombre</a></li>  
                     <li><a href='irBandejaEntrada'>Bandeja de Entrada</a></li>  
                     <li><a href='irConsultaCoincidencias'>Consultas</a></li> 
                     <li><a href='irAutorizaciones'>Autorizaciones</a></li> 
                     <li><a href='irAdministraCatalogos'>Administración de catalogo</a></li> 
                     <li><a href='irPerfilamiento'>Perfilamiento</a></li> 
-                    <li><a href='irConfigurarNotificaciones'>Generador de notificaciones</a></li> 	
+                    <li><a href='irConfigurarNotificaciones'>Generador de notificaciones</a></li> 
                 </ul> 
             </li>
-			<li class='parent active'><a href='#'><i class='fa fa-bars'></i> <span>Listas</span></a>  
-                <ul class='children'>                     				
-					<li><a href='irPerfilamientoBusqueda'>Perfilamiento búsqueda</a></li> 
-					<li><a href='irPerfilamientoBusqueda'>Autorización de perfiles de búsqueda</a></li> 
-                </ul> 
-            </li>  
             <!--li class='parent active'><a href='#'><i class='fa fa-bars'></i> <span>Reporte R29</span></a>  
                 <ul class='children'>  
                     <li><a href='irR29'>Alta</a></li>  
