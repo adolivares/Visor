@@ -46,6 +46,7 @@ include("/model/common.jag");
 	var xmlAplicacion = getAplicacion("");
 	var xmlOperacion = getOperacion("");
 	var xmlOrigen = getOrigen("");
+	var xmlConfiguracion = getConfiguracion("");
 	
  %>
  
@@ -102,7 +103,6 @@ include("/model/common.jag");
 					 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 						<div>Perfil:</div>
 								<select id="slPerfil" name="slPerfil">
-									<option>- Seleccione -</Option>
 									<%=createSelectPerfiles(xmlPerfiles)%>
 								</select>
 					</div>
@@ -113,9 +113,9 @@ include("/model/common.jag");
 								<%=createTableListas(xmlCatListas)%>
 							</tbody>							
 						</table>
+						<br/><br/><br/><br/>
 					</div>					
-					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-					<br/><br/><br/><br/>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 list-config">				
 						<table id="tblConfiguracion" class="table-striped table-bordered table-list">
 							<thead>
 								<th>Perfil</th>
@@ -125,9 +125,11 @@ include("/model/common.jag");
 								<th style="display:none;"></th>
 								<th style="display:none;"></th>
 								<th style="display:none;"></th>
+								<th style="display:none;"></th>
+								<th style="display:none;"></th>
 							</thead>
 							<tbody>
-								
+								<%=createTableConfig(xmlConfiguracion)%>
 							</tbody>							
 						</table>
 					</div>
@@ -138,7 +140,7 @@ include("/model/common.jag");
 							<thead>
 								<th style="display:none;"></th>
 								<th>Categoria</th>
-								<th></th>
+								<th><input type="checkbox" name="cbAllCat" id="cbAllCat"></th>
 								<th>Transaccion</th>
 								<th>Prioridad</th>
 							</thead>
@@ -159,7 +161,7 @@ include("/model/common.jag");
 				
 				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 				<br/><br/>				
-				  <h3>Asignación de Perfiles a aplicaciones</h3>
+				  <h3>Asignación de Perfiles a Aplicaciones</h3>
 				  <hr>
 				  <br/><br/>
 					<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
@@ -269,6 +271,9 @@ include("/model/common.jag");
 		var rowConfig = "";
 		var slct ="";
 		var cbPerfil="";
+		var cbCategoria="";
+		var iCat;
+		var estatus=-1;
 		
 		$('#buscando').hide();
 						
@@ -287,6 +292,23 @@ include("/model/common.jag");
 		
 	});
 	
+	
+	$("#cbAllCat").change(function(){  	 
+		$(".cbCat").prop('checked', $(this).prop("checked")); 
+		
+		if($(this).prop("checked")){
+			iCat = 2;
+			getPrioridad();
+		}else{
+			$('.slPrioridad').prop('disabled', 'disabled');		 
+
+			$('.slPrioridad')
+				.find('option')
+				.remove()
+				.end()
+				.append('<option value="0">- Seleccione -</option>');
+		}
+	});
 	
 	 function getCategorias(_idLista){
 		var payload  = '<dat:qGetMBConsultaListaCategorias xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
@@ -322,9 +344,9 @@ include("/model/common.jag");
 			row += '<tr>';
 			row += '<td style="display:none;">' + id + '</td>';
 			row += '<td>' + categoria + '</td>';
-			row += '<td> <input type="checkbox" name="cbCategoria' + cont +'" id="cbCategoria" value="' + cont + '" onclick="actCategoria(this)" ></td>';
+			row += '<td> <input type="checkbox" name="cbCategoria' + cont +'" id="cbCategoria" value="' + cont + '" onchange="actCategoria(this)" class ="cbCat"></td>';
 			row += '<td> <input type="checkbox" name="cbTransaccion' + cont + '" id="cbTransaccion"></td>';
-			row += '<td><select id="slPrioridad' + cont +'" name="slPrioridad' + cont +'"  onchange="getDatos(this);" disabled><option>- Seleccione -</Option></select></td>';	
+			row += '<td><select id="slPrioridad' + cont +'" name="slPrioridad' + cont +'"  onchange="getDatos(this);" disabled class="slPrioridad" ><option value="0">- Seleccione -</option></select></td>';	
 			row += '</tr>';
 				$('#tblCategoria > tbody').append(row);
 			});
@@ -333,9 +355,11 @@ include("/model/common.jag");
 	
 	//Consulta 
 	function actCategoria (element){
-		if (element.checked){
-			var dato = element.value;
-			slct = dato;			
+		var dato = element.value;
+		slct = dato;
+		iCat = 1;
+		console.log(" Categoria: " + slct);
+		if (element.checked){			
 			getPrioridad();				
 		}else{
 			$('select[name="slPrioridad' + slct + '"]').prop('disabled', 'disabled');		 
@@ -344,9 +368,7 @@ include("/model/common.jag");
 				.find('option')
 				.remove()
 				.end()
-				.append('<option value="0">- Seleccione -</option>')
-				.val('0')
-			;
+				.append('<option value="0">- Seleccione -</option>');
 		}
 	}
 	
@@ -371,14 +393,22 @@ include("/model/common.jag");
 		var id="";
 		var descripcion="";
 		var option;
-		var Select = $('select[name="slPrioridad' + slct + '"]');
+		var Select;
+		if(iCat == 1){
+			var Select = $('select[name="slPrioridad' + slct + '"]');
+		}else{
+			var Select =  $('.slPrioridad');
+		}
+		
+		
 		if($(xmlHttpRequest.responseText).find('resultadoConsultaCatPrioridad').text() != ''){
-			$(xmlHttpRequest.responseText).find('resultadoConsultaCatPrioridad').each(function(){
-	
+			
+			$(xmlHttpRequest.responseText).find('resultadoConsultaCatPrioridad').each(function(){	
 			id =  $(this).find("id_prioridad").text();
 			descripcion = $(this).find("descripcion").text();
 			option = "";
-			option += "<option value='" + id + "'>" + descripcion + "</option>";			
+			option += "<option value='" + id + "'>" + descripcion + "</option>";
+			
 			Select.append(option);
 			Select.prop('disabled', false);
 			});
@@ -388,15 +418,16 @@ include("/model/common.jag");
 	
 
 	function getDatos(elem){
-		
+		/*
 		var idPrioridad = elem.value;
 		var transacion="false";
 		var sPerfil = $("#slPerfil").find("option:selected").text();
-		var idPerfil = $('select[name=slPerfil]').val()	
+		var idPerfil = $('select[name=slPerfil]').val()		
+		
 	
 		var	index = elem.parentNode.parentNode.rowIndex;
 		if ($("input[name=cbTransaccion" + index +"]").is(":checked") ) {
-			alert("true");
+			//alert("true");
 			transacion = "true";
 		}else{
 			transacion = "false";
@@ -412,8 +443,8 @@ include("/model/common.jag");
 		
 		//console.log(" idPrioridad " + idPrioridad);
 		//console.log("idListCateg " + idListCateg + " idPerfil " + idPerfil + " indexList " + indexList + " sLista " +sLista);
-		
-		if ($('table#tblConfiguracion tbody tr').length > 0){		
+	*/	
+	/*	if ($('table#tblConfiguracion tbody tr').length > 0){		
 			$("#tblConfiguracion tbody tr").each(function(){
 				var perfil = $(this).find('td').eq(0).text();
 				var lista = $(this).find('td').eq(1).text();
@@ -440,9 +471,11 @@ include("/model/common.jag");
 		}else{
 			addConfiguration(sPerfil, sLista, sCategoria, idPerfil, idListCateg, transacion, idPrioridad);
 		}
+		
+	*/
 	}
 	
-	function addConfiguration(_sPerfil, _sLista, _sCategoria, _idPerfil, _idListCateg, _transacion, _idPrioridad){
+/*	function addConfiguration(_sPerfil, _sLista, _sCategoria, _idPerfil, _idListCateg, _transacion, _idPrioridad){
 		
 		if(_idPerfil > 0){	
 			var row = "";
@@ -462,10 +495,88 @@ include("/model/common.jag");
 			alert("Seleccione un Perfil");
 			return;
 		}
-	}
+	} */
 	
 	$('#btnAplicar').click(function(){
 		var usuario = "<%=user%>";
+		var cont = 0;
+		var cheked = 0;
+		var categorias=[];
+		var idPerfil = $('select[name=slPerfil]').val();
+		console.log("idPerfil " + idPerfil);
+		var transaccion="false";
+		if(idPerfil == 0){
+			 $("#idMsg").html('<div class="alert alert-danger">'+
+				  'Seleccione un Perfil'+
+				  '</div>');
+			$('#ModalInfo').modal('show');
+			return;
+		}	
+		$("#tblCategoria tbody tr").each(function(){
+			cont++;
+			var indexC = $(this).index()
+			rowConfig = indexC;
+			//estatus =-3;
+			
+			var datos={};			
+			if ($("input[name=cbCategoria" + cont +"]").is(":checked") ) {
+				cheked++;
+				var listaCat = $(this).find('td').eq(0).text();
+				cbCategoria = $("input[name=cbCategoria" + cont +"]").val();
+				
+				if ($("input[name=cbTransaccion" + cont +"]").is(":checked") ) {
+					transaccion = "true";
+				}else{
+					transaccion = "false";
+				}				
+				
+				var idPrioridad = $('select[name=slPrioridad' + cont +']').val();
+				console.log("idPrioridad " + idPrioridad);
+				if(idPrioridad == "0"){
+					 $("#idMsg").html('<div class="alert alert-danger">'+
+						  'Seleccione una Prioridad'+
+						  '</div>');
+					$('#ModalInfo').modal('show');
+					categorias=[];
+					return false;
+				}	
+				
+				datos.idPerfil = idPerfil;
+				datos.listaCat = listaCat;
+				datos.transaccion = transaccion;
+				datos.idPrioridad = idPrioridad;				
+				datos.usuario = usuario;				
+				datos.cbCategoria = cbCategoria;
+				datos.slPrioridad = cont;
+				categorias.push(datos);
+				
+				//console.log("perfil " + perfil + " lista " + lista + " categoria " + categoria);
+				//aplicaConfiguracion(idPerfil, listaCat, transaccion, idPrioridad, usuario,cbCategoria);	
+			}
+						
+			
+		
+		//console.log("Estatus " +estatus);	
+				
+		});
+		
+		if(cheked > 0){
+			var i = 0;
+			for(categoria in categorias){
+				aplicaConfiguracion(categorias[categoria].idPerfil, categorias[categoria].listaCat, categorias[categoria].transaccion, categorias[categoria].idPrioridad, categorias[categoria].usuario,categorias[categoria].cbCategoria,categorias[categoria].slPrioridad);	
+				i++;
+			}
+		}else{
+			 $("#idMsg").html('<div class="alert alert-danger">'+
+				  'Seleccione una categoria'+
+				  '</div>');
+			$('#ModalInfo').modal('show');
+			return;
+		}
+		
+		
+		
+	/*
 		if ($('table#tblConfiguracion tbody tr').length > 0){	
 			$("#tblConfiguracion tbody tr").each(function(){
 					var perfil = $(this).find('td').eq(3).text();
@@ -480,10 +591,11 @@ include("/model/common.jag");
 		}else{
 			alert("No existen Configuraciones de Perfiles de Búsqueda para aplicar.");
 		}
+	*/
 		
 	});
 	
-	function aplicaConfiguracion(_perfil, _lista, _transaccion, _prioridad, _prioridad, _usuario, _rowConfig){
+	function aplicaConfiguracion(_perfil, _lista, _transaccion, _prioridad, _usuario, cbCategoria, slPrioridad){
 		var payload  = '<dat:qInsertaConfiguracion xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
 			payload += '<dat:idPerfil>' + _perfil + '</dat:idPerfil>';
 			payload += '<dat:idlistaCateg>' + _lista + '</dat:idlistaCateg>';
@@ -499,36 +611,42 @@ include("/model/common.jag");
 			type: 'post',
 			headers: {'Destino':'BpmnVisorSEGListas', 'SOAPAction':'urn:qInsertaConfiguracion'},
 			dataType: 'xml',
-			complete: configuraciondResponse,
+			complete: function configuraciondResponse(xmlHttpRequest, status){
+				 //alert(xmlHttpRequest.responseText);
+				 estatus = -2;
+				$(xmlHttpRequest.responseText).find('resultadoConfiguracion').each(function(){
+				estatus = $(this).find("estatus").text();
+				
+				 if($(this).find("estatus").text()==1){
+					  $("#idMsg").html('<div class="alert alert-success">'+
+					  'Se ha realizado la petición ' +
+					  '</div>');
+				//	  var tr = $("#tblConfiguracion >tbody").find("tr").eq(rowConfig);
+				//	  tr.remove();
+				
+				 $("input[name=cbCategoria" + cbCategoria +"]").attr('checked',false);
+				 $('select[name="slPrioridad' + slPrioridad + '"]').prop('disabled', true);
+					  
+				}else if($(this).find("estatus").text()==0){
+					  $("#idMsg").html('<div class="alert alert-danger">'+
+					  'La configuracion ya existe'+
+					  '</div>');
+				}else {
+					  $("#idMsg").html('<div class="alert alert-danger">'+
+					  'Sucedio un error '+$(this).find("codigoError").text()+
+					  '</div>');
+				 }
+				 $('#ModalInfo').modal('show');
+				 
+				});
+			
+			},
 			error: function (xhr, status, error) {},
 			data: payload
 		});  
 	}
 	
-	function configuraciondResponse(xmlHttpRequest, status){
-		 //alert(xmlHttpRequest.responseText);
-		$(xmlHttpRequest.responseText).find('resultadoConfiguracion').each(function(){
-		 if($(this).find("estatus").text()==1){
-			  $("#idMsg").html('<div class="alert alert-success">'+
-			  'Se ha realizado la petición ' +
-			  '</div>');
-			  var tr = $("#tblConfiguracion >tbody").find("tr").eq(rowConfig);
-			  tr.remove();
-			  
-		}else if($(this).find("estatus").text()==0){
-			  $("#idMsg").html('<div class="alert alert-danger">'+
-			  'La configuracion ya existe'+
-			  '</div>');
-		}else {
-			  $("#idMsg").html('<div class="alert alert-danger">'+
-			  'Sucedio un error '+$(this).find("codigoError").text()+
-			  '</div>');
-		 }
-		 $('#ModalInfo').modal('show');
-		 
-		});
-		return true;
-	}
+	
 	
 	function validaDatos(element){
 		var valido=false;
@@ -559,6 +677,7 @@ include("/model/common.jag");
 		if(valido){
 			$(this).attr('checked', false);
 			$('#ModalInfo').modal('show');
+			return;
 		}
 	}
 	
@@ -592,35 +711,65 @@ include("/model/common.jag");
 			$('#ModalInfo').modal('show');
 			return;
 		}
+		 var perfiles =[];
 		
+		 var cont = 0;
 		$('input[name=cbPerfil]').each(function(){
+			cont++;
+			cbPerfil = "";
+			var idPerfil="";
+			var data = {};
+			 
 			if ($(this).is(':checked') ) {
-				bPerfil = true;
+				bPerfil = true;				
 				cbPerfil = $(this).val();	
+				console.log("cbPerfil" +cbPerfil );
 				var indx = $(this).parent().parent().index();	
 				var tr = $("#tblPerfil > tbody").find("tr").eq(indx);
-				var idPerfil = tr.find("td").eq(0).text();	
+				idPerfil = tr.find("td").eq(0).text();	
 				console.log("idOrigen " + idOrigen);
-				altaAsignacion(idAplicacion, idOperacion, idOrigen, idPerfil);
-			}
 			
-			if(!bPerfil){
-				$("#idMsg").html('<div class="alert alert-danger">'+
-				'Seleccione un Perfil'+
-				'</div>');
-				return;
+				data.adAplic = idAplicacion;
+				data.idOperacion = idOperacion;
+				data.idOrigen = idOrigen;
+				data.idPerfil = idPerfil;
+				data.cbPerfil = cbPerfil;
+
+				perfiles.push(data);
+				
+				
+		//		altaAsignacion(idAplicacion, idOperacion, idOrigen, idPerfil, cbPerfil);
 			}
+			//console.log(perfiles[cont].adAplic);
+			
 			
 		});
+		
+		if(!bPerfil){
+			$("#idMsg").html('<div class="alert alert-danger">'+
+			'Seleccione un Perfil'+
+			'</div>');
+			$('#ModalInfo').modal('show');
+			return;
+		}
+		
+		if(cont > 0){
+			var i = 0;
+			for(perfil in perfiles){				
+				console.log(i  +"Datos idPerfil " + perfiles[i].idPerfil); 
+				altaAsignacion(perfiles[i].adAplic, perfiles[i].idOperacion, perfiles[i].idOrigen, perfiles[i].idPerfil, perfiles[i].cbPerfil);
+				i++
+			}
+		}
 		
 		
 		
 		
 	});
 	
-		function altaAsignacion(_idAplicacion, _idOperacion, _idOrigen, _idPerfil){
+		function altaAsignacion(_idAplicacion, _idOperacion, _idOrigen, _idPerfil, cbPerfil){
 			var usuario = "<%=user%>";
-			console.log("idOrigen " + _idOrigen);
+		//	console.log("idOrigen " + _idOrigen);
 			
 		var payload  = '<dat:qInsertaAsignacionPerfil xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
 			payload += '<dat:idAplicacion>' + _idAplicacion + '</dat:idAplicacion>';
@@ -630,19 +779,40 @@ include("/model/common.jag");
 			payload += '<dat:usuarioAlta>' + usuario + '</dat:usuarioAlta>';
 			payload += '</dat:qInsertaAsignacionPerfil>';			
 			
-			console.log("payload " + payload);
+		//	console.log("payload " + payload);
 			
 		$.ajax({
 			url: '/commons/postSOAP',
 			type: 'post',
 			headers: {'Destino':'BpmnVisorSEGListas', 'SOAPAction':'urn:qInsertaAsignacionPerfil'},
 			dataType: 'xml',
-			complete: asignacionResponse,
+			complete: function asignacionResponse(xmlHttpRequest, status){
+					$(xmlHttpRequest.responseText).find('qInsertaAsignacionResponse').each(function(){
+					 if($(this).find("estatus").text()==1){
+						  $("#idMsg").html('<div class="alert alert-success">'+
+						  'Se ha realizado la petición ' +
+						  '</div>');
+						  var cb = "#cbPerfil" + cbPerfil;
+						//  console.log(cb);
+						   $(cb).attr('checked',false);
+					}else if($(this).find("estatus").text()==0){
+						  $("#idMsg").html('<div class="alert alert-danger">'+
+						  'La configuracion ya existe'+
+						  '</div>');
+					}else {
+						  $("#idMsg").html('<div class="alert alert-danger">'+
+						  'Sucedio un error '+$(this).find("codigoError").text()+
+						  '</div>');
+					 }
+					 $('#ModalInfo').modal('show');
+					 
+					});
+				},
 			error: function (xhr, status, error) {},
 			data: payload
 		});  
 	}
-	
+	/*
 	function asignacionResponse(xmlHttpRequest, status){
 		 //alert(xmlHttpRequest.responseText);
 		$(xmlHttpRequest.responseText).find('qInsertaAsignacionResponse').each(function(){
@@ -650,7 +820,9 @@ include("/model/common.jag");
 			  $("#idMsg").html('<div class="alert alert-success">'+
 			  'Se ha realizado la petición ' +
 			  '</div>');
-			   $("#cbPerfil" + cbPerfil).attr('checked',false);
+			  var cb = "#cbPerfil" + cbPerfil;
+			  console.log(cb);
+			   $(cb).attr('checked',false);
 		}else if($(this).find("estatus").text()==0){
 			  $("#idMsg").html('<div class="alert alert-danger">'+
 			  'La configuracion ya existe'+
@@ -663,7 +835,6 @@ include("/model/common.jag");
 		 $('#ModalInfo').modal('show');
 		 
 		});
-		return true;
 	}
-	
+	*/
 </script>

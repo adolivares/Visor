@@ -125,7 +125,34 @@
       <param name="usuarioAlta" ordinal="6" sqlType="STRING"/>
       <param name="estatus" ordinal="1" sqlType="INTEGER" type="OUT"/>
    </query>
-   <operation name="qGetMBConsultaAplicacion">
+   <query id="qGetMBConsultaConfiguracion" useConfig="SEGListas">
+      <sql>{? = call VISOR_PKG_SEGL_LISTAS.get_segl_config_perfil(?)}</sql>
+      <result element="getMBConsultaConfiguracion" rowName="resultadoConsultaConfiguracion">
+         <element column="ID_CONFIGURACION_PERFIL" name="id_configuracion_perfil" xsdType="string"/>
+         <element column="ID_PERFIL" name="id_perfil" xsdType="string"/>
+         <element column="PERFIL" name="perfil" xsdType="string"/>
+         <element column="ID_CATEG_LISTAS" name="id_categ_listas" xsdType="string"/>
+         <element column="LISTA" name="lista" xsdType="string"/>
+         <element column="CATEGORIA" name="categoria" xsdType="string"/>
+         <element column="TRANSACCION" name="transaccion" xsdType="string"/>
+         <element column="ID_PRIORIDAD" name="id_prioridad" xsdType="string"/>
+         <element column="PRIORIDAD" name="prioridad" xsdType="string"/>
+         <element column="ESTATUS_APROBACION" name="estatus_aprobacion" xsdType="string"/>
+         <element column="ESTATUS" name="estatus" xsdType="string"/>
+         <element column="FECHA_ALTA" name="fecha_alta" xsdType="string"/>
+         <element column="USUARIO_ALTA" name="usuario_alta" xsdType="string"/>
+         <element column="FECHA_MODIFICACION" name="fecha_modificacion" xsdType="string"/>
+         <element column="USUARIO_MODIFICACION" name="usuario_modificacion" xsdType="string"/>
+      </result>
+      <param defaultValue="#{NULL}" name="idConfiguracion" ordinal="2" sqlType="STRING"/>
+      <param name="configuracion" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
+   </query> 
+   <operation name="qGetMBConsultaConfiguracion">
+      <call-query href="qGetMBConsultaConfiguracion">
+         <with-param name="idConfiguracion" query-param="idConfiguracion"/>
+      </call-query>
+   </operation>
+    <operation name="qGetMBConsultaAplicacion">
       <call-query href="qGetMBConsultaAplicacion">
          <with-param name="idAplicacion" query-param="idAplicacion"/>
       </call-query>
