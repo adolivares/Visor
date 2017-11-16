@@ -6,10 +6,11 @@
       <property name="password">Investa-14</property>
    </config>
    <query id="getComentariosLGris" useConfig="MSSQL">
-      <sql>SELECT NOMBRE, OBSERVATIONS, CONVERT(char(10), OBSERVATIONS_DATE, 103) AS OBSERVATIONS_DATE, CONVERT(char(5), OBSERVATIONS_DATE, 108) AS HORA
-			  FROM MONITOR.dbo.TB_501_OBS
+<sql>SELECT CONCAT(NOMBRE, ' ', PATERNO, ' ', MATERNO) AS NOMBRE, OBSERVATIONS, CONVERT(char(10), OBSERVATIONS_DATE, 103) AS OBSERVATIONS_DATE, CONVERT(char(5), OBSERVATIONS_DATE, 108) AS HORA
+			  FROM MONITOR.dbo.TB_566_OBS
 			 WHERE TB_CORR = ?
 			 ORDER BY OBSERVATIONS_DATE DESC</sql>  
+       
 	  <result element="getComentariosLGrisResp" rowName="resultadoComentariosLGris">
 		 <element column="nombre" name="nombre" xsdType="string"/>
 		 <element column="observations" name="observations" xsdType="string"/> 
@@ -19,10 +20,10 @@
       <param name="tbCorr" ordinal="1" sqlType="INTEGER"/>	  
    </query>
     <query id="getComentariosLNegra" useConfig="MSSQL">
-      <sql>SELECT CONCAT(NOMBRE, ' ', PATERNO, ' ', MATERNO) AS NOMBRE, OBSERVATIONS, CONVERT(char(10), OBSERVATIONS_DATE, 103) AS OBSERVATIONS_DATE, CONVERT(char(5), OBSERVATIONS_DATE, 108) AS HORA
-			  FROM MONITOR.dbo.TB_566_OBS
+      <sql>SELECT NOMBRE, OBSERVATIONS,OBSERVATIONS_DATE, CONVERT(char(5), OBSERVATIONS_DATE, 108) AS HORA
+			  FROM MONITOR.dbo.TB_501_OBS
 			 WHERE TB_CORR = ?
-			 ORDER BY OBSERVATIONS_DATE DESC</sql>  
+			 ORDER BY OBSERVATIONS_DATE DESC</sql>   
 	  <result element="getComentariosLNegraResp" rowName="resultadoComentariosLNegra">
 		 <element column="nombre" name="nombre" xsdType="string"/>
 		 <element column="observations" name="observations" xsdType="string"/> 
@@ -77,7 +78,7 @@
 	  <param name="tbCorr" ordinal="3" sqlType="STRING"/>	  
    </query>
    <query id="qInsertaComentariosLS" returnUpdatedRowCount="true" useConfig="MSSQL">
-      <sql>INSERT INTO PLD_SITI_OBS SELECT PER.ID_REG_PERSONA,PER.CARACTER,PER.PERSONA,PER.PATERNO,PER.MATERNO,PER.NOMBRE,PER.RFC,PER.RELACION,PER.DOMICILIO,PER.COMPLEMENTARIOS,EXP.CNBV_NUM_OFICIO,EXP.CNBV_NUM_EXPEDIENTE,EXP.CNBV_SOL_SIARA,EXP.CNBV_FOLIO,EXP.CNBV_OFICIO_YEAR,EXP.CNBV_AREA_CLAVE,EXP.CNBV_AREA_DESC,EXP.CNBV_FECHA_PUB,EXP.CNBV_DIAS_PLAZO,EXP.AUTORIDAD_NOMBRE,EXP.AUTORIDAD_ESP_NOMBRE,EXP.NOMBRE_SOLICITANTE,EXP.REFERENCIA,EXP.REFERENCIA1,EXP.REFERENCIA2,?,GETDATE(), ? FROM SITI_SOL_PERSONAS PER INNER JOIN SITI_SOLICITUD_ESP SE ON PER.ID_REG_SOL_ESP=SE.ID_REG_SOL_ESP INNER JOIN SITI_EXPEDIENTE EXP ON SE.ID_EXPEDIENTE=EXP.ID_EXPEDIENTE WHERE PER.ID_REG_PERSONA=?</sql>  
+      <sql>INSERT INTO TB_566_OBS SELECT TB_CORR,TB_DATEADD,TB_DAYS,C55016,NOMBRE,PATERNO,MATERNO,CARACTER,COMPLEMENTARIOS,TIPOPERSONA,REFERENCIA,CNBV_NUMEROEXPEDIENT, ?, GETDATE(), ? FROM TB_566 WHERE TB_CORR = ?</sql>  
 	  <result element="qInsertaComentariosLSResp" rowName="respComentariosLS">
 		<element column="1" name="Value" xsdType="integer"/>
       </result>
@@ -86,7 +87,7 @@
 	  <param name="idReg" ordinal="3" sqlType="STRING"/>	  
    </query>
     <query id="qInsertaComentariosWC" returnUpdatedRowCount="true" useConfig="MSSQL">
-      <sql>INSERT INTO MONITORP.dbo.VWWORLDCHECK_OBS SELECT UID,FIRST_NAME,LAST_NAME,ALIASES,ALTERNATIVE_SPELLING,CATEGORY,TITLE,SUB_CATEGORY,POSITION,AGE,DATE_OF_BIRTH,PLACE_OF_BIRTH,PASSPORTS,SOCIAL_SECURITY,LOCATIONS,COUNTRIES,TYPE_OF_PERSON,FURTHER_INFORMATION,ENTERED_DATE,UPDATED_DATE,KEYWORDS, ?, GETDATE(), ? FROM MONITORP.dbo.VWWORLDCHECK WHERE UID = ?</sql>  
+      <sql>INSERT INTO TB_566_OBS SELECT TB_CORR,TB_DATEADD,TB_DAYS,C55016,NOMBRE,PATERNO,MATERNO,CARACTER,COMPLEMENTARIOS,TIPOPERSONA,REFERENCIA,CNBV_NUMEROEXPEDIENT, ?, GETDATE(), ? FROM TB_566 WHERE TB_CORR = ?</sql>  
 	  <result element="qInsertaComentariosLWCResp" rowName="respComentariosWC">
 		<element column="1" name="Value" xsdType="integer"/>
       </result>
@@ -94,15 +95,7 @@
 	  <param defaultValue="#{NULL}" name="validation" ordinal="2" sqlType="STRING"/>	  
 	  <param name="uid" ordinal="3" sqlType="STRING"/>	  
    </query>
-   <query id="qInsertaComentariosWCP" returnUpdatedRowCount="true" useConfig="MSSQL">
-      <sql>INSERT INTO MONITORP.dbo.VWWORLDCHECKP_OBS SELECT UID,FIRST_NAME,LAST_NAME,ALIASES,ALTERNATIVE_SPELLING,CATEGORY,TITLE,SUB_CATEGORY,POSITION,AGE,DATE_OF_BIRTH,PLACE_OF_BIRTH,PASSPORTS,SOCIAL_SECURITY,LOCATIONS,COUNTRIES,TYPE_OF_PERSON,FURTHER_INFORMATION,ENTERED_DATE,UPDATED_DATE,KEYWORDS, ?, GETDATE(),? FROM MONITORP.dbo.VWWORLDCHECKP WHERE UID = ?</sql>  
-	  <result element="qInsertaComentariosLWCPResp" rowName="respComentariosWCP">
-		<element column="1" name="Value" xsdType="integer"/>
-      </result>
-      <param name="obs" ordinal="1" sqlType="STRING"/>	  
-	  <param defaultValue="#{NULL}" name="validation" ordinal="2" sqlType="STRING"/>	  
-	  <param name="uid" ordinal="3" sqlType="STRING"/>	  
-   </query>    
+    
    <query id="getDetalleLGris" useConfig="MSSQL">
       <sql>SELECT TB_CORR,TB_DATEADD,TB_DAYS,C55016,NOMBRE,PATERNO,MATERNO,CARACTER,COMPLEMENTARIOS,TIPOPERSONA,REFERENCIA,CNBV_NUMEROEXPEDIENT 
 			FROM TB_566 WHERE TB_CORR =?</sql>  
@@ -179,8 +172,7 @@
 				TYPE_OF_PERSON,FURTHER_INFORMATION,ENTERED_DATE,UPDATED_DATE,KEYWORDS 
 			FROM MONITORP.dbo.VWWORLDCHECK WHERE UID = ?</sql>  
 	  <result element="getDetalleLWC" rowName="getComentariosLWCResp">
-		<element column="uid" name="uid" xsdtype="integer"/>
-		<element column="first_name" name="first_name" xsdtype="string"/>
+		<element column="first_name" name="first_name" xsdtype="integer"/>
 		<element column="last_name" name="last_name" xsdtype="string"/>
 		<element column="aliases" name="aliases" xsdtype="string"/>
 		<element column="alternative_spelling" name="alternative_spelling" xsdtype="string"/>
@@ -234,84 +226,6 @@
       </result>
       <param name="idReg" ordinal="1" sqlType="STRING"/>	  
    </query>
-   <query id="qInsertaObsBusqueda" returnUpdatedRowCount="true" useConfig="MSSQL">
-      <sql>INSERT INTO OBS_BUSQUEDA_CAB (NOMBRE,OBSERVACIONES,USUARIO_ALTA,FECHA_ALTA,USUARIO_ACTUALIZACION,FECHA_ACTUALIZACION) VALUES (?,?,?,GETDATE(),NULL,NULL)</sql>  
-	  <result element="getObsBusquedaResp" rowName="resultadoObsBusqueda">
-		<element column="1" name="Value" xsdType="integer"/>
-      </result>
-      <param name="nombre" ordinal="1" sqlType="STRING"/>  
-      <param name="observaciones" ordinal="2" sqlType="STRING"/>  
-      <param name="usuario_alta" ordinal="3" sqlType="STRING"/>  
-   </query>
-   <query id="getObsBusquedaNombre" useConfig="MSSQL">
-      <sql>SELECT * FROM OBS_BUSQUEDA_CAB WHERE NOMBRE = ?</sql>  
-	  <result element="getObsBusquedaResp" rowName="resultadoObsBusqueda">
-		<element column="id" name="id" xsdType="string"/>
-		<element column="observaciones" name="observaciones" xsdType="string"/>
-      </result>
-      <param name="nombre" ordinal="1" sqlType="STRING"/>  
-   </query>
-     <query id="qActualizaObsBusqueda" returnUpdatedRowCount="true" useConfig="MSSQL">
-      <sql>UPDATE OBS_BUSQUEDA_CAB SET OBSERVACIONES=?,USUARIO_ACTUALIZACION=?,FECHA_ACTUALIZACION=GETDATE() WHERE ID=?</sql>
-      <result element="updateObsBusquedaResp" rowName="resultadoObsBusqueda">
-        <element column="1" name="Value" xsdType="integer"/>
-      </result>
-      <param defaultValue="#{NULL}" name="obs" ordinal="1" sqlType="STRING"/>
-      <param defaultValue="#{NULL}" name="usuario" ordinal="2" sqlType="STRING"/>
-      <param defaultValue="#{NULL}" name="id" ordinal="3" sqlType="STRING"/>
-   </query>
-    <query id="qEliminaObsBusquedaDet" returnUpdatedRowCount="true" useConfig="MSSQL">
-      <sql>DELETE OBS_BUSQUEDA_DET WHERE ID=?</sql>
-      <result element="deleteObsBusquedaDetResp" rowName="resultadoObsBusquedaDet">
-        <element column="1" name="Value" xsdType="integer"/>
-      </result>
-      <param name="id" ordinal="1" sqlType="STRING"/>     
-   </query>
-   <query id="qInsertaObsBusquedaDet" returnUpdatedRowCount="true" useConfig="MSSQL">
-      <sql>INSERT INTO OBS_BUSQUEDA_DET (ID,FOLIO,NOMBRE,LISTA,PORCENTAJE) VALUES (?,?,?,?,?)</sql>  
-	  <result element="qInsertaObsBusquedaDetResp" rowName="resultadoInsertBusquedaDet">
-		<element column="1" name="Value" xsdType="integer"/>
-      </result>
-      <param name="id" ordinal="1" sqlType="STRING"/>	  
-	  <param name="folio" ordinal="2" sqlType="STRING"/>	  
-	  <param name="nombre" ordinal="3" sqlType="STRING"/>	  
-	  <param name="lista" ordinal="4" sqlType="STRING"/>	  
-	  <param name="porcentaje" ordinal="5" sqlType="STRING"/>	  
-   </query>  
-   <operation name="qInsertaObsBusquedaDet">
-      <call-query href="qInsertaObsBusquedaDet">
-         <with-param name="id" query-param="id"/>
-         <with-param name="folio" query-param="folio"/>
-         <with-param name="nombre" query-param="nombre"/>
-         <with-param name="lista" query-param="lista"/>
-         <with-param name="porcentaje" query-param="porcentaje"/>
-      </call-query>
-   </operation>
-   <operation name="qEliminaObsBusquedaDet">
-      <call-query href="qEliminaObsBusquedaDet">
-         <with-param name="id" query-param="id"/>
-      </call-query>
-   </operation>
-   <operation name="qActualizaObsBusqueda">
-      <call-query href="qActualizaObsBusqueda">
-         <with-param name="obs" query-param="obs"/>
-         <with-param name="usuario" query-param="usuario"/>
-         <with-param name="id" query-param="id"/>
-      </call-query>
-   </operation>
-   <operation name="getObsBusquedaNombre">
-      <call-query href="getObsBusquedaNombre">
-         <with-param name="nombre" query-param="nombre"/>
-      </call-query>
-   </operation>
-    <operation name="qInsertaObsBusqueda">
-      <call-query href="qInsertaObsBusqueda">
-         <with-param name="nombre" query-param="nombre"/>
-         <with-param name="observaciones" query-param="observaciones"/>
-         <with-param name="usuario_alta" query-param="usuario_alta"/>
-      </call-query>
-   </operation>
-   
    <operation name="getDetalleLWC">
       <call-query href="getDetalleLWC">
          <with-param name="uid" query-param="uid"/>
@@ -346,13 +260,6 @@
          <with-param name="uid" query-param="uid"/>
       </call-query>
    </operation>
-   <operation name="qInsertaComentariosWCP">
-      <call-query href="qInsertaComentariosWCP">
-         <with-param name="obs" query-param="obs"/>
-         <with-param name="validation" query-param="validation"/>
-         <with-param name="uid" query-param="uid"/>
-      </call-query>
-   </operation>   
    <operation name="qInsertaComentariosLN">
       <call-query href="qInsertaComentariosLN">
          <with-param name="obs" query-param="obs"/>

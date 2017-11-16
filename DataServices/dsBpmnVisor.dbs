@@ -35,7 +35,7 @@
          <call-query href="qGetMBConsultaCliente">
             <with-param name="idConsulta" query-param="ID_MB_CONSULTA"/>
          </call-query>
-		 <call-query href="qGetMBConsultaBeneficiario">
+         <call-query href="qGetMBConsultaBeneficiario">
             <with-param name="idConsulta" query-param="ID_MB_CONSULTA"/>
          </call-query>
       </result>
@@ -93,7 +93,7 @@
       <param name="cliente" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
    </query>
    <query id="qConsultaBandejaEntrada" useConfig="visor">
-      <sql>{? = call VISOR_PKG_BPMN_VISOR.get_visor_bandeja(?,?)}</sql>
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.get_visor_bandeja(?,?,?)}</sql>
       <result element="getBandejaEntrada" rowName="resultadoBandeja">
          <element column="ID_BANDEJA_VISOR" name="id_bandeja_visor" xsdType="string"/>
          <element column="ID_RELACION" name="id_relacion" xsdType="string"/>
@@ -101,6 +101,9 @@
          <element column="FECHA_ALTA" name="fecha_alta" xsdType="string"/>
          <element column="FECHA_MODIFICADO" name="fecha_modificado" xsdType="string"/>
          <element column="ESTATUS" name="estatus" xsdType="string"/>
+         <element column="ESTATUS_CALIFICA" name="estatus_califica" xsdType="string"/>
+         <element column="ESTATUS_AUTORIZA" name="estatus_autoriza" xsdType="string"/>
+         <element column="USUARIO_MODIFICA" name="usuario_modifica" xsdType="string"/>
          <call-query href="qGetMBConsulta">
             <with-param name="idConsulta" query-param="ID_MB_CONSULTA"/>
          </call-query>
@@ -110,10 +113,11 @@
       </result>
       <param defaultValue="#{NULL}" name="idMbConsulta" ordinal="2" sqlType="STRING"/>
       <param defaultValue="#{NULL}" name="relacion" ordinal="3" sqlType="STRING"/>
+      <param defaultValue="#{NULL}" name="idAutoriza" ordinal="4" sqlType="STRING"/>
       <param name="cliente" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
    </query>
    <query id="qEscalaDelega" useConfig="visor">
-      <sql>{? = call VISOR_PKG_BPMN_VISOR.do_escalar_delegar(?,?,?,?,?,?,?)}</sql>
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.do_escalar_delegar(?,?,?,?,?,?,?,?)}</sql>
       <result element="doEscalaDelegaResponse" rowName="resultado">
          <element column="estatus" name="estatus" xsdType="string"/>
       </result>
@@ -124,6 +128,7 @@
       <param name="gerent" ordinal="6" sqlType="STRING"/>
       <param name="ofici" ordinal="7" sqlType="STRING"/>
       <param name="just" ordinal="8" sqlType="STRING"/>
+      <param name="usu" ordinal="9" sqlType="STRING"/>
       <param name="estatus" ordinal="1" sqlType="INTEGER" type="OUT"/>
    </query>
    <query id="qConsultaCrmCoincidencia" useConfig="visor">
@@ -203,6 +208,49 @@
       <param defaultValue="#{NULL}" name="idConsulta" ordinal="2" sqlType="STRING"/>
       <param name="cliente" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
    </query>
+   <query id="qActualizaEvaluacion" useConfig="visor">
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.do_update_evalucacion(?,?)}</sql>
+      <result element="doActualizaEvaluacionResponse" rowName="resultado">
+         <element column="estatus" name="estatus" xsdType="string"/>
+      </result>
+      <param name="idConsulta" ordinal="2" sqlType="INTEGER"/>
+      <param name="validacion" ordinal="3" sqlType="INTEGER"/>
+      <param name="estatus" ordinal="1" sqlType="INTEGER" type="OUT"/>
+   </query>
+   <query id="qConsultaEstatusAutoriaza" useConfig="visor">
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.get_mb_consulta_estatus_auto(?)}</sql>
+      <result element="getRelacion" rowName="resultadoRelacion">
+         <element column="ID_BANDEJA_VISOR" name="id_bandeja_entrada" xsdType="string"/>
+         <element column="ID_MB_CONSULTA" name="id_mb_consulta" xsdType="string"/>
+         <element column="ESTATUS" name="estatus" xsdType="string"/>
+         <element column="ESTATUS_CALIFICA" name="estatus_califica" xsdType="string"/>
+         <element column="ESTATUS_AUTORIZA" name="estatus_autoriza" xsdType="string"/>
+      </result>
+      <param defaultValue="#{NULL}" name="idBandeja" ordinal="2" sqlType="STRING"/>
+      <param name="cliente" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
+   </query>
+   <query id="qActualizaAutorizacion" useConfig="visor">
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.do_update_autoriza(?,?)}</sql>
+      <result element="doActualizaAutorizacionResponse" rowName="resultado">
+         <element column="estatus" name="estatus" xsdType="string"/>
+      </result>
+      <param name="idBandeja" ordinal="2" sqlType="INTEGER"/>
+      <param name="autoriza" ordinal="3" sqlType="STRING"/>
+      <param name="estatus" ordinal="1" sqlType="INTEGER" type="OUT"/>
+   </query>
+   <query id="qConsultaDetalle" useConfig="visor">
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.get_mb_get_detalle(?,?)}</sql>
+      <result element="getDetalle" rowName="resultadoDetalle">
+         <element column="ID_MB_CONSULTA" name="id_mb_consulta" xsdType="string"/>
+         <element column="NOMBRE_ENCONTRADO" name="nombre_encontrado" xsdType="string"/>
+         <element column="TIPO_LISTA" name="tipo_lista" xsdType="string"/>
+         <element column="TABLA_CORRELATIVO" name="tabla_correlativo" xsdType="string"/>
+         <element column="PORCENTAJE_COINCIDENCIA" name="porcentaje_coincidencia" xsdType="string"/>
+      </result>
+      <param defaultValue="#{NULL}" name="nombre" ordinal="2" sqlType="STRING"/>
+      <param defaultValue="#{NULL}" name="tipo" ordinal="3" sqlType="STRING"/>
+      <param name="cliente" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
+   </query>
    <operation name="qConsultaEvaluacion">
       <call-query href="qConsultaEvaluacion">
          <with-param name="idEvaluacion" query-param="idEvaluacion"/>
@@ -233,6 +281,7 @@
       <call-query href="qConsultaBandejaEntrada">
          <with-param name="idMbConsulta" query-param="idMbConsulta"/>
          <with-param name="relacion" query-param="relacion"/>
+         <with-param name="idAutoriza" query-param="idAutoriza"/>
       </call-query>
    </operation>
    <operation name="doEscalaDelega">
@@ -244,6 +293,7 @@
          <with-param name="gerent" query-param="gerent"/>
          <with-param name="ofici" query-param="ofici"/>
          <with-param name="just" query-param="just"/>
+         <with-param name="usu" query-param="usu"/>
       </call-query>
    </operation>
    <operation name="qGetMBConsultaBatch">
@@ -259,6 +309,29 @@
    <operation name="qGetMBConsultaBeneficiarioBatch">
       <call-query href="qGetMBConsultaBeneficiarioBatch">
          <with-param name="idConsulta" query-param="idConsulta"/>
+      </call-query>
+   </operation>
+   <operation name="qActualizaEvaluacion">
+      <call-query href="qActualizaEvaluacion">
+         <with-param name="idConsulta" query-param="idConsulta"/>
+         <with-param name="validacion" query-param="validacion"/>
+      </call-query>
+   </operation>
+   <operation name="qConsultaEstatusAutoriaza">
+      <call-query href="qConsultaEstatusAutoriaza">
+         <with-param name="idBandeja" query-param="idBandeja"/>
+      </call-query>
+   </operation>
+   <operation name="qActualizaAutorizacion">
+      <call-query href="qActualizaAutorizacion">
+         <with-param name="idBandeja" query-param="idBandeja"/>
+         <with-param name="autoriza" query-param="autoriza"/>
+      </call-query>
+   </operation>
+   <operation name="qConsultaDetalle">
+      <call-query href="qConsultaDetalle">
+         <with-param name="nombre" query-param="nombre"/>
+         <with-param name="tipo" query-param="tipo"/>
       </call-query>
    </operation>
 </data>
