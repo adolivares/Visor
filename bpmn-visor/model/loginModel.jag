@@ -17,7 +17,7 @@
 var loginFailed = session.get("loginFailed");
 var message = "";
 if(loginFailed){
-	message = "Usuario or contraseña incorrectos!";
+	message = "Usuario o contraseña incorrectos!";
 	session.remove("loginFailed");
 }
 %>

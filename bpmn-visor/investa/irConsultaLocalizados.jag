@@ -84,8 +84,8 @@ include("/model/common.jag");
 			</form>
                 <div id="divCargando" style="display: none;" align="center">
                     <img alt="" src="resources/plantilla/images/loaders/loader17.gif">&nbsp;&nbsp;<p>Cargando datos, por favor espere...</p>
-                </div>
-        </div><!-- panel-heading -->
+                </div-->
+        </div><!-- panel-heading >
     </div><!-- contentpanel -->
 </div>
 <script type="text/javascript">

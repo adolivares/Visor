@@ -31,8 +31,7 @@ var idConsultaRes = request.getParameter("idConsulta");
     } else {
         include("/template/partials/header.jag");
         include("/template/partials/navigation.jag");
-		include("detalleCoincidencias.jag");
-		include("logComentarios.jag");
+		
     }
 
 } else {
@@ -43,6 +42,8 @@ var idConsultaRes = request.getParameter("idConsulta");
     }
     response.sendRedirect(application.get('serverAddress') + request.getRequestURI() + queryStr);
 }
+include("detalleCoincidencias.jag");
+include("logComentarios.jag");
 include("Controller/CtrlVisorCalificacion.jag");	
 	
 	var xmlEvaluacion = getEvaluacionList("");	
@@ -136,6 +137,7 @@ include("Controller/CtrlVisorCalificacion.jag");
                         <th>Ver Detalle</th>                     
                         <th style="width: 7px"><input type="checkbox" id="cbAnalista1" ></th>  
 						<th style="display:none;"></th>   
+						<th style="display:none;"></th>   
                     </tr>
                 </thead>
 				<tbody>					
@@ -143,17 +145,17 @@ include("Controller/CtrlVisorCalificacion.jag");
                 </tbody>
             </table>
 			
-			<input type="button" value="Elimina" id="btn" name="btn" data-toggle="modal" data-target="#EliminacionModal" >			
+			<!--input type="button" value="Elimina" id="btn" name="btn" data-toggle="modal" data-target="#EliminacionModal"-->			
 			<br/>
 			<br/>
 			<table width="98%" class="table-content" id="tabBtn">
 				<tr>
-					<td valign="top" align="right">
-						<p>Comentario</p>
+					<td>
+						
 						<input style="width:100%"  class="btn btn-primary" type="button" value="Ver Comentarios" id="btnComentarios" onclick="consulta()" name="btnComentarios">
 					</td>
 					<td colspan="3">						
-						<textarea id="txaComentario" rows="3" cols="125" class="form-control"></textarea>	
+						<textarea id="txaComentario" rows="3" cols="125" class="form-control" placeholder="Ingrese comentario ..."></textarea>	
 					</td>
 					<td>
 						<input style="width:100%"  class="btn btn-primary" type="button" value="Guardar Comentarios" id="btnGuardaComent" name="btnGuardaComent">
@@ -167,7 +169,7 @@ include("Controller/CtrlVisorCalificacion.jag");
 						</div>
 					</td>
 					<td colspan="3">	
-						<input style="width:100%" type="text" id="txtPathArchivo" style="width:100%" class="form-control"/>
+						<input style="width:100%" type="text" id="txtPathArchivo" style="width:100%" class="form-control" disabled/>
 					</td>
 					<td>
 						<input style="width:100%"  class="btn btn-primary" type="button" value="Subir Archivo" id="btnUpArchivo" name="btnUpArchivo">
@@ -183,7 +185,7 @@ include("Controller/CtrlVisorCalificacion.jag");
 					<td align="right" valign="bottom" style="padding-bottom:16px">Calificar</td>
 					<td valign="bottom">					
 						 <select id="cboCalificar" class="form-control">
-									<option>- Seleccione -</option>
+									<option value="0">- Seleccione -</option>
 									<%=crearSelectEvaluacion(xmlEvaluacion,0)%>
 								</select>
 					</td>	
@@ -201,21 +203,23 @@ include("Controller/CtrlVisorCalificacion.jag");
 						<p>(Favor de introducir una justificación)</p>	
 					</h5>
 					<h4 class="modal-title" id="H2">SOLICITUD DE ELIMINACIÓN DE CALIFICACIÓN</h4>
+					<input type="text" id="txtIDbandeja" style="display:none"/>
 				  </div>
 				  <div class="modal-body col-centered">
 					<div class="list-Coment">
 						<table style="margin-right:auto; width:100%" class="table-content">
-							<tr><td align="right">Fecha de Búsqueda:</td>
-								<td></td>
+							<tr>
+								<td align="right">Fecha de Búsqueda:</td>
+								<td> <span id="fechaElim"></span></td>
 							</tr>
-							<tr><td align="right">Cliente:</td>
-								<td></td>
+							<tr><td align="right">Cliente: </td>
+								<td><span id="clienteElim"></span></td>
 							</tr>
-							<tr><td align="right">ID Cliente:</td>
-								<td></td>
+							<tr><td align="right">ID Cliente: </td>
+								<td><span id="idClienteElim"></span></td>
 							</tr>
-							<tr><td align="right">Presona Calificada:</td>
-								<td></td>
+							<tr><td align="right">Presona Calificada: </td>
+								<td><span id="personaCalifiElim"></span></td>
 							</tr>
 							<tr><td align="right" valign="top">Justificación:</td>
 								<td><textarea id="txaJustificaElim" rows="5" cols="60" ></textarea></td>		
@@ -225,11 +229,12 @@ include("Controller/CtrlVisorCalificacion.jag");
 				  </div>
 				  <div class="modal-footer">
 					   <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-					  <button type="button" class="btn btn-default" data-dismiss="modal">Solicitar</button>
+					  <button type="button" class="btn btn-default" onclick="solicitarELIM()">Solicitar</button>
 				  </div>
 				</div>
 			  </div>
-			</div>
+			</div><!--Termina modal-->
+			
         </div><!-- panel-heading -->
     </div><!-- contentpanel -->
  </section>
@@ -252,6 +257,8 @@ include("Controller/CtrlVisorCalificacion.jag");
          
 
         <script>
+		var indexTBL2="";
+		
         
         $(document).ready(function() {	
 		$('#example').DataTable({
@@ -269,7 +276,7 @@ include("Controller/CtrlVisorCalificacion.jag");
 				mensaje="";
 				myfile= $( this ).val();
 				var ext = myfile.split('.').pop();
-				if(ext !="pdf" || ext !="jpg" || ext !="jepg"){			
+				if(ext !="pdf" && ext !="jpg" && ext !="jepg"){			
 					mensaje = "Debe seleccionar un archivo válido.";					
 				}
 				if(mensaje.trim().length != 0) {
@@ -308,7 +315,7 @@ include("Controller/CtrlVisorCalificacion.jag");
 					var tipo = tr.find("td").eq(10).text();
 					consultaComentarios(id, tipo);
 					
-					$('#ComentariosModal').modal('show');
+					//$('#ComentariosModal').modal('show');
 				}	
 			}
 			
@@ -485,16 +492,167 @@ include("Controller/CtrlVisorCalificacion.jag");
 						index = $(this).val();			 
 				   }
 				});
-										
 				var tr = $("#example >tbody").find("tr").eq(index);
-				location.href='calificacionCoincidencias?idConsulta='+tr.find("td").eq(2).text()+
+				
+				var	payload  = '<dat:qConsultaEstatusAutoriaza xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
+					payload += '<dat:idBandeja>' + tr.find("td").eq(2).text() + '</dat:idBandeja>';
+					payload += '</dat:qConsultaEstatusAutoriaza>';
+				$.ajax({
+						url: '/commons/postSOAP',
+						type: 'post',
+						headers: {'Destino':'BpmnVisor', 'SOAPAction':'urn:qConsultaEstatusAutoriaza'},
+						dataType: 'xml',
+						complete: consultaEstatus,
+						error: function (xhr, status, error) {},
+						data: payload
+				}); 
+										
+				
+				/*location.href='calificacionCoincidencias?idConsulta='+tr.find("td").eq(2).text()+
+													  '&&calificacion='+califica+
+													  '&&idCliente='+tr.find("td").eq(3).text()+
+													  '&&tipoCliente='+tr.find("td").eq(7).text()+
+													  '&&idAplicacion='+tr.find("td").eq(8).text();*/
+				
+			});
+			
+			function llenaDetalle(combo){
+
+			var index = $(combo).closest('tr').index();
+			var tr = $("#example >tbody").find("tr").eq(index);
+				$("#H2").html(tr.find('td').eq(4).text()+" "+tr.find('td').eq(5).text()+" "+tr.find('td').eq(6).text());
+			
+			}
+			function consultaEstatus(xmlHttpRequest, status){
+				$("input[name=tabla1]").each(function (inde) {  
+				   if($(this).is(':checked')){
+						index = $(this).val();			 
+				   }
+				});
+				var tr = $("#example >tbody").find("tr").eq(index);
+				
+				if($(xmlHttpRequest.responseText).find('estatus_califica').text()==1){
+					llenarCliente(tr,$(xmlHttpRequest.responseText).find('id_bandeja_entrada').text());
+					$('#EliminacionModal').modal('show');
+				}else{
+					var califica = $('#cboCalificar').val();
+					 location.href='calificacionCoincidencias?idConsulta='+tr.find("td").eq(2).text()+
 													  '&&calificacion='+califica+
 													  '&&idCliente='+tr.find("td").eq(3).text()+
 													  '&&tipoCliente='+tr.find("td").eq(7).text()+
 													  '&&idAplicacion='+tr.find("td").eq(8).text();
+				}
+			}
+			function llenarCliente(tr,idBandeja){
+				var format = new Date();
+				var dia = format.getDate();
+				var mm = format.getMonth()+1;
+				var anio = format.getFullYear();
+				var date = dia+'/'+mm+'/'+anio;
+				$('#clienteElim').html(tr.find("td").eq(4).text()+" "+tr.find("td").eq(5).text()+" "+tr.find("td").eq(6).text());
+				$('#idClienteElim').html(tr.find("td").eq(3).text());
+				$('#personaCalifiElim').html(tr.find("td").eq(4).text()+" "+tr.find("td").eq(5).text()+" "+tr.find("td").eq(6).text());
+				$('#fechaElim').html(date);
+				$('#txtIDbandeja').val(idBandeja);
 				
-			});
+			}
+			function solicitarELIM(){
+				var justificacion = $('#txaJustificaElim').val();
+				var id = $('#txtIDbandeja').val();
+				var _analista = 0;
+				var _gerente = 0;
+				var _oficial = 0;
+				var _director = 0;
+				if(justificacion ==""){
+					 alert('Ingresar justificiación');
+					 return false;
+				}
+				
+				
+				switch('<%=Usuario_v%>') {
+					case 'ANALISTA':
+						_gerente=1;
+						break;
+					case 'GERENTE':
+						_oficial=1;
+						break;
+					case 'OFICIAL':
+						_director=1;
+						break;
+					default:
+						false;
+				}
+				envio_escala_del(id,justificacion,_analista,_gerente,_oficial,_director);
+			}
+	function envio_escala_del(id, justificacion, _analista, _gerente, _oficial, _director) {
+		var payload = '<dat:doEscalaDelega xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
+		payload += '<dat:idBandeja>' + id + '</dat:idBandeja>';
+		payload += '<dat:tipo>AUTORIZA</dat:tipo>';
+		payload += '<dat:anali>' + _analista + '</dat:anali>';
+		payload += '<dat:dir>' + _director + '</dat:dir>';
+		payload += '<dat:gerent>' + _gerente + '</dat:gerent>';
+		payload += '<dat:ofici>' + _oficial + '</dat:ofici>';
+		payload += '<dat:just>' + justificacion + '</dat:just>';
+		payload += '<dat:usu>' + '<%=Usuario_v%>' + '</dat:usu>';
+		payload += '</dat:doEscalaDelega>';
+
+
+		$.ajax({
+			url: '/commons/postSOAP',
+			type: 'post',
+			headers: {
+				'Destino': 'BpmnVisor',
+				'SOAPAction': 'urn:doEscalaDelega'
+			},
+			dataType: 'xml',
+			complete: EscalaDelegacionRespon,
+			error: function(xhr, status, error) {},
+			data: payload
+		});
+	}
+
+	function EscalaDelegacionRespon(xmlHttpRequest, status) {
+		//alert(xmlHttpRequest.responseText);
+		$(xmlHttpRequest.responseText).find('resultado').each(function() {
+			if ($(this).find("codigoError").text() == 0) {
+				$("#idMsg").html('<div class="alert alert-success">' +
+					'Se ha realizado la petición' +
+					'</div>');
+				$('#MyModal1').modal('hide');
+				$('#MyModal2').modal('hide');
+				$('#ModalInfo').modal('show');
+				location.href = 'irBandejaEntrada';
+			} else {
+				$("#idMsg").html('<div class="alert alert-danger">' +
+					'Sucedio un error ' + $(this).find("estatus").text() +
+					'</div>');
+			}
+			$('#ModalInfo').modal('show');
+
+		});
+	}
 			
-			
+	function irDetalle(combo){
+		var index = $(combo).closest('tr').index();
+		var tr = $("#example >tbody").find("tr").eq(index);
+			$("#H2").html(tr.find('td').eq(4).text()+" "+tr.find('td').eq(5).text()+" "+tr.find('td').eq(6).text());
+		var xml = [];
+		var array7 = [
+					  tr.find('td').eq(1).text(),
+					  tr.find('td').eq(2).text(),
+					  tr.find('td').eq(3).text(),
+					  tr.find('td').eq(4).text(),
+					  tr.find('td').eq(5).text(),
+					  tr.find('td').eq(6).text(),
+					  tr.find('td').eq(7).text(),
+					  tr.find('td').eq(8).text(),
+					  tr.find('td').eq(9).text(),
+					  tr.find('td').eq(10).text(),
+					  tr.find('td').eq(11).text(),
+					  tr.find('td').eq(12).text()];
+			xml.push(array7);
+			location.href='irDetalle?id='+tr.find("td").eq(16).text()+  '&&tip='+tr.find("td").eq(17).text()+'&&xml='+xml;
+													  
+	}
 			
         </script>

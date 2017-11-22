@@ -103,10 +103,10 @@ if(groups.indexOf(GRUPO_ANALISTA) >= 0 ){
 	Usuario_v ='GERENTE';
 }
 
-log.info("analista: " + analista);
-log.info("Director: " + Director);
-log.info("gerente: " + gerente);
-log.info("oficial: " + oficial);
+log.info("analista: " + analista+bAnalista);
+log.info("Director: " + Director +bDirector);
+log.info("gerente: " + gerente + bGerente);
+log.info("oficial: " + oficial+bOficial);
 log.info("groups: " + groups);
 log.info("groups: " + groups.indexOf(GRUPO_ANALISTA));
 %>
@@ -135,32 +135,13 @@ log.info("groups: " + groups.indexOf(GRUPO_ANALISTA));
                     <li><a href='irPerfilamiento'>Perfilamiento</a></li> 
                     <li><a href='irConfigurarNotificaciones'>Generador de notificaciones</a></li> 
                 </ul> 
-            </li>
+            </li>  
 			<li class='parent active'><a href='#'><i class='fa fa-bars'></i> <span>Listas</span></a>  
                 <ul class='children'>                     				
 					<li><a href='irPerfilamientoBusqueda'>Perfilamiento búsqueda</a></li> 
-					<li><a href='irAutorizaSegmentosBusqueda'>Autorización de perfiles de búsqueda</a></li> 
+					<li><a href='irPerfilamientoBusqueda'>Autorización de perfiles de búsqueda</a></li> 
                 </ul> 
-            </li>  
-            <!--li class='parent active'><a href='#'><i class='fa fa-bars'></i> <span>Reporte R29</span></a>  
-                <ul class='children'>  
-                    <li><a href='irR29'>Alta</a></li>  
-                    <li><a href='irCargaXML'>Carga archivo</a></li>  
-                    <li><a href='irDescargaR29'>Descargar Reporte</a></li> 
-                </ul> 
-            </li>  
-            <li class='parent active'><a href='#'><i class='fa fa-bars'></i> <span>Módulo Siti</span></a>  
-                <ul class='children'>  
-                    <li><a href='irConsultaErroresExp'>Errores carga expediente</a></li> 
-                    <li><a href='irAltaExpediente'>Alta expediente</a></li> 
-                    <li><a href='irConsultaNoLocalizados'>No localizados</a></li> 
-                    <li><a href='irConsultaLocalizados'>Localizados</a></li> 
-                    <li><a href='irConsultaReportados'>Reportados</a></li> 
-                    <li><a href='irWorkflow'>Workflow</a></li> 
-                    <li><a href='irCerrarWorkflow'>Cerrar Workflow</a></li> 
-                    <li><a href='irDescargaArchivoSiti'>Descarga archivos</a></li> 
-                </ul> 
-            </li-->  
+            </li> 
         </ul> 
 		<%}%>
     </div><!-- leftpanel -->

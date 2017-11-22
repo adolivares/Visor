@@ -181,7 +181,6 @@ include("/model/common.jag");
 <script src="resources/plantilla/js/bootstrap.min.js"></script>
 <script src="resources/plantilla//js/dataTables.responsive.js"></script>
 <script src="resources/plantilla/js/select2.min.js"></script>
-<script src="resources/plantilla/js/custom.js"></script>
          
 
         <script>

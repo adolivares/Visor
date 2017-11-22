@@ -1,6 +1,6 @@
 {
    "not.available":"Not available",
-   "logout":"Logout",
+   "logout":"Salir",
    "toggle.nav":"Toggle navigation",
    "dashboard":"Dashboard",
    "my.tasks.title":"My Tasks",
@@ -38,7 +38,7 @@
    "end.time":"End Time",
    "sign.in":"Sign in",
    "sign.in.to.continue":"Sign in to continue",
-   "login":"Login",
+   "login":"Entrar",
    "process.name":"Process Name",
    "package.name":"Package Name",
    "version":"Version",
@@ -109,8 +109,8 @@
    "no.attachments.found":"No attachments found",
    "failed.to.upload.attachment":"Failed to upload attachment",
    "transfer.task":"Transfer Task",
-   "user.name":"Username",
-   "password":"Password",
+   "user.name":"Usuario",
+   "password":"Contraseña",
    "save":"Save",
    "reassign.task":"Reassign Task",
    "no.sub.tasks":"No subtasks"

@@ -50,7 +50,7 @@
 				//log.info('dentro '+aXML.*::getMBConsultaCliente..*::resultadoConsultaCliente.*::id_mb_consulta.toString() +' '+id);
 				
 				result += '<tr>';
-				result += '<td style="display:none">'+aXML.*::id_bandeja_visor.toString()+'</td>';
+				result += '<td style="display:none">'+lista..*::resultadoMbConsulta..*::id_bandeja_visor.toString()+'</td>';
 				result += '<td>'+fecha.substring(0,10)+'</td>';
 				result += '<td>'+aXML.*::id_mb_consulta.toString()+'</td>';
 				result += '<td>'+id_cliente_crm+'</td>';
@@ -64,13 +64,17 @@
 				result += '<td>'+porcentaje_busqueda+'</td>';
 				result += '<td>'+aXML.*::porcentaje_coincidencias.toString()+'</td>';
 				if(aXML.*::id_mb_cat_evaluacion.toString() != ''){
-					result += '<td><input class="btn btn-primary" type="button" value="Detalle" id="btnDetalle'+id+'" name="btnDetalle" data-toggle="modal" data-target="#DetalleModal" ></td>';
+					//result += '<td><input class="btn btn-primary" type="button" value="Detalle" id="btnDetalle'+id+'" name="btnDetalle" data-toggle="modal" data-target="#DetalleModal" onclick="llenaDetalle(this)"></td>';
+					//result += '<td><a  class="btn btn-primary" type="button" href="irDetalle?id='+aXML.*::nombre_encontrado.toString()+'&&tip=1">Detalle</a></td>';
+					result += '<td align="center"><button class="btn btn-primary" onclick="irDetalle(this)">Detalle</button></td>';
 					result += '<td align="center"><input type="checkbox" name="tabla1" value="'+id+'"/></td>';
 				}else{
 					result += '<td></td>';
 					result += '<td align="center"></td>';
 				}
 				result += '<td style="display:none">'+aXML.*::tabla_correlativos.toString()+'</td>';
+				result += '<td style="display:none">'+aXML.*::nombre_encontrado.toString()+'</td>';
+				result += '<td style="display:none">1</td>';
 				result += '</tr>';
 			id++;
 			
@@ -80,7 +84,7 @@
 				//log.info('dentro '+aXML.*::getMBConsultaBeneficiario..*::resultadoConsultaBeneficiario.*::id_mb_consulta.toString() +' '+id);
 				
 				result += '<tr>';
-				result += '<td style="display:none">'+aXML.*::id_bandeja_visor.toString()+'</td>';
+				result += '<td style="display:none">'+lista.*::id_bandeja_visor.toString()+'</td>';
 				result += '<td>'+fecha.substring(0,10)+'</td>';
 				result += '<td>'+aXML.*::id_mb_consulta.toString()+'</td>';
 				result += '<td>'+id_cliente_crm+'</td>';
@@ -94,13 +98,17 @@
 				result += '<td>'+porcentaje_busqueda+'</td>';
 				result += '<td>'+aXML.*::porcentaje_coincidencias.toString()+'</td>';
 				if(aXML.*::id_mb_cat_evaluacion.toString() != ''){
-					result += '<td><input class="btn btn-primary" type="button" value="Detalle" id="btnDetalle'+id+'" name="btnDetalle" data-toggle="modal" data-target="#DetalleModal" ></td>';
+					//result += '<td><input class="btn btn-primary" type="button" value="Detalle" id="btnDetalle'+id+'" name="btnDetalle" data-toggle="modal" data-target="#DetalleModal" ></td>';
+					//result += '<td><a  class="btn btn-primary" type="button" href="irDetalle?id='+aXML.*::nombre_encontrado.toString()+'&&tip=2&&xml='+aXML.*::tabla_correlativos.toString()+'&&tl='+aXML.*::tipo_listas.toString()+'">Detalle</a></td>';
+					result += '<td align="center"><button class="btn btn-primary" onclick="irDetalle(this)">Detalle</button></td>';
 					result += '<td align="center"><input type="checkbox" name="tabla1" value="'+id+'"/></td>';
 				}else{
 					result += '<td></td>';
 					result += '<td></td>';
 				}
 				result += '<td style="display:none">'+aXML.*::tabla_correlativos.toString()+'</td>';
+				result += '<td style="display:none">'+aXML.*::nombre_encontrado.toString()+'</td>';
+				result += '<td style="display:none">2</td>';
 				result += '</tr>';
 			id++;
 			
@@ -108,4 +116,3 @@
 		return result;
 	}
 
-%>

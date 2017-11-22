@@ -2396,6 +2396,12 @@ a:focus {
 	overflow-y: inherited;
 	max-height: 300px;
 }
+.list2{
+	width:100%;
+	overflow-x: hidden; 
+	overflow-y: inherited;
+	max-height: 300px;
+}
 
 .list-Coment{
 	margin-right:auto;
@@ -2403,7 +2409,7 @@ a:focus {
 	width:90%;
 	overflow-x: hidden; 
 	overflow-y: inherited;
-	max-height: 500px;	
+	max-height: 400px;	
 }
 
 #tblConfiguracion tbody {

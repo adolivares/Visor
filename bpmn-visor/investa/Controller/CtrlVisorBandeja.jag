@@ -1,12 +1,13 @@
 <%
 	
-	function getTablaBandejaEntrada(_idConsulta,_tipoBusqueda){
+	function getTablaBandejaEntrada(_idConsulta,_tipoBusqueda,idAutoriza){
 		var payload = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dat="http://ws.wso2.org/dataservice">
 					   <soapenv:Header/>
 					   <soapenv:Body>
 						  <dat:qConsultaBandejaEntrada>
 							 <dat:idMbConsulta>{_idConsulta}</dat:idMbConsulta>
 							 <dat:relacion>{_tipoBusqueda}</dat:relacion>
+							 <dat:idAutoriza>{idAutoriza}</dat:idAutoriza>
 						  </dat:qConsultaBandejaEntrada>
 					   </soapenv:Body>
 					</soapenv:Envelope>;
@@ -41,19 +42,97 @@
 				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::getMBConsultaCliente.*::resultadoConsultaCliente.*::apaterno_cliente.toString()+'</td>';
 				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::getMBConsultaCliente.*::resultadoConsultaCliente.*::amaterno_cliente.toString()+'</td>';
 				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::id_aplicacion.toString()+'</td>';
-				result += '<td>-+</td>';
+				result += '<td><strong><p style="color:red">+</p<</strong></td>';
 				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::getMBConsultaCliente.*::resultadoConsultaCliente.*::tipo_listas.toString()+'</td>';
 				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::porcentaje_busqueda.toString()+'</td>';
 				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::getMBConsultaCliente.*::resultadoConsultaCliente.*::porcentaje_coincidencias.toString()+'</td>';
-				result += '<td><input type="radio" name="tabla'+tipo+'" value="'+id+'"/></td>';
 				result += '<td><input type="image" id="delete" src="images/circulo-naranja.png" /></td>';
+				result += '<td><input type="radio" name="tabla'+tipo+'" onclick="'+((tipo==1)?'llenaValor(this)':'llenaValor2(this)')+'"/></td>';
 				result += '</tr>';
 			id++;
 			}
 		}
 		return result;
 	}
-	
-	
+	function createTablaBandejaAutorizacion(lista) {
+		var result = "";
+		var id =0;
+		/*var fecha = lista..*::resultadoMbConsulta.*::fecha_consulta.toString();
+		var id_aplicacion = lista..*::resultadoMbConsulta.*::id_aplicacion.toString();
+		var id_cliente_crm = lista..*::resultadoMbConsulta.*::id_cliente_crm.toString();
+		var porcentaje_busqueda = lista..*::resultadoMbConsulta.*::porcentaje_busqueda.toString();
+		log.info('fecha '+fecha + id_aplicacion);*/
+		for each( var bXML in lista..*::resultadoBandeja){
+			var idBandeja=bXML.*::id_bandeja_visor.toString();
+		log.info('id bandeja '+ idBandeja);
+		for each( var zXML in bXML..*::resultadoMbConsulta){
+			
+			var fecha = zXML.*::fecha_consulta.toString();
+			var id_aplicacion = zXML..*::id_aplicacion.toString();
+			var id_cliente_crm = zXML..*::id_cliente_crm.toString();
+			var porcentaje_busqueda = zXML..*::porcentaje_busqueda.toString();
+			log.info('fecha '+fecha + id_aplicacion);
+		for each (var aXML in zXML..*::getMBConsultaCliente..*::resultadoConsultaCliente){
+			
+				//log.info('dentro '+aXML.*::getMBConsultaCliente..*::resultadoConsultaCliente.*::id_mb_consulta.toString() +' '+id);
+				
+				result += '<tr>';
+				result += '<td style="display:none">'+idBandeja+'</td>';
+				result += '<td>'+fecha.substring(0,10)+'</td>';
+				result += '<td>'+aXML.*::id_mb_consulta.toString()+'</td>';
+				result += '<td>'+id_cliente_crm+'</td>';
+				result += '<td>'+aXML.*::nombre_cliente.toString()+'</td>';
+				result += '<td>'+aXML.*::apaterno_cliente.toString()+'</td>';
+				result += '<td>'+aXML.*::amaterno_cliente.toString()+'</td>';
+				result += '<td>CLIENTE</td>';
+				result += '<td>'+id_aplicacion+'</td>';
+				result += '<td>'+((aXML.*::id_mb_cat_evaluacion.toString() ==1)?'<span style="color:red;font-weight:bold">+</span>':'-')+'</td>';
+				result += '<td>'+aXML.*::tipo_listas.toString()+'</td>';
+				result += '<td>'+aXML.*::porcentaje_coincidencias.toString()+'</td>';
+				if(aXML.*::id_mb_cat_evaluacion.toString() != ''){
+					result += '<td><a  class="btn btn-primary" type="button" href="irDetalle?id='+aXML.*::nombre_encontrado.toString()+'&&tip=1">Detalle</a></td>';
+					result += '<td align="center"><input type="checkbox"  onclick="valorChk(this)"/></td>';
+				}else{
+					result += '<td></td>';
+					result += '<td align="center"></td>';
+				}
+				result += '<td style="display:none">'+aXML.*::tabla_correlativos.toString()+'</td>';
+				result += '</tr>';
+			id++;
+			
+		}
+		for each (var aXML in zXML..*::getMBConsultaBeneficiario..*::resultadoConsultaBeneficiario){
+			
+				//log.info('dentro '+aXML.*::getMBConsultaBeneficiario..*::resultadoConsultaBeneficiario.*::id_mb_consulta.toString() +' '+id);
+				
+				result += '<tr>';
+				result += '<td style="display:none">'+idBandeja+'</td>';
+				result += '<td>'+fecha.substring(0,10)+'</td>';
+				result += '<td>'+aXML.*::id_mb_consulta.toString()+'</td>';
+				result += '<td>'+id_cliente_crm+'</td>';
+				result += '<td>'+aXML.*::nombre_beneficiario.toString()+'</td>';
+				result += '<td>'+aXML.*::apaterno_beneficiario.toString()+'</td>';
+				result += '<td>'+aXML.*::amaterno_beneficiario.toString()+'</td>';
+				result += '<td>BENEFICIARIO</td>';
+				result += '<td>'+id_aplicacion+'</td>';
+				result += '<td>'+((aXML.*::id_mb_cat_evaluacion.toString() ==1)?'<span style="color:red;font-weight:bold">+</span>':'-')+'</td>';
+				result += '<td>'+aXML.*::tipo_listas.toString()+'</td>';
+				result += '<td>'+aXML.*::porcentaje_coincidencias.toString()+'</td>';
+				if(aXML.*::id_mb_cat_evaluacion.toString() != ''){
+					result += '<td><a  class="btn btn-primary" type="button" href="irDetalle?id='+aXML.*::nombre_encontrado.toString()+'&&tip=2">Detalle</a></td>';
+					result += '<td align="center"><input type="checkbox" name="tabla1" onclick="valorChk(this)"/></td>';
+				}else{
+					result += '<td></td>';
+					result += '<td></td>';
+				}
+				result += '<td style="display:none">'+aXML.*::tabla_correlativos.toString()+'</td>';
+				result += '</tr>';
+			id++;
+			
+		}
+		}
+		}
+		return result;
+	}
 	
 %>

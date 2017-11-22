@@ -41,6 +41,9 @@ include("/model/common.jag");
     }
     response.sendRedirect(application.get('serverAddress') + request.getRequestURI() + queryStr);
 }
+include("logComentarios.jag");
+include("Controller/CtrlVisorBandeja.jag");
+var xmlBandeja = getTablaBandejaEntrada("",Usuario_v,'ELIMINACION');
  %>
  
 		<link href="resources/plantilla/css/select2.css" rel="stylesheet" />
@@ -108,23 +111,24 @@ include("/model/common.jag");
                         <th>Lista</th>               
 						<th>Porcentaje coincidencia</th>      
                         <th>Ver Detalle</th>                     
-                        <th style="width: 7px"><input type="checkbox" id="cbAnalista1" ></th>                                                          
-                        <th></th>
+                        <th style="width: 7px"><input type="checkbox" id="cbAnalista1" ></th>    
+						<th style="display:none;"></th>						
                     </tr>
                 </thead>
-				<tbody>					
+				<tbody>			
+						<%=createTablaBandejaAutorizacion(xmlBandeja,1)%>				
                 </tbody>
             </table>
 			<br/>
-			<input type="button" value="Detalle" id="btnDetalle" name="btnDetalle" data-toggle="modal" data-target="#DetalleModal" >
+			<!--input type="button" value="Detalle" id="btnDetalle" name="btnDetalle" data-toggle="modal" data-target="#DetalleModal"-->
 			<table width="100%" class="table-content" id="tabBtn">
 				<tr>
 					<td valign="top" align="right">
-						<p>Comentario</p>
-						<input class="btn btn-primary" type="button" value="Ver Comentarios" id="btnComentarios" name="btnComentarios" data-toggle="modal" data-target="#ComentariosModal" >
+						
+						<input class="btn btn-primary" type="button" value="Ver Comentarios" id="btnComentarios" name="btnComentarios" onclick="consulta()" >
 					</td>
 					<td style="width:30%">						
-						<textarea id="txaComentario" rows="3" cols="90" ></textarea>	
+						<textarea id="txaComentario" rows="3" cols="90" placeholder="Ingrese comentario ..."></textarea>	
 					</td>
 					<td align="left">
 						<input class="btn btn-primary" type="button" value="Guardar Comentarios" id="btnGuardaComent" name="btnGuardaComent">
@@ -155,27 +159,335 @@ include("/model/common.jag");
 <script src="resources/plantilla/js/bootstrap.min.js"></script>
 <script src="resources/plantilla//js/dataTables.responsive.js"></script>
 <script src="resources/plantilla/js/select2.min.js"></script>
-<script src="resources/plantilla/js/custom.js"></script>
          
 
 <script>
+var indexTBL = -1;
+var urn = '';
+var payload = '';
+$(document).ready(function() {
 
-	$(document).ready(function() {	
-	
-		$('#example').DataTable({
-			 "scrollY": 400,
-			 "scrollX": true
-		});           
-	} );			
-		
-	
-		
-	jQuery(document).ready(function(){   				
-		
-		$('#buscando').hide();
-						
-		$(".buscar" ).click(function() {
-			$('#buscando').show();        			
-		});
-	});
+    $('#example').DataTable({
+        "scrollY": 400,
+        "scrollX": true
+    });
+});
+
+
+
+jQuery(document).ready(function() {
+
+    $('#buscando').hide();
+
+    $(".buscar").click(function() {
+        $('#buscando').show();
+    });
+});
+
+function consulta() {
+    var count = 0;
+    var index
+    if (indexTBL == -1) {
+
+        $("#idMsg").html('<div class="alert alert-warning">' +
+            'Seleccionar un elemento de la tabla de Autorizaciones' +
+            '</div>');
+        $('#ModalInfo').modal('show');
+        return false;
+    }
+
+    var tr = $("#example >tbody").find("tr").eq(indexTBL);
+
+    var id = tr.find("td").eq(14).text();
+    var tipo = tr.find("td").eq(10).text();
+    consultaComentarios(id, tipo);
+
+    $('#ComentariosModal').modal('show');
+}
+
+
+function valorChk(combo) {
+    indexTBL = $(combo).closest('tr').index();
+    //alert(indexTBL);
+}
+$("#btnGuardaComent").click(function() {
+    var cont = 0;
+    var coment = $("#txaComentario").val();
+    var tr;
+    var index;
+
+
+    if (coment.trim() == "") {
+        $("#idMsg").html('<div class="alert alert-warning">' +
+            'El campo Comentario no puede ser vacío' +
+            '</div>');
+        $('#ModalInfo').modal('show');
+        return false;
+    }
+    if (indexTBL == -1) {
+
+        $("#idMsg").html('<div class="alert alert-warning">' +
+            'Seleccionar un elemento de la tabla de Autorizaciones' +
+            '</div>');
+        $('#ModalInfo').modal('show');
+        return false;
+    }
+
+    tr = $("#example >tbody").find("tr").eq(indexTBL);
+
+
+    var tipo = tr.find("td").eq(10).text();
+    var sId = tr.find("td").eq(14).text();
+    var val = tr.find("td").eq(9).text();
+    if (val == "+") {
+        val = "positivo";
+    } else if (val == "-") {
+        val = "negativo";;
+    } else {
+        val = "";
+    }
+
+    switch (tipo) {
+        case "1":
+            payload = '<dat:qInsertaComentariosLN xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
+            payload += '<dat:obs>' + coment + '</dat:obs>';
+            payload += '<dat:validation>' + val + '</dat:validation>';
+            payload += '<dat:tbCorr>' + sId + '</dat:tbCorr>';
+            payload += '</dat:qInsertaComentariosLN>';
+            urn = 'urn:qInsertaComentariosLN';
+            break;
+        case "2":
+            payload = '<dat:qInsertaComentariosLG xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
+            payload += '<dat:obs>' + coment + '</dat:obs>';
+            payload += '<dat:validation>' + val + '</dat:validation>';
+            payload += '<dat:tbCorr>' + sId + '</dat:tbCorr>';
+            payload += '</dat:qInsertaComentariosLG>';
+            urn = 'urn:qInsertaComentariosLG';
+            break;
+        case "3":
+            payload = '<dat:qInsertaComentariosLS xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
+            payload += '<dat:obs>' + coment + '</dat:obs>';
+            payload += '<dat:validation>' + val + '</dat:validation>';
+            payload += '<dat:idReg>' + sId + '</dat:idReg>';
+            payload += '</dat:qInsertaComentariosLS>';
+            urn = 'urn:qInsertaComentariosLS';
+            break;
+        case "4":
+            payload = '<dat:qInsertaComentariosWC xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
+            payload += '<dat:obs>' + coment + '</dat:obs>';
+            payload += '<dat:validation>' + val + '</dat:validation>';
+            payload += '<dat:uid>' + sId + '</dat:uid>';
+            payload += '</dat:qInsertaComentariosWC>';
+            urn = 'urn:qInsertaComentariosWC';
+    }
+
+    $.ajax({
+        url: '/commons/postSOAP',
+        type: 'post',
+        headers: {
+            'Destino': 'BpmnVisorComentarios',
+            'SOAPAction': urn
+        },
+        dataType: 'xml',
+        complete: comentariosIRespon,
+        error: function(xhr, status, error) {},
+        data: payload
+    });
+
+
+});
+
+
+
+function comentariosIRespon(xmlHttpRequest, status) {
+    //console.log("coment" + $(xmlHttpRequest.responseText).find('respComentariosLN').text());
+    var res = "";
+    if ($(xmlHttpRequest.responseText).find('respComentariosLN').text() != '') {
+        $(xmlHttpRequest.responseText).find('respComentariosLN').each(function() {
+            res = $(this).find("Value").text();
+        });
+    } else if ($(xmlHttpRequest.responseText).find('respComentariosLG').text() != '') {
+        $(xmlHttpRequest.responseText).find('respComentariosLG').each(function() {
+            res = $(this).find("Value").text();
+        });
+    } else if ($(xmlHttpRequest.responseText).find('respComentariosLS').text() != '') {
+        $(xmlHttpRequest.responseText).find('respComentariosLS').each(function() {
+            res = $(this).find("Value").text();
+        });
+    } else if ($(xmlHttpRequest.responseText).find('respComentariosWC').text() != '') {
+        $(xmlHttpRequest.responseText).find('respComentariosWC').each(function() {
+            res = $(this).find("Value").text();
+        });
+    }
+
+    if (res == 1) {
+        $("#idMsg").html('<div class="alert alert-success">' +
+            'Se ha realizado la petición' +
+            '</div>');
+        $('#MyModal1').modal('hide');
+        $('#MyModal2').modal('hide');
+    } else {
+        $("#idMsg").html('<div class="alert alert-danger">' +
+            'Sucedio un error ' + $(this).find("estatus").text() +
+            '</div>');
+    }
+    $('#ModalInfo').modal('show');
+
+}
+$("#btnAutorizar").click(function() {
+    if (indexTBL == -1) {
+
+        $("#idMsg").html('<div class="alert alert-warning">' +
+            'Seleccionar un elemento de la tabla de Autorizaciones' +
+            '</div>');
+        $('#ModalInfo').modal('show');
+        return false;
+    }
+    var _analista = 0;
+    var _gerente = 0;
+    var _oficial = 0;
+    var _director = 0;
+    switch ('<%=Usuario_v%>') {
+        case 'DIRECTOR':
+            _oficial = 1;
+            break;
+        case 'GERENTE':
+            _analista = 1;
+            break;
+        case 'OFICIAL':
+            _gerente = 1;
+            break;
+        default:
+            false;
+    }
+    tr = $("#example >tbody").find("tr").eq(indexTBL);
+
+    var sId = tr.find("td").eq(0).text();
+
+    //envio_autoriza(sId,'Autorizado');
+    envio_escala_del(sId, 'Autorizado', _analista, _gerente, _oficial, _director);
+});
+$("#btnRechazar").click(function() {
+    if (indexTBL == -1) {
+
+        $("#idMsg").html('<div class="alert alert-warning">' +
+            'Seleccionar un elemento de la tabla de Autorizaciones' +
+            '</div>');
+        $('#ModalInfo').modal('show');
+        return false;
+    }
+    var _analista = 0;
+    var _gerente = 0;
+    var _oficial = 0;
+    var _director = 0;
+    switch ('<%=Usuario_v%>') {
+        case 'DIRECTOR':
+            _oficial = 1;
+            break;
+        case 'GERENTE':
+            _analista = 1;
+            break;
+        case 'OFICIAL':
+            _gerente = 1;
+            break;
+        default:
+            false;
+    }
+    tr = $("#example >tbody").find("tr").eq(indexTBL);
+
+    var sId = tr.find("td").eq(0).text();
+
+    //envio_autoriza(sId,'Rechazado');
+    envio_escala_del(sId, 'Rechazado', _analista, _gerente, _oficial, _director);
+});
+
+function envio_escala_del(id, justificacion, _analista, _gerente, _oficial, _director) {
+    var payload = '<dat:doEscalaDelega xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
+    payload += '<dat:idBandeja>' + id + '</dat:idBandeja>';
+    payload += '<dat:tipo>AUTORIZA</dat:tipo>';
+    payload += '<dat:anali>' + _analista + '</dat:anali>';
+    payload += '<dat:dir>' + _director + '</dat:dir>';
+    payload += '<dat:gerent>' + _gerente + '</dat:gerent>';
+    payload += '<dat:ofici>' + _oficial + '</dat:ofici>';
+    payload += '<dat:just>' + justificacion + '</dat:just>';
+    payload += '<dat:usu>' + '<%=Usuario_v%>' + '</dat:usu>';
+    payload += '</dat:doEscalaDelega>';
+
+
+    $.ajax({
+        url: '/commons/postSOAP',
+        type: 'post',
+        headers: {
+            'Destino': 'BpmnVisor',
+            'SOAPAction': 'urn:doEscalaDelega'
+        },
+        dataType: 'xml',
+        complete: EscalaDelegacionRespon,
+        error: function(xhr, status, error) {},
+        data: payload
+    });
+}
+
+function EscalaDelegacionRespon(xmlHttpRequest, status) {
+    //alert(xmlHttpRequest.responseText);
+    $(xmlHttpRequest.responseText).find('resultado').each(function() {
+        if ($(this).find("codigoError").text() == 0) {
+            $("#idMsg").html('<div class="alert alert-success">' +
+                'Se ha realizado la petición' +
+                '</div>');
+            $('#MyModal1').modal('hide');
+            $('#MyModal2').modal('hide');
+            $('#ModalInfo').modal('show');
+            location.href = 'irBandejaEntrada';
+        } else {
+            $("#idMsg").html('<div class="alert alert-danger">' +
+                'Sucedio un error ' + $(this).find("estatus").text() +
+                '</div>');
+        }
+        $('#ModalInfo').modal('show');
+
+    });
+}
+
+
+
+
+function envio_autoriza(id_bandeja, autoriza) {
+    var payload = '<dat:qActualizaAutorizacion xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
+    payload += '<dat:idBandeja>' + id_bandeja + '</dat:idBandeja>';
+    payload += '<dat:autoriza>' + autoriza + '</dat:autoriza>';
+    payload += '</dat:qActualizaAutorizacion>';
+
+
+    $.ajax({
+        url: '/commons/postSOAP',
+        type: 'post',
+        headers: {
+            'Destino': 'BpmnVisor',
+            'SOAPAction': 'urn:qActualizaAutorizacion'
+        },
+        dataType: 'xml',
+        complete: ResponseAutorizacion,
+        error: function(xhr, status, error) {},
+        data: payload
+    });
+}
+
+function ResponseAutorizacion(xmlHttpRequest, status) {
+    //alert(xmlHttpRequest.responseText);
+    $(xmlHttpRequest.responseText).find('resultado').each(function() {
+        if ($(this).find("codigoError").text() == 0) {
+            $("#idMsg").html('<div class="alert alert-success">' +
+                'Se ha realizado la petición' +
+                '</div>');
+            location.href = 'irAutorizaciones';
+        } else {
+            $("#idMsg").html('<div class="alert alert-danger">' +
+                'Sucedio un error ' + $(this).find("estatus").text() +
+                '</div>');
+        }
+        $('#ModalInfo').modal('show');
+
+    });
+}
 </script>

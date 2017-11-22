@@ -33,11 +33,10 @@ var loggedUser = session.get("user");
         <script src="resources/plantilla/js/pace.min.js"></script>
         <script src="resources/plantilla/js/retina.min.js"></script>
         <script src="resources/plantilla/js/jquery.cookies.js"></script>
-
         <script src="resources/plantilla/js/custom.js"></script>
-
 		<script src="resources/plantilla/js/jquery.gritter.min.js"></script>
 		<script src="resources/js/notificaciones.js"></script>
+		
 	<link rel="ICON" href="images/faviconinv.ico" type="image/ico" />
     <script>
         var BPSTenant = "<%=bpsTenantDomain%>";
@@ -112,6 +111,27 @@ var loggedUser = session.get("user");
 		    </div>
 		    <div class="modal-body" align="center" >
 				 <p align="center"> <img alt="" src="resources/plantilla/images/loaders/loader17.gif">&nbsp;&nbsp;Consultando Cliente...</p>
+			</div>
+			<div class="modal-footer">
+				<!--button type="button" class="btn btn-default" data-dismiss="modal">Aceptar</button-->
+			</div>
+        </div>
+    </div>
+  </div>
+  <!-- Modal -->
+  <div class="modal fade" id="ModalGenerandoPDF" role="dialog">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h3 class="modal-title">&nbsp;</h3>
+		    </div>
+		    <div class="modal-body" align="center" >
+				 <p align="center"> <img alt="" src="resources/plantilla/images/loaders/loader17.gif">&nbsp;&nbsp;</p>
+				 <p>Generando pdf ... </p>
+				 <p>
+					<img alt="" src="resources/imagenes/PDF.png">
+				 </p>
 			</div>
 			<div class="modal-footer">
 				<!--button type="button" class="btn btn-default" data-dismiss="modal">Aceptar</button-->

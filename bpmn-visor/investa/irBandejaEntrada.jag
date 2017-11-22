@@ -41,10 +41,10 @@ include("/model/common.jag");
     }
     response.sendRedirect(application.get('serverAddress') + request.getRequestURI() + queryStr);
 }
-include("Controller/CtrlVisorBandeja.jag");
-var xmlBandeja = getTablaBandejaEntrada("",Usuario_v);
+	include("Controller/CtrlVisorBandeja.jag");
+	var xmlBandeja = getTablaBandejaEntrada("",Usuario_v,"BANDEJA");
  %>
- 
+
 		<link href="resources/plantilla/css/select2.css" rel="stylesheet" />
         <link href="http://themepixels.com/demo/webpage/chain/css/style.datatables.css" rel="stylesheet">
         <link href="resources/plantilla/css/dataTables.responsive.css" rel="stylesheet">
@@ -96,7 +96,7 @@ var xmlBandeja = getTablaBandejaEntrada("",Usuario_v);
 		
 			
             <h1>Coincidencias Asignadas</h1>
-            <table id="example" cellspacing="0" class="table table-striped table-bordered" style="font-size: x-small"  width="100%">
+            <table id="example" cellspacing="0" class="table table-striped table-bordered" style="font-size: x-small"  >
                 <thead>
                     <tr>
                         <th style="display:none;"></th>                                    	
@@ -125,10 +125,10 @@ var xmlBandeja = getTablaBandejaEntrada("",Usuario_v);
 						<p>Asignaci&oacute;n</p>
 						<select id="slcAsignacion1"  onchange="showModal(this)">	
 							<option value="0">- Seleccione -</option>
-								<%if (!bDirector){%>																							
-									<option value="1">Escalar</option>
-								<%}else if (!bAnalista){%>																									
+								<%if (bDirector){%>																							
 									<option value="2">Delegar</option>
+								<%}else if (bAnalista){%>																									
+									<option value="1">Escalar</option>
 								<%}else{%>
 									<option value="1">Escalar</option>
 									<option value="2">Delegar</option>
@@ -148,7 +148,7 @@ var xmlBandeja = getTablaBandejaEntrada("",Usuario_v);
 				</tr>
 			</table>
             <h1>Coincidencias Asignadas BATCH</h1>
-            <table id="example2" class="table table-striped table-bordered" cellspacing="0" style="font-size: x-small"  width="100%">
+            <table id="example2" class="table table-striped table-bordered" cellspacing="0" style="font-size: x-small"  width="80%">
                 <thead>
                     <tr>
                         <th style="display:none;"></th>                                    	
@@ -177,10 +177,10 @@ var xmlBandeja = getTablaBandejaEntrada("",Usuario_v);
 						<p>Asignaci&oacute;n</p>
 						<select id="slcAsignacion2"  onchange="showModalBatch(this)">	
 							<option value="0">- Seleccione -</option>
-								<%if (!bDirector){%>																							
-									<option value="1">Escalar</option>
-								<%}else if (!bAnalista){%>																									
+								<%if (bDirector){%>																							
 									<option value="2">Delegar</option>
+								<%}else if (bAnalista){%>																									
+									<option value="1">Escalar</option>
 								<%}else{%>
 									<option value="1">Escalar</option>
 									<option value="2">Delegar</option>
@@ -197,11 +197,11 @@ var xmlBandeja = getTablaBandejaEntrada("",Usuario_v);
 						<input style="display:none;" type="button" value="Enviar" id="btnEnviarAsigBatch" name="btnEnviar" onclick="getDatos(2)">
 					</td>
 					<td style="padding:2%; width:10%" valign="top">
-						<a href="irCalificacionCoincidencias"><button style="float:right" type="button" class="btn btn-primary">Analizar</button></a>
+						<button id="analiza2" style="float:right" type="button" class="btn btn-primary">Analizar</button>
 					</td>
 				</tr>
 			</table>			
-			<div class="modal fade col-centered in" id="MyModal1" tabindex="-1" role="dialog">
+			<div class="modal fade col-centered in" id="MyModal1" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog">
 			  <div class="modal-dialog" role="document">
 				<div class="modal-content">
 				  <div class="modal-header">
@@ -216,19 +216,19 @@ var xmlBandeja = getTablaBandejaEntrada("",Usuario_v);
 							<td><input type="text" id="txtTBL1" style="display:none"/></td>
 						</tr>					
 						<tr>
-							<td style="padding:2%">Fecha de b&uacute;squeda</td>
+							<td style="padding:2%">Fecha de b&uacute;squeda 	:</td>
 							<td id="txtFecha1"></td>
 						</tr>
 						<tr>
-							<td style="padding:2%">Cliente</td>
+							<td style="padding:2%">Cliente :</td>
 							<td id="txtCliente1"></td>
 						</tr>
 						<tr>
-							<td style="padding:2%">ID Cliente</td>
+							<td style="padding:2%">ID Cliente :</td>
 							<td id="txtIdCliente1"> </td>
 						</tr>
 						<tr>
-							<td style="padding:2%" valign="top">Justificaci&oacute;n</td>
+							<td style="padding:2%" valign="top">Justificaci&oacute;n :</td>
 							<td><textarea id="txtaJustif1" rows="4" cols="50" ></textarea></td>									
 						</tr>
 					</table>
@@ -240,7 +240,7 @@ var xmlBandeja = getTablaBandejaEntrada("",Usuario_v);
 				</div>
 			  </div>
 			</div>
-			<div class="modal fade col-centered" id="MyModal2" tabindex="-1" role="dialog">
+			<div class="modal fade col-centered" id="MyModal2" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog">
 			  <div class="modal-dialog " role="document">
 				<div class="modal-content">
 				  <div class="modal-header">
@@ -255,19 +255,19 @@ var xmlBandeja = getTablaBandejaEntrada("",Usuario_v);
 							<td><input type="text" id="txtTBL2" style="display:none"/></td>
 						</tr>
 						<tr>
-							<td style="padding:2%">Fecha de b&uacute;squeda</td>
+							<td style="padding:2%">Fecha de b&uacute;squeda :</td>
 							<td id="txtFecha2"></td>
 						</tr>
 						<tr>
-							<td style="padding:2%">Cliente</td>
+							<td style="padding:2%">Cliente :</td>
 							<td id="txtCliente2"></td>
 						</tr>
 						<tr>
-							<td style="padding:2%">ID Cliente</td>
+							<td style="padding:2%">ID Cliente :</td>
 							<td id="txtIdCliente2"></td>
 						</tr>						
 						<tr>
-							<td style="padding:2%" VALIGN="TOP">Justificaci&oacute;n</td>
+							<td style="padding:2%" VALIGN="TOP">Instrucciones :</td>
 							<td><textarea id="txtaJustif2" rows="4" cols="50" ></textarea></td>									
 						</tr>
 						<!--tr>
@@ -277,6 +277,7 @@ var xmlBandeja = getTablaBandejaEntrada("",Usuario_v);
 					</table>
 				  </div>
 				  <div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
 					   <button type="button" class="btn btn-default"onclick="escalar_delega(2)">Delegar</button>
 				  </div>
 				</div>
@@ -285,8 +286,7 @@ var xmlBandeja = getTablaBandejaEntrada("",Usuario_v);
         </div><!-- panel-heading -->
     </div><!-- contentpanel -->
  </section>
-</body>
-</html>
+
 
 <script src='resources/plantilla/js/jquery-1.11.1.min.js'></script>
 <script src='resources/plantilla/js/jquery.dataTables2.min.js'></script>
@@ -302,259 +302,310 @@ var xmlBandeja = getTablaBandejaEntrada("",Usuario_v);
 <script src="resources/plantilla/js/bootstrap.min.js"></script>
 <script src="resources/plantilla//js/dataTables.responsive.js"></script>
 <script src="resources/plantilla/js/select2.min.js"></script>
-<script src="resources/plantilla/js/custom.js"></script>
          
 
-        <script>
-        
-        $(document).ready(function() {	
+<script>
+      var indexTBL = -1;  
+      var indexTBL2 = -1;  
+	$(document).ready(function() {
 		$('#ModalCargando').modal('show');
+		
 		$('#buscando').hide();
-            $('#example').DataTable({
-            	 "scrollY": 400,
-                 "scrollX": true
-            });
-            $('#example2').DataTable({
-            	 "scrollY": 400,
-                 "scrollX": true
-            });
-			
-			$('#ModalCargando').modal('hide');
-        } );
-			
-			function showModal(modal){
-				var target = "#MyModal" + modal.value;
-				var tab = 1;
-				 displayEnvio(modal, tab);
-				 $("#btnEnviarAsig").css("display","block");
-				// $('#btnEnviarAsig').attr('data-target',target);
-			}
-			
-			function showModalBatch(modal){
-				var tab = 2;
-				var target = "#MyModal" + modal.value;
-				displayEnvio(modal, tab);
-				 $("#btnEnviarAsigBatch").css("display","block");
-				 $('#btnEnviarAsigBatch').attr('data-target',target);
-			}
-			
-			function displayEnvio(modal, tab){
-				if(modal.value === '0'){
-					$("#envGerente" + tab).css("display","none");
-					$("#envOficial" + tab).css("display","none");
-					$("#envDirector" + tab).css("display","none");
-					$("#envAnalista" + tab).css("display","none");
-				}					
-				if(modal.value === '1'){
-					<%if(bAnalista){%>
-						$("#envGerente" + tab).css("display","block");
-						$("#envOficial" + tab).css("display","block");
-						$("#envDirector" + tab).css("display","block");
-					<%}else if(bGerente){%>
-						$("#envOficial" + tab).css("display","block");
-						$("#envDirector" + tab).css("display","block");
-					<%}else if(bOficial){%>
-						$("#envDirector" + tab).css("display","block");
-					<%}%>
-				}
-				if(modal.value === '2'){
-					<%if(bDirector){%>
-						$("#envGerente" + tab).css("display","block");
-						$("#envOficial" + tab).css("display","block");
-						$("#envAnalista" + tab).css("display","block");
-					<%}else if(bOficial){%>
-						$("#envAnalista" + tab).css("display","block");
-						$("#envGerente" + tab).css("display","block");
-					<%}else if(bGerente){%>
-						$("#envAnalista" + tab).css("display","block");
-					<%}%>
-				}
-			}
-			
-			function abrirVentana(url) {
-				var ventanaDetalle = window.open(url, "nuevo", "directories=no, location=no, menubar=no, scrollbars=yes, statusbar=no, tittlebar=no, width=1000, height=600");
-				ventanaDetalle.focus();
-			}
-            jQuery(document).ready(function(){   				
-				
-				
-            	$('#buscando').hide();
-                                
-                $(".buscar" ).click(function() {
-        			$('#buscando').show();        			
-    			});
-                
-                $('#basicTableClientes').DataTable({
-                	"language": {
-                        "lengthMenu": "Mostrar _MENU_ registros",
-                        "zeroRecords": "Nothing found - sorry",
-                        "info": "Mostrando página _PAGE_ de _PAGES_",
-                        "infoEmpty": "No hay registros disponibles",
-                        "infoFiltered": "(filtered from _MAX_ total records)",
-                        "search": "Buscar",
-                        "previous" : "Previo"
-                    },
-                    "order": [[ 0, 'desc' ]],
-                    responsive: true,
-                    ordering:  true,
-                    "scrollX": true,
-                    "scrollY": 350,
-                    "fnDrawCallback": function(oSettings) {
-                        jQuery('#basicTable ul').addClass('pagination-active-dark');
-                    },
-                    
-                });
+		$('#example').DataTable({
+			"scrollY": 400,
+			"scrollX": true
+		});
+		$('#example2').DataTable({
+			"scrollY": 400,
+			"scrollX": true
+		});
 
-                $('#basicTableBeneficiarios').DataTable({
-                	"language": {
-                        "lengthMenu": "Mostrar _MENU_ registros",
-                        "zeroRecords": "Nothing found - sorry",
-                        "info": "Mostrando página _PAGE_ de _PAGES_",
-                        "infoEmpty": "No hay registros disponibles",
-                        "infoFiltered": "(filtered from _MAX_ total records)",
-                        "search": "Buscar",
-                        "previous" : "Previo"
-                    },
-                    "order": [[ 0, 'desc' ]],
-                    responsive: true,
-                    ordering:  true,
-                    "scrollX": true,
-                    "scrollY": 350,
-                    "fnDrawCallback": function(oSettings) {
-                        jQuery('#basicTable ul').addClass('pagination-active-dark');
-                    },
-                    
-                });
-				$('#buscando').hide();
-            });
-			
-			function getDatos(tbl){
-				var seleccion = $("#slcAsignacion"+tbl+" option:selected").val();
-			
-				var index= 0;
-				if (! $("input[name=tabla"+tbl+"]").is(":checked") ) {
-					// alert("Por Favor Seleccionar un elemento de la tabla de coincidencias");
-					 $("#idMsg").html('<div class="alert alert-warning">'+
-						'Seleccionar un elemento de la tabla de coincidencias'+
-						'</div>');
-					$('#ModalInfo').modal('show');
-					 return false;
-				}
-				if (! $("input[name=usuarios"+tbl+"]").is(":checked") ) {
-					 //alert("Por Favor Seleccionar uno o los usuarios de escalamiento<");
-					 $("#idMsg").html('<div class="alert alert-warning">'+
-						'Seleccionar opcion de envio'+
-						'</div>');
-					$('#ModalInfo').modal('show');
-					 return false;
-				}
-				$("input[name=tabla"+tbl+"]").each(function (inde) {  
-				   if($(this).is(':checked')){
-						index = $(this).val();
-				   }
-				});
-				var tr ;
-				if(tbl==1){							
-					tr = $("#example >tbody").find("tr").eq(index);
-				}else{
-					tr = $("#example2 >tbody").find("tr").eq(index);
-				}
-					$("#txtTBL"+seleccion).val(tbl);
-					$("#txtaJustif"+seleccion).val('');
-					$("#txtIDbandeja"+seleccion).val(tr.find("td").eq(0).text());
-					$("#txtFecha"+seleccion).html(tr.find("td").eq(1).text());
-					$("#txtCliente"+seleccion).html(tr.find("td").eq(4).text()+' '+tr.find("td").eq(5).text()+' '+tr.find("td").eq(6).text());
-					$("#txtIdCliente"+seleccion).html(tr.find("td").eq(3).text());
-					$('#MyModal'+seleccion).modal('show');
-				
-			}
-			//funcion de escalamiento
-			function escalar_delega(tip){
-				var justificacion = $('#txtaJustif'+tip).val();
-				var tbl = $('#txtTBL'+tip).val();
-				if(justificacion ==""){
-					alert('Introducir justificacion');
-					return false;
-				}
-				var id = $("#txtIDbandeja"+tip).val();
-				var _analista=0;
-				var _gerente=0;
-				var _oficial=0;
-				var _director=0;
-				
-				if ($('#cbAnalista'+tbl).prop('checked') ) {
-					_analista=1;
-				}if ($('#cbGerente'+tbl).prop('checked') ) {
-					_gerente=1;
-				}if ($('#cbOficial'+tbl).prop('checked') ) {
-					_oficial=1;
-				}if ($('#cbDirector'+tbl).prop('checked') ) {
-					_director=1;
-				}
-				envio_escala_del(id,justificacion,_analista,_gerente,_oficial,_director);
-				
-			}
-			function envio_escala_del(id,justificacion,_analista,_gerente,_oficial,_director){
-				var payload  = '<dat:doEscalaDelega xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
-					payload += '<dat:idBandeja>'+id+'</dat:idBandeja>';
-					payload += '<dat:tipo>Escalar</dat:tipo>';
-					payload += '<dat:anali>'+_analista+'</dat:anali>';
-					payload += '<dat:dir>'+_director+'</dat:dir>';
-					payload += '<dat:gerent>'+_gerente+'</dat:gerent>';
-					payload += '<dat:ofici>'+_oficial+'</dat:ofici>';
-					payload += '<dat:just>'+justificacion+'</dat:just>';
-					payload += '</dat:doEscalaDelega>';
+		$('#ModalCargando').modal('hide');
+	});
 
-				
-				$.ajax({
-					url: '/commons/postSOAP',
-					type: 'post',
-					headers: {'Destino':'BpmnVisor', 'SOAPAction':'urn:doEscalaDelega'},
-					dataType: 'xml',
-					complete: EscalaDelegacionRespon,
-					error: function (xhr, status, error) {},
-					data: payload
-				});                    
-			}                         
-			function EscalaDelegacionRespon(xmlHttpRequest, status){
-				//alert(xmlHttpRequest.responseText);
-				$(xmlHttpRequest.responseText).find('resultado').each(function(){
-					if($(this).find("codigoError").text()==0){
-						$("#idMsg").html('<div class="alert alert-success">'+
-						'Se ha realizado la petición'+
-						'</div>');
-						$('#MyModal1').modal('hide');
-						$('#MyModal2').modal('hide');
-					}else{
-						$("#idMsg").html('<div class="alert alert-danger">'+
-						'Sucedio un error '+$(this).find("estatus").text()+
-						'</div>');
-					}
-					$('#ModalInfo').modal('show');
-					
-				});
+	function showModal(modal) {
+		var target = "#MyModal" + modal.value;
+		var tab = 1;
+		displayEnvio(modal, tab);
+		$("#btnEnviarAsig").css("display", "block");
+		// $('#btnEnviarAsig').attr('data-target',target);
+	}
+
+	function showModalBatch(modal) {
+		var tab = 2;
+		var target = "#MyModal" + modal.value;
+		displayEnvio(modal, tab);
+		$("#btnEnviarAsigBatch").css("display", "block");
+		$('#btnEnviarAsigBatch').attr('data-target', target);
+	}
+
+	function displayEnvio(modal, tab) {
+		if (modal.value === '0') {
+			$("#envGerente" + tab).css("display", "none");
+			$("#envOficial" + tab).css("display", "none");
+			$("#envDirector" + tab).css("display", "none");
+			$("#envAnalista" + tab).css("display", "none");
+		}
+		if (modal.value === '1') {
+			clean(tab);
+			<%if(bAnalista){%>
+			$("#envGerente" + tab).css("display", "block");
+			$("#envOficial" + tab).css("display", "block");
+			$("#envDirector" + tab).css("display", "block");
+			<%}else if(bGerente){%>
+			$("#envOficial" + tab).css("display", "block");
+			$("#envDirector" + tab).css("display", "block");
+			<%}else if(bOficial){%>
+			$("#envDirector" + tab).css("display", "block");
+			<%}%>
+		}
+		if (modal.value === '2') {
+			clean(tab);
+			<%if(bDirector){%>
+			$("#envGerente" + tab).css("display", "block");
+			$("#envOficial" + tab).css("display", "block");
+			$("#envAnalista" + tab).css("display", "block");
+			<%}else if(bOficial){%>
+			$("#envAnalista" + tab).css("display", "block");
+			$("#envGerente" + tab).css("display", "block");
+			<%}else if(bGerente){%>
+			$("#envAnalista" + tab).css("display", "block");
+			<%}%>
+		}
+	}
+	function clean(tab){
+		$("#envGerente" + tab).css("display", "none");
+		$("#envOficial" + tab).css("display", "none");
+		$("#envDirector" + tab).css("display", "none");
+		$("#envAnalista" + tab).css("display", "none");
+	}
+
+	function abrirVentana(url) {
+		var ventanaDetalle = window.open(url, "nuevo", "directories=no, location=no, menubar=no, scrollbars=yes, statusbar=no, tittlebar=no, width=1000, height=600");
+		ventanaDetalle.focus();
+	}
+	jQuery(document).ready(function() {
+
+		$(".buscar").click(function() {
+			$('#buscando').show();
+		});
+
+		$('#basicTableClientes').DataTable({
+			"language": {
+				"lengthMenu": "Mostrar _MENU_ registros",
+				"zeroRecords": "Nothing found - sorry",
+				"info": "Mostrando página _PAGE_ de _PAGES_",
+				"infoEmpty": "No hay registros disponibles",
+				"infoFiltered": "(filtered from _MAX_ total records)",
+				"search": "Buscar",
+				"previous": "Previo"
+			},
+			"order": [
+				[0, 'desc']
+			],
+			responsive: true,
+			ordering: true,
+			"scrollX": true,
+			"scrollY": 350,
+			"fnDrawCallback": function(oSettings) {
+				jQuery('#basicTable ul').addClass('pagination-active-dark');
+			},
+
+		});
+
+		$('#basicTableBeneficiarios').DataTable({
+			"language": {
+				"lengthMenu": "Mostrar _MENU_ registros",
+				"zeroRecords": "Nothing found - sorry",
+				"info": "Mostrando página _PAGE_ de _PAGES_",
+				"infoEmpty": "No hay registros disponibles",
+				"infoFiltered": "(filtered from _MAX_ total records)",
+				"search": "Buscar",
+				"previous": "Previo"
+			},
+			"order": [
+				[0, 'desc']
+			],
+			responsive: true,
+			ordering: true,
+			"scrollX": true,
+			"scrollY": 350,
+			"fnDrawCallback": function(oSettings) {
+				jQuery('#basicTable ul').addClass('pagination-active-dark');
+			},
+
+		});
+		//$('#buscando').hide();
+
+	});
+
+	function getDatos(tbl) {
+		var seleccion = $("#slcAsignacion" + tbl + " option:selected").val();
+
+		var index = 0;
+		if(tbl ==1 && indexTBL ==-1){
+			$("#idMsg").html('<div class="alert alert-warning">' +
+				'Seleccionar un elemento de la tabla de coincidencias asignadas' +
+				'</div>');
+			$('#ModalInfo').modal('show');
+			return false;
+		}else if(tbl ==2 && indexTBL2 ==-1){
+			$("#idMsg").html('<div class="alert alert-warning">' +
+				'Seleccionar un elemento de la tabla de coincidencias asignadas <strong>BATCH</strong>' +
+				'</div>');
+			$('#ModalInfo').modal('show');
+			return false;
+		}
+		
+		if (!$("input[name=usuarios" + tbl + "]").is(":checked")) {
+			$("#idMsg").html('<div class="alert alert-warning">' +
+				'Seleccionar opcion de envio' +
+				'</div>');
+			$('#ModalInfo').modal('show');
+			return false;
+		}
+		
+		var tr;
+		if (tbl == 1) {
+			tr = $("#example >tbody").find("tr").eq(indexTBL);
+		} else {
+			tr = $("#example2 >tbody").find("tr").eq(indexTBL2);
+		}
+		$("#txtTBL" + seleccion).val(tbl);
+		$("#txtaJustif" + seleccion).val('');
+		$("#txtIDbandeja" + seleccion).val(tr.find("td").eq(0).text());
+		$("#txtFecha" + seleccion).html(tr.find("td").eq(1).text());
+		$("#txtCliente" + seleccion).html(tr.find("td").eq(4).text() + ' ' + tr.find("td").eq(5).text() + ' ' + tr.find("td").eq(6).text());
+		$("#txtIdCliente" + seleccion).html(tr.find("td").eq(3).text());
+		$('#MyModal' + seleccion).modal('show');
+
+	}
+	//funcion de escalamiento
+	function escalar_delega(tip) {
+		var justificacion = $('#txtaJustif' + tip).val();
+		var tbl = $('#txtTBL' + tip).val();
+		if (justificacion == "") {
+			alert('Introducir justificacion');
+			return false;
+		}
+		var id = $("#txtIDbandeja" + tip).val();
+		var _analista = 0;
+		var _gerente = 0;
+		var _oficial = 0;
+		var _director = 0;
+		var tipo_tra ='Escalar';
+
+		if ($('#cbAnalista' + tbl).prop('checked')) {
+			_analista = 1;
+		}
+		if ($('#cbGerente' + tbl).prop('checked')) {
+			_gerente = 1;
+		}
+		if ($('#cbOficial' + tbl).prop('checked')) {
+			_oficial = 1;
+		}
+		if ($('#cbDirector' + tbl).prop('checked')) {
+			_director = 1;
+		}
+		if(tip==1){
+			
+				tipo_tra ='Delega';
+			
+		}else{
+			
+				tipo_tra ='Delega';
+			
+		}
+		envio_escala_del(id, justificacion, _analista, _gerente, _oficial, _director,tipo_tra);
+
+	}
+
+	function envio_escala_del(id, justificacion, _analista, _gerente, _oficial, _director,tipo_tra) {
+		$('#ModalCargando').modal('show');
+		var payload = '<dat:doEscalaDelega xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
+		payload += '<dat:idBandeja>' + id + '</dat:idBandeja>';
+		payload += '<dat:tipo>'+tipo_tra+'</dat:tipo>';
+		payload += '<dat:anali>' + _analista + '</dat:anali>';
+		payload += '<dat:dir>' + _director + '</dat:dir>';
+		payload += '<dat:gerent>' + _gerente + '</dat:gerent>';
+		payload += '<dat:ofici>' + _oficial + '</dat:ofici>';
+		payload += '<dat:just>' + justificacion + '</dat:just>';
+		payload += '<dat:usu>' + '<%=Usuario_v%>' + '</dat:usu>';
+		payload += '</dat:doEscalaDelega>';
+
+
+		$.ajax({
+			url: '/commons/postSOAP',
+			type: 'post',
+			headers: {
+				'Destino': 'BpmnVisor',
+				'SOAPAction': 'urn:doEscalaDelega'
+			},
+			dataType: 'xml',
+			complete: EscalaDelegacionRespon,
+			error: function(xhr, status, error) {},
+			data: payload
+		});
+	}
+
+	function EscalaDelegacionRespon(xmlHttpRequest, status) {
+		//alert(xmlHttpRequest.responseText);
+		$(xmlHttpRequest.responseText).find('resultado').each(function() {
+			if ($(this).find("codigoError").text() == 0) {
+				$("#idMsg").html('<div class="alert alert-success">' +
+					'Se ha realizado la petición' +
+					'</div>');
+				$('#MyModal1').modal('hide');
+				$('#MyModal2').modal('hide');
+				 location.href = 'irBandejaEntrada';
+			} else {
+				$("#idMsg").html('<div class="alert alert-danger">' +
+					'Sucedio un error ' + $(this).find("estatus").text() +
+					'</div>');
 			}
+			$('#ModalInfo').modal('show');
+
+		});
+	}
+
+	$("#Analiza").click(function() {
+		
+		if (indexTBL == -1) {
+
+			$("#idMsg").html('<div class="alert alert-warning">' +
+				'Seleccionar un elemento de la tabla de coincidencias' +
+				'</div>');
+			$('#ModalInfo').modal('show');
+			return false;
+		}
+		var tr;
+
+		tr = $("#example >tbody").find("tr").eq(indexTBL);
+		location.href = 'irCalificacionCoincidencias?idConsulta=' + tr.find("td").eq(2).text();
+	});
+	$("#analiza2").click(function() {
+		
+		if (indexTBL2 == -1) {
+
+			$("#idMsg").html('<div class="alert alert-warning">' +
+				'Seleccionar un elemento de la <strong>tabla de coincidencias asignadas batch</strong>' +
+				'</div>');
+			$('#ModalInfo').modal('show');
+			return false;
+		}
+		var tr;
+	
+		tr = $("#example2 >tbody").find("tr").eq(indexTBL2);
+		location.href = 'irCalificacionCoincidencias?idConsulta=' + tr.find("td").eq(2).text();
+	});
+	
+	function llenaValor(combo){
+		indexTBL = $(combo).closest('tr').index();
+	}
+	function llenaValor2(combo){
+		indexTBL2 = $(combo).closest('tr').index();
+	}
 			
-			$("#Analiza").click(function() {
-				var index =0;
-				if (! $("input[name=tabla1]").is(":checked") ) {
-					
-					 $("#idMsg").html('<div class="alert alert-warning">'+
-						'Seleccionar un elemento de la tabla de coincidencias'+
-						'</div>');
-					$('#ModalInfo').modal('show');
-					 return false;
-				}
-				$("input[name=tabla1]").each(function (inde) {  
-				   if($(this).is(':checked')){
-						index = $(this).val();
-				   }
-				});
-				var tr ;
-									
-				tr = $("#example >tbody").find("tr").eq(index);
-				location.href='irCalificacionCoincidencias?idConsulta='+tr.find("td").eq(2).text();
-			});
-			
-        </script>
-		 
+ </script>
+	</body>
+</html>
