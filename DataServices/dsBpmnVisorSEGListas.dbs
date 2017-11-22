@@ -58,7 +58,7 @@
       <param name="prioridad" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
    </query> 
 	<query id="qInsertaConfiguracion" useConfig="SEGListas">
-      <sql>{? = call VISOR_PKG_SEGL_LISTAS.do_segl_config_perfil_busq ( ?,  ?,  ?,  ?,  ?,  ?,  ?)}</sql>
+      <sql>{? = call VISOR_PKG_SEGL_LISTAS.do_segl_config_perfil_busq ( ?,  ?,  ?,  ?,  ?,  ?,  ?, ?)}</sql>
       <result element="qInsertaConfiguracionResponse" rowName="resultadoConfiguracion">
          <element column="estatus" name="estatus" xsdType="string"/>
       </result>
@@ -69,6 +69,7 @@
       <param name="estatusConf" ordinal="6" sqlType="STRING"/>
       <param name="estatusAprob" ordinal="7" sqlType="STRING"/>
       <param name="usuarioAlta" ordinal="8" sqlType="STRING"/>
+      <param name="porcentaje" ordinal="9" sqlType="STRING"/>
       <param name="estatus" ordinal="1" sqlType="INTEGER" type="OUT"/>
    </query>
    <query id="qGetMBConsultaAplicacion" useConfig="SEGListas">
@@ -114,7 +115,7 @@
       <param name="origen" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
    </query> 
   <query id="qInsertaAsignacionPerfil" useConfig="SEGListas">
-      <sql>{? = call VISOR_PKG_SEGL_LISTAS.do_segl_asig_perfil_aplic ( ?,  ?,  ?,  ?,  ?)}</sql>
+      <sql>{? = call VISOR_PKG_SEGL_LISTAS.do_segl_asig_perfil_aplic ( ?,  ?,  ?,  ?,  ?, ?)}</sql>
       <result element="qInsertaAsignacionResponse" rowName="resultadoAsignacion">
          <element column="estatus" name="estatus" xsdType="string"/>
       </result>
@@ -123,6 +124,7 @@
       <param name="idOrigen" ordinal="4" sqlType="STRING"/>
       <param name="idPerfil" ordinal="5" sqlType="STRING"/>
       <param name="usuarioAlta" ordinal="6" sqlType="STRING"/>
+      <param name="relacion" ordinal="7" sqlType="STRING"/>
       <param name="estatus" ordinal="1" sqlType="INTEGER" type="OUT"/>
    </query>
    <query id="qGetMBConsultaConfiguracion" useConfig="SEGListas">
@@ -147,6 +149,109 @@
       <param defaultValue="#{NULL}" name="idConfiguracion" ordinal="2" sqlType="STRING"/>
       <param name="configuracion" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
    </query> 
+   <query id="qGetMBConsultaPerfilesAsignados" useConfig="SEGListas">
+      <sql>{? = call VISOR_PKG_SEGL_LISTAS.get_segl_perfiles_asig(?)}</sql>
+      <result element="getMBConsultaPerfAsignados" rowName="resultadoConsultaPerfil">
+         <element column="ID_PERFIL_ASIGNADOS" name="id_perfil_asignados" xsdType="string"/>
+         <element column="SOLICITANTE" name="solicitante" xsdType="string"/>
+         <element column="ID_APLICACION" name="id_aplicacion" xsdType="string"/>
+         <element column="APLICAION" name="aplicaion" xsdType="string"/>
+         <element column="ID_OPERACION" name="id_operacion" xsdType="string"/>
+         <element column="OPERACION" name="operacion" xsdType="string"/>
+         <element column="ID_ORIGEN_CLIENTE" name="id_origen_cliente" xsdType="string"/>
+         <element column="ORIGEN" name="origen" xsdType="string"/>
+         <element column="ID_PERFIL" name="id_perfil" xsdType="string"/>
+         <element column="PERFIL" name="perfil" xsdType="string"/>
+      </result>
+      <param defaultValue="#{NULL}" name="relacion" ordinal="2" sqlType="STRING"/>
+      <param name="Asignacion" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
+   </query> 
+   <query id="qAutorizaAsignacionPerfil" useConfig="SEGListas">
+      <sql>{? = call VISOR_PKG_SEGL_LISTAS.do_segl_aut_asignacion ( ?,  ?,  ?,  ?,  ?, ?)}</sql>
+      <result element="qAutorizaAsignacionResponse" rowName="resultadoAsignacion">
+         <element column="estatus" name="estatus" xsdType="string"/>
+      </result>
+      <param name="idAplicacion" ordinal="2" sqlType="STRING"/>
+      <param name="idOperacion" ordinal="3" sqlType="STRING"/>
+      <param name="idOrigen" ordinal="4" sqlType="STRING"/>
+      <param name="idPerfil" ordinal="5" sqlType="STRING"/>
+      <param name="usuarioAutoriza" ordinal="6" sqlType="STRING"/>
+      <param name="idPerfilAsignados" ordinal="7" sqlType="STRING"/>
+      <param name="estatus" ordinal="1" sqlType="INTEGER" type="OUT"/>
+   </query>
+   <query id="qActualizaCatListas" useConfig="SEGListas">
+      <sql>{? = call VISOR_PKG_SEGL_LISTAS.do_segl_actualiza_lista ( ?,  ?,  ?,  ?)}</sql>
+      <result element="qActualizaListasResponse" rowName="resultadoActualizaListas">
+         <element column="estatus" name="estatus" xsdType="string"/>
+      </result>
+      <param name="idLista" ordinal="2" sqlType="STRING"/>
+      <param name="descLista" ordinal="3" sqlType="STRING"/>
+      <param name="descPorcentaje" ordinal="4" sqlType="STRING"/>
+      <param name="usuario" ordinal="5" sqlType="STRING"/>
+      <param name="estatus" ordinal="1" sqlType="INTEGER" type="OUT"/>
+   </query>
+    <query id="qActualizaConfiguracionPerfil" useConfig="SEGListas">
+      <sql>{? = call VISOR_PKG_SEGL_LISTAS.do_segl_actualiza_config ( ?, ?, ?, ?, ?, ?)}</sql>
+      <result element="qActualizaConfiguracionResponse" rowName="resultadoActualizaConfiguracion">
+         <element column="estatus" name="estatus" xsdType="string"/>
+      </result>
+      <param name="idPerfil" ordinal="2" sqlType="STRING"/>
+      <param name="idCategListas" ordinal="3" sqlType="STRING"/>
+      <param name="descTransaccion" ordinal="4" sqlType="STRING"/>
+      <param name="idPrioridad" ordinal="5" sqlType="STRING"/>
+      <param name="usuario" ordinal="6" sqlType="STRING"/>
+      <param name="descPorcentaje" ordinal="7" sqlType="STRING"/>
+      <param name="estatus" ordinal="1" sqlType="INTEGER" type="OUT"/>
+   </query>   
+    <query id="qAutorizaConfiguracionPerfil" useConfig="SEGListas">
+      <sql>{? = call VISOR_PKG_SEGL_LISTAS.do_segl_autoriza_config ( ?, ?)}</sql>
+      <result element="qAutorizaConfiguracionResponse" rowName="resultadoAutorizaConfiguracion">
+         <element column="estatus" name="estatus" xsdType="string"/>
+      </result>
+      <param name="idPerfil" ordinal="2" sqlType="STRING"/>
+      <param name="usuario" ordinal="3" sqlType="STRING"/>
+      <param name="estatus" ordinal="1" sqlType="INTEGER" type="OUT"/>
+   </query>
+   <query id="qCancelaAsignacion" useConfig="SEGListas">
+      <sql>{? = call VISOR_PKG_SEGL_LISTAS.do_segl_cancela_asig (?, ?, ?, ?)}</sql>
+      <result element="qCancelaAsignacionResponse" rowName="resultadoCancelaAsignacion">
+         <element column="estatus" name="estatus" xsdType="string"/>
+      </result>
+      <param name="idAplicacion" ordinal="2" sqlType="STRING"/>
+      <param name="idOperacion" ordinal="3" sqlType="STRING"/>
+      <param name="idOrigen" ordinal="4" sqlType="STRING"/>
+      <param name="idPerfil" ordinal="5" sqlType="STRING"/>
+      <param name="estatus" ordinal="1" sqlType="INTEGER" type="OUT"/>
+   </query>
+   <operation name="qCancelaAsignacion">
+      <call-query href="qCancelaAsignacion">
+         <with-param name="idAplicacion" query-param="idAplicacion"/>
+         <with-param name="idOperacion" query-param="idOperacion"/>
+         <with-param name="idOrigen" query-param="idOrigen"/>
+         <with-param name="idPerfil" query-param="idPerfil"/>
+      </call-query>
+   </operation>  
+   <operation name="qActualizaConfiguracionPerfil">
+      <call-query href="qActualizaConfiguracionPerfil">
+         <with-param name="idPerfil" query-param="idPerfil"/>
+         <with-param name="idCategListas" query-param="idCategListas"/>
+         <with-param name="descTransaccion" query-param="descTransaccion"/>
+         <with-param name="idPrioridad" query-param="idPrioridad"/>
+         <with-param name="usuario" query-param="usuario"/>
+         <with-param name="descPorcentaje" query-param="descPorcentaje"/>
+      </call-query>
+   </operation>  
+ <operation name="qAutorizaConfiguracionPerfil">
+      <call-query href="qAutorizaConfiguracionPerfil">
+         <with-param name="idPerfil" query-param="idPerfil"/>
+         <with-param name="usuario" query-param="usuario"/>
+      </call-query>
+   </operation>     
+   <operation name="qGetMBConsultaPerfilesAsignados">
+      <call-query href="qGetMBConsultaPerfilesAsignados">
+         <with-param name="relacion" query-param="relacion"/>
+      </call-query>
+   </operation>
    <operation name="qGetMBConsultaConfiguracion">
       <call-query href="qGetMBConsultaConfiguracion">
          <with-param name="idConfiguracion" query-param="idConfiguracion"/>
@@ -196,8 +301,9 @@
          <with-param name="estatusConf" query-param="estatusConf"/>
          <with-param name="estatusAprob" query-param="estatusAprob"/>
          <with-param name="usuarioAlta" query-param="usuarioAlta"/>
+         <with-param name="porcentaje" query-param="porcentaje"/>
       </call-query>
-   </operation>
+	</operation>
     <operation name="qInsertaAsignacionPerfil">
       <call-query href="qInsertaAsignacionPerfil">
          <with-param name="idAplicacion" query-param="idAplicacion"/>
@@ -205,6 +311,25 @@
          <with-param name="idOrigen" query-param="idOrigen"/>
          <with-param name="idPerfil" query-param="idPerfil"/>
          <with-param name="usuarioAlta" query-param="usuarioAlta"/>
+         <with-param name="relacion" query-param="relacion"/>
       </call-query>
-   </operation>   
+   </operation> 
+	<operation name="qAutorizaAsignacionPerfil">
+      <call-query href="qAutorizaAsignacionPerfil">
+         <with-param name="idAplicacion" query-param="idAplicacion"/>
+         <with-param name="idOperacion" query-param="idOperacion"/>
+         <with-param name="idOrigen" query-param="idOrigen"/>
+         <with-param name="idPerfil" query-param="idPerfil"/>
+         <with-param name="usuarioAutoriza" query-param="usuarioAutoriza"/>
+         <with-param name="idPerfilAsignados" query-param="idPerfilAsignados"/>
+      </call-query>
+   </operation> 
+	<operation name="qActualizaCatListas">
+      <call-query href="qActualizaCatListas">
+         <with-param name="idLista" query-param="idLista"/>
+         <with-param name="descLista" query-param="descLista"/>
+         <with-param name="descPorcentaje" query-param="descPorcentaje"/>
+         <with-param name="usuario" query-param="usuario"/>
+      </call-query>
+   </operation>    
 </data>

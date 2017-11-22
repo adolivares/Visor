@@ -134,8 +134,8 @@
 			}else{
 				result += '<tr style="cursor:pointer">';
 				result += '<td style="display:none">'+aXML.*::id_lista.toString()+'</td>';
-				result += '<td>'+aXML.*::lista.toString()+'</td>';				
-				result += '<td>'+aXML.*::porcentaje.toString()+'</td>';				
+				result += '<td class="lista">'+aXML.*::lista.toString()+'</td>';				
+				result += '<td class="porcentaje">'+aXML.*::porcentaje.toString()+'</td>';				
 				result += '</tr>';		
 			}
 		}
@@ -251,6 +251,9 @@
 		}		
 		return result;
 	}
+	
+	
+	
 	
 	
 	
