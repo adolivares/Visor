@@ -1,5 +1,20 @@
 <%
 include("/model/common.jag");
+var modulo = request.getParameter("mod");
+var catalogo = request.getParameter("cat");
+var id = request.getParameter("id");
+var userTran = request.getParameter("usuario");
+var estatus = "";
+if(modulo == null){
+	modulo = ""; 
+}
+
+if(catalogo == null){
+	catalogo = "";
+}
+
+id = id==null?"":id;
+userTran = userTran==null?"":userTran;
 /*<!--
  ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
@@ -39,6 +54,12 @@ include("/model/common.jag");
         queryStr = '?' + request.getQueryString();
     }
     response.sendRedirect(application.get('serverAddress') + request.getRequestURI() + queryStr);
+}
+include("Controller/CtrlAdministraCatalogos.jag");
+if(modulo != "" && catalogo != "" && id != "" && userTran != ""){
+	var xmlResponse = eliminaCatalogo(id, userTran, catalogo);
+	estatus = getEstatus(xmlResponse);
+	log.info("Estatus elimina: "+estatus);
 }
  %>
  
@@ -90,78 +111,87 @@ include("/model/common.jag");
                     </div><!-- panel-body -->
                 </div><!-- panel -->
             </div><!-- panel-heading -->
-			
-			<form id="frmAdminCatalogos" name="frmAdminCatalogos">			
-				<table cellspacing="0" style="font-size:small" width="40%"> 
-					<tr>
-						<td style="padding:2%">Selecciona M&oacute;dulo: </td>
-						<td><select id="selModulo" style="width:152px" required="required">
-							<option value="0">--Seleccione--</option>
-							<option value="visor">Visor</option>
-						</select></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td style="padding:2%">Selecciona C&aacute;talogo: </td>
-						<td><select id="selCatalogo" style="width:152px">
-							<option>--Seleccione--</option>
-						</select></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td style="padding:2%">Nuevo Registro: </td>
-						<td><input type="text" id="txtRegistro" name="txtRegistro"></td>
-						<td ><input type="button" id="btnAlta" value="Alta" style="width:90px"></td>
-					</tr>
-					<tr>
-						<td>&nbsp</td>
-						<td>&nbsp</td>
-						<td>&nbsp</td>
-					</tr>
-					<tr>
-						<td colspan="2">
-							<table id="catalogos" cellspacing="0" class="table-striped table-bordered" style="font-size: x-small;" width="300px">
-							<thead>
-								<tr>
-									<th style="padding:3%;"></th> 
-									<th></th>                        
-								</tr>
+			<div class="row">
+				<div class="col-md-10">						
+					<div class="row padding10 ">
+						<div class="col-md-2">Selecciona M&oacute;dulo: </div>
+						<div class="col-md-2">
+							<select id="selModulo" style="width:152px" required="required">
+								<option value="0">--Seleccione--</option>
+								<option value="visor">Visor</option>
+							</select>
+						</div>
+					</div>
+					<div class="row padding10 ">
+						<div class="col-md-2">Selecciona C&aacute;talogo:  </div>
+						<div class="col-md-2">
+							<select id="selCatalogo" style="width:152px">
+								<option>--Seleccione--</option>
+							</select>
+						</div>
+					</div>
+					<div class="row padding10 ">
+						<div class="col-md-2">Nuevo Registro: </div>
+						<div class="col-md-2">
+							<input type="text" id="txtNuevo" name="txtNuevo">
+						</div>
+						<div class="col-md-2" style="padding-left:30px">
+							<input type="button" id="btnAlta" value="Alta" style="width:90px">
+						</div>
+					</div>	
+					<div class="row padding10 porcentaje" id="porcentaje" style="display:none">
+						<div class="col-md-2">Porcentaje: </div>
+						<div class="col-md-2">
+							<input type="text" id="txtPorcentaje" name="txtPorcentaje" value=0>
+						</div>						
+					</div>						
+				</div>	
+				<div class="col-md-4">
+					<div id="contentCat" style="display:none; width:100%;">
+						<br/>
+							<table id="tblCatalogo" cellspacing="0" class="table-striped table-bordered table-list" style="margin-left:auto; margin-right:auto;">
+							<thead>									
 							</thead>
-							<tbody>
-								<tr>
-									<td></td> 
-									<td style="text-align:center; width:25px"><input type="checkbox"></td>                        
-								</tr>
-								<tr>
-									<td></td> 
-									<td style="text-align:center; width:25px"><input type="checkbox"></td>                        
-								</tr>
-								<tr>
-									<td></td> 
-									<td style="text-align:center; width:25px"><input type="checkbox"></td>                        
-								</tr>
-								<tr>
-									<td></td> 
-									<td style="text-align:center; width:25px"><input type="checkbox"></td>                        
-								</tr>
-								
+							<tbody>									
 							</tbody>
 							</table>
-						</td>
-						<td width="30px"  VALIGN="TOP">
-							<input type="button" id="btnEditar" name="btnEditar" value="Modificar" style="width:90px;" >
-							<input type="button" id="btnEliminar" name="btnEliminar" value="Eliminar" style="width:90px; margin-top:20px">
-						</td>
-					</tr>
-					<tr>
-						<td></td>
-						<td></td>
-						<td></td>
-					</tr>
-					
-				</table>
-			</form>
-          
+						</div>	
+				</div>
+			</div>	
+			
+			<div class="modal fade" id="editaCatalogo">
+			  <div class="modal-dialog">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h4 class="modal-title"><p class="catTitle"></p></h4>
+				  </div>
+				  <div class="modal-body">
+					<div class="row">
+						<div class="col-md-10">						
+							<div class="row padding10 ">
+								<div class="col-md-2">Descripción: </div>
+								<div class="col-md-2">
+									<input type="hidden" id="txtId" name="txtId">
+									<input type="text" id="txtDescripcion" name="txtDescripcion">
+								</div>								
+							</div>
+						</div>
+						<div class="row padding10 porcentaje" id="porcentaje" style="display:none">
+							<div class="col-md-2">Porcentaje: </div>
+							<div class="col-md-2">
+								<input type="text" id="txtPorcentajeEdit" name="txtPorcentajeEdit" value=0>
+							</div>						
+						</div>	
+					</div>
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+					<button type="button" class="btn btn-primary" id="actualizaDesc" data-dismiss="modal">Aceptar</button>
+				  </div>
+				</div><!-- /.modal-content -->
+			  </div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
         </div><!-- panel-heading -->
     </div><!-- contentpanel -->
 </div>
@@ -177,56 +207,342 @@ include("/model/common.jag");
 <script src='resources/plantilla/js/buttons.html5.js'></script>
 <script src='resources/plantilla/js/buttons.print.js'></script>
 
-
 <script src="resources/plantilla/js/bootstrap.min.js"></script>
 <script src="resources/plantilla//js/dataTables.responsive.js"></script>
 <script src="resources/plantilla/js/select2.min.js"></script>
          
 
-        <script>
-        
-        $(document).ready(function() {
-            $('#example').DataTable({
-            	 "scrollY": 200,
-                 "scrollX": true
-            });
-            $('#example2').DataTable({
-            	 "scrollY": 400,
-                 "scrollX": true
-            });	
-        } );
-        
-			function abrirVentana(url) {
-				var ventanaDetalle = window.open(url, "nuevo", "directories=no, location=no, menubar=no, scrollbars=yes, statusbar=no, tittlebar=no, width=1000, height=600");
-				ventanaDetalle.focus();
-			}
-            jQuery(document).ready(function(){               
-       
-            	$('#buscando').hide();
-                                
-                $(".buscar" ).click(function() {
-        			$('#buscando').show();        			
-    			});
-				
-				 
-              
-            });
+<script type="text/javascript">
+	
+	$(document).ready(function() {
+		var textCatalogo='';
+		$('#buscando').hide();                                
+		$(".buscar" ).click(function() {
+			$('#buscando').show();        			
+		});
+		
+		var visor = [{catalogo: '- Seleccione -', value: '0'},
+					{catalogo: 'Acción', value: 'accion'},
+					{catalogo: 'Aplicación', value: 'aplicacion'},
+					{catalogo: 'Categoria', value: 'categoria'},
+					{catalogo: 'Listas', value: 'listas'},
+					{catalogo: 'Operación', value: 'operacion'},
+					{catalogo: 'Origen Cliente', value: 'origencl'},
+					{catalogo: 'Perfil Listas', value: 'listperfil'},
+					{catalogo: 'Perfil Usuario', value: 'usrperfil'},
+					{catalogo: 'Aplicacion', value: 'aplicacion'},
+					{catalogo: 'Prioridad', value: 'prioridad'}];
+		
+		var modulo = '';
+		var selectCat = '';
+		
+		<%if (modulo != ""){%>
+			$('#selModulo').val("<%=modulo%>");
+			fill(visor);
+		<%}%>
 			
-			var options = {
-				visor : ["red","green","blue"],
-				country : ["Spain","Germany","France"]
-}
+		<%if (catalogo != ""){%>
+			$('#selCatalogo').val("<%=catalogo%>");
+			clearCatalogo();			
+			showCalogo("<%=catalogo%>");
+		<%}%>
+		
+		<%if(estatus != ""){%>
+			<%if (estatus == 1){%>
+				$("#idMsg").html('<div class="alert alert-success">'+
+					'Se eliminó correctamente.'+
+					'</div>');
+				$('#ModalInfo').modal('show');	
+			<%}else{%>
+				$("#idMsg").html('<div class="alert alert-danger">'+
+						'Sucedio un error '+$(this).find("codigoError").text()+
+						'</div>');
+				$('#ModalInfo').modal('show');	
+			<%}%>
+		<%}%>
 
-			$(function(){
-				var fillSecondary = function(){
-					var selected = $('#selModulo').val();
-					$('#selCatalogo').empty();
-					options[selected].forEach(function(element,index){
-						$('#selCatalogo').append('<option value="'+element+'">'+element+'</option>');
-					});
-				}
-				$('#selModulo').change(fillSecondary);
-				fillSecondary();
+		function fill(array_list){			
+			$("#selCatalogo").html(""); //reset child options
+			$(array_list).each(function (i) { //populate child options
+				$("#selCatalogo").append("<option value="+array_list[i].value+">"+array_list[i].catalogo+"</option>");
 			});
+		}
 			
-        </script>
+		$('#selModulo').change(function(){
+			fill(visor);		
+		});
+		
+		$('#selCatalogo').change(function(){
+			var catalogo = $(this).val();
+			textCatalogo = $(this).text();
+			clearCatalogo();			
+			showCalogo(catalogo);
+		});
+		
+	});
+	
+	function clearCatalogo(){		
+		$('#tblCatalogo > tbody tr').remove();
+		$('#tblCatalogo > thead th').remove();
+		$('#txtPorcentaje').val('');
+	}
+	
+	function showCalogo(_catalogo){
+		_catalogo = _catalogo.toLowerCase();
+		
+		if(_catalogo != 'listas'){
+				$(".porcentaje").css("display", "none");
+				getCatalogo(_catalogo);
+			}else{
+				getCatalogoListas();
+			}
+			
+	}
+	
+	
+	$('#btnAlta').click(function(){
+		var dato = $('#txtNuevo').val();
+		console.log("dato "+ dato);
+		if(dato == '0'){
+			$("#idMsg").html('<div class="alert alert-danger">'+
+				  'Seleccione un Catálogos'+
+				  '</div>');
+			$('#ModalInfo').modal('show');
+			return;
+		}else{
+			var catalogo = $('#selCatalogo').val();
+			var porcentaje = $('#txtPorcentaje').val();
+			porcentaje = catalogo != 'listas'? 0: porcentaje;			
+			modulo = 'visor';		
+			selectCat =catalogo;
+			
+			guardarCatalogo(dato, catalogo, porcentaje, modulo, selectCat);
+		}
+	});
+	
+	function guardarCatalogo(_dato, _catalogo, _porcentaje, modulo, selectCat){
+		var cat = _catalogo.toUpperCase();
+		var usuario = "<%=user%>";
+		
+		
+		var payload  = '<dat:qInsertaRowCatalogo xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
+			payload += '<dat:decripcion>'+_dato+'</dat:decripcion>';
+			payload += '<dat:usuarioAlta>'+usuario+'</dat:usuarioAlta>';
+			payload += '<dat:catalogo>'+cat+'</dat:catalogo>';
+			payload += '<dat:porcentaje>' + _porcentaje + '</dat:porcentaje>';
+			payload += '</dat:qInsertaRowCatalogo>';
+		$.ajax({
+			url: '/commons/postSOAP',
+			type: 'post',
+			headers: {'Destino':'BpmnVisorSEGListas', 'SOAPAction':'urn:qInsertaRowCatalogo'},
+			dataType: 'xml',
+			complete: insertCatResponse,
+			error: function (xhr, status, error) {},
+			data: payload
+		});   
+	}
+	
+	function insertCatResponse(xmlHttpRequest, status){
+		$(xmlHttpRequest.responseText).find('resultadoInsertCat').each(function(){
+	
+			if($(this).find("estatus").text()==1){							
+				$("#idMsg").html('<div class="alert alert-success">'+
+					'Se dío de alta correctamente.'+
+					'</div>');
+				$('#ModalInfo').modal('show');		
+			}else {
+				$("#idMsg").html('<div class="alert alert-danger">'+
+					'Sucedio un error '+$(this).find("codigoError").text()+
+					'</div>');
+				$('#ModalInfo').modal('show');	
+			 }				
+		});
+		
+		location.href='irAdministraCatalogos?mod=' + modulo + '&&cat=' +selectCat;
+	}
+	
+	function getCatalogo(_catalogo){
+		var cat = _catalogo.toUpperCase();
+		console.log("cat " + cat);
+		
+		var payload  = '<dat:qGetCatalogos xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
+			payload += '<dat:catalogo>'+cat+'</dat:catalogo>';
+			payload += '</dat:qGetCatalogos>';
+		$.ajax({
+			url: '/commons/postSOAP',
+			type: 'post',
+			headers: {'Destino':'BpmnVisorSEGListas', 'SOAPAction':'urn:qGetCatalogos'},
+			dataType: 'xml',
+			complete: catalogosResponse,
+			error: function (xhr, status, error) {},
+			data: payload
+		});                  
+	}   
+	
+	function catalogosResponse(xmlHttpRequest, status){
+		//alert(xmlHttpRequest.responseText);	
+		var id="";
+		
+		if($(xmlHttpRequest.responseText).find('resultadoCatalogo').text() != ''){
+			var headCat = '<tr><th style="display:none;"></th>'+
+							'<th></th>' +                     
+							'<th></th>' +                       
+							'<th></th>' +                      
+						  '</tr>';
+			$('#tblCatalogo > thead').append(headCat);
+			$(xmlHttpRequest.responseText).find('resultadoCatalogo').each(function(){
+			id =  $(this).find("id_catalogo").text();
+			descripcion = $(this).find("descripcion").text();			
+			var row="";			
+			row += '<tr>';
+			row += '<td style="display:none;">' + id + '</td>';
+			row += '<td>' + descripcion + '</td>';
+			row += '<td><input type="image" id="edit" src="images/edit.png" data-toggle="modal" data-target="#editaCatalogo" onclick="editCatalogo(this)"/></td>';
+			row += '<td><input type="image" id="delete" src="images/del.png" onclick="eliminaRow(this)"/></td>';
+			row += '</tr>';
+				$('#tblCatalogo > tbody').append(row);
+				
+			});
+		}
+		
+		 $("#contentCat").css("display", "block");
+	}
+	
+	function getCatalogoListas(){
+		var payload  = '<dat:qGetMBConsultaCatListas xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
+			payload += '<dat:idLista></dat:idLista>';
+			payload += '</dat:qGetMBConsultaCatListas>';
+		$.ajax({
+			url: '/commons/postSOAP',
+			type: 'post',
+			headers: {'Destino':'BpmnVisorSEGListas', 'SOAPAction':'urn:qGetMBConsultaCatListas'},
+			dataType: 'xml',
+			complete: catListasResponse,
+			error: function (xhr, status, error) {},
+			data: payload
+		});                  
+	}   
+	
+	function catListasResponse(xmlHttpRequest, status){
+		//alert(xmlHttpRequest.responseText);	
+		var id="";
+		var categoria="";
+		var cont = 0;
+		
+		if($(xmlHttpRequest.responseText).find('resultadoConsultaListas').text() != ''){
+			var head = '<tr><th style="display:none;"></th>'+
+							'<th></th>' +                     
+							'<th></th>' +                       
+							'<th></th>' +                      
+							'<th></th>' +                      
+						'</tr>';
+			$('#tblCatalogo > thead').append(head);
+			$(xmlHttpRequest.responseText).find('resultadoConsultaListas').each(function(){
+			cont++;
+			idLista =  $(this).find("id_lista").text();
+			descripcion = $(this).find("lista").text();
+			porcentaje = $(this).find("porcentaje").text();
+			
+			
+			var row="";			
+				row += '<tr>';
+				row += '<td style="display:none;">' + idLista + '</td>';
+				row += '<td>' + descripcion + '</td>';
+				row += '<td>' + porcentaje + '</td>';
+				row += '<td><input type="image" id="edit" src="images/edit.png" data-toggle="modal" data-target="#editaCatalogo" /></td>';
+				row += '<td><input type="image" id="delete" src="images/del.png" onclick="eliminaRow(this)/></td>';
+				row += '</tr>';
+				$('#tblCatalogo > tbody').append(row);
+			});
+		}
+		
+		 $(".porcentaje").css("display", "block");
+		 $("#catalogo").css("display", "block");
+		 location.href='irAdministraCatalogos?mod=' + modulo + '&&cat=' +selectCat;
+	}
+	
+	
+	function editCatalogo(element){		
+		var index = $(element).closest('tr').index();
+		var tr = $("#tblCatalogo > tbody").find("tr").eq(index);
+		var id = tr.find("td").eq(0).text();	
+		var descripcion = tr.find("td").eq(1).text();
+		
+		$('#txtId').val(id);
+		$('#txtDescripcion').val(descripcion);		
+	}
+	
+	$('#actualizaDesc').click(function(){
+		var id = $('#txtId').val();
+		var desc = $('#txtDescripcion').val();
+		var catalogo = $('#selCatalogo').val();
+		var usuario = "<%=user%>";
+		var porcentaje = $('#txtPorcentaje').val();
+			porcentaje = catalogo != 'listas'? 0: porcentaje;
+		
+		modulo = 'visor';
+		selectCat =catalogo;
+		catalogo = catalogo.toUpperCase();
+		
+		actualizaCatalogo(id, desc, catalogo, usuario, porcentaje);
+	});
+	
+	function actualizaCatalogo(_id, _desc, _catalogo, _usuario, _porcentaje, modulo, selectCat){
+		var payload  = '<dat:qActualizaRowCatalogo xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
+			payload += '<dat:idRowCatalogo>'+_id+'</dat:idRowCatalogo>';
+			payload += '<dat:decripcion>'+_desc+'</dat:decripcion>';
+			payload += '<dat:usuarioModifica>'+_usuario+'</dat:usuarioModifica>';
+			payload += '<dat:catalogo>'+_catalogo+'</dat:catalogo>';
+			payload += '<dat:porcentaje>'+_porcentaje+'</dat:porcentaje>';
+			payload += '</dat:qActualizaRowCatalogo>';
+		$.ajax({
+			url: '/commons/postSOAP',
+			type: 'post',
+			headers: {'Destino':'BpmnVisorSEGListas', 'SOAPAction':'urn:qActualizaRowCatalogo'},
+			dataType: 'xml',
+			complete: actualizaCatResponse,
+			error: function (xhr, status, error) {},
+			data: payload
+		}); 
+
+		console.log(payload);
+	}
+	
+	function actualizaCatResponse(xmlHttpRequest, status){
+		// alert(xmlHttpRequest.responseText);	
+		var id="";
+		var categoria="";
+		var cont = 0;
+		
+		if($(xmlHttpRequest.responseText).find('resultadoActualizaCat').text() != ''){
+			$(xmlHttpRequest.responseText).find('resultadoActualizaCat').each(function(){
+				if($(this).find("estatus").text()==1){							
+				$("#idMsg").html('<div class="alert alert-success">'+
+					'Se actualizó correctamente.'+
+					'</div>');
+					$('#ModalInfo').modal('show');		
+				}else {
+					$("#idMsg").html('<div class="alert alert-danger">'+
+						'Sucedio un error '+$(this).find("codigoError").text()+
+						'</div>');
+					$('#ModalInfo').modal('show');	
+				 }	
+			});
+		}
+		
+		location.href='irAdministraCatalogos?mod=' + modulo + '&&cat=' +selectCat;
+	}
+	function eliminaRow(element){
+		var index = $(element).closest('tr').index();
+		var tr = $("#tblCatalogo > tbody").find("tr").eq(index);
+		var id = tr.find("td").eq(0).text();
+		var catalogo = $('#selCatalogo').val();
+		var usuario = "<%=user%>";
+		modulo = 'visor';
+		selectCat =catalogo.toUpperCase();
+		location.href='irAdministraCatalogos?mod=' + modulo + '&&cat=' +selectCat + '&&id='+id+'&&usuario='+usuario;
+		
+	}
+</script>
+</body>
+</html>

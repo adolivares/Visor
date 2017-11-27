@@ -223,6 +223,77 @@
       <param name="idPerfil" ordinal="5" sqlType="STRING"/>
       <param name="estatus" ordinal="1" sqlType="INTEGER" type="OUT"/>
    </query>
+   <query id="qInsertaRowCatalogo" useConfig="SEGListas">
+      <sql>{? = call VISOR_PKG_SEGL_LISTAS.do_insert_catalogo(?, ?, ?, ?)}</sql>
+      <result element="qInsertRowCatalogoResponse" rowName="resultadoInsertCat">
+         <element column="estatus" name="estatus" xsdType="string"/>
+      </result>
+      <param name="decripcion" ordinal="2" sqlType="STRING"/>
+      <param name="usuarioAlta" ordinal="3" sqlType="STRING"/>
+      <param name="catalogo" ordinal="4" sqlType="STRING"/>
+      <param name="porcentaje" ordinal="5" sqlType="STRING"/>
+      <param name="estatus" ordinal="1" sqlType="INTEGER" type="OUT"/>
+   </query>
+   <query id="qActualizaRowCatalogo" useConfig="SEGListas">
+      <sql>{? = call VISOR_PKG_SEGL_LISTAS.do_update_catalogo(?, ?, ?, ?, ?)}</sql>
+      <result element="qActualizaRowCatalogoResponse" rowName="resultadoActualizaCat">
+         <element column="estatus" name="estatus" xsdType="string"/>
+      </result>
+      <param name="idRowCatalogo" ordinal="2" sqlType="STRING"/>
+      <param name="decripcion" ordinal="3" sqlType="STRING"/>
+      <param name="usuarioModifica" ordinal="4" sqlType="STRING"/>
+      <param name="catalogo" ordinal="5" sqlType="STRING"/>
+      <param name="porcentaje" ordinal="6" sqlType="STRING"/>
+      <param name="estatus" ordinal="1" sqlType="INTEGER" type="OUT"/>
+   </query>
+   <query id="qEliminaRowCatalogo" useConfig="SEGListas">
+      <sql>{? = call VISOR_PKG_SEGL_LISTAS.do_delete_catalogo(?, ?, ?)}</sql>
+      <result element="qEliminaCatalogoResponse" rowName="resultadoEliminaCat">
+         <element column="estatus" name="estatus" xsdType="string"/>
+      </result>
+      <param name="idRowCatalogo" ordinal="2" sqlType="STRING"/>
+      <param name="usuarioModifica" ordinal="3" sqlType="STRING"/>
+      <param name="catalogo" ordinal="4" sqlType="STRING"/>
+      <param name="estatus" ordinal="1" sqlType="INTEGER" type="OUT"/>
+   </query>  
+   <query id="qGetCatalogos" useConfig="SEGListas">
+      <sql>{? = call VISOR_PKG_SEGL_LISTAS.get_catalogo(?)}</sql>
+      <result element="getCatalogoResponse" rowName="resultadoCatalogo">
+         <element column="ID_CATALOGO" name="id_catalogo" xsdType="string"/>
+         <element column="DESCRIPCION" name="descripcion" xsdType="string"/>
+      </result>
+      <param defaultValue="#{NULL}" name="catalogo" ordinal="2" sqlType="STRING"/>
+      <param name="Catalogos" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
+   </query> 
+   <operation name="qGetCatalogos">
+      <call-query href="qGetCatalogos">
+         <with-param name="catalogo" query-param="catalogo"/>
+      </call-query>
+   </operation>
+   <operation name="qInsertaRowCatalogo">
+      <call-query href="qInsertaRowCatalogo">
+         <with-param name="decripcion" query-param="decripcion"/>
+         <with-param name="usuarioAlta" query-param="usuarioAlta"/>
+         <with-param name="catalogo" query-param="catalogo"/>
+         <with-param name="porcentaje" query-param="porcentaje"/>
+      </call-query>
+   </operation> 
+ <operation name="qActualizaRowCatalogo">
+      <call-query href="qActualizaRowCatalogo">
+         <with-param name="idRowCatalogo" query-param="idRowCatalogo"/>
+         <with-param name="decripcion" query-param="decripcion"/>
+         <with-param name="usuarioModifica" query-param="usuarioModifica"/>
+         <with-param name="catalogo" query-param="catalogo"/>
+         <with-param name="porcentaje" query-param="porcentaje"/>
+      </call-query>
+   </operation>   
+<operation name="qEliminaRowCatalogo">
+      <call-query href="qEliminaRowCatalogo">
+         <with-param name="idRowCatalogo" query-param="idRowCatalogo"/>
+         <with-param name="usuarioModifica" query-param="usuarioModifica"/>
+         <with-param name="catalogo" query-param="catalogo"/>
+      </call-query>
+   </operation>      
    <operation name="qCancelaAsignacion">
       <call-query href="qCancelaAsignacion">
          <with-param name="idAplicacion" query-param="idAplicacion"/>

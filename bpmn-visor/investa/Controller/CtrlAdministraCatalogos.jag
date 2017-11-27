@@ -1,0 +1,44 @@
+<%
+
+	function eliminaCatalogo(_idCatalogo, _usuario, _catalogo){
+		log.info("Entra eliminaCatalogo");
+		var payload = <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dat="http://ws.wso2.org/dataservice">
+					   <soapenv:Header/>
+					   <soapenv:Body>
+						  <dat:qEliminaRowCatalogo>
+							 <dat:idRowCatalogo>{_idCatalogo}</dat:idRowCatalogo>
+							 <dat:usuarioModifica>{_usuario}</dat:usuarioModifica>
+							 <dat:catalogo>{_catalogo}</dat:catalogo>
+						  </dat:qEliminaRowCatalogo>
+					   </soapenv:Body>
+					</soapenv:Envelope>;
+		
+		log.info(payload);
+		var url = URL_ESB + "BpmnVisorSEGListas";
+		var ws = new XMLHttpRequest();
+		var action = "urn:qEliminaRowCatalogo";
+		ws.open("POST", url, false);
+		ws.setRequestHeader('SOAPAction', action);
+		ws.setRequestHeader('Content-Type','text/xml; charset=utf-8');
+		ws.send(payload.toXMLString());
+		var responseXML = new XML(ws.responseText);
+		//log.info(" usuario " + _usuario );
+		log.info("RESPONSE XML Asignacion: " + responseXML.toXMLString());
+		return responseXML;
+	}
+	
+	function getEstatus(resElimina){
+		var result = "";
+		var cont = 0;
+			for each (var aXML in resElimina..*::qEliminaCatalogoResponse..*::resultadoEliminaCat){
+			//log.info('dentro '+aXML.*::getMBConsultaConfiguracion..*::resultadoConsultaConfiguracion.*::id_perfil.toString());			
+			cont++;
+			if(aXML != "" || aXML != null){
+				result = +aXML.*::estatus.toString();					
+			}
+		}
+		return result;
+	}
+	
+
+%>
