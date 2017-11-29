@@ -1,5 +1,86 @@
 <%
 
+	function guardaCatalogo(_descripcion, _usuario, _catalogo, _porcentaje){
+		log.info("Entra guardaCatalogo");
+		var payload = <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dat="http://ws.wso2.org/dataservice">
+					   <soapenv:Header/>
+					   <soapenv:Body>
+						  <dat:qInsertaRowCatalogo>
+							 <dat:decripcion>{_descripcion}</dat:decripcion>
+							 <dat:usuarioAlta>{_usuario}</dat:usuarioAlta>
+							 <dat:catalogo>{_catalogo}</dat:catalogo>
+							 <dat:porcentaje>{_porcentaje}</dat:porcentaje>
+						  </dat:qInsertaRowCatalogo>
+					   </soapenv:Body>
+					</soapenv:Envelope>;
+		
+		log.info(payload);
+		var url = URL_ESB + "BpmnVisorSEGListas";
+		var ws = new XMLHttpRequest();
+		var action = "urn:qInsertaRowCatalogo";
+		ws.open("POST", url, false);
+		ws.setRequestHeader('SOAPAction', action);
+		ws.setRequestHeader('Content-Type','text/xml; charset=utf-8');
+		ws.send(payload.toXMLString());
+		var responseXML = new XML(ws.responseText);
+		//log.info(" usuario " + _usuario );
+		log.info("RESPONSE XML GUARDAR CAT: " + responseXML.toXMLString());
+		return responseXML;
+	}
+	
+	function getEstatusAlta(resAlta){
+		var result = "";
+			for each (var aXML in resAlta..*::qInsertRowCatalogoResponse..*::resultadoInsertCat){	
+			if(aXML != "" || aXML != null){
+				result = +aXML.*::estatus.toString();					
+			}
+		}
+	return result;
+	}
+	
+	
+	function actualizaCatalogo(_id, _descripcion, _catalogo, _usuario, _porcentaje){
+		log.info("Entra actualizaCatalogo");
+		var payload = <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dat="http://ws.wso2.org/dataservice">
+					   <soapenv:Header/>
+					   <soapenv:Body>
+						  <dat:qActualizaRowCatalogo>
+							 <dat:idRowCatalogo>{_id}</dat:idRowCatalogo>
+							 <dat:decripcion>{_descripcion}</dat:decripcion>
+							 <dat:usuarioModifica>{_usuario}</dat:usuarioModifica>
+							 <dat:catalogo>{_catalogo}</dat:catalogo>
+							 <dat:porcentaje>{_porcentaje}</dat:porcentaje>
+						  </dat:qActualizaRowCatalogo>
+					   </soapenv:Body>
+					</soapenv:Envelope>;
+					
+					
+		
+		log.info(payload);
+		var url = URL_ESB + "BpmnVisorSEGListas";
+		var ws = new XMLHttpRequest();
+		var action = "urn:qActualizaRowCatalogo";
+		ws.open("POST", url, false);
+		ws.setRequestHeader('SOAPAction', action);
+		ws.setRequestHeader('Content-Type','text/xml; charset=utf-8');
+		ws.send(payload.toXMLString());
+		var responseXML = new XML(ws.responseText);
+		//log.info(" usuario " + _usuario );
+		log.info("RESPONSE XML Asignacion: " + responseXML.toXMLString());
+		return responseXML;
+	}
+	
+	function getEstatusActualiza(respActualiza){
+		var result = "";
+			for each (var aXML in respActualiza..*::qActualizaRowCatalogoResponse..*::resultadoActualizaCat){
+			if(aXML != "" || aXML != null){
+				result = +aXML.*::estatus.toString();					
+			}
+		}
+		log.info(" result " + result );
+		return result;
+	}
+	
 	function eliminaCatalogo(_idCatalogo, _usuario, _catalogo){
 		log.info("Entra eliminaCatalogo");
 		var payload = <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dat="http://ws.wso2.org/dataservice">
@@ -31,7 +112,7 @@
 		var result = "";
 		var cont = 0;
 			for each (var aXML in resElimina..*::qEliminaCatalogoResponse..*::resultadoEliminaCat){
-			//log.info('dentro '+aXML.*::getMBConsultaConfiguracion..*::resultadoConsultaConfiguracion.*::id_perfil.toString());			
+		
 			cont++;
 			if(aXML != "" || aXML != null){
 				result = +aXML.*::estatus.toString();					
@@ -39,6 +120,7 @@
 		}
 		return result;
 	}
+	
 	
 
 %>

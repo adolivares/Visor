@@ -127,11 +127,11 @@ log.info("groups: " + groups.indexOf(GRUPO_ANALISTA));
         <ul class='nav nav-pills nav-stacked'>  
 			<li class='parent active'><a href='#'><i class='fa fa-bars'></i> <span>Visor</span></a>  
                 <ul class='children'>  
-                    <li ><a href='irBuscarNombre'>Búsqueda por Nombre</a></li>  
-                    <li><a href='irBandejaEntrada'>Bandeja de Entrada</a></li>  
+                    <li ><a href='irBuscarNombre'>Búsqueda por nombre</a></li>  
+                    <li><a href='irBandejaEntrada'>Bandeja de entrada</a></li>  
                     <li><a href='irConsultaCoincidencias'>Consultas</a></li> 
                     <li><a href='irAutorizaciones'>Autorizaciones</a></li> 
-                    <li><a href='irAdministraCatalogos'>Administración de catalogo</a></li> 
+                    <li><a href='irAdministraCatalogos'>Administración de catálogos</a></li> 
                     <li><a href='irPerfilamiento'>Perfilamiento</a></li> 
                     <li><a href='irConfigurarNotificaciones'>Generador de notificaciones</a></li> 
                 </ul> 
@@ -139,7 +139,7 @@ log.info("groups: " + groups.indexOf(GRUPO_ANALISTA));
 			<li class='parent active'><a href='#'><i class='fa fa-bars'></i> <span>Listas</span></a>  
                 <ul class='children'>                     				
 					<li><a href='irPerfilamientoBusqueda'>Perfilamiento búsqueda</a></li> 
-					<li><a href='irPerfilamientoBusqueda'>Autorización de perfiles de búsqueda</a></li> 
+					<li><a href='irAutorizaSegmentosBusqueda'>Autorización de perfiles de búsqueda</a></li> 
                 </ul> 
             </li> 
         </ul> 

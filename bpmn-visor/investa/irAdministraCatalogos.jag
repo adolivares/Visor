@@ -1,20 +1,21 @@
 <%
 include("/model/common.jag");
-var modulo = request.getParameter("mod");
-var catalogo = request.getParameter("cat");
-var id = request.getParameter("id");
-var userTran = request.getParameter("usuario");
+var _modulo = request.getParameter("mod");
+var _catalogo = request.getParameter("cat");
+var _id = request.getParameter("id");
+var _userTran = request.getParameter("usuario");
+var _descripcion = request.getParameter("desc");
+var _porcentaje = request.getParameter("porcent");
+var _transac = request.getParameter("transac");
 var estatus = "";
-if(modulo == null){
-	modulo = ""; 
-}
+_modulo = _modulo==null?"":_modulo;
+_catalogo = _catalogo ==null?"":_catalogo;
+_id = _id==null?"":_id;
+_userTran = _userTran==null?"":_userTran;
+_descripcion = _descripcion==null?"":_descripcion;
+_porcentaje = _porcentaje==null?"":_porcentaje;
+_transac = _transac==null?"":_transac;
 
-if(catalogo == null){
-	catalogo = "";
-}
-
-id = id==null?"":id;
-userTran = userTran==null?"":userTran;
 /*<!--
  ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
@@ -56,11 +57,21 @@ userTran = userTran==null?"":userTran;
     response.sendRedirect(application.get('serverAddress') + request.getRequestURI() + queryStr);
 }
 include("Controller/CtrlAdministraCatalogos.jag");
-if(modulo != "" && catalogo != "" && id != "" && userTran != ""){
-	var xmlResponse = eliminaCatalogo(id, userTran, catalogo);
+if( _transac == 1 && _modulo != "" && _catalogo != "" && _descripcion != "" && _userTran != "" && _porcentaje != ""){
+	var xmlResponseAlta = guardaCatalogo(_descripcion, _userTran, _catalogo, _porcentaje)
+	estatus = getEstatusAlta(xmlResponseAlta)
+	log.info("Estatus Alta: "+estatus);
+}else if( _transac == 2 && _modulo != "" && _catalogo != "" && _id != "" && _descripcion != "" && _userTran != ""  && _porcentaje != ""){
+	var xmlResponse = actualizaCatalogo(_id, _descripcion, _catalogo, _userTran, _porcentaje);
+	estatus = getEstatusActualiza(xmlResponse);
+	log.info("Estatus Actualiza: "+estatus);
+}else if( _transac == 3 && _modulo != "" && _catalogo != "" && _id != "" && _userTran != ""){
+	var xmlResponse = eliminaCatalogo(_id, _userTran, _catalogo);
 	estatus = getEstatus(xmlResponse);
 	log.info("Estatus elimina: "+estatus);
 }
+
+
  %>
  
 		<link href="resources/plantilla/css/select2.css" rel="stylesheet" />
@@ -88,7 +99,7 @@ if(modulo != "" && catalogo != "" && id != "" && userTran != ""){
                     <li><a href="irAdministraCatalogos"><i class="glyphicon glyphicon-home"></i></a></li>
                     <li><a>Visor</a></li>
                 </ul>
-                <h4>Administraci&oacute;n de Catalogos</h4>
+                <h4>Administraci&oacute;n de Catálogos</h4>
             </div>
         </div><!-- media -->
     </div><!-- pageheader -->
@@ -123,7 +134,7 @@ if(modulo != "" && catalogo != "" && id != "" && userTran != ""){
 						</div>
 					</div>
 					<div class="row padding10 ">
-						<div class="col-md-2">Selecciona C&aacute;talogo:  </div>
+						<div class="col-md-2">Selecciona Cat&aacute;logo:  </div>
 						<div class="col-md-2">
 							<select id="selCatalogo" style="width:152px">
 								<option>--Seleccione--</option>
@@ -176,13 +187,14 @@ if(modulo != "" && catalogo != "" && id != "" && userTran != ""){
 									<input type="text" id="txtDescripcion" name="txtDescripcion">
 								</div>								
 							</div>
+							<div class="row padding10 porcentaje" id="porcentaje" style="display:none">
+								<div class="col-md-2">Porcentaje: </div>
+								<div class="col-md-2">
+									<input type="text" id="txtPorcentajeEdit" name="txtPorcentajeEdit" value=0>
+								</div>						
+							</div>	
 						</div>
-						<div class="row padding10 porcentaje" id="porcentaje" style="display:none">
-							<div class="col-md-2">Porcentaje: </div>
-							<div class="col-md-2">
-								<input type="text" id="txtPorcentajeEdit" name="txtPorcentajeEdit" value=0>
-							</div>						
-						</div>	
+						
 					</div>
 				  </div>
 				  <div class="modal-footer">
@@ -192,6 +204,26 @@ if(modulo != "" && catalogo != "" && id != "" && userTran != ""){
 				</div><!-- /.modal-content -->
 			  </div><!-- /.modal-dialog -->
 			</div><!-- /.modal -->
+			<div class="modal fade" id="modalConfirma">
+			  <div class="modal-dialog">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h4 class="modal-title"></h4>
+				  </div>
+				  <div class="modal-body">
+					<input type="hidden" id="txtTransac" name="txtTransac">
+					<input type="hidden" id="txtIdElimina" name="txtIdElimina">
+					<div id="confimacion"  class="alert alert-warning"></div>
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+					<button type="button" class="btn btn-primary" id="btnConfima" data-dismiss="modal">Aceptar</button>
+				  </div>
+				</div><!-- /.modal-content -->
+			  </div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+			
         </div><!-- panel-heading -->
     </div><!-- contentpanel -->
 </div>
@@ -236,21 +268,31 @@ if(modulo != "" && catalogo != "" && id != "" && userTran != ""){
 		var modulo = '';
 		var selectCat = '';
 		
-		<%if (modulo != ""){%>
-			$('#selModulo').val("<%=modulo%>");
+		<%if (_modulo != ""){%>
+			$('#selModulo').val("<%=_modulo%>");
 			fill(visor);
 		<%}%>
 			
-		<%if (catalogo != ""){%>
-			$('#selCatalogo').val("<%=catalogo%>");
+		<%if (_catalogo != ""){%>
+			var catalogo = "<%=_catalogo%>";
+			$('#selCatalogo').val(catalogo.toLowerCase());
 			clearCatalogo();			
-			showCalogo("<%=catalogo%>");
+			showCalogo("<%=_catalogo%>");
 		<%}%>
 		
 		<%if(estatus != ""){%>
-			<%if (estatus == 1){%>
+			var mssge = "";
+			<%if (estatus == 1){%>	
+				<%if (_transac == 1){%>	
+					mssge = "Se guardó corectamente";
+				<%}else if (_transac == 2){%>	
+					mssge = "Se actualizó correctamente";
+				<%}else if (_transac == 3){%>	
+					mssge = "Se eliminó correctamente";
+				<%}%>	
+			
 				$("#idMsg").html('<div class="alert alert-success">'+
-					'Se eliminó correctamente.'+
+					mssge +
 					'</div>');
 				$('#ModalInfo').modal('show');	
 			<%}else{%>
@@ -283,8 +325,10 @@ if(modulo != "" && catalogo != "" && id != "" && userTran != ""){
 	
 	function clearCatalogo(){		
 		$('#tblCatalogo > tbody tr').remove();
-		$('#tblCatalogo > thead th').remove();
+		$('#tblCatalogo > thead tr').remove();
 		$('#txtPorcentaje').val('');
+		$('#txtTransac').val('');		
+		$('#txtIdElimina').val('');		
 	}
 	
 	function showCalogo(_catalogo){
@@ -302,64 +346,146 @@ if(modulo != "" && catalogo != "" && id != "" && userTran != ""){
 	
 	$('#btnAlta').click(function(){
 		var dato = $('#txtNuevo').val();
+		var porcentaje=0;
 		console.log("dato "+ dato);
-		if(dato == '0'){
-			$("#idMsg").html('<div class="alert alert-danger">'+
-				  'Seleccione un Catálogos'+
-				  '</div>');
-			$('#ModalInfo').modal('show');
-			return;
-		}else{
-			var catalogo = $('#selCatalogo').val();
-			var porcentaje = $('#txtPorcentaje').val();
-			porcentaje = catalogo != 'listas'? 0: porcentaje;			
-			modulo = 'visor';		
-			selectCat =catalogo;
-			
-			guardarCatalogo(dato, catalogo, porcentaje, modulo, selectCat);
+		if(validaCat()){
+			if(dato.trim() == ''){
+				$("#idMsg").html('<div class="alert alert-danger">'+
+					  'El campo Nuevo Registro no puede ser vacío'+
+					  '</div>');
+				$('#ModalInfo').modal('show');
+				return;
+			}else{
+				var catalogo = $('#selCatalogo').val();				
+				if(catalogo != 'listas'){
+					porcentaje=0;
+				}else{
+					porcentaje = $('#txtPorcentaje').val();
+					if(porcentaje != ""){
+						if(!validaPorcentaje(porcentaje)){return;}
+					}else{
+						porcentaje=0;
+					}
+				}
+				modulo = 'visor';		
+				selectCat =catalogo;
+				
+				guardarCatalogo(dato, catalogo, porcentaje, modulo);
+			}
 		}
 	});
 	
-	function guardarCatalogo(_dato, _catalogo, _porcentaje, modulo, selectCat){
+	function guardarCatalogo(_dato, _catalogo, _porcentaje, modulo){
 		var cat = _catalogo.toUpperCase();
 		var usuario = "<%=user%>";
 		
-		
-		var payload  = '<dat:qInsertaRowCatalogo xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
-			payload += '<dat:decripcion>'+_dato+'</dat:decripcion>';
-			payload += '<dat:usuarioAlta>'+usuario+'</dat:usuarioAlta>';
-			payload += '<dat:catalogo>'+cat+'</dat:catalogo>';
-			payload += '<dat:porcentaje>' + _porcentaje + '</dat:porcentaje>';
-			payload += '</dat:qInsertaRowCatalogo>';
-		$.ajax({
-			url: '/commons/postSOAP',
-			type: 'post',
-			headers: {'Destino':'BpmnVisorSEGListas', 'SOAPAction':'urn:qInsertaRowCatalogo'},
-			dataType: 'xml',
-			complete: insertCatResponse,
-			error: function (xhr, status, error) {},
-			data: payload
-		});   
+		location.href='irAdministraCatalogos?mod=' + modulo + '&&cat=' +cat+'&&desc='+ _dato+'&&porcent='+ _porcentaje+'&&usuario='+usuario+'&&transac=1';
 	}
 	
-	function insertCatResponse(xmlHttpRequest, status){
-		$(xmlHttpRequest.responseText).find('resultadoInsertCat').each(function(){
-	
-			if($(this).find("estatus").text()==1){							
-				$("#idMsg").html('<div class="alert alert-success">'+
-					'Se dío de alta correctamente.'+
-					'</div>');
-				$('#ModalInfo').modal('show');		
-			}else {
-				$("#idMsg").html('<div class="alert alert-danger">'+
-					'Sucedio un error '+$(this).find("codigoError").text()+
-					'</div>');
-				$('#ModalInfo').modal('show');	
-			 }				
-		});
-		
-		location.href='irAdministraCatalogos?mod=' + modulo + '&&cat=' +selectCat;
+	function editCatalogo(element){		
+	var index = $(element).closest('tr').index();
+	var tr = $("#tblCatalogo > tbody").find("tr").eq(index);
+	var id = tr.find("td").eq(0).text();	
+	var descripcion = tr.find("td").eq(1).text();
+		if(validaCat()){
+			$('#txtId').val(id);
+			$('#txtDescripcion').val(descripcion);	
+			if($('#selCatalogo').val() == 'listas'){
+				var porcentaje = tr.find("td").eq(2).text();			
+				$('#txtPorcentajeEdit').val(porcentaje);
+			}
+		}
 	}
+	
+	$('#actualizaDesc').click(function(){
+		var id = $('#txtId').val();
+		var desc = $('#txtDescripcion').val();
+		var catalogo = $('#selCatalogo').val();
+		var usuario = "<%=user%>";
+		var porcentaje ='';
+		if(desc.trim() == ""){
+			$("#idMsg").html('<div class="alert alert-danger">'+
+					  'El campo Descripción no puede ser vacío'+
+					  '</div>');
+				$('#ModalInfo').modal('show');
+				return;
+		}else{
+			if(catalogo != 'listas'){
+				porcentaje=0;
+			}else{
+				porcentaje = $('#txtPorcentajeEdit').val();
+				if(porcentaje != ""){
+					if(!validaPorcentaje(porcentaje)){return;}
+				}else{
+					porcentaje=0;
+				}
+			}
+			modulo = 'visor';
+			selectCat =catalogo;
+			catalogo = catalogo.toUpperCase();
+			
+			location.href='irAdministraCatalogos?mod=' + modulo + '&&cat=' +catalogo+'&&id=' +id +'&&desc='+ desc+'&&porcent='+ porcentaje+'&&usuario='+usuario+'&&transac=2';
+		}
+	});
+	
+
+	function eliminaRow(element){		
+		var texto = "";			
+		var index = $(element).closest('tr').index();
+		var tr = $("#tblCatalogo > tbody").find("tr").eq(index);
+		var id = tr.find("td").eq(0).text();		
+		var desc = tr.find("td").eq(1).text();		
+		$('#txtTransac').val(3);
+		$('#txtIdElimina').val(id);		
+		texto = '<p>¿Desea eliminar la descripción: '+ desc.toUpperCase() + '?</p>';		
+		$('#confimacion').html(texto);
+	}
+	
+	$('#btnConfima').click(function(){
+		var id=$('#txtIdElimina').val();
+		var catalogo = $('#selCatalogo').val();
+		var usuario = "<%=user%>";
+		modulo = 'visor';
+		selectCat =catalogo.toUpperCase();
+		location.href='irAdministraCatalogos?mod=' + modulo + '&&cat=' +selectCat + '&&id='+id+'&&usuario='+usuario+'&&transac=3';
+	});
+	
+	function validaCat(){
+		var vCatalogo = $('#selCatalogo').val();
+		var  vModulo= $('#selModulo').val();
+		
+		if(vModulo == "0"){
+			$("#idMsg").html('<div class="alert alert-danger">'+
+				  'Seleccione un módulo para continuar'+
+				  '</div>');
+			$('#ModalInfo').modal('show');
+			return false;
+		}else if(vCatalogo == '0'){
+			$("#idMsg").html('<div class="alert alert-danger">'+
+				  'Seleccione un Catálogo para continuar'+
+				  '</div>');
+			$('#ModalInfo').modal('show');
+			return false;
+		}
+		return true;
+	}
+	
+	function validaPorcentaje(_porcentaje) { 
+		
+		var expreg = /(^(100(?:\.0{1,2})?))|(?!^0*$)(?!^0*\.0*$)^\d{1,2}(\.\d{1,2})?$/;
+		console.log("porcentaje " + _porcentaje);
+		if(expreg.test(_porcentaje)){
+			return true;
+		}else{
+			$("#idMsg").html('<div class="alert alert-danger">'+
+				  'Ingrese un porcentaje correcto'+
+				  '</div>');
+			$('#ModalInfo').modal('show');
+			return false;			
+		}
+	}
+	
+	
 	
 	function getCatalogo(_catalogo){
 		var cat = _catalogo.toUpperCase();
@@ -385,9 +511,9 @@ if(modulo != "" && catalogo != "" && id != "" && userTran != ""){
 		
 		if($(xmlHttpRequest.responseText).find('resultadoCatalogo').text() != ''){
 			var headCat = '<tr><th style="display:none;"></th>'+
-							'<th></th>' +                     
-							'<th></th>' +                       
-							'<th></th>' +                      
+							'<th>Descripción</th>' +                     
+							'<th>Editar</th>' +                       
+							'<th>Eliminar</th>' +                      
 						  '</tr>';
 			$('#tblCatalogo > thead').append(headCat);
 			$(xmlHttpRequest.responseText).find('resultadoCatalogo').each(function(){
@@ -398,7 +524,7 @@ if(modulo != "" && catalogo != "" && id != "" && userTran != ""){
 			row += '<td style="display:none;">' + id + '</td>';
 			row += '<td>' + descripcion + '</td>';
 			row += '<td><input type="image" id="edit" src="images/edit.png" data-toggle="modal" data-target="#editaCatalogo" onclick="editCatalogo(this)"/></td>';
-			row += '<td><input type="image" id="delete" src="images/del.png" onclick="eliminaRow(this)"/></td>';
+			row += '<td><input type="image" id="delete" src="images/del.png" data-toggle="modal" data-target="#modalConfirma" onclick="eliminaRow(this)"/></td>';
 			row += '</tr>';
 				$('#tblCatalogo > tbody').append(row);
 				
@@ -427,18 +553,16 @@ if(modulo != "" && catalogo != "" && id != "" && userTran != ""){
 		//alert(xmlHttpRequest.responseText);	
 		var id="";
 		var categoria="";
-		var cont = 0;
 		
 		if($(xmlHttpRequest.responseText).find('resultadoConsultaListas').text() != ''){
 			var head = '<tr><th style="display:none;"></th>'+
-							'<th></th>' +                     
-							'<th></th>' +                       
-							'<th></th>' +                      
-							'<th></th>' +                      
+							'<th>Descripción</th>' +                     
+							'<th>Porcentaje</th>' +                       
+							'<th>Editar</th>' +                      
+							'<th>Eliminar</th>' +                      
 						'</tr>';
 			$('#tblCatalogo > thead').append(head);
 			$(xmlHttpRequest.responseText).find('resultadoConsultaListas').each(function(){
-			cont++;
 			idLista =  $(this).find("id_lista").text();
 			descripcion = $(this).find("lista").text();
 			porcentaje = $(this).find("porcentaje").text();
@@ -449,100 +573,19 @@ if(modulo != "" && catalogo != "" && id != "" && userTran != ""){
 				row += '<td style="display:none;">' + idLista + '</td>';
 				row += '<td>' + descripcion + '</td>';
 				row += '<td>' + porcentaje + '</td>';
-				row += '<td><input type="image" id="edit" src="images/edit.png" data-toggle="modal" data-target="#editaCatalogo" /></td>';
-				row += '<td><input type="image" id="delete" src="images/del.png" onclick="eliminaRow(this)/></td>';
+				row += '<td><input type="image" id="edit" src="images/edit.png" data-toggle="modal" data-target="#editaCatalogo" onclick="editCatalogo(this)"/></td>';
+				row += '<td><input type="image" id="delete" src="images/del.png" data-toggle="modal" data-target="#modalConfirma" onclick="eliminaRow(this)"/></td>';
 				row += '</tr>';
 				$('#tblCatalogo > tbody').append(row);
 			});
 		}
 		
 		 $(".porcentaje").css("display", "block");
-		 $("#catalogo").css("display", "block");
-		 location.href='irAdministraCatalogos?mod=' + modulo + '&&cat=' +selectCat;
+		 $("#contentCat").css("display", "block");
 	}
 	
 	
-	function editCatalogo(element){		
-		var index = $(element).closest('tr').index();
-		var tr = $("#tblCatalogo > tbody").find("tr").eq(index);
-		var id = tr.find("td").eq(0).text();	
-		var descripcion = tr.find("td").eq(1).text();
-		
-		$('#txtId').val(id);
-		$('#txtDescripcion').val(descripcion);		
-	}
-	
-	$('#actualizaDesc').click(function(){
-		var id = $('#txtId').val();
-		var desc = $('#txtDescripcion').val();
-		var catalogo = $('#selCatalogo').val();
-		var usuario = "<%=user%>";
-		var porcentaje = $('#txtPorcentaje').val();
-			porcentaje = catalogo != 'listas'? 0: porcentaje;
-		
-		modulo = 'visor';
-		selectCat =catalogo;
-		catalogo = catalogo.toUpperCase();
-		
-		actualizaCatalogo(id, desc, catalogo, usuario, porcentaje);
-	});
-	
-	function actualizaCatalogo(_id, _desc, _catalogo, _usuario, _porcentaje, modulo, selectCat){
-		var payload  = '<dat:qActualizaRowCatalogo xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
-			payload += '<dat:idRowCatalogo>'+_id+'</dat:idRowCatalogo>';
-			payload += '<dat:decripcion>'+_desc+'</dat:decripcion>';
-			payload += '<dat:usuarioModifica>'+_usuario+'</dat:usuarioModifica>';
-			payload += '<dat:catalogo>'+_catalogo+'</dat:catalogo>';
-			payload += '<dat:porcentaje>'+_porcentaje+'</dat:porcentaje>';
-			payload += '</dat:qActualizaRowCatalogo>';
-		$.ajax({
-			url: '/commons/postSOAP',
-			type: 'post',
-			headers: {'Destino':'BpmnVisorSEGListas', 'SOAPAction':'urn:qActualizaRowCatalogo'},
-			dataType: 'xml',
-			complete: actualizaCatResponse,
-			error: function (xhr, status, error) {},
-			data: payload
-		}); 
 
-		console.log(payload);
-	}
-	
-	function actualizaCatResponse(xmlHttpRequest, status){
-		// alert(xmlHttpRequest.responseText);	
-		var id="";
-		var categoria="";
-		var cont = 0;
-		
-		if($(xmlHttpRequest.responseText).find('resultadoActualizaCat').text() != ''){
-			$(xmlHttpRequest.responseText).find('resultadoActualizaCat').each(function(){
-				if($(this).find("estatus").text()==1){							
-				$("#idMsg").html('<div class="alert alert-success">'+
-					'Se actualizó correctamente.'+
-					'</div>');
-					$('#ModalInfo').modal('show');		
-				}else {
-					$("#idMsg").html('<div class="alert alert-danger">'+
-						'Sucedio un error '+$(this).find("codigoError").text()+
-						'</div>');
-					$('#ModalInfo').modal('show');	
-				 }	
-			});
-		}
-		
-		location.href='irAdministraCatalogos?mod=' + modulo + '&&cat=' +selectCat;
-	}
-	function eliminaRow(element){
-		var index = $(element).closest('tr').index();
-		var tr = $("#tblCatalogo > tbody").find("tr").eq(index);
-		var id = tr.find("td").eq(0).text();
-		var catalogo = $('#selCatalogo').val();
-		var usuario = "<%=user%>";
-		modulo = 'visor';
-		selectCat =catalogo.toUpperCase();
-		location.href='irAdministraCatalogos?mod=' + modulo + '&&cat=' +selectCat + '&&id='+id+'&&usuario='+usuario;
-		
-	}
 </script>
 </body>
 </html>
