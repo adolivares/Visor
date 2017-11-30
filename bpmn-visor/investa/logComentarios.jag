@@ -6,7 +6,7 @@
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				 <div class="row">
-					<div class="col-sm-4" id="H4"></div>
+					<div class="col-sm-4" ><span id="H4"></span></div>
 					<div class="col-sm-4" >&nbsp;</div>
 					<div class="col-sm-4" >Log de comentarios</div>
 				  </div>
@@ -41,7 +41,7 @@
 		var payload;
 		var urn;
 		 $('#listComentarios tbody tr').remove();
-		 $('#H4 p').remove("");
+		 $('#H4 span').remove("");
 		
 		switch (tipo) {
 			case "1":
@@ -90,6 +90,7 @@
 		 var hora = "";
 		 var comentario = "";
 		 var category = "";
+		 $('#ModalCargando').modal('hide');
 		if( $(xmlHttpRequest.responseText).find('resultadoComentariosLNegra').text() != ''){
 			
 			$(xmlHttpRequest.responseText).find('resultadoComentariosLNegra').each(function(){

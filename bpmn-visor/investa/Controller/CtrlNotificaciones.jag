@@ -1,0 +1,96 @@
+<%
+	function payloadAccion(){
+		var payload = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dat="http://ws.wso2.org/dataservice">
+						   <soapenv:Header/>
+						   <soapenv:Body>
+							  <dat:qGetCatAccion>
+								 <dat:idAccion></dat:idAccion>
+							  </dat:qGetCatAccion>
+						   </soapenv:Body>
+						</soapenv:Envelope>;
+
+		var url = URL_ESB + "BpmnVisor";
+		var ws = new XMLHttpRequest();
+		var action = "urn:qGetCatAccion";
+		ws.open("POST", url, false);
+		ws.setRequestHeader('SOAPAction', action);
+		ws.setRequestHeader('Content-Type','text/xml; charset=utf-8');
+
+		ws.send(payload.toXMLString());
+		var responseXML = new XML(ws.responseText);
+		log.info("XML ACCION: " + responseXML.toXMLString());
+		return responseXML;
+	}
+
+	function CrearSelectAccion( responseXML){
+		var result = "";
+		
+		for each (var aXML in responseXML..*::resultadoAccion){
+			if(aXML.*::estatus.toString()==1){
+			result += '<option value="' + aXML.*::id_accion.toString()+'">' + aXML.*::descripcion.toString() + '</option>';
+			}
+		}    
+		return result;
+	}	
+	
+	function payloadNotificacion(){
+		var payload = <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dat="http://ws.wso2.org/dataservice">
+					   <soapenv:Header/>
+					   <soapenv:Body>
+						  <dat:qGetNotificaciones>
+							 <dat:idNotificacion></dat:idNotificacion>
+						  </dat:qGetNotificaciones>
+					   </soapenv:Body>
+					</soapenv:Envelope>;
+
+		var url = URL_ESB + "BpmnVisor";
+		var ws = new XMLHttpRequest();
+		var action = "urn:qGetNotificaciones";
+		ws.open("POST", url, false);
+		ws.setRequestHeader('SOAPAction', action);
+		ws.setRequestHeader('Content-Type','text/xml; charset=utf-8');
+
+		ws.send(payload.toXMLString());
+		var responseXML = new XML(ws.responseText);
+		log.info("XML NOTIFICACION: " + responseXML.toXMLString());
+		return responseXML;
+	}
+	function createTablaNotificaciones(lista) {
+		var result = "";
+		var id =0;
+
+		for each (var aXML in lista..*::getNotificaciones..*::resultadoNotificaciones){
+			
+				result += '<tr>';
+				result += '<td>'+aXML.*::id_notificacion.toString()+'</td>';
+				result += '<td>'+aXML.*::id_erfil_usuario.toString()+'</td>';
+				result += '<td>'+aXML.*::getAccion.*::resultadoAccion.*::descripcion.toString()+'</td>';
+				result += '<td>'+getCorreo(aXML.*::getCorreos,'DESTINATARIO')+'</td>';
+				result += '<td>'+getCorreo(aXML.*::getCorreos,'CC')+'</td>';
+				result += '<td><input type="radio" name="noti"  onclick="getId(this)"></td>';
+				result += '<td>'+aXML.*::getAccion.*::resultadoAccion.*::id_accion.toString()+'</td>';
+				result += '</tr>';
+		}
+		return result;
+	}
+	function getCorreo(lista,tip){
+		var res='' ;
+		var leg =lista..*::resultadoCorreos.length();
+		leg = leg-1;
+		var conta =0;
+		log.info(tip+'XXXXXXXXXXX'+lista..*::resultadoCorreos.length());
+			for each (var aXML in lista..*::resultadoCorreos){
+				if(aXML.*::tipo ==tip){
+					conta++
+					if(tip=='DESTINATARIO'){
+						res +=aXML.*::correo;
+					}else{
+						res +=aXML.*::correo+((leg !=conta)?',':'');
+					}
+				}
+			}
+		return res
+	}
+	
+	
+%>

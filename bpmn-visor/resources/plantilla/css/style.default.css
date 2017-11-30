@@ -2400,7 +2400,7 @@ a:focus {
 	width:100%;
 	overflow-x: hidden; 
 	overflow-y: inherited;
-	max-height: 300px;
+	max-height: 400px;
 }
 
 .list-Coment{
@@ -3799,3 +3799,8 @@ body.signin {
 .table-striped tbody tr.highlight td {
     background-color:  #d2b4de;
 }	   
+div.dataTables_wrapper {
+        width: 1050px;
+        margin: 0 auto;
+    }
+.dataTables_filter { display: none; }

@@ -1,0 +1,29 @@
+<%
+include("/model/common.jag");
+	if(request.getParameter("action")== "Escalar") {
+		var id = request.getParameter("id");
+		var xml =   "<correo>"+
+						 "<asunto>RECHAZO - ELIMINACIÓN DE CALIFICACIÓN</asunto>"+
+						 "<texto>Se comunica que se ha rechazado la eliminación de una calificación de una persona encontrada en listas, con las siguientes características: </texto>"+
+						 "<tipo>5</tipo>"+
+						 "<destinatario>notificaciones@investabank.com</destinatario>"+
+						 "<cc></cc>"+
+						 "<fecha_busqueda>29/11/2017</fecha_busqueda>"+
+						 "<aplicacion>L1BRE</aplicacion>"+
+						 "<cliente>MARIA LUJAN ROBLES</cliente>"+
+						 "<idCliente>201700004571</idCliente>"+
+						 "<persona_calificada>JOSEFINA VAZQUEZ MOTA </persona_calificada>"+
+						 "<accion>Solicitó</accion>"+
+						 "<usuario>Analista 1</usuario>"+
+						 "<instruciones>Favor de eliminar la calificación porque me equivoqué al seleccionar la persona. Debí haber calificado a otro… </instruciones> "+
+					"</correo>";
+		var testXML = Packages.com.mx.investa.visor.email.EnvioCorreo;
+		var myTestXML = new testXML();
+			   
+		log.info('Envio correo Objeto XML:  '+xml);
+		var objXml = myTestXML.enviarCorreo(xml);
+		log.info('Envio correo Objeto XML:  '+objXml);
+		
+	}
+%>
+

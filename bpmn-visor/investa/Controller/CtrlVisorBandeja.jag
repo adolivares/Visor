@@ -42,9 +42,10 @@
 				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::getMBConsultaCliente.*::resultadoConsultaCliente.*::apaterno_cliente.toString()+'</td>';
 				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::getMBConsultaCliente.*::resultadoConsultaCliente.*::amaterno_cliente.toString()+'</td>';
 				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::id_aplicacion.toString()+'</td>';
-				result += '<td><strong><p style="color:red">+</p<</strong></td>';
+				result += '<td><strong><span style="color:red; font-size:14px;">+</span></strong></td>';
 				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::getMBConsultaCliente.*::resultadoConsultaCliente.*::tipo_listas.toString()+'</td>';
 				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::porcentaje_busqueda.toString()+'</td>';
+				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::id_aplicacion.toString()+'</td>';
 				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::getMBConsultaCliente.*::resultadoConsultaCliente.*::porcentaje_coincidencias.toString()+'</td>';
 				result += '<td><input type="image" id="delete" src="images/circulo-naranja.png" /></td>';
 				result += '<td><input type="radio" name="tabla'+tipo+'" onclick="'+((tipo==1)?'llenaValor(this)':'llenaValor2(this)')+'"/></td>';

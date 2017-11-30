@@ -8,562 +8,16 @@ function generarPDF(){
 			'</div>');
 	}
 	$('#ModalGenerandoPDF').modal('show');
-	//consultaListas(nFFolioCliente, TLCliente,'listasResponImp')
 	var id = $("#txtFolio").val();
 	var tipo = $("#txtTipo").val();
 	comentarios(id, tipo);
-	
-//	imprimir();
-	//imprimir2();
-}
-function imprimir2(){
-	
 }
 
-function listasResponImp(xmlHttpRequest){
-	console.log("listas response");
-	var form ="";
-	var format = new Date(new Date());
-	var dia = format.getDate();
-	var mm = format.getMonth()+1;
-	var anio = format.getFullYear();
-	var usuario = "<%=user%>";
-	
-	console.log(dia+mm+anio);
-	if(dia < 10){
-		dia = '0'+ dia;
-	}
-	if(mm < 10){
-		mm = '0' + mm;
-	}
-	var date = dia+'/'+mm+'/'+anio;
-	//console.log($(xmlHttpRequest.responseText).text());
-	
-	if($(xmlHttpRequest.responseText).find('resultadoComentariosLNegra').text() != ''){
-		
-		$(xmlHttpRequest.responseText).find('resultadoComentariosLNegra').each(function(){
-			var datos = 
-			form += "<div><h4></h4></div>";
-			form += "<div><h4>LISTA NEGRA</h4>";
-			form += "	<hr>";
-			form += "</div>";
-			form += "<div id=\"detalleList\" style=\"float:left;  margin-left:3%\">";
-			form += "	<table id=\"tblDetalle\" style=\"margin-right:auto; width:100%\" class=\"table-content\">";
-			form += "   	<tr><td style='display:none'><input type=\"text\" id=\"txtTipo\" value =\"1\"></td><td style='display:none'></td></tr>";
-			form += "   	<tr>";
-			form += "			<td width=\"35%\">FOLIO:</td>";
-			form += "        	<td width=\"95%\"><input  type=\"text\" id=\"txtFolio\" value = \"" + $(this).find("tb_corr").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "      	</tr>";
-			form += "	   	<tr>";
-			form += "			<td width=\"35%\">FECHA:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("tb_dateadd").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "      	</tr>";
-			form += "	   	<tr>";
-			form += "			<td width=\"35%\">DIAS:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("tb_days").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "      	</tr>";
-			form += "	    <tr>";
-			form += "			<td width=\"35%\">C55016:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("C55016").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "	    <tr>";
-			form += "			<td width=\"35%\">NOMBRE:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("nombre").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "	    <tr>";
-			form += "			<td width=\"35%\">JUSTIFICACION:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("justificacion").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "	    <tr>";
-			form += "	 		<td width=\"35%\">AUTORIDAD ESPECÍFICA NOMBRE:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("autespnombre").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "	    <tr>";
-			form += "			<td width=\"35%\">AUTORIDAD NOMBRE:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("autnombre").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       <tr>";
-			form += "			<td width=\"35%\">ÁREA CLAVE:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("cnbv_areaclave").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       <tr>";
-			form += "			<td width=\"35%\">ÁREA CLAVE / AGG:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("cnbvaclagg").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       <tr>";
-			form += "			<td width=\"35%\">AREA DESCRIPCIÓN:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("cnbvadescp").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       <tr>";
-			form += "			<td width=\"35%\">DÍAS PLAZO:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("cnbv_diasplazo").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       </tr>";
-			form += "			<td width=\"35%\">DÍAS PLAZO / AGG:</td>";
-			form += "           <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("cnbv_diasplagg").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       </tr>";
-			form += "			<td width=\"35%\">FECHA PUBLICACIÓN:</td>";
-			form += "           <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("cnbvfechpbl").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       </tr>";
-			form += "			<td width=\"35%\">FOLIO:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("cnbv_folio").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       </tr>";
-			form += "			<td width=\"35%\">FOLIO / AGG:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("cnbv_folioagg").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       </tr>";
-			form += "			<td width=\"35%\">NÚMERO EXPEDIENTE:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("cnbvnroexp").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       </tr>";
-			form += "			<td width=\"35%\">NÚMERO OFICIO:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("cnbv_nrooficio").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       </tr>";
-			form += "			<td width=\"35%\">OFICIO YEAR:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("cnbv_oficioyear").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       </tr>";
-			form += "	    	<td width=\"35%\">OFICIO YEAR / AGG:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("cnbvoficioyearagg").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       </tr>";
-			form += "			<td width=\"35%\">SOLICITUD SIARA:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("cnbvsolicitudsiara").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       </tr>";
-			form += "			<td width=\"35%\">NOMBRE SOLICITANTE:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("nombresolicitante").text()+ "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       </tr>";
-			form += "			<td width=\"35%\">TIPO DE REQUERIMIENTO:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("trequeq").text()+ "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       </tr>";
-			form += "			<td width=\"35%\">REFERENCIA 1:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("referencia1").text()+ "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       </tr>";
-			form += "			<td width=\"35%\">REFERENCIA 2:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("referencia2").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       </tr>";
-			form += "			<td width=\"35%\">REFERENCIA 3:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("referencia3").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       </tr>";
-			form += "			<td width=\"35%\">CARACTER:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("sespecpsc").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       </tr>";
-			form += "			<td width=\"35%\">COMPLEMENTARIOS:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("sesppscomp").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       </tr>";
-			form += "			<td width=\"35%\">DOMICILIO:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("sesppsdomicilio").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       </tr>";
-			form += "			<td width=\"35%\">MATERNO:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("sesppsmaterno").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "  	    </tr>";
-			form += "       </tr>";
-			form += "			<td width=\"35%\">NOMBRE:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("sesppsnombre").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "   	</tr>";
-			form += "       </tr>";
-			form += "			<td width=\"35%\">PATERNO:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("sesppspaterno").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       </tr>";
-			form += "			<td width=\"35%\">PERSONA ID:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("sesppspersonid").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       </tr>";
-			form += "			<td width=\"35%\">PERSONA ID / AGG:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("sesppsperidagg").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       </tr>";
-			form += "			<td width=\"35%\">RELACIÓN:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("sesppsolrelacion").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       </tr>";
-			form += "			<td width=\"35%\">SOLICITUD ESPECÍFICA ID:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("sespsespid").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       </tr>";
-			form += "			<td width=\"35%\">SOLICITUD ESPECÍFICA ID / AGG:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("sespsespidagg").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       </tr>";
-			form += "			<td width=\"35%\">TIENE ASEGURAMIENTO:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("taseguramiento").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       </tr>";
-			form += "			<td width=\"35%\">DÍA:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("dia").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       </tr>";
-			form += "			<td width=\"35%\">MES:</td>";
-			form += "	 	    <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("mes").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "       </tr>";
-			form += "			<td width=\"35%\">AÑO:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("anio").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "       </tr>";
-			form += "	    <tr>";
-			form += "			<td width=\"35%\">OBSERVACIONES (máximo 1000 caracteres):</td>";
-			form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
-			form += "       </tr>";	
-			form += "	    <tr>";
-			form += "			<td colspan=\"2\" style=\"font-size:13px;\">Fecha de la consulta: " + date + "</td>";
-			form += "       </tr>";
-			form += "	    <tr>";
-			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Consulta realizada por: "+usuario+"</td>";
-			form += "       </tr>";
-			form += "	</table>";
-			form += "	<br/>";
-			form += "	<br/>";
-			form += "</div>";	
-			$("#form").append(form);
-			$('#ModalCargando').modal('hide');
-			
-		});
-	}else if($(xmlHttpRequest.responseText).find('getComentariosLGrisResp').text() != ''){
-		resultado = xmlHttpRequest.responseText;
-		$(xmlHttpRequest.responseText).find('getComentariosLGrisResp').each(function(){
-
-			form += "<div><h4></h4></div>";
-			form += "<div><h4>LISTA GRIS</h4>";
-			form += "	<hr>";
-			form += "</div>";
-			form += "<div id=\"detalleList\" style=\"float:left; margin-left:3%\">";
-			form += "	<table style=\"margin-right:auto; width:100%\" class=\"table-content\">";
-			form += "   	    <tr><td style='display:none'><input type=\"text\" id=\"txtTipo\" value =\"2\"></td><td style='display:none'></td></tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">FOLIO:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" id=\"txtFolio\" value = \"" + $(this).find("tb_corr").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">FECHA:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("tb_dateadd").text()  + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">DIAS:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("tb_days").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">C55016:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("C55016").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">NOMBRE:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("nombre").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">APELLIDO PATERNO:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("paterno").text()  + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "			<tr>";
-			form += "				<td width=\"22%\">APELLIDO MATERNO:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("materno").text()  + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "			<tr>";
-			form += "				<td width=\"22%\">CARACTER:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("caracter").text()  + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "			<tr>";
-			form += "				<td width=\"22%\">COMPLEMENTARIOS:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("complementarios").text()  + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "			<tr>";
-			form += "				<td width=\"22%\">TIPO PERSONA:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("tipopersona").text()  + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "			<tr>";
-			form += "				<td width=\"22%\">REFERENCIA:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("referencia").text()  + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "			<tr>";
-			form += "				<td width=\"22%\">NUMERO EXPEDIENTE:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("cnbv_numeroexpedient").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">OBSERVACIONES (máximo 1000 caracteres):</td>";
-			form += "	            <td width=\"78%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Fecha de la consulta: " + date + "</td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Consulta realizada por: "+usuario+"</td>";
-			form += "           </tr>";
-			form += "	</table>";
-			form += "	<br/>";
-			form += "	<br/>";
-			form += "	<br/>";
-			form += "</div>";
-			$("#form").append(form);
-			$('#ModalCargando').modal('hide');
-		});
-	}else if($(xmlHttpRequest.responseText).find('getComentariosLSitiResp').text() != ''){
-		resultado = xmlHttpRequest.responseText;
-		$(xmlHttpRequest.responseText).find('getComentariosLSitiResp').each(function(){
-			form += "	<div><h4></h4></div>";
-			form += "	<div><h4>LISTA SITI</h4>";
-			form += "	<hr>";
-			form += "	</div>";
-			form += "	<div id=\"detalleList\" style=\"float:left;  margin-left:3%\">";
-			form += "		<table style=\"margin-right:auto; width:100%\" class=\"table-content\">";
-			form += "   	<tr><td style='display:none'><input type=\"text\" id=\"txtTipo\" value =\"3\"></td><td style='display:none'></td></tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">ID PERSONA:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" id=\"txtFolio\" value = \"" + $(this).find("id_reg_persona").text()+ "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">CARACTER:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("caracter").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">PERSONA:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("persona").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">PATERNO:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("paterno").text()+ "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">MATERNO:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("materno").text()+ "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">NOMBRE:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("nombre").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">RFC:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("rfc").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">RELACION:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("relacion").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">DOMICILIO:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("domicilio").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">COMPLEMENTARIOS:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("complementarios").text()+ "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">CNBV_NUM_OFICIO:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("cnbv_num_oficio").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">CNBV_NUM_EXPEDIENTE:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("cnbv_num_expediente").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">CNBV_SOL_SIARA:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("cnbv_sol_siara").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">CNBV_FOLIO:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("cnbv_folio").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">CNBV_OFICIO_YEAR:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("cnbv_oficio_year").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">CNBV_AREA_CLAVE:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("cnbv_area_clave").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">CNBV_AREA_DESC:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("cnbv_area_desc").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">CNBV_FECHA_PUB:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("cnbv_fecha_pub").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">CNBV_DIAS_PLAZO:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("cnbv_dias_plazo").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">AUTORIDAD_NOMBRE:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("autoridad_nombre").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">AUTORIDAD_ESP_NOMBRE:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("autoridad_esp_nombre").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">NOMBRE_SOLICITANTE:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("nombre_solicitante").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">REFERENCIA:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("referencia").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">REFERENCIA1:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("referencia1").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">REFERENCIA2:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("referencia2").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">OBSERVACIONES (máximo 1000 caracteres):</td>";
-			form += "	            <td width=\"78%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Fecha de la consulta: " + date + "</td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Consulta realizada por: "+usuario+"</td>";
-			form += "           </tr>";
-			form += "        </tbody>";
-			form += "    </table>";
-			form += "	<br/>";
-			form += "	<br/>";
-			form += "	<br/>";
-			form += "</div>";
-			$("#form").append(form);
-			$('#ModalCargando').modal('hide');
-		});	
-	}
-	else if($(xmlHttpRequest.responseText).find('getComentariosLWCResp').text() != ''){
-		resultado = xmlHttpRequest.responseText;
-		$(xmlHttpRequest.responseText).find('getComentariosLWCResp').each(function(){
-			form += "	<div><h4></h4></div>";
-			form += "	<div><h4>LISTA WORLD CHECK</h4>";
-			form += "	<hr>";
-			form += "	</div>";
-			form += "	<div id=\"detalleList\" style=\"float:left;  margin-left:3%\">";
-			form += "		<table style=\"margin-right:auto; width:100%\" class=\"table-content\">";
-			form += "   	    <tr><td style='display:none'><input type=\"text\" id=\"txtTipo\" value =\"4\"></td><td style='display:none'></td></tr>";
-			form += "   	    <tr><td style='display:none'><input type=\"text\" id=\"txtUser\" value =\""+usuario+"\"></td><td style='display:none'></td></tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">FOLIO:</td>";
-			form += "	            <td width=\"95%\"><input id=\"txtFolio\" name=\"idFolio\" type=\"text\" value = \"" + $(this).find("uid").text()+ "\"disabled=\"true\" style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">NOMBRE:</td>";
-			form += "	            <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("first_name").text()+ "\"disabled=\"true\" style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">APELLIDO:</td>";
-			form += "	            <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("last_name").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">ALISASES:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("aliases").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">ALTERNATIVO:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("alternative_spelling").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">CATEGORIA:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" +$(this).find("category").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">TITULO:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("title").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">SUB CATEGORIA:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" +$(this).find("sub_category").text()+ "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">POSICION:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("position").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">EDAD:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("age").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">FECHA DE NACIMIENTO:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("date_of_birth").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">LUGAR DE NACIMIENTO:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("place_of_birth").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">PASAPORTES:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("passports").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">SEGURO SOCIAL:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("social_security").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">UBICACIONES:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("locations").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">PAISES:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("countries").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">TIPO DE PERSONA:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("type_of_person").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">INFO ADICIONAL:</td>";
-			form += "	            <td width=\"78%\"><textarea disabled='true' rows=\"4\" maxlength=\"1000\" style=\"width:80%\" >" + $(this).find("further_information").text() + "</textarea></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">FECHA DE CREACION:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("entered_date").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">FECHA DE MODIFICACION:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("updated_date").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">KEYWORDS:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("keywords").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td width=\"22%\">OBSERVACIONES (máximo 1000 caracteres):</td>";
-			form += "	            <td width=\"78%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Fecha de la consulta: " + date + "</td>";
-			form += "           </tr>";
-			form += "	        <tr>";
-			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Consulta realizada por: "+usuario+"</td>";
-			form += "           </tr>";
-			form += "        </tbody>";
-			form += "    </table>";
-			form += "	<br/>";
-			form += "	<br/>";	
-			form += "	<br/>";
-			form += "</div>";
-			
-			$("#form").append(form);
-			$('#ModalCargando').modal('hide');
-		});	
-	}else{
-		form = "	<h4>No se encontraron resultados</h4>";
-		$("#form").append(form);
-	}	
-}
 
 function imprimir() {
 	var tipolista="Negra";
 	var docDefinition = {
-		  footer: function(currentPage, pageCount) { return { text:'Página '+currentPage.toString() + ' de ' + pageCount,fontSize: 7,}; },
+		  footer: function(currentPage, pageCount) { return { text:'Página '+currentPage.toString() + ' de ' + pageCount,fontSize: 7,alignment: 'center'}; },
 		  header: function(currentPage, pageCount) {return {};},
 	   content: [
 		 { image: 'bee',width: 200,height: 50, style: 'header' },
@@ -652,11 +106,10 @@ function constructBody(){
 		mm = '0' + mm;
 	}
 	var date = dia+'/'+mm+'/'+anio;
-	//console.log($(xmlHttpRequest.responseText).text());
 	
-	if($(xmlHttpRequest.responseText).find('resultadoComentariosLNegra').text() != ''){
+	if($(xmlHttpRequest).find('resultadoComentariosLNegra').text() != ''){
 		
-		$(xmlHttpRequest.responseText).find('resultadoComentariosLNegra').each(function(){
+		$(xmlHttpRequest).find('resultadoComentariosLNegra').each(function(){
 			res =	 [
 					{ text: 'LISTA NEGRA', style: 'anotherStyle' },
 					{ style: 'superMargin',text: [{text: 'FOLIO: ', style: 'anotherStyle'},$(this).find("tb_corr").text()]},
@@ -699,12 +152,12 @@ function constructBody(){
 					{ style: 'superMargin',text: [{text: 'TIENE ASEGURAMIENTO: ', style: 'anotherStyle'},$(this).find("taseguramiento").text()]},
 					{ style: 'superMargin',text: [{text: 'DÍA: ', style: 'anotherStyle'},$(this).find("dia").text()]},
 					{ style: 'superMargin',text: [{text: 'MES: ', style: 'anotherStyle'},$(this).find("mes").text()]},
-					{ style: 'superMargin',text: [{text: 'AÑO: ', style: 'anotherStyle'},$(this).find("anio").text()]},
+					{ style: 'superMargin',text: [{text: 'AÑO: ', style: 'anotherStyle'},$(this).find("anio").text()]}
 				];
 		});
-	}else if($(xmlHttpRequest.responseText).find('getComentariosLGrisResp').text() != ''){
-		resultado = xmlHttpRequest.responseText;
-		$(xmlHttpRequest.responseText).find('getComentariosLGrisResp').each(function(){
+	}else if($(xmlHttpRequest).find('getComentariosLGrisResp').text() != ''){
+		
+		$(xmlHttpRequest).find('getComentariosLGrisResp').each(function(){
 
 			res =	 [
 					{ text: 'LISTA GRIS', style: 'anotherStyle' },
@@ -719,13 +172,12 @@ function constructBody(){
 					{ style: 'superMargin',text: [{text: 'COMPLEMENTARIOS: ', style: 'anotherStyle'},$(this).find("complementarios").text()]},
 					{ style: 'superMargin',text: [{text: 'TIPO PERSONA: ', style: 'anotherStyle'},$(this).find("tipopersona").text()]},
 					{ style: 'superMargin',text: [{text: 'REFERENCIA: ', style: 'anotherStyle'},$(this).find("referencia").text()]},
-					{ style: 'superMargin',text: [{text: 'NUMERO EXPEDIENTE: ', style: 'anotherStyle'},$(this).find("cnbv_numeroexpedient").text()]},
+					{ style: 'superMargin',text: [{text: 'NUMERO EXPEDIENTE: ', style: 'anotherStyle'},$(this).find("cnbv_numeroexpedient").text()]}
 					
 				];
 		});
-	}else if($(xmlHttpRequest.responseText).find('getComentariosLSitiResp').text() != ''){
-		resultado = xmlHttpRequest.responseText;
-		$(xmlHttpRequest.responseText).find('getComentariosLSitiResp').each(function(){
+	}else if($(xmlHttpRequest).find('getComentariosLSitiResp').text() != ''){
+		$(xmlHttpRequest).find('getComentariosLSitiResp').each(function(){
 			res =	 [
 					{ text: 'LISTA SITI', style: 'anotherStyle' },
 					{ style: 'superMargin',text: [{text: 'ID PERSONA: ', style: 'anotherStyle'},$(this).find("id_reg_persona").text()]},
@@ -751,8 +203,8 @@ function constructBody(){
 					{ style: 'superMargin',text: [{text: 'AUTORIDAD_ESP_NOMBRE: ', style: 'anotherStyle'},$(this).find("further_information").text()]},
 					{ style: 'superMargin',text: [{text: 'NOMBRE_SOLICITANTE: ', style: 'anotherStyle'},$(this).find("entered_date").text()]},
 					{ style: 'superMargin',text: [{text: 'FECHA DE MODIFICACION: ', style: 'anotherStyle'},$(this).find("updated_date").text()]},
-					{ style: 'superMargin',text: [{text: 'REFERENCIA: ', style: 'anotherStyle'},$(this).find("referencia").text()]}
-					{ style: 'superMargin',text: [{text: 'REFERENCIA1: ', style: 'anotherStyle'},$(this).find("referencia1").text()]}
+					{ style: 'superMargin',text: [{text: 'REFERENCIA: ', style: 'anotherStyle'},$(this).find("referencia").text()]},
+					{ style: 'superMargin',text: [{text: 'REFERENCIA1: ', style: 'anotherStyle'},$(this).find("referencia1").text()]},
 					{ style: 'superMargin',text: [{text: 'REFERENCIA2: ', style: 'anotherStyle'},$(this).find("referencia2").text()]}
 				];
 		});	

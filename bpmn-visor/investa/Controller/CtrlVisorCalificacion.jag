@@ -59,7 +59,7 @@
 				result += '<td>'+aXML.*::amaterno_cliente.toString()+'</td>';
 				result += '<td>CLIENTE</td>';
 				result += '<td>'+id_aplicacion+'</td>';
-				result += '<td>'+((aXML.*::id_mb_cat_evaluacion.toString() ==1)?'<span style="color:red;font-weight:bold">+</span>':'-')+'</td>';
+				result += '<td>'+((aXML.*::id_mb_cat_evaluacion.toString() ==1)?'<strong><span style="color:red; font-size:14px;">+ </span>&nbsp;&nbsp;<span style="color:red; font-size:14px;">+</span></strong>':'<strong><span style="color:red; font-size:14px;">+</span>&nbsp;&nbsp;<span style="color:black; font-size:14px;">-</span></strong>')+'</td>';
 				result += '<td>'+aXML.*::tipo_listas.toString()+'</td>';
 				result += '<td>'+porcentaje_busqueda+'</td>';
 				result += '<td>'+aXML.*::porcentaje_coincidencias.toString()+'</td>';
@@ -93,7 +93,7 @@
 				result += '<td>'+aXML.*::amaterno_beneficiario.toString()+'</td>';
 				result += '<td>BENEFICIARIO</td>';
 				result += '<td>'+id_aplicacion+'</td>';
-				result += '<td>'+((aXML.*::id_mb_cat_evaluacion.toString() ==1)?'<span style="color:red;font-weight:bold">+</span>':'-')+'</td>';
+				result += '<td>'+((aXML.*::id_mb_cat_evaluacion.toString() ==1)?'<strong><span style="color:red; font-size:14px;">+</span></strong>':'<strong><span style="color:red; font-size:14px;">+</span>&nbsp;&nbsp;<span style="color:black; font-size:14px;">-</span></strong>')+'</td>';
 				result += '<td>'+aXML.*::tipo_listas.toString()+'</td>';
 				result += '<td>'+porcentaje_busqueda+'</td>';
 				result += '<td>'+aXML.*::porcentaje_coincidencias.toString()+'</td>';

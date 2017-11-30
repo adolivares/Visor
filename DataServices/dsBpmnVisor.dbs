@@ -251,6 +251,86 @@
       <param defaultValue="#{NULL}" name="tipo" ordinal="3" sqlType="STRING"/>
       <param name="cliente" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
    </query>
+   <query id="qGetCatAccion" useConfig="visor">
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.get_cat_accion(?)}</sql>
+      <result element="getAccion" rowName="resultadoAccion">
+         <element column="ID_ACCION" name="id_accion" xsdType="string"/>
+         <element column="DESCRIPCION" name="descripcion" xsdType="string"/>
+         <element column="ESTATUS" name="estatus" xsdType="string"/>
+         <element column="FECHA_ALTA" name="fecha_alta" xsdType="string"/>
+         <element column="USUARIO_ALTA" name="usuario_alta" xsdType="string"/>
+      </result>
+      <param defaultValue="#{NULL}" name="idAccion" ordinal="2" sqlType="STRING"/>
+      <param name="cliente" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
+   </query>
+   <query id="qInsertaNotificaciones" useConfig="visor">
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.do_insert_notificaciones(?,?)}</sql>
+      <result element="doInsertaNotificacionesResponse" rowName="resultado">
+         <element column="estatus" name="estatus" xsdType="string"/>
+      </result>
+      <param name="idNotificacion" ordinal="2" sqlType="INTEGER"/>
+      <param name="xmlNotificaciones" ordinal="3" sqlType="STRING"/>
+      <param name="estatus" ordinal="1" sqlType="INTEGER" type="OUT"/>
+   </query>
+   <query id="qGetNotificaciones" useConfig="visor">
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.get_bpmn_notificaciones(?)}</sql>
+      <result element="getNotificaciones" rowName="resultadoNotificaciones">
+         <element column="ID_NOTIFICACION" name="id_notificacion" xsdType="string"/>
+         <element column="ID_PERFIL_USUARIO" name="id_erfil_usuario" xsdType="string"/>
+         <element column="ID_ACCION" name="id_accio" xsdType="string"/>
+         <element column="ESTATUS" name="estatus" xsdType="string"/>
+         <element column="USUARIO_ALTA" name="usuario_alta" xsdType="string"/>
+         <element column="FECHA_ALTA" name="fecha_alta" xsdType="string"/>
+         <call-query href="qGetCorreos">
+            <with-param name="idNotificacion" query-param="ID_NOTIFICACION"/>
+         </call-query>
+         <call-query href="qGetCatAccion">
+            <with-param name="idAccion" query-param="ID_ACCION"/>
+         </call-query>
+      </result>
+      <param defaultValue="#{NULL}" name="idNotificacion" ordinal="2" sqlType="STRING"/>
+      <param name="notificaciones" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
+   </query>
+   <query id="qGetCorreos" useConfig="visor">
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.get_bpmn_correos(?)}</sql>
+      <result element="getCorreos" rowName="resultadoCorreos">
+         <element column="TIPO" name="tipo" xsdType="string"/>
+         <element column="CORREO" name="correo" xsdType="string"/>
+      </result>
+      <param defaultValue="#{NULL}" name="idNotificacion" ordinal="2" sqlType="STRING"/>
+      <param name="notificaciones" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
+   </query>
+   <query id="qInsertMsjCorreo" useConfig="visor">
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.do_insert_msj(?,?,?,?,?)}</sql>
+      <result element="doInsertMsjResponse" rowName="resultado">
+         <element column="estatus" name="estatus" xsdType="string"/>
+      </result>
+      <param name="idConfiguracion" ordinal="2" sqlType="INTEGER"/>
+      <param name="idAccion" ordinal="3" sqlType="INTEGER"/>
+      <param name="asunt" ordinal="4" sqlType="STRING"/>
+      <param name="text" ordinal="5" sqlType="STRING"/>
+      <param name="usu" ordinal="6" sqlType="STRING"/>
+      <param name="estatus" ordinal="1" sqlType="INTEGER" type="OUT"/>
+   </query>
+   <query id="qGetMsj" useConfig="visor">
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.get_bpmn_msj(?)}</sql>
+      <result element="getMsjResponse" rowName="resultadoMsjs">
+         <element column="ID_CONFIGURACION_MSJ" name="id_configuracion_msj" xsdType="string"/>
+         <element column="ID_ACCION" name="id_accio" xsdType="string"/>
+         <element column="ASUNTO" name="asunto" xsdType="string"/>
+         <element column="TEXTO" name="texto" xsdType="string"/>
+         <element column="ESTATUS" name="estatus" xsdType="string"/>
+         <element column="FECHA_ALTA" name="fecha_alta" xsdType="string"/>
+         <element column="USUARIO_ALTA" name="usuario_alta" xsdType="string"/>
+         <element column="FECHA_MODIFICACION" name="fecha_modificacion" xsdType="string"/>
+         <element column="USUARIO_MODIFICACION" name="usuario_modificacion" xsdType="string"/>
+		 <call-query href="qGetCatAccion">
+            <with-param name="idAccion" query-param="ID_ACCION"/>
+         </call-query>
+      </result>
+      <param defaultValue="#{NULL}" name="idConfiguracion" ordinal="2" sqlType="STRING"/>
+      <param name="notificaciones" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
+   </query>
    <operation name="qConsultaEvaluacion">
       <call-query href="qConsultaEvaluacion">
          <with-param name="idEvaluacion" query-param="idEvaluacion"/>
@@ -332,6 +412,41 @@
       <call-query href="qConsultaDetalle">
          <with-param name="nombre" query-param="nombre"/>
          <with-param name="tipo" query-param="tipo"/>
+      </call-query>
+   </operation>
+   <operation name="qGetCatAccion">
+      <call-query href="qGetCatAccion">
+         <with-param name="idAccion" query-param="idAccion"/>
+      </call-query>
+   </operation>
+   <operation name="qInsertaNotificaciones">
+      <call-query href="qInsertaNotificaciones">
+         <with-param name="idNotificacion" query-param="idNotificacion"/>
+         <with-param name="xmlNotificaciones" query-param="xmlNotificaciones"/>
+      </call-query>
+   </operation>
+   <operation name="qGetNotificaciones">
+      <call-query href="qGetNotificaciones">
+         <with-param name="idNotificacion" query-param="idNotificacion"/>
+      </call-query>
+   </operation>
+   <operation name="qGetCorreos">
+      <call-query href="qGetCorreos">
+         <with-param name="idNotificacion" query-param="idNotificacion"/>
+      </call-query>
+   </operation>
+   <operation name="qInsertMsjCorreo">
+      <call-query href="qInsertMsjCorreo">
+         <with-param name="idConfiguracion" query-param="idConfiguracion"/>
+         <with-param name="idAccion" query-param="idAccion"/>
+         <with-param name="asunt" query-param="asunt"/>
+         <with-param name="text" query-param="text"/>
+         <with-param name="usu" query-param="usu"/>
+      </call-query>
+   </operation>
+   <operation name="qGetMsj">
+      <call-query href="qGetMsj">
+         <with-param name="idConfiguracion" query-param="idConfiguracion"/>
       </call-query>
    </operation>
 </data>

@@ -4,6 +4,7 @@ var user = session.get("user");
 var nConsulta = request.getParameter("id");		
 var nTipo = request.getParameter("tip");		
 var nXml = request.getParameter("xml");			
+var nidB = request.getParameter("idB");			
  if (request.isSecure()) {//check whether the request is secure or not
 
     var authSuccess = session.get("authSuccess");
@@ -29,7 +30,26 @@ var nXml = request.getParameter("xml");
     }
     response.sendRedirect(application.get('serverAddress') + request.getRequestURI() + queryStr);
 }
+var payload2 = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dat="http://ws.wso2.org/dataservice">
+					   <soapenv:Body>
+						  <dat:qConsultaEstatusAutoriaza>
+							 <dat:idBandeja>{nidB}</dat:idBandeja>
+						  </dat:qConsultaEstatusAutoriaza>
+					   </soapenv:Body>
+					</soapenv:Envelope>;
+	
+    var url = URL_ESB + "BpmnVisor";
+    var ws2 = new XMLHttpRequest();
+    var action = "urn:qConsultaEstatusAutoriaza";
+    ws2.open("POST", url, false);
+    ws2.setRequestHeader('SOAPAction', action);
+    ws2.setRequestHeader('Content-Type','text/xml; charset=utf-8');
 
+    ws2.send(payload2.toXMLString());
+    var responseXML2 = new XML(ws2.responseText);
+	log.info("XML CONSULTA AUTORIZACION: " + responseXML2.toXMLString());
+    
+	
 
 	var payload = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dat="http://ws.wso2.org/dataservice">
 					   <soapenv:Header/>
@@ -91,14 +111,15 @@ var nXml = request.getParameter("xml");
     </div><!-- pageheader -->
  <section>
     <div class="contentpanel">
-		<div class="row">
+		<!--div class="row">
 			<div class="col-xs-12"><h4  id="H2"><%=nConsulta%></h4></div>
-		</div>
+		</div-->
 		<div class="row-fluid">
 			<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+				<div class="short-div"><h4  id="H2"><%=nConsulta%></h4></div>
 				<div class="short-div"><h4>Coincidencias</h4></div>
 				<div class="short-div">
-					<div style="float:left;" class="list2">		
+						
 						<table align="left" id="listCoincidencias"  class="table-striped table-bordered table-list" style="margin-left:auto;  margin-right:auto; width:100%; font-size:10px;">
 							<thead>
 								<tr>
@@ -128,12 +149,12 @@ var nXml = request.getParameter("xml");
 								<%}%>
 							</tbody>
 						</table>
-					</div>
+					
 				</div>
-				<div class="short-div"><button  type="button" class="btn btn-default" onclick="generarPDF()">Generar PDF</button></div>
+				<div class="short-div"></div>
 			</div>
 			<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-				<div id="form" style="float:left; width:100%; height:350px; margin-left:3%; overflow-y:scroll;" class="panel panel-default"></div>
+				<div id="form" style="float:left; width:100%; height:430px; margin-left:3%; overflow-y:scroll;" class="panel panel-default"></div>
 			</div>
 		</div>
 		  
@@ -148,10 +169,10 @@ var nXml = request.getParameter("xml");
 							<button id="btnVerComntarios" type="button" class="btn btn-default" onclick="consulta()">Ver comentarios</button>
 						</td>
 						<td>						
-							<button id="btnGuardaComent" type="button" class="btn btn-default">Guardar comentarios</button>
+							<button id="btnGuardaComent" type="button" class="btn btn-default" <%=((responseXML2..*::getRelacion.*::resultadoRelacion.*::estatus_califica.toString()==1)?'disabled':'')%>>Guardar comentarios</button>
 						</td>
 						<td>
-							<button  type="button" class="btn btn-default" onclick="generarPDF()">Generar PDF</button>
+							<button  type="button" class="btn btn-default" onclick="generarPDF()"  >Generar PDF</button>
 						</td>					
 					</tr>
 					<tr>
@@ -159,7 +180,7 @@ var nXml = request.getParameter("xml");
 					</tr>
 					<tr>
 						<td align="right" >						
-							<div class="fileUpload btn btn-primary" style="width:100%" >
+							<div class="fileUpload btn btn-primary" style="width:100%" <%=((responseXML2..*::getRelacion.*::resultadoRelacion.*::estatus_califica.toString()==1)?'disabled':'')%>>
 								<span>Seleccionar Archivo</span>
 								<input style="width:50%" id="uploadBtn" type="file" class="upload" accept="image/x-png,image/gif,image/jpeg" />
 							</div>
@@ -168,7 +189,7 @@ var nXml = request.getParameter("xml");
 							<input style="width:100%" type="text" id="txtPathArchivo" style="width:100%" class="form-control" disabled/>
 						</td>
 						<td>
-							<input style="width:100%"  class="btn btn-primary" type="button" value="Subir Archivo" id="btnUpArchivo" name="btnUpArchivo">
+							<input style="width:100%"  class="btn btn-primary" type="button" value="Subir Archivo" id="btnUpArchivo" name="btnUpArchivo" <%=((responseXML2..*::getRelacion.*::resultadoRelacion.*::estatus_califica.toString()==1)?'disabled':'')%>/>
 						</td>					
 					</tr>
 					<tr>
@@ -179,7 +200,7 @@ var nXml = request.getParameter("xml");
 							<textarea id="txaComentario" rows="7" cols="60" class="form-control"	></textarea>	
 						</td>
 						<td valign="bottom" style="padding-bottom:8px">
-							<input style="width:100%"  class="btn btn-primary" type="button" value="Regresar" />
+							<%print('<a href="irCalificacionCoincidencias?idConsulta='+nidB+'" style="width:100%"  class="btn btn-primary">Regresar</a>');%>
 						</td>
 					</tr>
 				</table>
@@ -195,8 +216,6 @@ var nXml = request.getParameter("xml");
 <script src='resources/plantilla/js/jszip.js'></script>
 <script src='resources/plantilla/js/pdfmake.js'></script>
 <script src='resources/plantilla/js/vfs_fonts.js'></script>
-<script src='resources/plantilla/js/buttons.html5.js'></script>
-<script src='resources/plantilla/js/buttons.print.js'></script>
 <script src="resources/plantilla/js/bootstrap.min.js"></script>
 <script src="resources/plantilla//js/dataTables.responsive.js"></script>
 <script src="resources/plantilla/js/select2.min.js"></script>
@@ -906,4 +925,24 @@ function listasRespon(xmlHttpRequest, status){
 				var tipo = $("#txtTipo").val();
 					consultaComentarios(id, tipo);
 			}
+function AutorizaEstatus(){
+	var payload = '<dat:qConsultaEstatusAutoriaza xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
+    payload += '<dat:idBandeja>' + tr.find("td").eq(2).text() + '</dat:idBandeja>';
+    payload += '</dat:qConsultaEstatusAutoriaza>';
+    $.ajax({
+        url: '/commons/postSOAP',
+        type: 'post',
+        headers: {
+            'Destino': 'BpmnVisor',
+            'SOAPAction': 'urn:qConsultaEstatusAutoriaza'
+        },
+        dataType: 'xml',
+        complete: consultaEsta,
+        error: function(xhr, status, error) {},
+        data: payload
+    });
+}
+
+
 </script>
+
