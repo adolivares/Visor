@@ -346,8 +346,12 @@ include("/model/common.jag");
         </div><!-- panel-heading -->
     </div><!-- contentpanel -->
  </section>
-
-
+<input type="text" id="t1" style="display:none"/>
+<input type="text" id="t2" style="display:none"/>
+<input type="text" id="t3" style="display:none"/>
+<input type="text" id="t4" style="display:none"/>
+<input type="text" id="t5" style="display:none"/>
+<input type="text" id="t6" style="display:none"/>
  <script type="text/javascript" src="resources/plantilla/js/jquery-ui-1.10.3.min.js"></script>	
 <script src='resources/plantilla/js/jquery.dataTables2.min.js'></script>
 <script src='resources/plantilla/js/dataTables.buttons.js'></script>
@@ -579,10 +583,17 @@ include("/model/common.jag");
 		$("#txtCliente" + seleccion).html(tr.find("td").eq(4).text() + ' ' + tr.find("td").eq(5).text() + ' ' + tr.find("td").eq(6).text());
 		$("#txtIdCliente" + seleccion).html(tr.find("td").eq(3).text());
 		$('#MyModal' + seleccion).modal('show');
+		
+		$("#t1").val(tr.find("td").eq(4).text());
+		$("#t2").val(tr.find("td").eq(3).text());
+		$("#t4").val(tr.find("td").eq(1).text());
 
 	}
 	//funcion de escalamiento
+	var id ;
 	function escalar_delega(tip) {
+		var tipo_tra ='Escalar';
+		var tipo_tra2 ='Escaló';
 		var justificacion = $('#txtaJustif' + tip).val();
 		var tbl = $('#txtTBL' + tip).val();
 		if (justificacion == "") {
@@ -593,12 +604,11 @@ include("/model/common.jag");
 			}
 			return false;
 		}
-		var id = $("#txtIDbandeja" + tip).val();
+		 id = $("#txtIDbandeja" + tip).val();
 		var _analista = 0;
 		var _gerente = 0;
 		var _oficial = 0;
 		var _director = 0;
-		var tipo_tra ='Escalar';
 
 		if ($('#cbAnalista' + tbl).prop('checked')) {
 			_analista = 1;
@@ -612,15 +622,16 @@ include("/model/common.jag");
 		if ($('#cbDirector' + tbl).prop('checked')) {
 			_director = 1;
 		}
-		if(tip==1){
+		if(tip==2){
 			
 				tipo_tra ='Delega';
-			
-		}else{
-			
-				tipo_tra ='Delega';
+				tipo_tra2 ='Delegó';
 			
 		}
+		$("#t3").val(tip);
+		$("#t5").val(justificacion);
+		$("#t6").val(tipo_tra2);
+		//envioCorreo();
 		envio_escala_del(id, justificacion, _analista, _gerente, _oficial, _director,tipo_tra);
 
 	}
@@ -662,12 +673,9 @@ include("/model/common.jag");
 					'</div>');
 				$('#MyModal1').modal('hide');
 				$('#MyModal2').modal('hide');
-				var textNew = $('#txtEscala').val();
-				   $.get("Mail", { action: "Escalar", id:61 },
-				   function(data){
-						
-				 });
-				 location.href = 'irBandejaEntrada';
+				envioCorreo();
+				
+				location.href = 'irBandejaEntrada';
 			} else {
 				$("#idMsg").html('<div class="alert alert-danger">' +
 					'Sucedio un error ' + $(this).find("estatus").text() +
@@ -676,6 +684,13 @@ include("/model/common.jag");
 			$('#ModalInfo').modal('show');
 
 		});
+	}
+	function envioCorreo(){
+		//envio de correo
+				var textNew = $('#txtEscala').val();
+				   $.get("Mail", { action: $('#t6').val(),cliente:$('#t1').val(),idCiente:$('#t2').val(),persona:'',tipo:$('#t3').val(),fecha:$('#t4').val(),justificacio:$('#t5').val(),grup:'<%=Grupo_v%>'},
+				   function(data){	
+				 });
 	}
 
 	$("#Analiza").click(function() {

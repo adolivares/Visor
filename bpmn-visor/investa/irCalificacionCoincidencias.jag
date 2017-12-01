@@ -240,6 +240,13 @@ include("Controller/CtrlVisorCalificacion.jag");
         </div><!-- panel-heading -->
     </div><!-- contentpanel -->
  </section>
+ <input type="text" id="t1" style="display:none"/>
+<input type="text" id="t2" style="display:none"/>
+<input type="text" id="t3" style="display:none"/>
+<input type="text" id="t4" style="display:none"/>
+<input type="text" id="t5" style="display:none"/>
+<input type="text" id="t6" style="display:none"/>
+<input type="text" id="t7" style="display:none"/>
  </div>
 <script src='resources/plantilla/js/jquery-1.11.1.min.js'></script>
 <script src='resources/plantilla/js/jquery.dataTables2.min.js'></script>
@@ -571,6 +578,11 @@ function llenarCliente(tr, idBandeja) {
     $('#personaCalifiElim').html(tr.find("td").eq(4).text() + " " + tr.find("td").eq(5).text() + " " + tr.find("td").eq(6).text());
     $('#fechaElim').html(date);
     $('#txtIDbandeja').val(idBandeja);
+	
+	$("#t1").val(tr.find("td").eq(4).text() + " " + tr.find("td").eq(5).text() + " " + tr.find("td").eq(6).text());
+		$("#t2").val(tr.find("td").eq(3).text());
+		$("#t4").val(date);
+		$("#t7").val(tr.find("td").eq(4).text() + " " + tr.find("td").eq(5).text() + " " + tr.find("td").eq(6).text());
 
 }
 
@@ -600,6 +612,9 @@ function solicitarELIM() {
         default:
             false;
     }
+	$("#t3").val(3);
+		$("#t5").val(justificacion);
+		$("#t6").val('Solicitó:');
     envio_escala_del(id, justificacion, _analista, _gerente, _oficial, _director);
 }
 
@@ -640,6 +655,7 @@ function EscalaDelegacionRespon(xmlHttpRequest, status) {
             $('#MyModal1').modal('hide');
             $('#EliminacionModal').modal('hide');
             $('#ModalInfo').modal('show');
+			envioCorreo()
             location.href = 'irBandejaEntrada';
         } else {
             $("#idMsg").html('<div class="alert alert-danger">' +
@@ -650,7 +666,13 @@ function EscalaDelegacionRespon(xmlHttpRequest, status) {
 
     });
 }
-
+function envioCorreo(){
+		//envio de correo
+				var textNew = $('#txtEscala').val();
+				   $.get("Mail", { action: $('#t6').val(),cliente:$('#t1').val(),idCiente:$('#t2').val(),persona:'',tipo:$('#t3').val(),fecha:$('#t4').val(),justificacio:$('#t5').val(),grup:'<%=Grupo_v%>'},
+				   function(data){	
+				 });
+	}
 function irDetalle(combo) {
     var index = $(combo).closest('tr').index();
     var tr = $("#example >tbody").find("tr").eq(index);

@@ -140,6 +140,7 @@ var bAnalista = false;
 var bOficial = false;
 var bGerente = false;
 var Usuario_v;
+var Grupo_v;
 
 var loggerUsuario="";
 var UsuarioCRM="admin";

@@ -1,21 +1,64 @@
 <%
 include("/model/common.jag");
-	if(request.getParameter("action")== "Escalar") {
-		var id = request.getParameter("id");
+	var user = session.get("user");
+	if(request.getParameter("action")!="") {
+		
+		var Cliente = request.getParameter("cliente");
+		var idCliente = request.getParameter("idCiente");
+		var persona = request.getParameter("persona");
+		var tipo = request.getParameter("tipo");
+		var fechaB = request.getParameter("fecha");
+		var justificacio = request.getParameter("justificacio");
+		var grup = request.getParameter("grup");
+		if(tipo ==4 || tipo ==5){
+			justificacio = getJusti(justificacio);
+		}
+		var payload = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dat="http://ws.wso2.org/dataservice">
+						   <soapenv:Header/>
+						   <soapenv:Body>
+							  <dat:qGeTDatos>
+								 <dat:usu>{grup}</dat:usu>
+								 <dat:idAccion>{tipo}</dat:idAccion>
+							  </dat:qGeTDatos>
+						   </soapenv:Body>
+						</soapenv:Envelope>;
+
+		var url = URL_ESB + "BpmnVisor";
+		var ws = new XMLHttpRequest();
+		var action = "urn:qGeTDatos";
+		ws.open("POST", url, false);
+		ws.setRequestHeader('SOAPAction', action);
+		ws.setRequestHeader('Content-Type','text/xml; charset=utf-8');
+
+		ws.send(payload.toXMLString());
+		var responseXML = new XML(ws.responseText);
+		log.info("XML envio NOTIFICACION: " + payload.toXMLString());
+		log.info("XML NOTIFICACION: " + responseXML.toXMLString());
+		var destinatario;
+		var cc ='';
+		for each (var aXML in responseXML..*::getCorreos.*::resultadoCorreos){
+			
+			if(aXML.*::tipo.toString()=="DESTINATARIO"){
+				destinatario =aXML.*::correo.toString();
+			}else{
+				cc +=aXML.*::correo.toString()+",";
+			}
+		}
+		
 		var xml =   "<correo>"+
-						 "<asunto>RECHAZO - ELIMINACIÓN DE CALIFICACIÓN</asunto>"+
-						 "<texto>Se comunica que se ha rechazado la eliminación de una calificación de una persona encontrada en listas, con las siguientes características: </texto>"+
-						 "<tipo>5</tipo>"+
-						 "<destinatario>notificaciones@investabank.com</destinatario>"+
-						 "<cc></cc>"+
-						 "<fecha_busqueda>29/11/2017</fecha_busqueda>"+
-						 "<aplicacion>L1BRE</aplicacion>"+
-						 "<cliente>MARIA LUJAN ROBLES</cliente>"+
-						 "<idCliente>201700004571</idCliente>"+
-						 "<persona_calificada>JOSEFINA VAZQUEZ MOTA </persona_calificada>"+
-						 "<accion>Solicitó</accion>"+
-						 "<usuario>Analista 1</usuario>"+
-						 "<instruciones>Favor de eliminar la calificación porque me equivoqué al seleccionar la persona. Debí haber calificado a otro… </instruciones> "+
+						 "<asunto>"+responseXML..*::getMsjResponse.*::resultadoMsjs.*::asunto.toString()+"</asunto>"+
+						 "<texto>"+responseXML..*::getMsjResponse.*::resultadoMsjs.*::texto.toString()+"</texto>"+
+						 "<tipo>"+tipo+"</tipo>"+
+						 "<destinatario>"+destinatario+"</destinatario>"+
+						 "<cc>"+cc+"</cc>"+
+						 "<fecha_busqueda>"+fechaB+"</fecha_busqueda>"+
+						 "<aplicacion></aplicacion>"+
+						 "<cliente>"+Cliente+"</cliente>"+
+						 "<idCliente>"+idCliente+"</idCliente>"+
+						 "<persona_calificada>"+persona+"</persona_calificada>"+
+						 "<accion>"+request.getParameter("action")+"</accion>"+
+						 "<usuario>"+user+"</usuario>"+
+						 "<instruciones>"+justificacio+"</instruciones> "+
 					"</correo>";
 		var testXML = Packages.com.mx.investa.visor.email.EnvioCorreo;
 		var myTestXML = new testXML();
@@ -24,6 +67,28 @@ include("/model/common.jag");
 		var objXml = myTestXML.enviarCorreo(xml);
 		log.info('Envio correo Objeto XML:  '+objXml);
 		
+	}
+	function getJusti(id){
+		var payload = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dat="http://ws.wso2.org/dataservice">
+						   <soapenv:Header/>
+						   <soapenv:Body>
+							  <dat:qGetJusti>
+								 <dat:idBandeja>{id}</dat:idBandeja>
+							  </dat:qGetJusti>
+						   </soapenv:Body>
+						</soapenv:Envelope>;
+
+		var url = URL_ESB + "BpmnVisor";
+		var ws = new XMLHttpRequest();
+		var action = "urn:qGetJusti";
+		ws.open("POST", url, false);
+		ws.setRequestHeader('SOAPAction', action);
+		ws.setRequestHeader('Content-Type','text/xml; charset=utf-8');
+
+		ws.send(payload.toXMLString());
+		var responseXML = new XML(ws.responseText);
+		log.info("XML j: " + responseXML.toXMLString());
+		return responseXML..*::resultadoJustiBandeja.*::just.toString();
 	}
 %>
 

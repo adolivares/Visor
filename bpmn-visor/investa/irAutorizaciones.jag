@@ -359,9 +359,15 @@ $("#btnAutorizar").click(function() {
     tr = $("#example >tbody").find("tr").eq(indexTBL);
 
     var sId = tr.find("td").eq(0).text();
-
+	$("#t1").val(tr.find("td").eq(4).text() + " "+tr.find("td").eq(5).text() + " "+tr.find("td").eq(6).text());//cliente
+	$("#t2").val(tr.find("td").eq(3).text());//idcliente
+	$("#t3").val(4);//tipo
+	$("#t4").val(tr.find("td").eq(1).text());//fecha
+	$("#t5").val(sId);
+	$("#t6").val('Solicitó:');
+	$("#t7").val(tr.find("td").eq(4).text() + " "+tr.find("td").eq(5).text() + " "+tr.find("td").eq(6).text());//persona
     //envio_autoriza(sId,'Autorizado');
-    envio_escala_del(sId, 'Autorizado', _analista, _gerente, _oficial, _director);
+   envio_escala_del(sId, 'Autorizado', _analista, _gerente, _oficial, _director);
 });
 $("#btnRechazar").click(function() {
     if (indexTBL == -1) {
@@ -392,7 +398,13 @@ $("#btnRechazar").click(function() {
     tr = $("#example >tbody").find("tr").eq(indexTBL);
 
     var sId = tr.find("td").eq(0).text();
-
+	$("#t1").val(tr.find("td").eq(4).text() + " "+tr.find("td").eq(5).text() + " "+tr.find("td").eq(6).text());//cliente
+	$("#t2").val(tr.find("td").eq(3).text());//idcliente
+	$("#t3").val(5);//tipo
+	$("#t4").val(tr.find("td").eq(1).text());//fecha
+	$("#t5").val(sId);
+	$("#t6").val('Solicitó:');
+	$("#t7").val(tr.find("td").eq(4).text() + " "+tr.find("td").eq(5).text() + " "+tr.find("td").eq(6).text());//persona
     //envio_autoriza(sId,'Rechazado');
     envio_escala_del(sId, 'Rechaza', _analista, _gerente, _oficial, _director);
 });
@@ -434,6 +446,7 @@ function EscalaDelegacionRespon(xmlHttpRequest, status) {
             $('#MyModal1').modal('hide');
             $('#MyModal2').modal('hide');
             $('#ModalInfo').modal('show');
+			envioCorreo();
             location.href = 'irAutorizaciones';
         } else {
             $("#idMsg").html('<div class="alert alert-danger">' +
@@ -444,9 +457,6 @@ function EscalaDelegacionRespon(xmlHttpRequest, status) {
 
     });
 }
-
-
-
 
 function envio_autoriza(id_bandeja, autoriza) {
     var payload = '<dat:qActualizaAutorizacion xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
@@ -476,6 +486,7 @@ function ResponseAutorizacion(xmlHttpRequest, status) {
             $("#idMsg").html('<div class="alert alert-success">' +
                 'Se ha realizado la petición' +
                 '</div>');
+				envioCorreo();
             location.href = 'irAutorizaciones';
         } else {
             $("#idMsg").html('<div class="alert alert-danger">' +
@@ -486,4 +497,18 @@ function ResponseAutorizacion(xmlHttpRequest, status) {
 
     });
 }
+function envioCorreo(){
+		//envio de correo
+				var textNew = $('#txtEscala').val();
+				   $.get("Mail", { action: $('#t6').val(),cliente:$('#t1').val(),idCiente:$('#t2').val(),persona:'',tipo:$('#t3').val(),fecha:$('#t4').val(),justificacio:$('#t5').val(),grup:'<%=Grupo_v%>'},
+				   function(data){	
+				 });
+	}
 </script>
+<input type="text" id="t1" style="display:none"/>
+<input type="text" id="t2" style="display:none"/>
+<input type="text" id="t3" style="display:none"/>
+<input type="text" id="t4" style="display:none"/>
+<input type="text" id="t5" style="display:none"/>
+<input type="text" id="t6" style="display:none"/>
+<input type="text" id="t7" style="display:none"/>

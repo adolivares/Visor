@@ -133,7 +133,7 @@ var user = session.get("user");
 						<div class="modal-body col-centered">	
 							<div id="detalleList" style="float:left; width:90%; margin-left:3%">					
 								<table  style="margin-right:auto; width:100% " class="table-content" >
-									<input type="text" id="txtIdNotificacion" style="display:none" value=""/>
+									<input type="text" id="txtIdNotificacion" style="display:none" value="0"/>
 									<tr><td>Perfil: *</td>
 										<td><select id="cboPerfil" style=" width:'300px'">
 											<option value="">- Seleccione -</option>
@@ -229,8 +229,6 @@ var user = session.get("user");
         </div><!-- panel-heading -->
     </div><!-- contentpanel -->
  </section>
- <input type="text" id="txtEscala" value="Escalar"/>
-<input type="button" id="btnSend" value="Envio correo"/>
  </div>
 <script src='resources/plantilla/js/jquery-1.11.1.min.js'></script>
 <script src='resources/plantilla/js/jquery.dataTables2.min.js'></script>
@@ -328,10 +326,14 @@ var user = session.get("user");
 	});
 	var id =0;
 	$("#btnGuardar").click(function() {
-		var idNotificacion = $('#txtIdNotificacion').val();
+		
 		var perfil =$('#cboPerfil').val();
 		var accion =$('#cboAccion').val();
 		var destinatario =$('#txtDestinatario').val();
+		var idNotificacion =0;
+		if($('#txtIdNotificacion').val()!=""){
+			idNotificacion=$('#txtIdNotificacion').val();
+		}
 		if (perfil < 1) {
 			alert('Seleccione perfil ');
 			return;
@@ -358,7 +360,7 @@ var user = session.get("user");
 			data += '<perfil>' + perfil + '</perfil>';
 			data += '<accion>' + accion + '</accion>';
 			data += '<usuario><%=user%></usuario>';
-			data += '<tipo>'+((idNotificacion =="")?1:2)+'</tipo>';
+			data += '<tipo>'+((idNotificacion ==0)?1:2)+'</tipo>';
 		
 
 			data += '<dtcorreos>';
@@ -447,7 +449,7 @@ var user = session.get("user");
 		$('#cboPerfil').val('');
 		$('#cboAccion').val('');
 		$('#txtDestinatario').val('');
-		$('#txtIdNotificacion').val('');
+		$('#txtIdNotificacion').val(0);
 		$("#tblCC >tbody").empty();
 	});
 	$("#btnEditar").click(function() {
@@ -651,18 +653,10 @@ var user = session.get("user");
 		$('#txtIdConfiguracion').val(0);
 	}
 	
-$("#btnSend").click(function() {
-        
-		
-
-       
-    
-        var textNew = $('#txtEscala').val();
+$("#btnSend").click(function() { 
+       var textNew = $('#txtEscala').val();
        $.get("Mail", { action: "Escalar", id:61 },
 	   function(data){
-			
 	   });
-
-
 });
 </script>
