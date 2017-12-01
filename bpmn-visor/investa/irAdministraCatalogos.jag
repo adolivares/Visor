@@ -254,7 +254,7 @@ if( _transac == 1 && _modulo != "" && _catalogo != "" && _descripcion != "" && _
 		});
 		
 		var visor = [{catalogo: '- Seleccione -', value: '0'},
-					{catalogo: 'Acción', value: 'accion'},
+				//	{catalogo: 'Acción', value: 'accion'},
 					{catalogo: 'Aplicación', value: 'aplicacion'},
 					{catalogo: 'Categoria', value: 'categoria'},
 					{catalogo: 'Listas', value: 'listas'},

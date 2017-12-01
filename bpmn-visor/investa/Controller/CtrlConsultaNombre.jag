@@ -40,11 +40,7 @@
 		var id =0;
 		var db ="";
 		var tipo=0;		
-		var format = new Date();
-		var dia = format.getDate();
-	var mm = format.getMonth()+1;
-	var anio = format.getFullYear();
-	var date = dia+'/'+mm+'/'+anio;
+		
 		
 		if(lista != ""){
 			var estatus = lista..*::resultado.*::estatus.toString();			
@@ -53,13 +49,16 @@
 			log.info('ESTATUS ' + estatus);
 			if(estatus == 1){
 			
-				log.info('Nombre get Coments ' + nombre);
-				var obsercaciones = consultaObservaciones(nombre);	
-				if(obsercaciones..*::resultadoObsBusqueda != "" || bsercaciones..*::resultadoObsBusqueda != ""){
+				log.info('Nombre get Coments ' + nombre.toUpperCase());
+				var obsercaciones = consultaObservaciones(nombre.toUpperCase());	
+				//if(obsercaciones..*::resultadoObsBusqueda != "" || obsercaciones..*::resultadoObsBusqueda != ""){
 					idRegistro = obsercaciones..*::resultadoObsBusqueda.*::id.toString();
 					observaciones = obsercaciones..*::resultadoObsBusqueda.*::observaciones.toString();
+					if(idRegistro == null){
+						idRegistro ="";
+					}
 					log.info('id ' + idRegistro + ' observaciones ' + observaciones);
-				}
+				//}
 				
 			
 				result += '<table id="example" cellspacing="0" class="table table-striped table-bordered" style="font-size: small; margin-right:auto; margin-left:auto; width:60%" >';
@@ -117,10 +116,10 @@
 				result += '<td><p>OBSERVACIONES (máximo 1000 caracteres):</p></td>';
 				result += '</tr>';
 				result += '<tr>';
-				result += '<td><textarea id="txaComentario" rows="4" cols="50" class="form-control" >'+ observaciones+'</textarea></td>';
+				result += '<td><textarea id="txaComentario" maxlength="1000" rows="4" cols="50" class="form-control" >'+ observaciones+'</textarea></td>';
 				result += '</tr>';
 				result += '<tr>';
-				result += '<td>Fecha de Consulta: '+ date + '</td>';
+				result += '<td>Fecha de Consulta</td>';
 				result += '</tr>';
 				result += '<tr>';
 				result += '<td>Consulta realizada por: '+ usuario +'</td>';

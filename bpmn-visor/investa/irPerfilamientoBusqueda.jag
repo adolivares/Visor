@@ -107,12 +107,15 @@ include("/model/common.jag");
 								</select>
 					</div>
 					<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-						<table id="tblListas" class="table-striped table-bordered table-list">
-							<thead><th style="display:none;"></th><th>Lista</th><th>%</th></thead>
-							<tbody>							
-								<%=createTableListas(xmlCatListas)%>
-							</tbody>							
-						</table>
+						<div id="modal">							
+							<table id="tblListas" class="table-striped table-bordered table-list">
+								<thead><th style="display:none;"></th><th>Lista</th><th>%</th></thead>
+								<tbody>							
+									<%=createTableListas(xmlCatListas)%>
+								</tbody>							
+							</table>
+						</div>					
+						 
 						<br/><br/><br/><br/>
 					</div>					
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 list-config">				
@@ -206,42 +209,49 @@ include("/model/common.jag");
 					</div>		
 				</div>	
 			</div>		
-			<div class="modal fade col-centered" id="PerfilModal" tabindex="-1" role="dialog">
-			  <div class="modal-dialog " role="document">
+			<div class="modal fade" id="detalleConfiguracion">
+			  <div class="modal-dialog">
 				<div class="modal-content">
 				  <div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					
-					<h4 class="modal-title" id="H2"></h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 				  </div>
-				  <div class="modal-body col-centered">
-					<div class="list-Coment">
-						<table style="margin-right:auto; width:100%; margin-left:auto; margin-right:auto;" class="table-content">
-							<tr><td align="right">Id Usuario:</td>
-								<td><input type="text" id="txtIdUsuario" name="txtIdUsuario" /></td>
-							</tr>
-							<tr><td align="right">Nombre de Usuario:</td>
-								<td><input type="text" id="txtNombre" name="txtNombre" /></td>
-							</tr>
-							<tr><td align="right">Perfil:</td>
-								<td><select id="slPerfil">
-									<option>- Seleccione -</Option>
-									<option>Director</Option>
-									<option>Oficial</Option>
-									<option>Gerente</Option>
-									<option>Analista</Option>
-								</select></td>
-							</tr>							
-						</table>
-					</div>
+				  <div class="modal-body">
+					<div id="idMessage">
+					</div>	
+					<input type="hidden" id="txtDetalleConfig" value=''>
 				  </div>
 				  <div class="modal-footer">
-					   <button type="button" class="btn btn-default" data-dismiss="modal">Guardar</button>
-					  <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="confirmActualizaConf();">Aceptar</button>
 				  </div>
-				</div>
-			  </div>
-			</div>
+				</div><!-- /.modal-content -->
+			  </div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+			<div class="modal fade" id="modalPorcentaje">
+			  <div class="modal-dialog modal-sm">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				  </div>
+				  <div class="modal-body">	
+					<div class="alert alert-warning">¿Desea actualizar el Porcentaje?</div>
+						<br/>
+						<table>
+							<tr>
+								<td>Porcentaje</td>
+								<td><input type="text" id="txtPorcentaje" value=''></td>
+							</tr>							
+						</table>						
+						<input type="hidden" id="txtId" value=''>
+						<input type="hidden" id="txtLista" value=''>						
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="getPorcentaje()">Aceptar</button>
+				  </div>
+				</div><!-- /.modal-content -->
+			  </div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
         </div><!-- panel-heading -->
     </div><!-- contentpanel -->
  </section>
@@ -260,9 +270,11 @@ include("/model/common.jag");
 <script src="resources/plantilla/js/bootstrap.min.js"></script>
 <script src="resources/plantilla//js/dataTables.responsive.js"></script>
 <script src="resources/plantilla/js/select2.min.js"></script>
+<script src="resources/plantilla/js/custom.js"></script>
          
 
 <script>
+	
 	
 	jQuery(document).ready(function(){   				
 		
@@ -273,6 +285,12 @@ include("/model/common.jag");
 		var cbCategoria="";
 		var iCat;
 		var estatus=-1;
+		var existe;
+		var exito;
+		var listAplicado;
+		var listExiste;
+		var rowListas='';
+		var rowsAplicar=0;
 		
 		$('#buscando').hide();
 						
@@ -280,16 +298,115 @@ include("/model/common.jag");
 			$('#buscando').show();        			
 		});	
 		
-		$('#tblListas tbody tr').on('click', function(event) {
-			$(this).addClass('highlight').siblings().removeClass('highlight');
-			var id = $(this).find("td").eq(0).html();
-			lista = $(this).find("td").eq(1).html();
-			//console.log("Lista " + id);
-			$('#tblCategoria tbody tr').remove();
-			getCategorias(id);
-		});	
 		
+		// $('#porcentaje').click(function() {
+			// $('#tblListas tbody tr input').remove();
+			// var celda = $(this).find("td").eq(2);
+			
+			// var input = "<input type='text' name='txtPorcentaje' value='hola'/>";
+			// celda.append(input);
+			// $("#txtPorcentaje").focus();
+			// $('#tblCategoria tbody tr').remove();
+			// var dialogInstance3 = new BootstrapDialog()
+				// .setTitle('Dialog instance 3')
+				// .setMessage('Hi Everybody!')
+				// .setType(BootstrapDialog.TYPE_INFO)
+				// .open();			
+		// });
+		
+	
 	});
+	
+	$('#tblListas tbody td').click(function() {
+		rowListas = $(this).parent().index();
+		var tr = $(this).parent(); 
+		var id = tr.find("td").eq(0).html();
+		lista = tr.find("td").eq(1).html();	
+		var porcentaje = tr.find("td").eq(2).html();	
+		
+		if($(this).hasClass("porcentaje")){
+			console.log("porcentaje " + porcentaje);
+			$('#txtPorcentaje').val(porcentaje);
+			$('#txtId').val(id);
+			$('#txtLista').val(lista);			
+			$('#modalPorcentaje').modal({backdrop: 'static', keyboard: false})
+		}else if ($(this).hasClass("lista")){			
+			tr.addClass('highlight').siblings().removeClass('highlight');			
+			//console.log("Lista " + id);
+			$('#tblCategoria tbody tr').remove();			
+			getCategorias(id);
+		}
+		
+		
+		// $('#tblListas tbody tr input').remove();
+		// var celda = $(this).find("td").eq(2);
+		
+		// var input = "<input type='text' name='txtPorcentaje' value='hola'/>";
+		// celda.append(input);
+		// $("#txtPorcentaje").focus();
+		// $('#tblCategoria tbody tr').remove();
+		// $("#txtPorcentaje").change(function(){ 
+			
+		// }); 	
+		
+	});	
+	
+	function getPorcentaje(){	
+	
+		console.log("Actualiza porcentaje " );
+		var porcentaje = $('#txtPorcentaje').val();
+		var idLista = $('#txtId').val();
+		var sLista = $('#txtLista').val();
+		rowListas = rowListas +1;
+		
+		actualizaPorcentaje(idLista, sLista, porcentaje)
+		
+		$('#tblListas tr:eq(' + rowListas + ') td:eq(2)').html(porcentaje);
+		
+	}
+	
+	function actualizaPorcentaje(_idLista, _sLista, _porcentaje){
+		var usuario = "<%=user%>";
+		var payload  = '<dat:qActualizaCatListas xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
+			payload += '<dat:idLista>'+_idLista+'</dat:idLista>';
+			payload += '<dat:descLista>'+_sLista+'</dat:descLista>';
+			payload += '<dat:descPorcentaje>'+_porcentaje+'</dat:descPorcentaje>';
+			payload += '<dat:usuario>'+ usuario+'</dat:usuario>';
+			payload += '</dat:qActualizaCatListas>';
+
+		
+		$.ajax({
+			url: '/commons/postSOAP',
+			type: 'post',
+			headers: {'Destino':'BpmnVisorSEGListas', 'SOAPAction':'urn:qActualizaCatListas'},
+			dataType: 'xml',
+			complete: porcentjeResponse,
+			error: function (xhr, status, error) {},
+			data: payload
+		});    
+	}
+	function porcentjeResponse(xmlHttpRequest, status){
+		//alert(xmlHttpRequest.responseText);	
+		
+		var estatus=0;
+		
+		if($(xmlHttpRequest.responseText).find('qActualizaListasResponse').text() != ''){
+			$(xmlHttpRequest.responseText).find('qActualizaListasResponse').each(function(){
+				estatus = $(this).find("estatus").text();				
+				if($(this).find("estatus").text()==1){
+					  $("#idMsg").html('<div class="alert alert-success">'+
+					  'Se ha actualizado correctamente ' +
+					  '</div>');
+				}else {
+					  $("#idMsg").html('<div class="alert alert-danger">'+
+					  'Sucedio un error '+$(this).find("codigoError").text()+
+					  '</div>');
+				 }
+				 $('#ModalInfo').modal('show');
+				
+			});
+		}
+	}
 	
 	
 	$("#cbAllCat").change(function(){  	 
@@ -345,7 +462,7 @@ include("/model/common.jag");
 			row += '<td>' + categoria + '</td>';
 			row += '<td> <input type="checkbox" name="cbCategoria' + cont +'" id="cbCategoria" value="' + cont + '" onchange="actCategoria(this)" class ="cbCat"></td>';
 			row += '<td> <input type="checkbox" name="cbTransaccion' + cont + '" id="cbTransaccion"></td>';
-			row += '<td><select id="slPrioridad' + cont +'" name="slPrioridad' + cont +'"  onchange="getDatos(this);" disabled class="slPrioridad" ><option value="0">- Seleccione -</option></select></td>';	
+			row += '<td><select id="slPrioridad' + cont +'" name="slPrioridad' + cont +'" disabled class="slPrioridad" ><option value="0">- Seleccione -</option></select></td>';	
 			row += '</tr>';
 				$('#tblCategoria > tbody').append(row);
 			});
@@ -415,87 +532,6 @@ include("/model/common.jag");
 	}
 		
 	
-
-	function getDatos(elem){
-		/*
-		var idPrioridad = elem.value;
-		var transacion="false";
-		var sPerfil = $("#slPerfil").find("option:selected").text();
-		var idPerfil = $('select[name=slPerfil]').val()		
-		
-	
-		var	index = elem.parentNode.parentNode.rowIndex;
-		if ($("input[name=cbTransaccion" + index +"]").is(":checked") ) {
-			//alert("true");
-			transacion = "true";
-		}else{
-			transacion = "false";
-		}
-		index = index -1;
-		var tr = $("#tblCategoria >tbody").find("tr").eq(index);		
-		var sCategoria = tr.find("td").eq(1).text();
-		var idListCateg = tr.find("td").eq(0).text();		
-		var indexList = $('tr.highlight').index();
-		var trList = $("#tblListas > tbody").find("tr").eq(indexList);		
-		var sLista = trList.find("td").eq(1).text();
-		var existe = false;
-		
-		//console.log(" idPrioridad " + idPrioridad);
-		//console.log("idListCateg " + idListCateg + " idPerfil " + idPerfil + " indexList " + indexList + " sLista " +sLista);
-	*/	
-	/*	if ($('table#tblConfiguracion tbody tr').length > 0){		
-			$("#tblConfiguracion tbody tr").each(function(){
-				var perfil = $(this).find('td').eq(0).text();
-				var lista = $(this).find('td').eq(1).text();
-				var categoria = $(this).find('td').eq(2).text();
-				
-				//console.log("perfil " + perfil + " lista " + lista + " categoria " + categoria);
-			
-				if(sPerfil == perfil && sLista == lista && sCategoria == categoria){
-					var answer = confirm("La configuracion ya existe. \n ¿Desea Actualizarla?");
-					existe = true;					
-					if(answer){
-						existe = false;
-					}else{
-						existe = true;	
-					}
-				}else{
-					existe = false;
-				}		
-				
-			});
-			if(!existe){
-				addConfiguration(sPerfil, sLista, sCategoria, idPerfil, idListCateg, transacion, idPrioridad);
-			}
-		}else{
-			addConfiguration(sPerfil, sLista, sCategoria, idPerfil, idListCateg, transacion, idPrioridad);
-		}
-		
-	*/
-	}
-	
-/*	function addConfiguration(_sPerfil, _sLista, _sCategoria, _idPerfil, _idListCateg, _transacion, _idPrioridad){
-		
-		if(_idPerfil > 0){	
-			var row = "";
-			row += '<tr>';
-			row +='<td>' + _sPerfil + '</td>';
-			row +='<td>' + _sLista + '</td>';
-			row +='<td>' + _sCategoria + '</td>';
-			row +='<td style="display:none;">' + _idPerfil + '</td>';
-			row +='<td style="display:none;">' + _idListCateg + '</td>';		
-			row +='<td style="display:none;">'+ _transacion + '</td>';
-			row +='<td style="display:none;">'+ _idPrioridad + '</td>';
-			row += '</tr>';	
-			
-			$("#tblConfiguracion > tbody").append(row);
-			row = "";
-		}else{
-			alert("Seleccione un Perfil");
-			return;
-		}
-	} */
-	
 	$('#btnAplicar').click(function(){
 		var usuario = "<%=user%>";
 		var cont = 0;
@@ -504,6 +540,15 @@ include("/model/common.jag");
 		var idPerfil = $('select[name=slPerfil]').val();
 		console.log("idPerfil " + idPerfil);
 		var transaccion="false";
+		var porcent = $('.highlight').find('td').eq(2).text();
+		$('#txtDetalleConfig').val(1);
+		
+		rowsAplicar = 0;
+		existe = 0;
+		exito = 0;
+		listAplicado =[];
+		listExiste =[];
+		
 		if(idPerfil == 0){
 			 $("#idMsg").html('<div class="alert alert-danger">'+
 				  'Seleccione un Perfil'+
@@ -514,12 +559,14 @@ include("/model/common.jag");
 		$("#tblCategoria tbody tr").each(function(){
 			cont++;
 			var indexC = $(this).index()
-			rowConfig = indexC;
+			
 			//estatus =-3;
 			
 			var datos={};			
 			if ($("input[name=cbCategoria" + cont +"]").is(":checked") ) {
+				rowConfig = indexC;
 				cheked++;
+				console.log("rowConfig " + rowConfig);
 				var listaCat = $(this).find('td').eq(0).text();
 				cbCategoria = $("input[name=cbCategoria" + cont +"]").val();
 				
@@ -530,7 +577,7 @@ include("/model/common.jag");
 				}				
 				
 				var idPrioridad = $('select[name=slPrioridad' + cont +']').val();
-				console.log("idPrioridad " + idPrioridad);
+				
 				if(idPrioridad == "0"){
 					 $("#idMsg").html('<div class="alert alert-danger">'+
 						  'Seleccione una Prioridad'+
@@ -545,26 +592,30 @@ include("/model/common.jag");
 				datos.transaccion = transaccion;
 				datos.idPrioridad = idPrioridad;				
 				datos.usuario = usuario;				
+				datos.porcentaje = porcent;				
 				datos.cbCategoria = cbCategoria;
-				datos.slPrioridad = cont;
+				datos.rowConfig = rowConfig;
+				datos.slPrioridad = cont;	
+				
 				categorias.push(datos);
 				
 				//console.log("perfil " + perfil + " lista " + lista + " categoria " + categoria);
 				//aplicaConfiguracion(idPerfil, listaCat, transaccion, idPrioridad, usuario,cbCategoria);	
 			}
-						
 			
-		
 		//console.log("Estatus " +estatus);	
 				
-		});
-		
+		});		
 		if(cheked > 0){
-			var i = 0;
+			var i = 1;
+			listAplicado =[];
+			listExiste =[];
+			rowsAplicar = categorias.length;
 			for(categoria in categorias){
-				aplicaConfiguracion(categorias[categoria].idPerfil, categorias[categoria].listaCat, categorias[categoria].transaccion, categorias[categoria].idPrioridad, categorias[categoria].usuario,categorias[categoria].cbCategoria,categorias[categoria].slPrioridad);	
+				aplicaConfiguracion(categorias[categoria].idPerfil, categorias[categoria].listaCat, categorias[categoria].transaccion, categorias[categoria].idPrioridad, categorias[categoria].usuario, categorias[categoria].porcentaje,categorias[categoria].cbCategoria,categorias[categoria].slPrioridad, i,categorias[categoria].rowConfig);	
 				i++;
 			}
+			
 		}else{
 			 $("#idMsg").html('<div class="alert alert-danger">'+
 				  'Seleccione una categoria'+
@@ -572,29 +623,66 @@ include("/model/common.jag");
 			$('#ModalInfo').modal('show');
 			return;
 		}
+			
 		
-		
-		
-	/*
-		if ($('table#tblConfiguracion tbody tr').length > 0){	
-			$("#tblConfiguracion tbody tr").each(function(){
-					var perfil = $(this).find('td').eq(3).text();
-					var lista = $(this).find('td').eq(4).text();
-					var transaccion = $(this).find('td').eq(5).text();
-					var prioridad =  $(this).find('td').eq(6).text();
-					var indexC = $(this).index()
-					rowConfig = indexC;
-					console.log(" indexC " + indexC)
-					aplicaConfiguracion(perfil, lista, transaccion, prioridad, prioridad, usuario,rowConfig);
-			});
-		}else{
-			alert("No existen Configuraciones de Perfiles de Búsqueda para aplicar.");
-		}
-	*/
 		
 	});
+	function detalle(exito, existe){
+		console.log("exito " + exito);
+			
+		console.log("existe " + existe);
+		if(existe > 0){
+				var table ='';
+				var sPerfil = $("#slPerfil").find("option:selected").text();
+				var lista = $('.highlight').find('td').eq(1).text();				
+				for(var list in listExiste){	
+					 var categoria = $('#tblCategoria tr:eq(' + (listExiste[list]+1)+ ') td:eq(1)').text();
+					table += '<tr>';
+					table += '<td>' +sPerfil+ '</td>';
+					table += '<td>' +lista+ '</td>';
+					table += '<td>' +categoria+ '</td>';
+					table += '</tr>';
+				}			
+				
+				$("#idMessage").html('<div class="alert alert-warning">'+
+								'Las siguientes configraciones ya existen. ¿Desea actualizarlas? </div>' +
+								'<div><table id="tblDetalleConfig" class="table-striped table-bordered table-list">' +
+								'<thead>' +
+								'	<th>Perfil</th>'+
+								'	<th>Lista</th>'+
+								'	<th>Categoria</th>'+
+								'	<th style="display:none"></th>'+
+								'</thead>'+
+								'<tbody>' + table +'</tbody>'+
+								'</table>' +
+								'</div>');	
+				$('#detalleConfiguracion').modal('show');		
+			
+			}else if(exito > 0){
+				
+				var table ='';
+				var sPerfil = $("#slPerfil").find("option:selected").text();
+				var lista = $('.highlight').find('td').eq(1).text();
+				// for(var list in listAplicado){
+					// var categoria = $('#tblCategoria tr:eq(' + listAplicado[list] + ') td:eq(1)').val();
+					// table = '<tr>';
+					// table += '<td>' +sPerfil+ '</td>';
+					// table += '<td>' +lista+ '</td>';
+					// table += '<td>' +categoria + '</td>';
+					// table += '</tr>';
+				// }
+				
+				$("#idMsg").html('<div class="alert alert-success">'+
+										'Se han dado de alta correctamente ' +
+										'</div>');	
+				$('#ModalInfo').modal('show');				
+			}	
+		
+		
+	}
 	
-	function aplicaConfiguracion(_perfil, _lista, _transaccion, _prioridad, _usuario, cbCategoria, slPrioridad){
+	function aplicaConfiguracion(_perfil, _lista, _transaccion, _prioridad, _usuario,_porcentaje, cbCategoria, slPrioridad, cont, rowConf){
+	
 		var payload  = '<dat:qInsertaConfiguracion xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
 			payload += '<dat:idPerfil>' + _perfil + '</dat:idPerfil>';
 			payload += '<dat:idlistaCateg>' + _lista + '</dat:idlistaCateg>';
@@ -603,48 +691,188 @@ include("/model/common.jag");
 			payload += '<dat:estatusConf>1</dat:estatusConf>';
 			payload += '<dat:estatusAprob>0</dat:estatusAprob>';
 			payload += '<dat:usuarioAlta>' + _usuario + '</dat:usuarioAlta>';
+			payload += '<dat:porcentaje>' + _porcentaje + '</dat:porcentaje>';
 			payload += '</dat:qInsertaConfiguracion>';	
 		
 		$.ajax({
+			async:false,
 			url: '/commons/postSOAP',
 			type: 'post',
 			headers: {'Destino':'BpmnVisorSEGListas', 'SOAPAction':'urn:qInsertaConfiguracion'},
 			dataType: 'xml',
 			complete: function configuraciondResponse(xmlHttpRequest, status){
-				 //alert(xmlHttpRequest.responseText);
-				 estatus = -2;
+				 //alert(xmlHttpRequest.responseText);				
+				var dato;		
 				$(xmlHttpRequest.responseText).find('resultadoConfiguracion').each(function(){
-				estatus = $(this).find("estatus").text();
-				
-				 if($(this).find("estatus").text()==1){
-					  $("#idMsg").html('<div class="alert alert-success">'+
-					  'Se ha realizado la petición ' +
-					  '</div>');
-				//	  var tr = $("#tblConfiguracion >tbody").find("tr").eq(rowConfig);
-				//	  tr.remove();
-				
-				 $("input[name=cbCategoria" + cbCategoria +"]").attr('checked',false);
-				 $('select[name="slPrioridad' + slPrioridad + '"]').prop('disabled', true);
-					  
-				}else if($(this).find("estatus").text()==0){
-					  $("#idMsg").html('<div class="alert alert-danger">'+
-					  'La configuracion ya existe'+
-					  '</div>');
-				}else {
-					  $("#idMsg").html('<div class="alert alert-danger">'+
-					  'Sucedio un error '+$(this).find("codigoError").text()+
-					  '</div>');
-				 }
-				 $('#ModalInfo').modal('show');
-				 
+					estatus = $(this).find("estatus").text();				
+					dato = rowConf 
+					console.log("rowConf response" + rowConf);
+					
+					 if($(this).find("estatus").text()==1){										
+						$("input[name=cbCategoria" + cbCategoria +"]").attr('checked',false);
+						$('select[name="slPrioridad' + slPrioridad + '"]').prop('disabled', true);
+						exito++; 
+						listAplicado.push(dato);
+					}else if($(this).find("estatus").text()==0){
+						existe++;
+						listExiste.push(dato);										  
+					}else {
+						$("#idMsg").html('<div class="alert alert-danger">'+
+										  'Sucedio un error '+$(this).find("codigoError").text()+
+										  '</div>');
+						$('#ModalInfo').modal('show');
+					 }
+					if(rowsAplicar == cont){
+						detalle(exito, existe);
+					}
 				});
-			
+				
+				
+					
 			},
+			error: function (xhr, status, error) {},
+			data: payload
+		}); 
+   
+	}
+	
+	function confirmActualizaConf(){
+	//	$('detalleConfiguracion').hide();
+		console.log("Entra actualizar");
+		var configuracion = $('#txtDetalleConfig').val();
+		if(configuracion == 1){
+			var usuario = "<%=user%>";
+			var cont = 0;
+			var cheked = 0;
+			var categorias=[];
+			var idPerfil = $('select[name=slPerfil]').val();
+			console.log("idPerfil " + idPerfil);
+			var transaccion="false";
+			var porcent = $('.highlight').find('td').eq(2).text();
+			
+			existe = 0;
+			exito = 0;
+			listAplicado =[];
+			listExiste =[];
+			
+			if(idPerfil == 0){
+				 $("#idMsg").html('<div class="alert alert-danger">'+
+					  'Seleccione un Perfil'+
+					  '</div>');
+				$('#ModalInfo').modal('show');
+				return;
+			}	
+			$("#tblCategoria tbody tr").each(function(){
+				cont++;
+				var indexC = $(this).index()
+				
+				//estatus =-3;
+				
+				var datos={};			
+				if ($("input[name=cbCategoria" + cont +"]").is(":checked") ) {
+					rowConfig = indexC;
+					cheked++;
+					var listaCat = $(this).find('td').eq(0).text();
+					cbCategoria = $("input[name=cbCategoria" + cont +"]").val();
+					
+					if ($("input[name=cbTransaccion" + cont +"]").is(":checked") ) {
+						transaccion = "true";
+					}else{
+						transaccion = "false";
+					}				
+					
+					var idPrioridad = $('select[name=slPrioridad' + cont +']').val();
+					
+					if(idPrioridad == "0"){
+						 $("#idMsg").html('<div class="alert alert-danger">'+
+							  'Seleccione una Prioridad'+
+							  '</div>');
+						$('#ModalInfo').modal('show');
+						categorias=[];
+						return false;
+					}	
+					
+					datos.idPerfil = idPerfil;
+					datos.listaCat = listaCat;
+					datos.transaccion = transaccion;
+					datos.idPrioridad = idPrioridad;				
+					datos.usuario = usuario;				
+					datos.porcentaje = porcent;				
+					datos.cbCategoria = cbCategoria;
+					datos.rowConfig = rowConfig;
+					datos.slPrioridad = cont;	
+					
+					categorias.push(datos);
+					
+					//console.log("perfil " + perfil + " lista " + lista + " categoria " + categoria);
+					//aplicaConfiguracion(idPerfil, listaCat, transaccion, idPrioridad, usuario,cbCategoria);	
+				}
+				
+			//console.log("Estatus " +estatus);	
+					
+			});		
+			if(cheked > 0){
+				var i = 1;
+				listAplicado =[];
+				listExiste =[];
+				rowsAplicar = categorias.length;
+				for(categoria in categorias){
+					actualizaConfiguracion(categorias[categoria].idPerfil, categorias[categoria].listaCat, categorias[categoria].transaccion, categorias[categoria].idPrioridad, categorias[categoria].porcentaje,categorias[categoria].cbCategoria,categorias[categoria].slPrioridad, i,categorias[categoria].rowConfig);	
+					i++;
+				}
+				
+			}else{
+				 $("#idMsg").html('<div class="alert alert-danger">'+
+					  'Seleccione una categoria'+
+					  '</div>');
+				$('#ModalInfo').modal('show');
+				return;
+			}
+			
+		}
+	}	
+	
+	function actualizaConfiguracion(_idPerfil,_listaCat,_transaccion,_idPrioridad,_porsentaje,_cbCategoria, _slPrioridad,_rowconfig){
+			var usuario = "<%=user%>";
+		//	console.log("idOrigen " + _idOrigen);
+		var payload  = '<dat:qActualizaConfiguracionPerfil xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
+			payload += '<dat:idPerfil>' + _idPerfil + '</dat:idPerfil>';
+			payload += '<dat:idCategListas>' + _listaCat + '</dat:idCategListas>';
+			payload += '<dat:descTransaccion>' + _transaccion + '</dat:descTransaccion>';
+			payload += '<dat:idPrioridad>' + _idPrioridad + '</dat:idPrioridad>';
+			payload += '<dat:usuario>' + usuario + '</dat:usuario>';
+			payload += '<dat:descPorcentaje>' + _porsentaje + '</dat:descPorcentaje>';
+			payload += '</dat:qActualizaConfiguracionPerfil>';			
+			
+		//	console.log("payload " + payload);
+			
+		$.ajax({
+			url: '/commons/postSOAP',
+			type: 'post',
+			headers: {'Destino':'BpmnVisorSEGListas', 'SOAPAction':'urn:qActualizaConfiguracionPerfil'},
+			dataType: 'xml',
+			complete: function asignacionResponse(xmlHttpRequest, status){
+					$(xmlHttpRequest.responseText).find('resultadoActualizaConfiguracion').each(function(){
+					 if($(this).find("estatus").text()==1){
+						$("#idMsg").html('<div class="alert alert-success">'+
+							'Se ha realizado la petición ' +
+							'</div>');
+						$("input[name=cbCategoria" + _cbCategoria +"]").attr('checked',false);
+						$('select[name="slPrioridad' + _slPrioridad + '"]').prop('disabled', true);
+					
+					}else {
+						  $("#idMsg").html('<div class="alert alert-danger">'+
+						  'Sucedio un error '+$(this).find("codigoError").text()+
+						  '</div>');
+					 }
+					 $('#ModalInfo').modal('show');
+					 
+					});
+				},
 			error: function (xhr, status, error) {},
 			data: payload
 		});  
 	}
-	
 	
 	
 	function validaDatos(element){
@@ -682,12 +910,16 @@ include("/model/common.jag");
 	
 	$('#btnAplicarAsig').click(function(){
 		var valido=true;
-		
 		var idAplicacion = $('select[name=slAplicacion]').val();	
 		var idOperacion = $('select[name=slOperacion]').val();
 		var idOrigen = $('select[name=slOrigen]').val()
 		var bPerfil = false;
-		
+		rowsAplicar = 0;
+		existe = 0;
+		exito = 0;
+		listAplicado =[];
+		listExiste =[];
+		$('#txtDetalleConfig').val(0);
 		
 		if(idAplicacion == 0){
 			 $("#idMsg").html('<div class="alert alert-danger">'+
@@ -733,15 +965,11 @@ include("/model/common.jag");
 				data.idOrigen = idOrigen;
 				data.idPerfil = idPerfil;
 				data.cbPerfil = cbPerfil;
+				data.rowPerfil = indx;			
 
-				perfiles.push(data);
+				perfiles.push(data);				
 				
-				
-		//		altaAsignacion(idAplicacion, idOperacion, idOrigen, idPerfil, cbPerfil);
 			}
-			//console.log(perfiles[cont].adAplic);
-			
-			
 		});
 		
 		if(!bPerfil){
@@ -752,11 +980,12 @@ include("/model/common.jag");
 			return;
 		}
 		
-		if(cont > 0){
-			var i = 0;
-			for(perfil in perfiles){				
-				console.log(i  +"Datos idPerfil " + perfiles[i].idPerfil); 
-				altaAsignacion(perfiles[i].adAplic, perfiles[i].idOperacion, perfiles[i].idOrigen, perfiles[i].idPerfil, perfiles[i].cbPerfil);
+		if(cont > 0){		
+			var i = 1;
+			rowsAplicar = perfiles.length;
+			
+			for(perfil in perfiles){
+				altaAsignacion(perfiles[perfil].adAplic, perfiles[perfil].idOperacion, perfiles[perfil].idOrigen, perfiles[perfil].idPerfil, perfiles[perfil].cbPerfil,perfiles[perfil].rowPerfil, i);
 				i++
 			}
 		}
@@ -766,74 +995,113 @@ include("/model/common.jag");
 		
 	});
 	
-		function altaAsignacion(_idAplicacion, _idOperacion, _idOrigen, _idPerfil, cbPerfil){
-			var usuario = "<%=user%>";
-		//	console.log("idOrigen " + _idOrigen);
-			
-		var payload  = '<dat:qInsertaAsignacionPerfil xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
-			payload += '<dat:idAplicacion>' + _idAplicacion + '</dat:idAplicacion>';
-			payload += '<dat:idOperacion>' + _idOperacion + '</dat:idOperacion>';
-			payload += '<dat:idOrigen>' + _idOrigen + '</dat:idOrigen>';
-			payload += '<dat:idPerfil>' + _idPerfil + '</dat:idPerfil>';
-			payload += '<dat:usuarioAlta>' + usuario + '</dat:usuarioAlta>';
-			payload += '</dat:qInsertaAsignacionPerfil>';			
-			
+	function altaAsignacion(_idAplicacion, _idOperacion, _idOrigen, _idPerfil, cbPerfil, _rowPerfil, cont){
+		var usuario = "<%=user%>";
+		var relacion = "<%=Usuario_v%>";
+	//	console.log("idOrigen " + _idOrigen);
+	var payload  = '<dat:qInsertaAsignacionPerfil xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
+		payload += '<dat:idAplicacion>' + _idAplicacion + '</dat:idAplicacion>';
+		payload += '<dat:idOperacion>' + _idOperacion + '</dat:idOperacion>';
+		payload += '<dat:idOrigen>' + _idOrigen + '</dat:idOrigen>';
+		payload += '<dat:idPerfil>' + _idPerfil + '</dat:idPerfil>';
+		payload += '<dat:usuarioAlta>' + usuario + '</dat:usuarioAlta>';
+		payload += '<dat:relacion>' + relacion + '</dat:relacion>';
+		payload += '</dat:qInsertaAsignacionPerfil>';			
+		
 		//	console.log("payload " + payload);
 			
 		$.ajax({
+			async:false,
 			url: '/commons/postSOAP',
 			type: 'post',
 			headers: {'Destino':'BpmnVisorSEGListas', 'SOAPAction':'urn:qInsertaAsignacionPerfil'},
 			dataType: 'xml',
 			complete: function asignacionResponse(xmlHttpRequest, status){
-					$(xmlHttpRequest.responseText).find('qInsertaAsignacionResponse').each(function(){
-					 if($(this).find("estatus").text()==1){
-						  $("#idMsg").html('<div class="alert alert-success">'+
-						  'Se ha realizado la petición ' +
-						  '</div>');
+				$(xmlHttpRequest.responseText).find('qInsertaAsignacionResponse').each(function(){
+					var dato = '';
+					dato = _rowPerfil;
+					if($(this).find("estatus").text()==1){							
+							exito++; 
+							listAplicado.push(dato);
 						  var cb = "#cbPerfil" + cbPerfil;
-						//  console.log(cb);
 						   $(cb).attr('checked',false);
 					}else if($(this).find("estatus").text()==0){
-						  $("#idMsg").html('<div class="alert alert-danger">'+
-						  'La configuracion ya existe'+
-						  '</div>');
+							existe++;
+							listExiste.push(dato);		
 					}else {
-						  $("#idMsg").html('<div class="alert alert-danger">'+
-						  'Sucedio un error '+$(this).find("codigoError").text()+
-						  '</div>');
+						$("#idMsg").html('<div class="alert alert-danger">'+
+							'Sucedio un error '+$(this).find("codigoError").text()+
+							'</div>');
+						$('#ModalInfo').modal('show');	
 					 }
-					 $('#ModalInfo').modal('show');
-					 
-					});
-				},
+									
+						if(rowsAplicar == cont){
+						detalleAsignacion(exito, existe);
+					}					
+				});
+			},
 			error: function (xhr, status, error) {},
 			data: payload
 		});  
 	}
-	/*
-	function asignacionResponse(xmlHttpRequest, status){
-		 //alert(xmlHttpRequest.responseText);
-		$(xmlHttpRequest.responseText).find('qInsertaAsignacionResponse').each(function(){
-		 if($(this).find("estatus").text()==1){
-			  $("#idMsg").html('<div class="alert alert-success">'+
-			  'Se ha realizado la petición ' +
-			  '</div>');
-			  var cb = "#cbPerfil" + cbPerfil;
-			  console.log(cb);
-			   $(cb).attr('checked',false);
-		}else if($(this).find("estatus").text()==0){
-			  $("#idMsg").html('<div class="alert alert-danger">'+
-			  'La configuracion ya existe'+
-			  '</div>');
-		}else {
-			  $("#idMsg").html('<div class="alert alert-danger">'+
-			  'Sucedio un error '+$(this).find("codigoError").text()+
-			  '</div>');
-		 }
-		 $('#ModalInfo').modal('show');
-		 
-		});
+	
+	function detalleAsignacion(_exito, _existe){
+		console.log("exito " + exito);			
+		console.log("existe " + existe);
+		if(existe > 0){
+			var table ='';					
+			for(var list in listExiste){	
+				 var perfil = $('#tblPerfil tr:eq(' + (listExiste[list]+1)+ ') td:eq(1)').text();
+				 console.log("perfil " + perfil);
+				table += '<tr>';
+				table += '<td>' +perfil+ '</td>';	
+				table += '</tr>';
+			}			
+			
+			$("#idMessage").html('<div class="alert alert-warning">'+
+								'<p>No es posible autorizar los siguientes perfiles.</p><p>Ya cumplen con las características especificadas</p> </div>' +
+								'<div><table id="tblDetalleAsig" class="table-striped table-bordered table-list">' +
+								'<thead>' +
+								'	<th>Perfil</th>'+
+								'</thead>'+
+								'<tbody>' + table +'</tbody>'+
+								'</table>' +
+								'</div>');	
+			$('#detalleConfiguracion').modal('show');		
+			
+		}else if(exito > 0){
+			var sAplicacion = $('select[name=slAplicacion]').text();	
+			var table ='';
+			var sPerfil = $("#slPerfil").find("option:selected").text();
+			var lista = $('.highlight').find('td').eq(1).text();
+			var format = new Date(<%new Date();%>);
+			var dia = format.getDate();
+			var mm = format.getMonth()+1;
+			var anio = format.getFullYear();
+			var usuario = "<%=user%>";
+			
+			$('#form').empty();
+			
+			console.log(dia+mm+anio);
+			if(dia < 10){
+				dia = '0'+ dia;
+			}
+			if(mm < 10){
+				mm = '0' + mm;
+			}
+			var date = dia+'/'+mm+'/'+anio;
+			
+			$("#idMsg").html('<div class="alert alert-success">'+
+									'Se han dado de alta correctamente ' +
+									'</div>');	
+			$('#ModalInfo').modal('show');	
+			// $.get("Mail", { action: "AltaPerfilBusqueda", aplicacion:sAplicacion, fecha:date, user:usuario },
+			// function(data){
+		   
+			// });
+
+		}	
 	}
-	*/
+	
+	
 </script>
