@@ -325,7 +325,7 @@ function listasRespon(xmlHttpRequest, status){
 			form += "       </tr>";
 			form += "	    <tr>";
 			form += "			<td width=\"35%\">NOMBRE:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("nombre").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "	        <td width=\"95%\"><input type=\"text\" id=\"txtName\" value = \"" + $(this).find("nombre").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "       </tr>";
 			form += "	    <tr>";
 			form += "			<td width=\"35%\">JUSTIFICACION:</td>";
@@ -519,15 +519,15 @@ function listasRespon(xmlHttpRequest, status){
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td width=\"22%\">NOMBRE:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("nombre").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" id=\"txtName\" id=\"txtNombre\" value = \"" + $(this).find("nombre").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td width=\"22%\">APELLIDO PATERNO:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("paterno").text()  + "\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" id=\"txtAPaterno\" value = \"" + $(this).find("paterno").text()  + "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "           </tr>";
 			form += "			<tr>";
 			form += "				<td width=\"22%\">APELLIDO MATERNO:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("materno").text()  + "\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" id=\"txtAMaterno\" value = \"" + $(this).find("materno").text()  + "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "           </tr>";
 			form += "			<tr>";
 			form += "				<td width=\"22%\">CARACTER:</td>";
@@ -592,15 +592,15 @@ function listasRespon(xmlHttpRequest, status){
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td width=\"22%\">PATERNO:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("paterno").text()+ "\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" id=\"txtAPaterno\" value = \"" + $(this).find("paterno").text()+ "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td width=\"22%\">MATERNO:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("materno").text()+ "\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" id=\"txtAMaterno\" value = \"" + $(this).find("materno").text()+ "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td width=\"22%\">NOMBRE:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("nombre").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" id=\"txtName\" value = \"" + $(this).find("nombre").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td width=\"22%\">RFC:</td>";
@@ -716,11 +716,11 @@ function listasRespon(xmlHttpRequest, status){
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td width=\"22%\">NOMBRE:</td>";
-			form += "	            <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("first_name").text()+ "\"disabled=\"true\" style=\"width:80%\"></td>";
+			form += "	            <td width=\"95%\"><input type=\"text\" id=\"txtName\" value = \"" + $(this).find("first_name").text()+ "\"disabled=\"true\" style=\"width:80%\"></td>";
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td width=\"22%\">APELLIDO:</td>";
-			form += "	            <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("last_name").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "	            <td width=\"95%\"><input type=\"text\" id=\"txtAPaterno\" value = \"" + $(this).find("last_name").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td width=\"22%\">ALISASES:</td>";
@@ -732,7 +732,7 @@ function listasRespon(xmlHttpRequest, status){
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td width=\"22%\">CATEGORIA:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" +$(this).find("category").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" id=\"txtCategoria\"  value = \"" +$(this).find("category").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td width=\"22%\">TITULO:</td>";
@@ -829,46 +829,69 @@ function listasRespon(xmlHttpRequest, status){
 		var tipo = $("#txtTipo").val();
 		var val = "";
 		var tr;
-		var index;		
-			
+		var index;	
+		var usuario = "<%=user%>";
+		var nombre = "";
+		var paterno = "";
+		var materno = "";
+		var categoria = "";
+		var urn = "";		
+		nombre = $("#txtName").val();
+
 			if(coment.trim() == ""){
 				 $("#idMsg").html('<div class="alert alert-warning">'+
 					'El campo Comentario no puede ser vacío'+
 					'</div>');
 				$('#ModalInfo').modal('show');
 				 return false;
-			}		
+			}	
 			
 			switch (tipo) {
 				case "1":
-					payload  = '<dat:qInsertaComentariosLN xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
-					payload += '<dat:obs>' + coment + '</dat:obs>';
-					payload += '<dat:validation>'+ val +'</dat:validation>';
-					payload += '<dat:tbCorr>' + sId + '</dat:tbCorr>';
+					payload  = '<dat:qInsertaComentariosLN xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
+					payload += '<dat:tbcorr>' + sId + '</dat:tbcorr>';
+					payload += '<dat:nombre>' + nombre + '</dat:nombre>';
+					payload += '<dat:comentarios>' + coment + '</dat:comentarios>';
+					payload += '<dat:usuario>'+ usuario +'</dat:usuario>';
 					payload += '</dat:qInsertaComentariosLN>';
 					urn = 'urn:qInsertaComentariosLN';		
 					break;
 				case "2":
-					payload  = '<dat:qInsertaComentariosLG xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
-					payload += '<dat:obs>' + coment + '</dat:obs>';
-					payload += '<dat:validation>'+ val +'</dat:validation>';
-					payload += '<dat:tbCorr>' + sId + '</dat:tbCorr>';
+				    paterno = $("#txtAPaterno").val();
+					materno = $("#txtAMaterno").val();
+					payload  = '<dat:qInsertaComentariosLG xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
+					payload += '<dat:tbcorr>' + sId + '</dat:tbcorr>';
+					payload += '<dat:nombre>' + nombre + '</dat:nombre>';
+					payload += '<dat:apaterno>' + paterno + '</dat:apaterno>';
+					payload += '<dat:amaterno>'+ materno +'</dat:amaterno>';
+					payload += '<dat:comentarios>' + coment + '</dat:comentarios>';
+					payload += '<dat:usuario>' + usuario + '</dat:usuario>';
 					payload += '</dat:qInsertaComentariosLG>';
 					urn = 'urn:qInsertaComentariosLG';
 					break;
 				case "3":
-					payload  = '<dat:qInsertaComentariosLS xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
-					payload += '<dat:obs>' + coment + '</dat:obs>';
-					payload += '<dat:validation>'+ val +'</dat:validation>';
+					paterno = $("#txtAPaterno").val();
+					materno = $("#txtAMaterno").val();
+					payload  = '<dat:qInsertaComentariosLS xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
 					payload += '<dat:idReg>' + sId + '</dat:idReg>';
+					payload += '<dat:nombre>' + nombre + '</dat:nombre>';
+					payload += '<dat:apaterno>' + paterno + '</dat:apaterno>';
+					payload += '<dat:amaterno>'+ materno +'</dat:amaterno>';
+					payload += '<dat:comentarios>' + coment + '</dat:comentarios>';
+					payload += '<dat:usuario>' + usuario + '</dat:usuario>';
 					payload += '</dat:qInsertaComentariosLS>';
 					urn = 'urn:qInsertaComentariosLS';
 					break;
 				case "4":
-					payload  = '<dat:qInsertaComentariosWC xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
-					payload += '<dat:obs>' + coment + '</dat:obs>';
-					payload += '<dat:validation>'+ val +'</dat:validation>';
-					payload += '<dat:uid>' + sId + '</dat:uid>';
+					paterno = $("#txtAPaterno").val();
+					categoria = $('#txtCategoria').val();
+					payload  = '<dat:qInsertaComentariosWC xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
+					payload += '<dat:uid_wc>' + sId + '</dat:uid_wc>';
+					payload += '<dat:firstName>'+ nombre +'</dat:firstName>';
+					payload += '<dat:lastName>' + paterno + '</dat:lastName>';
+					payload += '<dat:categoria>' + categoria + '</dat:categoria>';
+					payload += '<dat:comentarios>' + coment + '</dat:comentarios>';
+					payload += '<dat:usuario>' + usuario + '</dat:usuario>';
 					payload += '</dat:qInsertaComentariosWC>';
 					urn = 'urn:qInsertaComentariosWC';
 			}		
@@ -876,55 +899,51 @@ function listasRespon(xmlHttpRequest, status){
 		   $.ajax({
 					url: '/commons/postSOAP',
 					type: 'post',
-					headers: {'Destino':'BpmnVisorComentarios', 'SOAPAction':urn},
+					headers: {'Destino':'BpmnVisor', 'SOAPAction':urn},
 					dataType: 'xml',
 					complete: comentariosIRespon,
 					error: function (xhr, status, error) {},
 					data: payload
-			});    
-			
-		
+			}); 
 	});	
 	
 	function comentariosIRespon(xmlHttpRequest, status){
-			//console.log("coment" + $(xmlHttpRequest.responseText).find('respComentariosLN').text());
-				var res = "";
-				if( $(xmlHttpRequest.responseText).find('respComentariosLN').text() != ''){
-					$(xmlHttpRequest.responseText).find('respComentariosLN').each(function(){
-						 res = $(this).find("Value").text();
-					});
-				}else if($(xmlHttpRequest.responseText).find('respComentariosLG').text() != ''){
-						$(xmlHttpRequest.responseText).find('respComentariosLG').each(function(){
-							res = $(this).find("Value").text();
-						});
-				}else if($(xmlHttpRequest.responseText).find('respComentariosLS').text() != ''){
-						$(xmlHttpRequest.responseText).find('respComentariosLS').each(function(){
-							res = $(this).find("Value").text();
-						});
-				}else if($(xmlHttpRequest.responseText).find('respComentariosWC').text() != ''){
-						$(xmlHttpRequest.responseText).find('respComentariosWC').each(function(){
-							res = $(this).find("Value").text();
-						});
-				}
-				
-				if(res == 1){
-				$("#idMsg").html('<div class="alert alert-success">'+
-					'Se ha realizado la petición'+
-					'</div>');
-				$('#txtObservaciones').prop('disabled', true);
-				}else{
-					$("#idMsg").html('<div class="alert alert-danger">'+
-					'Sucedio un error '+$(this).find("estatus").text()+
-					'</div>');
-				}
-				$('#ModalInfo').modal('show');
-			
-			}
-			function consulta(){
-				var id = $("#txtFolio").val();
-				var tipo = $("#txtTipo").val();
-					consultaComentarios(id, tipo);
-			}
+		var res = "";
+		if( $(xmlHttpRequest.responseText).find('resultadoInsertComentLN').text() != ''){
+			$(xmlHttpRequest.responseText).find('resultadoInsertComentLN').each(function(){
+				 res = $(this).find("estatus").text();
+			});
+		}else if($(xmlHttpRequest.responseText).find('resultadoInsertComentLG').text() != ''){
+				$(xmlHttpRequest.responseText).find('resultadoInsertComentLG').each(function(){
+					res = $(this).find("estatus").text();
+				});
+		}else if($(xmlHttpRequest.responseText).find('resultadoInsertComentLS').text() != ''){
+				$(xmlHttpRequest.responseText).find('resultadoInsertComentLS').each(function(){
+					res = $(this).find("estatus").text();
+				});
+		}else if($(xmlHttpRequest.responseText).find('resultadoInsertComentWC').text() != ''){
+				$(xmlHttpRequest.responseText).find('resultadoInsertComentWC').each(function(){
+					res = $(this).find("estatus").text();
+				});
+		}
+		
+		if(res == 1){
+		$("#idMsg").html('<div class="alert alert-success">'+
+			'Se ha realizado la petición'+
+			'</div>');
+		$('#txtObservaciones').prop('disabled', true);
+		}else{
+			$("#idMsg").html('<div class="alert alert-danger">'+
+			'Sucedio un error '+$(this).find("estatus").text()+
+			'</div>');
+		}
+		$('#ModalInfo').modal('show');		
+	}
+	function consulta(){
+		var id = $("#txtFolio").val();
+		var tipo = $("#txtTipo").val();
+			consultaComentarios(id, tipo);
+	}
 function AutorizaEstatus(){
 	var payload = '<dat:qConsultaEstatusAutoriaza xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
     payload += '<dat:idBandeja>' + tr.find("td").eq(2).text() + '</dat:idBandeja>';
