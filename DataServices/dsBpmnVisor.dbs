@@ -373,6 +373,125 @@
       <param defaultValue="#{NULL}" name="idBandeja" ordinal="2" sqlType="STRING"/>
       <param name="notificaciones" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
    </query>
+   <query id="qInsertaComentariosLN" useConfig="visor">
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.do_insert_coments_ln(?, ?, ?, ?) }</sql>  
+	  <result element="qInsertaComentLNResp" rowName="resultadoInsertComentLN">
+		<element column="estatus" name="estatus" xsdType="string"/>
+      </result>	  
+	  <param name="tbcorr" ordinal="2" sqlType="STRING"/>	  
+	  <param name="nombre" ordinal="3" sqlType="STRING"/>	  
+	  <param name="comentarios" ordinal="4" sqlType="STRING"/>	  
+	  <param name="usuario" ordinal="5" sqlType="STRING"/>
+	  <param name="estatus" ordinal="1" sqlType="INTEGER" type="OUT"/>	  
+   </query> 
+   <query id="qInsertaComentariosLG" useConfig="visor">
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.do_insert_coments_lg(?, ?, ?, ?, ?, ?) }</sql>  
+	  <result element="qInsertaComentLGResp" rowName="resultadoInsertComentLG">
+		<element column="estatus" name="estatus" xsdType="string"/>
+      </result>	  
+	  <param name="tbcorr" ordinal="2" sqlType="STRING"/>	  
+	  <param name="nombre" ordinal="3" sqlType="STRING"/>	  
+	  <param name="apaterno" ordinal="4" sqlType="STRING"/>	  
+	  <param name="amaterno" ordinal="5" sqlType="STRING"/>	  
+	  <param name="comentarios" ordinal="6" sqlType="STRING"/>	  
+	  <param name="usuario" ordinal="7" sqlType="STRING"/>
+	  <param name="estatus" ordinal="1" sqlType="INTEGER" type="OUT"/>	  
+   </query> 
+   <query id="qInsertaComentariosLS" useConfig="visor">
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.do_insert_coments_ls(?, ?, ?, ?, ?, ?) }</sql>  
+	  <result element="qInsertaComentLSResp" rowName="resultadoInsertComentLS">
+		<element column="estatus" name="estatus" xsdType="string"/>
+      </result>	  
+	  <param name="idReg" ordinal="2" sqlType="STRING"/>	  
+	  <param name="nombre" ordinal="3" sqlType="STRING"/>	  
+	  <param name="apaterno" ordinal="4" sqlType="STRING"/>	  
+	  <param name="amaterno" ordinal="5" sqlType="STRING"/>	  
+	  <param name="comentarios" ordinal="6" sqlType="STRING"/>	  
+	  <param name="usuario" ordinal="7" sqlType="STRING"/>
+	  <param name="estatus" ordinal="1" sqlType="INTEGER" type="OUT"/>	  
+   </query> 
+   <query id="qInsertaComentariosWC" useConfig="visor">
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.do_insert_coments_wc(?, ?, ?, ?, ?, ?) }</sql>  
+	  <result element="qInsertaComentWCResp" rowName="resultadoInsertComentWC">
+		<element column="estatus" name="estatus" xsdType="string"/>
+      </result>	  
+	  <param name="uid_wc" ordinal="2" sqlType="STRING"/>	  
+	  <param name="firstName" ordinal="3" sqlType="STRING"/>	  
+	  <param name="lastName" ordinal="4" sqlType="STRING"/>	  
+	  <param name="categoria" ordinal="5" sqlType="STRING"/>	  
+	  <param name="comentarios" ordinal="6" sqlType="STRING"/>	  
+	  <param name="usuario" ordinal="7" sqlType="STRING"/>
+	  <param name="estatus" ordinal="1" sqlType="INTEGER" type="OUT"/>	  
+   </query>  
+   <query id="qGetComentariosLN" useConfig="visor">
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.get_comentarios_ln(?)}</sql>
+      <result element="getComentsLNResponse" rowName="resultadoComentsLN">
+         <element column="TB_CORR" name="tb_corr" xsdType="string"/>
+         <element column="NOMBRE" name="nombre" xsdType="string"/>
+         <element column="COMENTARIOS" name="comentarios" xsdType="string"/>
+         <element column="FECHA" name="fecha" xsdType="string"/>
+         <element column="USUARIO_ALTA" name="usuario_alta" xsdType="string"/>         
+      </result>
+      <param name="tb_corr" ordinal="2" sqlType="STRING"/>
+      <param name="comentariosLN" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
+   </query>
+    <query id="qGetComentariosLG" useConfig="visor">
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.get_comentarios_lg(?)}</sql>
+      <result element="getComentsLGResponse" rowName="resultadoComentsLG">
+         <element column="TB_CORR" name="tb_corr" xsdType="string"/>
+         <element column="NOMBRE" name="nombre" xsdType="string"/>
+         <element column="COMENTARIOS" name="comentarios" xsdType="string"/>
+         <element column="FECHA" name="fecha" xsdType="string"/>
+         <element column="USUARIO_ALTA" name="usuario_alta" xsdType="string"/>         
+      </result>
+      <param defaultValue="#{NULL}" name="tb_corr" ordinal="2" sqlType="STRING"/>
+      <param name="comentariosLG" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
+   </query>
+   <query id="qGetComentariosLS" useConfig="visor">
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.get_comentarios_ls(?)}</sql>
+      <result element="getComentsLSResponse" rowName="resultadoComentsLS">
+         <element column="ID_REG_PERSONA" name="id_reg" xsdType="string"/>
+         <element column="NOMBRE" name="nombre" xsdType="string"/>
+         <element column="COMENTARIOS" name="comentarios" xsdType="string"/>
+         <element column="FECHA" name="fecha" xsdType="string"/>
+         <element column="USUARIO_ALTA" name="usuario_alta" xsdType="string"/>         
+      </result>
+      <param defaultValue="#{NULL}" name="id_reg" ordinal="2" sqlType="STRING"/>
+      <param name="comentariosLS" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
+   </query>
+   <query id="qGetComentariosWC" useConfig="visor">
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.get_comentarios_wc(?)}</sql>
+      <result element="getComentsWCResponse" rowName="resultadoComentsWC">
+         <element column="UID_WC" name="uid_wc" xsdType="string"/>
+         <element column="NOMBRE" name="nombre" xsdType="string"/>
+         <element column="COMENTARIOS" name="comentarios" xsdType="string"/>
+         <element column="CATEGORIA" name="categoria" xsdType="string"/>
+         <element column="FECHA" name="fecha" xsdType="string"/>
+         <element column="USUARIO_ALTA" name="usuario_alta" xsdType="string"/>         
+      </result>
+      <param defaultValue="#{NULL}" name="uid_wc" ordinal="2" sqlType="STRING"/>
+      <param name="comentariosWC" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
+   </query>
+   <operation name="qGetComentariosLN">
+      <call-query href="qGetComentariosLN">
+         <with-param name="tb_corr" query-param="tb_corr"/>
+      </call-query>
+   </operation>
+   <operation name="qGetComentariosLG">
+      <call-query href="qGetComentariosLG">
+         <with-param name="tb_corr" query-param="tb_corr"/>
+      </call-query>
+   </operation>
+   <operation name="qGetComentariosLS">
+      <call-query href="qGetComentariosLS">
+         <with-param name="id_reg" query-param="id_reg"/>
+      </call-query>
+   </operation>
+   <operation name="qGetComentariosWC">
+      <call-query href="qGetComentariosWC">
+         <with-param name="uid_wc" query-param="uid_wc"/>
+      </call-query>
+   </operation>
    <operation name="qConsultaEvaluacion">
       <call-query href="qConsultaEvaluacion">
          <with-param name="idEvaluacion" query-param="idEvaluacion"/>
@@ -506,6 +625,44 @@
    <operation name="qGetJusti">
       <call-query href="qGetJusti">
          <with-param name="idBandeja" query-param="idBandeja"/>
+      </call-query>
+   </operation>
+    <operation name="qInsertaComentariosLN">
+      <call-query href="qInsertaComentariosLN">
+         <with-param name="tbcorr" query-param="tbcorr"/>
+         <with-param name="nombre" query-param="nombre"/>
+         <with-param name="comentarios" query-param="comentarios"/>
+         <with-param name="usuario" query-param="usuario"/>
+      </call-query>
+   </operation>
+   <operation name="qInsertaComentariosLG">
+      <call-query href="qInsertaComentariosLG">
+         <with-param name="tbcorr" query-param="tbcorr"/>
+         <with-param name="nombre" query-param="nombre"/>
+         <with-param name="apaterno" query-param="apaterno"/>
+         <with-param name="amaterno" query-param="amaterno"/>
+         <with-param name="comentarios" query-param="comentarios"/>
+         <with-param name="usuario" query-param="usuario"/>
+      </call-query>
+   </operation>
+   <operation name="qInsertaComentariosLS">
+      <call-query href="qInsertaComentariosLS">
+         <with-param name="idReg" query-param="idReg"/>
+         <with-param name="nombre" query-param="nombre"/>
+         <with-param name="apaterno" query-param="apaterno"/>
+         <with-param name="amaterno" query-param="amaterno"/>
+         <with-param name="comentarios" query-param="comentarios"/>
+         <with-param name="usuario" query-param="usuario"/>
+      </call-query>
+   </operation>
+   <operation name="qInsertaComentariosWC">
+      <call-query href="qInsertaComentariosWC">
+         <with-param name="uid_wc" query-param="uid_wc"/>
+         <with-param name="firstName" query-param="firstName"/>
+         <with-param name="lastName" query-param="lastName"/>
+         <with-param name="categoria" query-param="categoria"/>
+         <with-param name="comentarios" query-param="comentarios"/>
+         <with-param name="usuario" query-param="usuario"/>
       </call-query>
    </operation>
 </data>
