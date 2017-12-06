@@ -21,7 +21,7 @@
 		log.info("XML envio " + payload);
 		var url = URL_ESB + "PLD";
 		var ws = new XMLHttpRequest();
-		var action = "http://28.224.30.80:8280/MotorPLD/wsPLD/doBusqCoincidenciaPorNombre";
+		var action = "http://principal.pld.stallum.mx.com/wsPLD/doBusqCoincidenciaPorNombre";
 		ws.open("POST", url, false);
 		ws.setRequestHeader('SOAPAction', action);
 		ws.setRequestHeader('Content-Type','text/xml; charset=utf-8');

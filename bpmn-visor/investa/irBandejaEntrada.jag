@@ -136,7 +136,7 @@ include("/model/common.jag");
                         <th>Apellido paterno</th>   
                         <th>Apellido materno</th>                                     
                         <th>Aplicación</th>                                              
-                        <th style="width: 35px">Resultado</th>  
+                        <th >Resultado</th>  
                         <th>Tipo de lista</th>                                         
                         <th>Porcentaje de búsqueda</th>                     
                         <th>Tipo operacíon</th>                     
@@ -367,8 +367,20 @@ include("/model/common.jag");
 <script src="resources/plantilla//js/dataTables.responsive.js"></script>
 <script src="resources/plantilla/js/select2.min.js"></script>
          
-
-<script>
+ <script>
+        
+        $(document).ready(function() {
+            $('#example').DataTable({
+            	 "scrollY": 400,
+                 "scrollX": true
+            });
+            $('#example2').DataTable({
+            	 "scrollY": 400,
+                 "scrollX": true
+            });
+        } );
+        
+	
       var indexTBL = -1;  
       var indexTBL2 = -1;  
 	$(document).ready(function() {
@@ -376,30 +388,7 @@ include("/model/common.jag");
 		 $("#txtFechaB").datepicker({dateFormat: "yy-mm-dd"});
 		$('#ModalCargando').modal('show');
 		
-		$('#example').DataTable({
-			"language": {
-				"lengthMenu": "Mostrar _MENU_ registros",
-				"zeroRecords": "No hay registros disponibles",
-				"info": "Mostrando página _PAGE_ de _PAGES_",
-				"infoEmpty": "No hay registros disponibles",
-				"infoFiltered": "(filtrado de _MAX_ registros totales)",
-				"search": "Buscar",
-				"paginate": {
-				  "previous": "Previo",
-				  "next":"Siguiente"
-				}
-			},
-			"order": [
-				[2, 'desc']
-			],
-			ordering: true,
-			"scrollX": true,
-			"scrollY": 350,
-			"fnDrawCallback": function(oSettings) {
-				jQuery('#basicTable ul').addClass('pagination-active-dark');
-			},
-
-		});
+		
 		var table = $('#example').DataTable();
 
 		$('#txtFecha').on( 'change', function () {
@@ -427,30 +416,7 @@ include("/model/common.jag");
 				.draw();
 		} );
 
-		$('#example2').DataTable({
-			"language": {
-				"lengthMenu": "Mostrar _MENU_ registros",
-				"zeroRecords": "No hay registros disponibles",
-				"info": "Mostrando página _PAGE_ de _PAGES_",
-				"infoEmpty": "No hay registros disponibles",
-				"infoFiltered": "(filtered from _MAX_ total records)",
-				"search": "Buscar",
-				"paginate": {
-				  "previous": "Previo",
-				  "next":"Siguiente"
-				}
-			},
-			"order": [
-				[2, 'desc']
-			],
-			ordering: true,
-			"scrollX": true,
-			"scrollY": 350,
-			"fnDrawCallback": function(oSettings) {
-				jQuery('#basicTable ul').addClass('pagination-active-dark');
-			}
-
-		});
+		
 		var table2 = $('#example2').DataTable();
 
 		$('#txtFechaB').on( 'change', function () {
@@ -479,6 +445,8 @@ include("/model/common.jag");
 		} );
 		
 		$('#ModalCargando').modal('hide');
+		
+		
 	});
 
 	function showModal(modal) {

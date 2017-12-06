@@ -48,7 +48,6 @@
 		for each (var aXML in lista..*::getMBConsultaCliente..*::resultadoConsultaCliente){
 			
 				//log.info('dentro '+aXML.*::getMBConsultaCliente..*::resultadoConsultaCliente.*::id_mb_consulta.toString() +' '+id);
-				
 				result += '<tr>';
 				result += '<td style="display:none">'+lista..*::resultadoMbConsulta..*::id_bandeja_visor.toString()+'</td>';
 				result += '<td>'+fecha.substring(0,10)+'</td>';

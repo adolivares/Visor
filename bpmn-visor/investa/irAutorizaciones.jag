@@ -204,6 +204,7 @@ function consulta() {
 
 function valorChk(combo) {
     indexTBL = $(combo).closest('tr').index();
+	console.log(indexTBL);
     //alert(indexTBL);
 }
 $("#btnGuardaComent").click(function() {

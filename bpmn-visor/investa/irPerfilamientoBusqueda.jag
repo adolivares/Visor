@@ -102,13 +102,13 @@ include("/model/common.jag");
 				<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 					 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 						<div>Perfil:</div>
-								<select id="slPerfil" name="slPerfil" class="form-control" style="width:80%">
+								<select id="slPerfil" name="slPerfil">
 									<%=createSelectPerfiles(xmlPerfiles)%>
 								</select>
 					</div>
 					<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 						<div id="modal">							
-							<table id="tblListas" class="table-striped table-bordered table-list" style="margin-left:15%;">
+							<table id="tblListas" class="table-striped table-bordered table-list">
 								<thead><th style="display:none;"></th><th>Lista</th><th>%</th></thead>
 								<tbody>							
 									<%=createTableListas(xmlCatListas)%>
@@ -169,24 +169,24 @@ include("/model/common.jag");
 				  <br/><br/>
 					<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
 								<div>Aplicaciónn:</div>
-										<select id="slAplicacion" name="slAplicacion" class="form-control" >
+										<select id="slAplicacion" name="slAplicacion">
 											<%=createSelectAplicacion(xmlAplicacion)%>
 										</select>
 					</div>
 					<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
 								<div>Operación:</div>
-										<select id="slOperacion" name="slOperacion" class="form-control">
+										<select id="slOperacion" name="slOperacion">
 											<%=createSelectOperacion(xmlOperacion)%>
 										</select>
 					</div>
 					<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
 								<div>Origen del cliente:</div>
-										<select id="slOrigen" name="slOrigen" class="form-control">
+										<select id="slOrigen" name="slOrigen">
 											<%=createSelectOrigen(xmlOrigen)%>
 										</select>
 					</div>
 					<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-								<table id="tblPerfil" class="table-striped table-bordered table-list" style="margin-left:auto;">
+								<table id="tblPerfil" class="table-striped table-bordered table-list">
 									<thead>
 										<th style="display:none;"></th>
 										<th>Perfil</th>
@@ -659,6 +659,7 @@ include("/model/common.jag");
 				$('#detalleConfiguracion').modal('show');		
 			
 			}else if(exito > 0){
+				
 				var table ='';
 				var sPerfil = $("#slPerfil").find("option:selected").text();
 				var lista = $('.highlight').find('td').eq(1).text();
@@ -717,13 +718,12 @@ include("/model/common.jag");
 						listExiste.push(dato);										  
 					}else {
 						$("#idMsg").html('<div class="alert alert-danger">'+
-										  'Sucedio un error al guardar la Configuración'+$(this).find("codigoError").text()+
+										  'Sucedio un error '+$(this).find("codigoError").text()+
 										  '</div>');
 						$('#ModalInfo').modal('show');
 					 }
 					if(rowsAplicar == cont){
 						detalle(exito, existe);
-						getConfiguraciones();
 					}
 				});
 				
@@ -734,44 +734,6 @@ include("/model/common.jag");
 			data: payload
 		}); 
    
-	}
-	
-	function getConfiguraciones(){
-		var payload  = '<dat:qGetMBConsultaConfiguracion xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
-			payload += '<dat:idConfiguracion></dat:idConfiguracion>';
-			payload += '</dat:qGetMBConsultaConfiguracion>';	
-		//	console.log("payload " + payload);
-			
-		$.ajax({
-			url: '/commons/postSOAP',
-			type: 'post',
-			headers: {'Destino':'BpmnVisorSEGListas', 'SOAPAction':'urn:qGetMBConsultaConfiguracion'},
-			dataType: 'xml',
-			complete: responseConfig,
-			error: function (xhr, status, error) {},
-			data: payload
-		});  
-	}
-	
-	
-	function responseConfig(xmlHttpRequest, status) {
-		$("#tblConfiguracion >tbody").empty();
-		
-		$(xmlHttpRequest.responseText).find('resultadoConsultaConfiguracion').each(function() {
-		
-			var row = '<tr>';
-				row += '<td>'+$(this).find("perfil").text()+'</td>';
-				row += '<td>'+$(this).find("lista").text()+'</td>';
-				row += '<td>'+$(this).find("categoria").text()+'</td>';
-				row += '<td style="display:none">'+ $(this).find("id_configuracion_perfil").text()+'</td>';
-				row += '<td style="display:none">'+$(this).find("id_perfil").text()+'</td>';
-				row += '<td style="display:none">'+$(this).find("id_categ_listas").text()+'</td>';
-				row += '<td style="display:none">'+$(this).find("transaccion").text()+'</td>';
-				row += '<td style="display:none">'+$(this).find("id_prioridad").text()+'</td>';
-				row += '<td style="display:none">'+$(this).find("prioridad").text()+'</td>';
-				row += '</tr>';		
-			$('#tblConfiguracion tbody').append(row );
-        });
 	}
 	
 	function confirmActualizaConf(){
@@ -1108,8 +1070,7 @@ include("/model/common.jag");
 			$('#detalleConfiguracion').modal('show');		
 			
 		}else if(exito > 0){
-			var sAplicacion = $("#slAplicacion option:selected").text();
-			console.log("sAplicacion " +sAplicacion);
+			var sAplicacion = $('select[name=slAplicacion]').text();	
 			var table ='';
 			var sPerfil = $("#slPerfil").find("option:selected").text();
 			var lista = $('.highlight').find('td').eq(1).text();
@@ -1118,7 +1079,7 @@ include("/model/common.jag");
 			var mm = format.getMonth()+1;
 			var anio = format.getFullYear();
 			var usuario = "<%=user%>";
-			var tipo = 6;
+			
 			$('#form').empty();
 			
 			console.log(dia+mm+anio);
@@ -1129,15 +1090,15 @@ include("/model/common.jag");
 				mm = '0' + mm;
 			}
 			var date = dia+'/'+mm+'/'+anio;
-			$.get("Mail", { action: "AltaPerfilBusqueda", aplicacion:sAplicacion, fecha:date, user:usuario, tipo:tipo, grup:'<%=Grupo_v%>'},
-			function(data){
-		   
-			});
+			
 			$("#idMsg").html('<div class="alert alert-success">'+
 									'Se han dado de alta correctamente ' +
 									'</div>');	
 			$('#ModalInfo').modal('show');	
-			
+			// $.get("Mail", { action: "AltaPerfilBusqueda", aplicacion:sAplicacion, fecha:date, user:usuario },
+			// function(data){
+		   
+			// });
 
 		}	
 	}

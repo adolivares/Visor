@@ -1,10 +1,18 @@
 <%
 include("/model/common.jag");
-var user = session.get("user");
-
+	var user = session.get("user");
 	if(request.getParameter("action")!="") {
-		var tipo = request.getParameter("tipo");	
-		var grup = request.getParameter("grup");		
+		
+		var Cliente = request.getParameter("cliente");
+		var idCliente = request.getParameter("idCiente");
+		var persona = request.getParameter("persona");
+		var tipo = request.getParameter("tipo");
+		var fechaB = request.getParameter("fecha");
+		var justificacio = request.getParameter("justificacio");
+		var grup = request.getParameter("grup");
+		if(tipo ==4 || tipo ==5){
+			justificacio = getJusti(justificacio);
+		}
 		var payload = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dat="http://ws.wso2.org/dataservice">
 						   <soapenv:Header/>
 						   <soapenv:Body>
@@ -37,63 +45,29 @@ var user = session.get("user");
 			}
 		}
 		
-		if(request.getParameter("action")== "AltaPerfilBusqueda"){
-			var aplicacion = request.getParameter("aplicacion");
-			var fecha = request.getParameter("fecha");
-			var usuario = request.getParameter("user");	
-			
-			//var xml = getMensaje();
-			//var correos = getCorreos();
-			var xml =   "<correo>"+
+		var xml =   "<correo>"+
 						 "<asunto>"+responseXML..*::getMsjResponse.*::resultadoMsjs.*::asunto.toString()+"</asunto>"+
 						 "<texto>"+responseXML..*::getMsjResponse.*::resultadoMsjs.*::texto.toString()+"</texto>"+
 						 "<tipo>"+tipo+"</tipo>"+
 						 "<destinatario>"+destinatario+"</destinatario>"+
 						 "<cc>"+cc+"</cc>"+
-						 "<fecha_busqueda>"+fecha+"</fecha_busqueda>"+
-						 "<aplicacion>"+aplicacion+"</aplicacion>"+
-						 "<accion>Solicitó</accion>"+
-						 "<usuario>"+usuario+"</usuario>"+
+						 "<fecha_busqueda>"+fechaB+"</fecha_busqueda>"+
+						 "<aplicacion></aplicacion>"+
+						 "<cliente>"+Cliente+"</cliente>"+
+						 "<idCliente>"+idCliente+"</idCliente>"+
+						 "<persona_calificada>"+persona+"</persona_calificada>"+
+						 "<accion>"+request.getParameter("action")+"</accion>"+
+						 "<usuario>"+user+"</usuario>"+
+						 "<instruciones>"+justificacio+"</instruciones> "+
 					"</correo>";
-			
-		}else{
-		
-			var Cliente = request.getParameter("cliente");
-			var idCliente = request.getParameter("idCiente");
-			var persona = request.getParameter("persona");			
-			var fechaB = request.getParameter("fecha");
-			var justificacio = request.getParameter("justificacio");
-			
-			if(tipo ==4 || tipo ==5){
-				justificacio = getJusti(justificacio);
-			}
-	  
-			var xml =   "<correo>"+
-							 "<asunto>"+responseXML..*::getMsjResponse.*::resultadoMsjs.*::asunto.toString()+"</asunto>"+
-							 "<texto>"+responseXML..*::getMsjResponse.*::resultadoMsjs.*::texto.toString()+"</texto>"+
-							 "<tipo>"+tipo+"</tipo>"+
-							 "<destinatario>"+destinatario+"</destinatario>"+
-							 "<cc>"+cc+"</cc>"+
-							 "<fecha_busqueda>"+fechaB+"</fecha_busqueda>"+
-							 "<aplicacion></aplicacion>"+
-							 "<cliente>"+Cliente+"</cliente>"+
-							 "<idCliente>"+idCliente+"</idCliente>"+
-							 "<persona_calificada>"+persona+"</persona_calificada>"+
-							 "<accion>"+request.getParameter("action")+"</accion>"+
-							 "<usuario>"+user+"</usuario>"+
-							 "<instruciones>"+justificacio+"</instruciones> "+
-						"</correo>";
-		}
-	 
-	 
 		var testXML = Packages.com.mx.investa.visor.email.EnvioCorreo;
 		var myTestXML = new testXML();
 			   
 		log.info('Envio correo Objeto XML:  '+xml);
 		var objXml = myTestXML.enviarCorreo(xml);
 		log.info('Envio correo Objeto XML:  '+objXml);
+		
 	}
- 
 	function getJusti(id){
 		var payload = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dat="http://ws.wso2.org/dataservice">
 						   <soapenv:Header/>
@@ -115,7 +89,6 @@ var user = session.get("user");
 		var responseXML = new XML(ws.responseText);
 		log.info("XML j: " + responseXML.toXMLString());
 		return responseXML..*::resultadoJustiBandeja.*::just.toString();
-  		 
 	}
 %>
 

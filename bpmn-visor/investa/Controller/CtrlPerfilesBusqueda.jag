@@ -172,7 +172,7 @@
 			//log.info('aqui'+perfiles..*::getMBConsultaAplicacion..*::resultadoConsultaAplicacion);
 			result += "<option value='0'>- Seleccione -</option>"
 			for each (var aXML in aplicacion..*::getMBConsultaAplicacion..*::resultadoConsultaAplicacion){
-		//		log.info('dentro '+ aXML.*::id_aplicacion.toString());				
+				log.info('dentro '+ aXML.*::id_aplicacion.toString());				
 				result += "<option value='" +  aXML.*::id_aplicacion.toString() + "'>" + aXML.*::descripcion.toString() + "</option>"				
 			}
 		}
@@ -209,7 +209,7 @@
 			//log.info('aqui'+perfiles..*::getMBConsultaOperacion..*::resultadoConsultaOperacion);
 			result += "<option value='0'>- Seleccione -</option>"
 			for each (var aXML in operacion..*::getMBConsultaOperacion..*::resultadoConsultaOperacion){
-			//	log.info('dentro '+ aXML.*::id_operacion.toString());				
+				log.info('dentro '+ aXML.*::id_operacion.toString());				
 				result += "<option value='" +  aXML.*::id_operacion.toString() + "'>" + aXML.*::descripcion.toString() + "</option>"				
 			}
 		}
@@ -245,15 +245,12 @@
 		if(origen..*::getMBConsultaOrigen..*::resultadoConsultaOrigen != null || origen..*::getMBConsultaOrigen..*::resultadoConsultaOrigen != ""){	
 			result += "<option value='0'>- Seleccione -</option>"		
 			for each (var aXML in origen..*::getMBConsultaOrigen..*::resultadoConsultaOrigen){
-			//	log.info('dentro '+ aXML.*::id_origen.toString());				
+				log.info('dentro '+ aXML.*::id_origen.toString());				
 				result += "<option value='" +  aXML.*::id_origen.toString() + "'>" + aXML.*::descripcion.toString() + "</option>"				
 			}
 		}		
 		return result;
 	}
-	
-	
-	
 	
 	
 	

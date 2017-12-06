@@ -24,7 +24,8 @@
          <element column="FECHA_CONSULTA" name="fecha_consulta" xsdType="dateTime"/>
          <element column="STATUS_CONSULTA" name="status_consulta" xsdType="string"/>
          <element column="STATUS_DESCRIPCION" name="status_descripcion" xsdType="string"/>
-         <element column="PORCENTAJE_BUSQUEDA" name="porcentaje_busqueda" xsdType="string"/>
+         <element column="ID_ORIGEN_CLIENTE" name="id_origen_cliente" xsdType="string"/>
+         <element column="ID_OPERACION" name="id_operacion" xsdType="string"/>
          <element column="MODO_BUSQUEDA" name="modo_busqueda" xsdType="string"/>
          <element column="STATUS_HALLAZGO" name="status_hallazgo" xsdType="string"/>
          <element column="STATUS_RESP_CRM" name="status_resp_crm" xsdType="string"/>
@@ -53,7 +54,7 @@
          <element column="AMATERNO_CLIENTE" name="amaterno_cliente" xsdType="string"/>
          <element column="ENCONTRADO_LISTA" name="encontrado_listas" xsdType="string"/>
          <element column="NOMBRE_ENCONTRADO" name="nombre_encontrado" xsdType="string"/>
-         <element column="TIPO_LISTA" name="tipo_listas" xsdType="string"/>
+         <element column="ID_LISTA" name="id_listas" xsdType="string"/>
          <element column="TABLA_CORRELATIVO" name="tabla_correlativos" xsdType="string"/>
          <element column="PORCENTAJE_COINCIDENCIA" name="porcentaje_coincidencias" xsdType="string"/>
          <element column="ID_MB_CAT_EVALUACION" name="id_mb_cat_evaluacion" xsdType="string"/>
@@ -71,11 +72,12 @@
          <element column="AMATERNO_BENEFICIARIO" name="amaterno_beneficiario" xsdType="string"/>
          <element column="ENCONTRADO_LISTA" name="encontrado_listas" xsdType="string"/>
          <element column="NOMBRE_ENCONTRADO" name="nombre_encontrado" xsdType="string"/>
-         <element column="TIPO_LISTA" name="tipo_listas" xsdType="string"/>
+         <element column="ID_LISTA" name="id_listas" xsdType="string"/>
          <element column="TABLA_CORRELATIVO" name="tabla_correlativos" xsdType="string"/>
          <element column="PORCENTAJE_COINCIDENCIA" name="porcentaje_coincidencias" xsdType="string"/>
          <element column="ID_MB_CAT_EVALUACION" name="id_mb_cat_evaluacion" xsdType="string"/>
-         <element column="ID_BENEFICIARIO" name="id_beneficiario" xsdType="integer"/>
+         <element column="ID_CLIENTE" name="id_cliente" xsdType="integer"/>
+         <element column="TIPO_PERSONA" name="tipo_persona" xsdType="string"/>
       </result>
       <param defaultValue="#{NULL}" name="idConsulta" ordinal="2" sqlType="STRING"/>
       <param name="cliente" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
@@ -363,7 +365,7 @@
       </result>
       <param defaultValue="#{NULL}" name="usu" ordinal="2" sqlType="STRING"/>
       <param defaultValue="#{NULL}" name="idAccion" ordinal="3" sqlType="STRING"/>
-      <param name="notificaciones" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
+      <param name="datos" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
    </query>
    <query id="qGetJusti" useConfig="visor">
       <sql>{? = call VISOR_PKG_BPMN_VISOR.get_datos_justi(?)}</sql>
@@ -371,7 +373,27 @@
          <element column="JUSTIFICACION_INSTRUCCION" name="just" xsdType="string"/>
       </result>
       <param defaultValue="#{NULL}" name="idBandeja" ordinal="2" sqlType="STRING"/>
-      <param name="notificaciones" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
+      <param name="justi" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
+   </query>
+   <query id="qGetConsultas" useConfig="visor">
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.get_visor_consultas(?,?,?,?)}</sql>
+      <result element="getConsultasResponse" rowName="resultadoConsultas">
+         <element column="ID_BANDEJA_VISOR" name="id_bandeja_visor" xsdType="string"/>
+         <element column="ID_MB_CONSULTA" name="id_mb_consulta" xsdType="string"/>
+         <element column="FECHA_CONSULTA" name="fecha_consulta" xsdType="string"/>
+         <element column="MODO_BUSQUEDA" name="mod_busqueda" xsdType="string"/>
+         <element column="ID_APLICACION" name="id_aplicacion" xsdType="string"/>
+         <element column="ID_CLIENTE_CRM" name="id_cliente" xsdType="string"/>
+         <element column="TIPO_BUSQUEDA" name="tipo_busqueda" xsdType="string"/>
+         <element column="NOMBRE_CLIENTE" name="nombre_cliente" xsdType="string"/>
+         <element column="APATERNO_CLIENTE" name="apaterno_cliente" xsdType="string"/>
+         <element column="AMATERNO_CLIENTE" name="amaterno_cliente" xsdType="string"/>
+      </result>
+      <param defaultValue="#{NULL}" name="fechaini" ordinal="2" sqlType="STRING"/>
+      <param defaultValue="#{NULL}" name="fechafin" ordinal="3" sqlType="STRING"/>
+      <param defaultValue="#{NULL}" name="idCliente" ordinal="4" sqlType="STRING"/>
+      <param defaultValue="#{NULL}" name="aplication" ordinal="5" sqlType="STRING"/>
+      <param name="consultas" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
    </query>
    <query id="qInsertaComentariosLN" useConfig="visor">
       <sql>{? = call VISOR_PKG_BPMN_VISOR.do_insert_coments_ln(?, ?, ?, ?) }</sql>  
@@ -625,6 +647,14 @@
    <operation name="qGetJusti">
       <call-query href="qGetJusti">
          <with-param name="idBandeja" query-param="idBandeja"/>
+      </call-query>
+   </operation>
+   <operation name="qGetConsultas">
+      <call-query href="qGetConsultas">
+         <with-param name="fechaini" query-param="fechaini"/>
+         <with-param name="fechafin" query-param="fechafin"/>
+         <with-param name="idCliente" query-param="idCliente"/>
+         <with-param name="aplication" query-param="aplication"/>
       </call-query>
    </operation>
     <operation name="qInsertaComentariosLN">

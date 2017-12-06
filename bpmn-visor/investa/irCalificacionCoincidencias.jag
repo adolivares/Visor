@@ -3,6 +3,7 @@
 include("/model/common.jag");
 var user = session.get("user");						   
 var idConsultaRes = request.getParameter("idConsulta");							   
+var tip = request.getParameter("tip");							   
 /*<!--
  ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
@@ -146,14 +147,14 @@ include("Controller/CtrlVisorCalificacion.jag");
 					<%=createTablacoincidencia(responseXML)%>						  
                 </tbody>
             </table>
-			
+			<br>
+			<div align="right" style="<%=((tip==2)?'':'display:none')%>"><input style="width:100%"  class="btn btn-primary" type="button" value="Ver Comentarios" id="btnComentarios" onclick="consulta()" name="btnComentarios"></div>
 			<!--input type="button" value="Elimina" id="btn" name="btn" data-toggle="modal" data-target="#EliminacionModal"-->			
 			<br/>
 			<br/>
-			<table width="98%" class="table-content" id="tabBtn">
+			<table width="98%" class="table-content" id="tabBtn" style="<%=((tip==2)?'display:none':'')%>">
 				<tr>
 					<td>
-						
 						<input style="width:100%"  class="btn btn-primary" type="button" value="Ver Comentarios" id="btnComentarios" onclick="consulta()" name="btnComentarios">
 					</td>
 					<td colspan="3">						
@@ -182,7 +183,7 @@ include("Controller/CtrlVisorCalificacion.jag");
 						Archivos subidos
 					</td>
 					<td>						
-						<textarea id="txaComentario" rows="7" cols="60" class="form-control"	></textarea>	
+						<textarea id="txtListaArchivos" rows="7" cols="60" class="form-control"	disabled></textarea>	
 					</td>
 					<td align="right" valign="bottom" style="padding-bottom:16px">Calificar</td>
 					<td valign="bottom">					
