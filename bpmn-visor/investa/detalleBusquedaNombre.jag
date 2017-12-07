@@ -20,7 +20,7 @@
 			<div class="table-clear"></div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Regresar</button>
-				<button id="btnGuardaComent" type="button" class="btn btn-default">Guardar</button>
+				<button id="btnGuardaComent" type="button" class="btn btn-default" data-dismiss="modal">Guardar</button>
 				<button type="button" class="btn btn-default" onclick="javascript:imprimir();" data-dismiss="modal">Imprimir</button>
 		  </div>
 		</div>
@@ -688,7 +688,7 @@ function imprimir() {
 					type: 'post',
 					headers: {'Destino':'BpmnVisorComentarios', 'SOAPAction':urn},
 					dataType: 'xml',
-					complete: comentariosIRespon,
+					complete: comentariosDRespon,
 					error: function (xhr, status, error) {},
 					data: payload
 			});    
@@ -696,7 +696,7 @@ function imprimir() {
 		
 	});	
 	
-	function comentariosIRespon(xmlHttpRequest, status){
+	function comentariosDRespon(xmlHttpRequest, status){
 			//console.log("coment" + $(xmlHttpRequest.responseText).find('respComentariosLN').text());
 				var res = "";
 				if( $(xmlHttpRequest.responseText).find('respComentariosLN').text() != ''){

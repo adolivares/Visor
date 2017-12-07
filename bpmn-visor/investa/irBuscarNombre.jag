@@ -164,6 +164,10 @@ include("Controller/CtrlConsultaNombre.jag");
 			
 			$('#example tbody tr').remove();
 		});
+
+		$('#btnBorrar').click(function(){
+			location.href='irBuscarNombre?nombre';
+		});
 		
 		function showDetail(obj){
 			var	index = obj.parentNode.parentNode.rowIndex;
