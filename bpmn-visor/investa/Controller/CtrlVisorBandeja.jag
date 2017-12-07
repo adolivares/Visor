@@ -30,6 +30,14 @@
 		var id =0;
 		for each (var aXML in lista..*::getBandejaEntrada..*::resultadoBandeja){
 			if(aXML.*::getMBConsulta.*::resultadoMbConsulta.*::tipo_busqueda.toString() ==tipo){
+				if(aXML.*::getMBConsulta.*::resultadoMbConsulta.*::getMBConsultaCliente.*::resultadoConsultaCliente.*::getConfiguracionResponse.*::resultadoConfiguracion.*::id_prioridad.toString()== 1){
+					var semaforo ='<input type="image" id="delete" src="images/circulo-rojo.png" />';
+				}else if(aXML.*::getMBConsulta.*::resultadoMbConsulta.*::getMBConsultaCliente.*::resultadoConsultaCliente.*::getConfiguracionResponse.*::resultadoConfiguracion.*::id_prioridad.toString()== 2){
+					var semaforo ='<input type="image" id="delete" src="images/circulo-naranja.png" />';
+				}else{
+					var semaforo ='<input type="image" id="delete" src="images/circulo-verde.png" />';
+				}
+				
 				result += '<tr>';
 				result += '<td style="display:none">'+aXML.*::id_bandeja_visor.toString()+'</td>';
 				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::fecha_consulta.toString().substring(0,10)+'</td>';
@@ -40,11 +48,11 @@
 				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::getMBConsultaCliente.*::resultadoConsultaCliente.*::amaterno_cliente.toString()+'</td>';
 				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::id_aplicacion.toString()+'</td>';
 				result += '<td><strong><span style="color:red; font-size:14px;">+</span></strong></td>';
-				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::getMBConsultaCliente.*::resultadoConsultaCliente.*::tipo_listas.toString()+'</td>';
-				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::porcentaje_busqueda.toString()+'</td>';
-				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::id_aplicacion.toString()+'</td>';
+				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::getMBConsultaCliente.*::resultadoConsultaCliente.*::getConfiguracionResponse.*::resultadoConfiguracion.*::lista.toString()+'</td>';
+				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::getMBConsultaCliente.*::resultadoConsultaCliente.*::getConfiguracionResponse.*::resultadoConfiguracion.*::porcentaje.toString()+'</td>';
+				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::id_operacion.toString()+'</td>';
 				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::getMBConsultaCliente.*::resultadoConsultaCliente.*::porcentaje_coincidencias.toString()+'</td>';
-				result += '<td><input type="image" id="delete" src="images/circulo-naranja.png" /></td>';
+				result += '<td>'+semaforo+'</td>';
 				result += '<td><input type="radio" name="tabla'+tipo+'" onclick="'+((tipo==1)?'llenaValor(this)':'llenaValor2(this)')+'"/></td>';
 				result += '</tr>';
 			id++;

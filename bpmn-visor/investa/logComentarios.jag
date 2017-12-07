@@ -44,25 +44,25 @@
 		 $('#H4 span').remove("");
 		
 		switch (tipo) {
-			case "1":
+			case "4":
 				payload  = '<dat:getComentariosLNegra xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
 				payload += '<dat:tbCorrN>'+id+'</dat:tbCorrN>';
 				payload += '</dat:getComentariosLNegra>';
 				urn = 'urn:getComentariosLNegra';
 				break;
-			case "2":
+			case "3":
 				payload  = '<dat:getComentariosLGris xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
 				payload += '<dat:tbCorrG>'+id+'</dat:tbCorrG>';
 				payload += '</dat:getComentariosLGris>';
 				urn = 'urn:getComentariosLGris';
 				break;
-			case "3":
+			case "7":
 				payload  = '<dat:getComentariosLSITI xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
 				payload += '<dat:idreg>'+id+'</dat:idreg>';
 				payload += '</dat:getComentariosLSITI>';
 				urn = 'urn:getComentariosLSITI';
 				break;
-			case "4":
+			case "8":
 				payload  = '<dat:getComentariosLWC xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
 				payload += '<dat:uid>'+id+'</dat:uid>';
 				payload += '</dat:getComentariosLWC>';

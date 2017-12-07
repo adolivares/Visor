@@ -140,10 +140,10 @@ var payload2 = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap
 									<td><%=name[1]%></td>
 									<td><%=name[2]%></td>
 									<td><%=tipoLista(responseXML..*::getDetalle.*::resultadoDetalle[i].*::tipo_lista.toString())%></td>
-									<td></td>
+									<td><%=responseXML..*::getDetalle.*::resultadoDetalle[i].*::getConfiguracionResponse.*::resultadoConfiguracion.*::categoria.toString()%></td>
 									<td><%=responseXML..*::getDetalle.*::resultadoDetalle[i].*::porcentaje_coincidencia.toString()%></td>
 									<td><%=responseXML..*::getDetalle.*::resultadoDetalle[i].*::tabla_correlativo.toString()%></td>
-									<td></td>
+									<td><%=((responseXML..*::getDetalle.*::resultadoDetalle[i].*::obs.toString()==1)?'OK':'')%></td>
 									<td style="display:none"><%=responseXML..*::getDetalle.*::resultadoDetalle[i].*::tipo_lista.toString()%></td>
 								</tr>
 								<%}%>

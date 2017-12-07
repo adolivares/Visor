@@ -18,7 +18,7 @@
 
 		ws.send(payload.toXMLString());
 		var responseXML = new XML(ws.responseText);
-		log.info("RESPONSE XML Evaluacion: " + responseXML.toXMLString());
+		//log.info("RESPONSE XML Evaluacion: " + responseXML.toXMLString());
 		return responseXML;
 	}
 	
@@ -59,8 +59,8 @@
 				result += '<td>CLIENTE</td>';
 				result += '<td>'+id_aplicacion+'</td>';
 				result += '<td>'+((aXML.*::id_mb_cat_evaluacion.toString() ==1)?'<strong><span style="color:red; font-size:14px;">+ </span>&nbsp;&nbsp;<span style="color:red; font-size:14px;">+</span></strong>':'<strong><span style="color:red; font-size:14px;">+</span>&nbsp;&nbsp;<span style="color:black; font-size:14px;">-</span></strong>')+'</td>';
-				result += '<td>'+aXML.*::tipo_listas.toString()+'</td>';
-				result += '<td>'+porcentaje_busqueda+'</td>';
+				result += '<td>'+aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::lista.toString()+'</td>';
+				result += '<td>'+aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::porcentaje.toString()+'</td>';
 				result += '<td>'+aXML.*::porcentaje_coincidencias.toString()+'</td>';
 				if(aXML.*::id_mb_cat_evaluacion.toString() != ''){
 					//result += '<td><input class="btn btn-primary" type="button" value="Detalle" id="btnDetalle'+id+'" name="btnDetalle" data-toggle="modal" data-target="#DetalleModal" onclick="llenaDetalle(this)"></td>';
@@ -74,6 +74,7 @@
 				result += '<td style="display:none">'+aXML.*::tabla_correlativos.toString()+'</td>';
 				result += '<td style="display:none">'+aXML.*::nombre_encontrado.toString()+'</td>';
 				result += '<td style="display:none">1</td>';
+				result += '<td style="display:none">'+aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::id_lista.toString()+'</td>';
 				result += '</tr>';
 			id++;
 			
@@ -108,6 +109,7 @@
 				result += '<td style="display:none">'+aXML.*::tabla_correlativos.toString()+'</td>';
 				result += '<td style="display:none">'+aXML.*::nombre_encontrado.toString()+'</td>';
 				result += '<td style="display:none">2</td>';
+				result += '<td style="display:none">'+aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::id_lista.toString()+'</td>';
 				result += '</tr>';
 			id++;
 			

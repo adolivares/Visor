@@ -141,6 +141,7 @@ include("Controller/CtrlVisorCalificacion.jag");
                         <th style="display:none;"></th>   
                         <th style="display:none;"></th>   
                         <th style="display:none;"></th>   
+                        <th style="display:none;"></th>   
                     </tr>
                 </thead>
                 <tbody>                 
@@ -329,7 +330,7 @@ function consulta() {
         var tr = $("#example >tbody").find("tr").eq(index);
         //var id = 2090291;
         var id = tr.find("td").eq(15).text();
-        var tipo = tr.find("td").eq(10).text();
+        var tipo = tr.find("td").eq(18).text();
         consultaComentarios(id, tipo);
 
         //$('#ComentariosModal').modal('show');
@@ -385,7 +386,7 @@ $("#btnGuardaComent").click(function() {
         tr = $("#example >tbody").find("tr").eq(index);
 
 
-        var tipo = tr.find("td").eq(10).text();
+        var tipo = tr.find("td").eq(18).text();
         var sId = tr.find("td").eq(15).text();
         var val = tr.find("td").eq(9).text();
         var nombre = tr.find("td").eq(4).text();
@@ -405,7 +406,7 @@ $("#btnGuardaComent").click(function() {
         }
 
         switch (tipo) {
-            case "1":
+            case "4":
                 payload  = '<dat:qInsertaComentariosLN xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
                 payload += '<dat:tbcorr>' + sId + '</dat:tbcorr>';
                 payload += '<dat:nombre>' + nombre + ' ' +paterno + ' ' + materno+'</dat:nombre>';
@@ -414,7 +415,7 @@ $("#btnGuardaComent").click(function() {
                 payload += '</dat:qInsertaComentariosLN>';
                 urn = 'urn:qInsertaComentariosLN';      
                 break;
-            case "2":
+            case "3":
                 payload  = '<dat:qInsertaComentariosLG xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
                 payload += '<dat:tbcorr>' + sId + '</dat:tbcorr>';
                 payload += '<dat:nombre>' + nombre + '</dat:nombre>';
@@ -425,7 +426,7 @@ $("#btnGuardaComent").click(function() {
                 payload += '</dat:qInsertaComentariosLG>';
                 urn = 'urn:qInsertaComentariosLG';
                 break;
-            case "3":
+            case "7":
                 payload  = '<dat:qInsertaComentariosLS xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
                 payload += '<dat:idReg>' + sId + '</dat:idReg>';
                 payload += '<dat:nombre>' + nombre + '</dat:nombre>';
@@ -436,7 +437,7 @@ $("#btnGuardaComent").click(function() {
                 payload += '</dat:qInsertaComentariosLS>';
                 urn = 'urn:qInsertaComentariosLS';
                 break;
-            case "4":
+            case "8":
                 payload  = '<dat:qInsertaComentariosWC xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
                 payload += '<dat:uid_wc>' + sId + '</dat:uid_wc>';
                 payload += '<dat:firstName>'+ nombre +'</dat:firstName>';
