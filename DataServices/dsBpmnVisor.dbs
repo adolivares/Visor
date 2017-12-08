@@ -59,7 +59,7 @@
          <element column="PORCENTAJE_COINCIDENCIA" name="porcentaje_coincidencias" xsdType="string"/>
          <element column="ID_MB_CAT_EVALUACION" name="id_mb_cat_evaluacion" xsdType="string"/>
          <element column="ID_CONFIGURACION_PERFIL" name="id_configuracion_perfil" xsdType="string"/>
-		 <call-query href="qGetConfiguracion">
+       <call-query href="qGetConfiguracion">
             <with-param name="idConfig" query-param="ID_CONFIGURACION_PERFIL"/>
          </call-query>
       </result>
@@ -82,8 +82,8 @@
          <element column="ID_MB_CAT_EVALUACION" name="id_mb_cat_evaluacion" xsdType="string"/>
          <element column="ID_CLIENTE" name="id_cliente" xsdType="integer"/>
          <element column="TIPO_PERSONA" name="tipo_persona" xsdType="string"/>
-		 <element column="ID_CONFIGURACION_PERFIL" name="id_configuracion_perfil" xsdType="string"/>
-		 <call-query href="qGetConfiguracion">
+       <element column="ID_CONFIGURACION_PERFIL" name="id_configuracion_perfil" xsdType="string"/>
+       <call-query href="qGetConfiguracion">
             <with-param name="idConfig" query-param="ID_CONFIGURACION_PERFIL"/>
          </call-query>
       </result>
@@ -258,7 +258,7 @@
          <element column="PORCENTAJE_COINCIDENCIA" name="porcentaje_coincidencia" xsdType="string"/>
          <element column="ID_CONFIGURACION_PERFIL" name="id_configuracion_perfil" xsdType="string"/>
          <element column="OBS" name="obs" xsdType="string"/>
-		 <call-query href="qGetConfiguracion">
+       <call-query href="qGetConfiguracion">
             <with-param name="idConfig" query-param="ID_CONFIGURACION_PERFIL"/>
          </call-query>
       </result>
@@ -520,6 +520,60 @@
       <param defaultValue="#{NULL}" name="idConfig" ordinal="2" sqlType="STRING"/>
       <param name="configuracion" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
    </query>
+   <query id="qGetObservaciones" useConfig="visor">
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.get_comentarios(?,?,?)}</sql>
+      <result element="qGetComentsResponse" rowName="resultadoGetComents">
+         <element column="ID_LISTA" name="id_lista" xsdType="string"/>         
+         <element column="ID_MB_CONSULTA" name="id_consulta" xsdType="string"/>         
+         <element column="TB_CORR" name="tb_corr" xsdType="string"/>         
+         <element column="NOMBRE" name="nombre" xsdType="string"/>    
+         <element column="OBSERVACIONES" name="observaciones" xsdType="string"/>         
+         <element column="CATEGORIA" name="categoria" xsdType="string"/>         
+         <element column="FECHA_ALTA" name="fecha_alta" xsdType="string"/>         
+         <element column="USUARIO_ALTA" name="usuario_alta" xsdType="string"/>         
+         <element column="ESTATUS" name="estatus" xsdType="string"/>         
+      </result>
+      <param defaultValue="#{NULL}" name="id_lista" ordinal="2" sqlType="STRING"/>
+      <param defaultValue="#{NULL}" name="id_consulta" ordinal="3" sqlType="STRING"/>
+      <param defaultValue="#{NULL}" name="tb_corr" ordinal="4" sqlType="STRING"/>
+      <param name="obsercaciones" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
+   </query>
+   <query id="qInsertaObservaciones" useConfig="visor">
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.do_insert_coments(?,?,?,?,?,?,?,?,?) }</sql>
+      <result element="qInsertaComentLSResp" rowName="resultadoInsertComentLS">
+         <element column="estatus" name="estatus" xsdType="string"/>
+      </result>
+      <param name="idLista" ordinal="2" sqlType="STRING"/>
+      <param name="tbCorr" ordinal="3" sqlType="STRING"/>
+      <param name="idConsulta" ordinal="4" sqlType="STRING"/>
+      <param name="name" ordinal="5" sqlType="STRING"/>
+      <param name="paterno" ordinal="6" sqlType="STRING"/>
+      <param name="materno" ordinal="7" sqlType="STRING"/>
+      <param name="observacion" ordinal="8" sqlType="STRING"/>
+      <param name="categoria" ordinal="9" sqlType="STRING"/>
+      <param name="usuario" ordinal="10" sqlType="STRING"/>
+      <param name="estatus" ordinal="1" sqlType="INTEGER" type="OUT"/>
+   </query>
+    <operation name="qGetObservaciones">
+      <call-query href="qGetObservaciones">
+         <with-param name="id_lista" query-param="id_lista"/>
+         <with-param name="id_consulta" query-param="id_consulta"/>
+         <with-param name="tb_corr" query-param="tb_corr"/>
+      </call-query>
+   </operation>
+    <operation name="qInsertaObservaciones">
+      <call-query href="qInsertaObservaciones">
+         <with-param name="idLista" query-param="idLista"/>
+         <with-param name="tbCorr" query-param="tbCorr"/>
+         <with-param name="idConsulta" query-param="idConsulta"/>
+         <with-param name="name" query-param="name"/>
+         <with-param name="paterno" query-param="paterno"/>
+         <with-param name="materno" query-param="materno"/>
+         <with-param name="observacion" query-param="observacion"/>
+         <with-param name="categoria" query-param="categoria"/>
+         <with-param name="usuario" query-param="usuario"/>
+      </call-query>
+   </operation>
    <operation name="qGetComentariosLN">
       <call-query href="qGetComentariosLN">
          <with-param name="tb_corr" query-param="tb_corr"/>

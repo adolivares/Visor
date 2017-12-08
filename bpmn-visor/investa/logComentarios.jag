@@ -37,38 +37,19 @@
 
 
  <script>
-	function consultaComentarios(id, tipo){
+	function consultaComentarios(id, tipo, idConsulta){
 		var payload;
 		var urn;
 		 $('#listComentarios tbody tr').remove();
 		 $('#H4 span').remove("");
 		
-		switch (tipo) {
-			case "4":
-				payload  = '<dat:qGetComentariosLN xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
-				payload += '<dat:tb_corr>'+id+'</dat:tb_corr>';
-				payload += '</dat:qGetComentariosLN>';
-				urn = 'urn:qGetComentariosLN';
-				break;
-			case "3":
-				payload  = '<dat:qGetComentariosLG xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
-				payload += '<dat:tb_corr>'+id+'</dat:tb_corr>';
-				payload += '</dat:qGetComentariosLG>';
-				urn = 'urn:qGetComentariosLG';
-				break;
-			case "7":
-				payload  = '<dat:qGetComentariosLS xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
-				payload += '<dat:id_reg>'+id+'</dat:id_reg>';
-				payload += '</dat:qGetComentariosLS>';
-				urn = 'urn:qGetComentariosLS';
-				break;
-			case "8":
-				payload  = '<dat:qGetComentariosWC xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
-				payload += '<dat:uid_wc>'+id+'</dat:uid_wc>';
-				payload += '</dat:qGetComentariosWC>';
-				urn = 'urn:qGetComentariosWC';
-			
-		}		
+
+		payload  = '<dat:qGetObservaciones xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
+		payload += '<dat:id_lista>'+tipo+'</dat:id_lista>';
+		payload += '<dat:id_consulta>'+idConsulta+'</dat:id_consulta>';
+		payload += '<dat:tb_corr>'+id+'</dat:tb_corr>';
+		payload += '</dat:qGetObservaciones>';
+		urn = 'urn:qGetObservaciones';
 		
 	   $.ajax({
 				url: '/commons/postSOAP',
@@ -90,69 +71,27 @@
 		 var hora = "";
 		 var comentario = "";
 		 var category = "";
+		 var lista ="";
 		 $('#ModalCargando').modal('hide');
-		if( $(xmlHttpRequest.responseText).find('resultadoComentsLN').text() != ''){
+		if( $(xmlHttpRequest.responseText).find('resultadoGetComents').text() != ''){
 			
-			$(xmlHttpRequest.responseText).find('resultadoComentsLN').each(function(){
+			$(xmlHttpRequest.responseText).find('resultadoGetComents').each(function(){
 				 row = '<tr>'; 					
-				 fecha = $(this).find("fecha").text().substring(0,10);
+				 fecha = $(this).find("fecha_alta").text().substring(0,10);
 				 row += '<td>' + fecha +'</td>';
-				 hora = $(this).find("fecha").text().substring(11,16);
+				 hora = $(this).find("fecha_alta").text().substring(11,16);
 				 row += '<td>' + hora +'</td>'; 
 				 nombre = $(this).find("nombre").text();
-				 comentario = $(this).find("comentarios").text();
-				 row += '<td><p>' + nombre + '</p><p>' + comentario +'</p></td>';
-				 row += '<td>'+$(this).find("usuario_alta").text()+'</td>';			 
+				 comentario = $(this).find("observaciones").text();
+				 lista = $(this).find("id_lista").text();
+				 category = $(this).find("categoria").text();
+				 nombre = nombre + ', '+ lista + ', '+category;
+				 row += '<td><p>' + nombre +'</p><p>' + comentario +'</p></td>';
+				 row += '<td>'+$(this).find("usuario_alta").text()'</td>';			 
 				  $('#listComentarios > tbody').append(row);
 			  $('#ComentariosModal').modal('show');
 			});
 			$('#H4').append('<span>' + nombre + '</span>');
-		}else if($(xmlHttpRequest.responseText).find('resultadoComentsLG').text() != ''){
-				$(xmlHttpRequest.responseText).find('resultadoComentsLG').each(function(){
-					 row = '<tr>'; 					
-					 fecha = $(this).find("fecha").text().substring(0,10);
-					 row += '<td>' + fecha +'</td>';
-					 hora = $(this).find("fecha").text().substring(11,16);
-					 row += '<td>' + hora +'</td>'; 
-					 nombre = $(this).find("nombre").text();
-					 comentario = $(this).find("comentarios").text();
-					 row += '<td><p>' + nombre + '</p><p>' + comentario +'</p></td>';
-					 row += '<td>'+$(this).find("usuario_alta").text()+'</td>';						 
-					  $('#listComentarios > tbody').append(row);
-					  $('#ComentariosModal').modal('show');
-				});
-				$('#H4').append('<span>' + nombre + '</span>');
-		}else if($(xmlHttpRequest.responseText).find('resultadoComentsLS').text() != ''){
-				$(xmlHttpRequest.responseText).find('resultadoComentsLS').each(function(){
-					 row = '<tr>'; 					
-					 fecha = $(this).find("fecha").text().substring(0,10);
-					 row += '<td>' + fecha +'</td>';
-					 hora = $(this).find("fecha").text().substring(11,16);
-					 row += '<td>' + hora +'</td>'; 
-					 nombre = $(this).find("nombre").text();
-					 comentario = $(this).find("comentarios").text();
-					 row += '<td><p>' + nombre + '</p><p>' + comentario +'</p></td>';
-					 row += '<td>'+$(this).find("usuario_alta").text()+'</td>';						 
-					  $('#listComentarios > tbody').append(row);
-					  $('#ComentariosModal').modal('show');
-				});
-				$('#H4').append('<span>' + nombre + '</span>');
-		}else if($(xmlHttpRequest.responseText).find('resultadoComentsWC').text() != ''){
-				$(xmlHttpRequest.responseText).find('resultadoComentsWC').each(function(){
-					 row = '<tr>'; 					
-					 fecha = $(this).find("fecha").text().substring(0,10);
-					 row += '<td>' + fecha +'</td>';
-					 hora = $(this).find("fecha").text().substring(11,16);
-					 row += '<td>' + hora +'</td>'; 
-					 nombre = $(this).find("nombre").text();
-					 comentario = $(this).find("comentarios").text();
-					 category = $(this).find("categoria").text();
-					 row += '<td><p>' + nombre +', ' + category + '</p><p>' + comentario +'</p></td>';
-					 row += '<td>'+$(this).find("usuario_alta").text()+'</td>';					 
-					  $('#listComentarios > tbody').append(row);
-					  $('#ComentariosModal').modal('show');
-				});
-				$('#H4').append('<span>' + nombre + '</span>');
 		}else{
 			$("#idMsg").html('<div class="alert alert-danger">'+
 					'No hay datos para mostrar'+$(this).find("estatus").text()+

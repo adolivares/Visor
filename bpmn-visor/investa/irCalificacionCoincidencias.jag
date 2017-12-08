@@ -142,6 +142,7 @@ include("Controller/CtrlVisorCalificacion.jag");
                         <th style="display:none;"></th>   
                         <th style="display:none;"></th>   
                         <th style="display:none;"></th>   
+                        <th style="display:none;"></th>  
                     </tr>
                 </thead>
                 <tbody>                 
@@ -329,9 +330,10 @@ function consulta() {
 
         var tr = $("#example >tbody").find("tr").eq(index);
         //var id = 2090291;
-        var id = tr.find("td").eq(15).text();
+        var idcorr = tr.find("td").eq(15).text();
         var tipo = tr.find("td").eq(18).text();
-        consultaComentarios(id, tipo);
+         var idConsulta = tr.find("td").eq(2).text();
+        consultaComentarios(idcorr, tipo, idConsulta);
 
         //$('#ComentariosModal').modal('show');
     }
@@ -385,7 +387,7 @@ $("#btnGuardaComent").click(function() {
 
         tr = $("#example >tbody").find("tr").eq(index);
 
-
+        var idConsulta = tr.find("td").eq(2).text();
         var tipo = tr.find("td").eq(18).text();
         var sId = tr.find("td").eq(15).text();
         var val = tr.find("td").eq(9).text();
@@ -393,7 +395,7 @@ $("#btnGuardaComent").click(function() {
         var paterno = tr.find("td").eq(5).text();
         var materno = tr.find("td").eq(6).text();
         var usuario = "<%=user%>";
-        var categoria = "";
+        var categoria = tr.find("td").eq(19).text();;
         var urn = "";
         var payload = "";
 
@@ -404,51 +406,19 @@ $("#btnGuardaComent").click(function() {
         } else {
             val = "";
         }
-
-        switch (tipo) {
-            case "4":
-                payload  = '<dat:qInsertaComentariosLN xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
-                payload += '<dat:tbcorr>' + sId + '</dat:tbcorr>';
-                payload += '<dat:nombre>' + nombre + ' ' +paterno + ' ' + materno+'</dat:nombre>';
-                payload += '<dat:comentarios>' + coment + '</dat:comentarios>';
-                payload += '<dat:usuario>'+ usuario +'</dat:usuario>';
-                payload += '</dat:qInsertaComentariosLN>';
-                urn = 'urn:qInsertaComentariosLN';      
-                break;
-            case "3":
-                payload  = '<dat:qInsertaComentariosLG xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
-                payload += '<dat:tbcorr>' + sId + '</dat:tbcorr>';
-                payload += '<dat:nombre>' + nombre + '</dat:nombre>';
-                payload += '<dat:apaterno>' + paterno + '</dat:apaterno>';
-                payload += '<dat:amaterno>'+ materno +'</dat:amaterno>';
-                payload += '<dat:comentarios>' + coment + '</dat:comentarios>';
-                payload += '<dat:usuario>' + usuario + '</dat:usuario>';
-                payload += '</dat:qInsertaComentariosLG>';
-                urn = 'urn:qInsertaComentariosLG';
-                break;
-            case "7":
-                payload  = '<dat:qInsertaComentariosLS xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
-                payload += '<dat:idReg>' + sId + '</dat:idReg>';
-                payload += '<dat:nombre>' + nombre + '</dat:nombre>';
-                payload += '<dat:apaterno>' + paterno + '</dat:apaterno>';
-                payload += '<dat:amaterno>'+ materno +'</dat:amaterno>';
-                payload += '<dat:comentarios>' + coment + '</dat:comentarios>';
-                payload += '<dat:usuario>' + usuario + '</dat:usuario>';
-                payload += '</dat:qInsertaComentariosLS>';
-                urn = 'urn:qInsertaComentariosLS';
-                break;
-            case "8":
-                payload  = '<dat:qInsertaComentariosWC xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
-                payload += '<dat:uid_wc>' + sId + '</dat:uid_wc>';
-                payload += '<dat:firstName>'+ nombre +'</dat:firstName>';
-                payload += '<dat:lastName>' + paterno + '</dat:lastName>';
-                payload += '<dat:categoria>' + categoria + '</dat:categoria>';
-                payload += '<dat:comentarios>' + coment + '</dat:comentarios>';
-                payload += '<dat:usuario>' + usuario + '</dat:usuario>';
-                payload += '</dat:qInsertaComentariosWC>';
-                urn = 'urn:qInsertaComentariosWC';
-        }
-
+    
+        payload  = '<dat:qInsertaObservaciones xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
+        payload += '<dat:idLista>' + tipo + '</dat:idLista>';
+        payload += '<dat:tbCorr>' + sId + '</dat:tbCorr>';
+        payload += '<dat:idConsulta>' + idConsulta + '</dat:idConsulta>';
+        payload += '<dat:name>' + nombre + '</dat:name>';
+        payload += '<dat:paterno>'  +paterno +'</dat:paterno>';
+        payload += '<dat:materno>' + materno+'</dat:materno>';
+        payload += '<dat:observacion>' + coment + '</dat:observacion>';
+        payload += '<dat:categoria>'+ categoria +'</dat:categoria>';
+        payload += '<dat:usuario>'+ usuario +'</dat:usuario>';
+        payload += '</dat:qInsertaObservaciones>';
+        urn = 'urn:qInsertaObservaciones'; 
         $.ajax({
             url: '/commons/postSOAP',
             type: 'post',

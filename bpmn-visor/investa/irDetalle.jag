@@ -145,6 +145,7 @@ var payload2 = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap
 									<td><%=responseXML..*::getDetalle.*::resultadoDetalle[i].*::tabla_correlativo.toString()%></td>
 									<td><%=((responseXML..*::getDetalle.*::resultadoDetalle[i].*::obs.toString()==1)?'OK':'')%></td>
 									<td style="display:none"><%=responseXML..*::getDetalle.*::resultadoDetalle[i].*::tipo_lista.toString()%></td>
+									<td style="display:none"><%=responseXML..*::getDetalle.*::resultadoDetalle[i].*::getConfiguracionResponse.*::resultadoConfiguracion.*::id_lista.toString()%></td>	
 								</tr>
 								<%}%>
 							</tbody>
@@ -224,7 +225,8 @@ var resultado="";
 var xx="<%=nXml%>";
 xx.replace(/'/g, '')
 var nXML = xx.split(",");
- 
+
+
 
 	$('#listCoincidencias tbody tr').on('click', function(event) {
 			$(this).addClass('highlight').siblings().removeClass('highlight');
@@ -826,85 +828,54 @@ function listasRespon(xmlHttpRequest, status){
 		var cont = 0;
 		var coment = $("#txtObservaciones").val();	
 		var sId = $("#txtFolio").val();
-		var tipo = $("#txtTipo").val();
+		var tipo = $('.highlight').find('td').eq(9).text();
+		var usuario = "<%=user%>";
+		var nombre = $('.highlight').find('td').eq(0).text();
+		var paterno = $('.highlight').find('td').eq(1).text();
+		var materno = $('.highlight').find('td').eq(2).text();
+		var categoria = $('.highlight').find('td').eq(4).text();
+		var idConsulta = "<%=nidB%>";
 		var val = "";
 		var tr;
 		var index;	
-		var usuario = "<%=user%>";
-		var nombre = "";
-		var paterno = "";
-		var materno = "";
-		var categoria = "";
-		var urn = "";		
+
+		var urn = "";	
+		
+
 		nombre = $("#txtName").val();
 
-			if(coment.trim() == ""){
-				 $("#idMsg").html('<div class="alert alert-warning">'+
-					'El campo Comentario no puede ser vacío'+
-					'</div>');
-				$('#ModalInfo').modal('show');
-				 return false;
-			}	
+		if(coment.trim() == ""){
+			 $("#idMsg").html('<div class="alert alert-warning">'+
+				'El campo Comentario no puede ser vacío'+
+				'</div>');
+			$('#ModalInfo').modal('show');
+			 return false;
+		}	
 			
-			switch (tipo) {
-				case "1":
-					payload  = '<dat:qInsertaComentariosLN xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
-					payload += '<dat:tbcorr>' + sId + '</dat:tbcorr>';
-					payload += '<dat:nombre>' + nombre + '</dat:nombre>';
-					payload += '<dat:comentarios>' + coment + '</dat:comentarios>';
-					payload += '<dat:usuario>'+ usuario +'</dat:usuario>';
-					payload += '</dat:qInsertaComentariosLN>';
-					urn = 'urn:qInsertaComentariosLN';		
-					break;
-				case "2":
-				    paterno = $("#txtAPaterno").val();
-					materno = $("#txtAMaterno").val();
-					payload  = '<dat:qInsertaComentariosLG xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
-					payload += '<dat:tbcorr>' + sId + '</dat:tbcorr>';
-					payload += '<dat:nombre>' + nombre + '</dat:nombre>';
-					payload += '<dat:apaterno>' + paterno + '</dat:apaterno>';
-					payload += '<dat:amaterno>'+ materno +'</dat:amaterno>';
-					payload += '<dat:comentarios>' + coment + '</dat:comentarios>';
-					payload += '<dat:usuario>' + usuario + '</dat:usuario>';
-					payload += '</dat:qInsertaComentariosLG>';
-					urn = 'urn:qInsertaComentariosLG';
-					break;
-				case "3":
-					paterno = $("#txtAPaterno").val();
-					materno = $("#txtAMaterno").val();
-					payload  = '<dat:qInsertaComentariosLS xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
-					payload += '<dat:idReg>' + sId + '</dat:idReg>';
-					payload += '<dat:nombre>' + nombre + '</dat:nombre>';
-					payload += '<dat:apaterno>' + paterno + '</dat:apaterno>';
-					payload += '<dat:amaterno>'+ materno +'</dat:amaterno>';
-					payload += '<dat:comentarios>' + coment + '</dat:comentarios>';
-					payload += '<dat:usuario>' + usuario + '</dat:usuario>';
-					payload += '</dat:qInsertaComentariosLS>';
-					urn = 'urn:qInsertaComentariosLS';
-					break;
-				case "4":
-					paterno = $("#txtAPaterno").val();
-					categoria = $('#txtCategoria').val();
-					payload  = '<dat:qInsertaComentariosWC xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
-					payload += '<dat:uid_wc>' + sId + '</dat:uid_wc>';
-					payload += '<dat:firstName>'+ nombre +'</dat:firstName>';
-					payload += '<dat:lastName>' + paterno + '</dat:lastName>';
-					payload += '<dat:categoria>' + categoria + '</dat:categoria>';
-					payload += '<dat:comentarios>' + coment + '</dat:comentarios>';
-					payload += '<dat:usuario>' + usuario + '</dat:usuario>';
-					payload += '</dat:qInsertaComentariosWC>';
-					urn = 'urn:qInsertaComentariosWC';
-			}		
-			
-		   $.ajax({
-					url: '/commons/postSOAP',
-					type: 'post',
-					headers: {'Destino':'BpmnVisor', 'SOAPAction':urn},
-					dataType: 'xml',
-					complete: comentariosIRespon,
-					error: function (xhr, status, error) {},
-					data: payload
-			}); 
+		payload  = '<dat:qInsertaObservaciones xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
+        payload += '<dat:idLista>' + tipo + '</dat:idLista>';
+        payload += '<dat:tbCorr>' + sId + '</dat:tbCorr>';
+        payload += '<dat:idConsulta>' + idConsulta + '</dat:idConsulta>';
+        payload += '<dat:name>' + nombre + '</dat:name>';
+        payload += '<dat:paterno>'  +paterno +'</dat:paterno>';
+        payload += '<dat:materno>' + materno+'</dat:materno>';
+        payload += '<dat:observacion>' + coment + '</dat:observacion>';
+        payload += '<dat:categoria>'+ categoria +'</dat:categoria>';
+        payload += '<dat:usuario>'+ usuario +'</dat:usuario>';
+        payload += '</dat:qInsertaObservaciones>';
+        urn = 'urn:qInsertaObservaciones'; 
+        $.ajax({
+            url: '/commons/postSOAP',
+            type: 'post',
+            headers: {
+                'Destino': 'BpmnVisor',
+                'SOAPAction': urn
+            },
+            dataType: 'xml',
+            complete: comentariosIRespon,
+            error: function(xhr, status, error) {},
+            data: payload
+        });
 	});	
 	
 	function comentariosIRespon(xmlHttpRequest, status){
