@@ -4,281 +4,260 @@
       <property name="url">jdbc:sqlserver://28.224.30.47:1433;databaseName=Monitor</property>
       <property name="username">imonitorplus</property>
       <property name="password">Investa-14</property>
+      <property name="dataSourceProps"/>
+      <property name="dynamicUserAuthMapping"/>
    </config>
    <query id="getComentariosLGris" useConfig="MSSQL">
-<sql>SELECT CONCAT(NOMBRE, ' ', PATERNO, ' ', MATERNO) AS NOMBRE, OBSERVATIONS_DATE AS OBSERVATIONS_DATE, CONVERT(char(5), OBSERVATIONS_DATE, 108) AS HORA
-			  FROM MONITOR.dbo.TB_566_OBS
-			 WHERE TB_CORR = ?
-			 ORDER BY OBSERVATIONS_DATE DESC</sql>  
-       
-	  <result element="getComentariosLGrisResp" rowName="resultadoComentariosLGris">
-		 <element column="nombre" name="nombre" xsdType="string"/>
-		 <element column="observations" name="observations" xsdType="string"/> 
-		 <element column="observations_date" name="observations_date" xsdType="string"/>		 
-		 <element column="Hora" name="hora" xsdType="string"/>		 
+      <sql>SELECT CONCAT(NOMBRE, ' ', PATERNO, ' ', MATERNO) AS NOMBRE, OBSERVATIONS, CONVERT(char(10), OBSERVATIONS_DATE, 103) AS OBSERVATIONS_DATE, CONVERT(char(5), OBSERVATIONS_DATE, 108) AS HORA			  FROM MONITOR.dbo.TB_566_OBS			 WHERE TB_CORR = ?			 ORDER BY OBSERVATIONS_DATE DESC</sql>
+      <result element="getComentariosLGrisResp" rowName="resultadoComentariosLGris">
+         <element column="nombre" name="nombre" xsdType="string"/>
+         <element column="observations" name="observations" xsdType="string"/>
+         <element column="observations_date" name="observations_date" xsdType="string"/>
+         <element column="Hora" name="hora" xsdType="string"/>
       </result>
-      <param name="tbCorr" ordinal="1" sqlType="INTEGER"/>	  
+      <param name="tbCorr" ordinal="1" sqlType="INTEGER"/>
    </query>
-    <query id="getComentariosLNegra" useConfig="MSSQL">
-      <sql>SELECT NOMBRE, OBSERVATIONS,OBSERVATIONS_DATE, CONVERT(char(5), OBSERVATIONS_DATE, 108) AS HORA
-			  FROM MONITOR.dbo.TB_501_OBS
-			 WHERE TB_CORR = ?
-			 ORDER BY OBSERVATIONS_DATE DESC</sql>   
-	  <result element="getComentariosLNegraResp" rowName="resultadoComentariosLNegra">
-		 <element column="nombre" name="nombre" xsdType="string"/>
-		 <element column="observations" name="observations" xsdType="string"/> 
-		 <element column="observations_date" name="observations_date" xsdType="string"/>		 
-		 <element column="Hora" name="hora" xsdType="string"/>		 
+   <query id="getComentariosLNegra" useConfig="MSSQL">
+      <sql>SELECT NOMBRE, OBSERVATIONS,OBSERVATIONS_DATE, CONVERT(char(5), OBSERVATIONS_DATE, 108) AS HORA			  FROM MONITOR.dbo.TB_501_OBS			 WHERE TB_CORR = ?			 ORDER BY OBSERVATIONS_DATE DESC</sql>
+      <result element="getComentariosLNegraResp" rowName="resultadoComentariosLNegra">
+         <element column="nombre" name="nombre" xsdType="string"/>
+         <element column="observations" name="observations" xsdType="string"/>
+         <element column="observations_date" name="observations_date" xsdType="string"/>
+         <element column="Hora" name="hora" xsdType="string"/>
       </result>
-      <param name="tbCorrN" ordinal="1" sqlType="INTEGER"/>	  
+      <param name="tbCorrN" ordinal="1" sqlType="INTEGER"/>
    </query>
-    <query id="getComentariosLSITI" useConfig="MSSQL">
-      <sql>SELECT CONCAT(NOMBRE, ' ', PATERNO, ' ', MATERNO) AS NOMBRE, OBSERVACIONES,  FECHA_OBSERVACION AS FECHA_OBSERVACION, CONVERT(char(5), FECHA_OBSERVACION, 108) AS HORA
-			  FROM MONITOR.dbo.PLD_SITI_OBS
-			 WHERE ID_REG_PERSONA = ?
-			 ORDER BY FECHA_OBSERVACION DESC</sql>  
-	  <result element="getComentariosLSitiResp" rowName="resultadoComentariosLSiti">
-		 <element column="nombre" name="nombre" xsdType="string"/>
-		 <element column="observaciones" name="observations" xsdType="string"/> 
-		 <element column="fecha_observacion" name="fecha_observacion" xsdType="string"/>	
-		 <element column="Hora" name="hora" xsdType="string"/>				 
+   <query id="getComentariosLSITI" useConfig="MSSQL">
+      <sql>SELECT CONCAT(NOMBRE, ' ', PATERNO, ' ', MATERNO) AS NOMBRE, OBSERVACIONES, CONVERT(char(10), FECHA_OBSERVACION, 103) AS FECHA_OBSERVACION, CONVERT(char(5), FECHA_OBSERVACION, 108) AS HORA			  FROM MONITOR.dbo.PLD_SITI_OBS			 WHERE ID_REG_PERSONA = ?			 ORDER BY FECHA_OBSERVACION DESC</sql>
+      <result element="getComentariosLSitiResp" rowName="resultadoComentariosLSiti">
+         <element column="nombre" name="nombre" xsdType="string"/>
+         <element column="observaciones" name="observations" xsdType="string"/>
+         <element column="fecha_observacion" name="fecha_observacion" xsdType="string"/>
+         <element column="Hora" name="hora" xsdType="string"/>
       </result>
-      <param name="idreg" ordinal="1" sqlType="INTEGER"/>	  
+      <param name="idreg" ordinal="1" sqlType="INTEGER"/>
    </query>
-    <query id="getComentariosLWC" useConfig="MSSQL">
-      <sql> SELECT CONCAT(FIRST_NAME, ' ', LAST_NAME) AS NOMBRE,CATEGORY,OBSERVATIONS,OBSERVATIONS_DATE AS OBSERVATIONS_DATE, CONVERT(char(5), OBSERVATIONS_DATE, 108) AS HORA
-			   FROM MONITORP.dbo.VWWORLDCHECK_OBS
-			 WHERE UID = ?
-			 ORDER BY OBSERVATIONS_DATE DESC</sql>  
-	  <result element="getComentariosLWCResp" rowName="resultadoComentariosLWC">
-		 <element column="nombre" name="nombre" xsdType="string"/>
-		 <element column="category" name="category" xsdType="string"/>
-		 <element column="observations" name="observations" xsdType="string"/> 
-		 <element column="observations_date" name="observations_date" xsdType="string"/>	
-		 <element column="Hora" name="hora" xsdType="string"/>				 
+   <query id="getComentariosLWC" useConfig="MSSQL">
+      <sql>SELECT CONCAT(FIRST_NAME, ' ', LAST_NAME) AS NOMBRE,CATEGORY,OBSERVATIONS, CONVERT(char(10), OBSERVATIONS_DATE, 103) AS OBSERVATIONS_DATE, CONVERT(char(5), OBSERVATIONS_DATE, 108) AS HORA			   FROM MONITORP.dbo.VWWORLDCHECK_OBS			 WHERE UID = ?			 ORDER BY OBSERVATIONS_DATE DESC</sql>
+      <result element="getComentariosLWCResp" rowName="resultadoComentariosLWC">
+         <element column="nombre" name="nombre" xsdType="string"/>
+         <element column="category" name="category" xsdType="string"/>
+         <element column="observations" name="observations" xsdType="string"/>
+         <element column="observations_date" name="observations_date" xsdType="string"/>
+         <element column="Hora" name="hora" xsdType="string"/>
       </result>
-      <param name="uid" ordinal="1" sqlType="INTEGER"/>	  
+      <param name="uid" ordinal="1" sqlType="INTEGER"/>
    </query>
    <query id="qInsertaComentariosLN" returnUpdatedRowCount="true" useConfig="MSSQL">
-      <sql> INSERT INTO TB_501_OBS SELECT TB_CORR,TB_DATEADD,TB_DAYS,C55016,NOMBRE,JUSTIFICACION,AUTESPNOMBRE,AUTNOMBRE,CNBV_AREACLAVE,CNBVACLAGG,CNBVADESCP,CNBV_DIASPLAZO,CNBV_DIASPLAGG,CNBVFECHPBL,CNBV_FOLIO,CNBV_FOLIOAGG,CNBVNROEXP,CNBV_NROOFICIO,CNBV_OFICIOYEAR,CNBVOFICIOYEARAGG,CNBVSOLICITUDSIARA,NOMBRESOLICITANTE,TREQUEQ,REFERENCIA1,REFERENCIA2,REFERENCIA3,SESPECPSC,SESPPSCOMP,SESPPSDOMICILIO,SESPPSMATERNO,SESPPSNOMBRE,SESPPSPATERNO,SESPPSPERSONA,SESPPSPERSONID,SESPPSPERIDAGG,SESPPSOLRELACION,SESPSESPID,SESPSESPIDAGG,TASEGURAMIENTO,DIA,MES,ANIO, ?, GETDATE(), ? FROM TB_501 WHERE TB_CORR = ?</sql>  
-	  <result element="qInsertaComentariosLNResp" rowName="respComentariosLN">
-		<element column="1" name="Value" xsdType="integer"/>
+      <sql>INSERT INTO TB_501_OBS SELECT TB_CORR,TB_DATEADD,TB_DAYS,C55016,NOMBRE,JUSTIFICACION,AUTESPNOMBRE,AUTNOMBRE,CNBV_AREACLAVE,CNBVACLAGG,CNBVADESCP,CNBV_DIASPLAZO,CNBV_DIASPLAGG,CNBVFECHPBL,CNBV_FOLIO,CNBV_FOLIOAGG,CNBVNROEXP,CNBV_NROOFICIO,CNBV_OFICIOYEAR,CNBVOFICIOYEARAGG,CNBVSOLICITUDSIARA,NOMBRESOLICITANTE,TREQUEQ,REFERENCIA1,REFERENCIA2,REFERENCIA3,SESPECPSC,SESPPSCOMP,SESPPSDOMICILIO,SESPPSMATERNO,SESPPSNOMBRE,SESPPSPATERNO,SESPPSPERSONA,SESPPSPERSONID,SESPPSPERIDAGG,SESPPSOLRELACION,SESPSESPID,SESPSESPIDAGG,TASEGURAMIENTO,DIA,MES,ANIO, ?, GETDATE(), ? FROM TB_501 WHERE TB_CORR = ?</sql>
+      <result element="qInsertaComentariosLNResp" rowName="respComentariosLN">
+         <element column="1" name="Value" xsdType="integer"/>
       </result>
-      <param name="obs" ordinal="1" sqlType="STRING"/>	  
-	  <param defaultValue="#{NULL}" name="validation" ordinal="2" sqlType="STRING"/>	  
-	  <param name="tbCorr" ordinal="3" sqlType="STRING"/>	  
+      <param name="obs" ordinal="1" sqlType="STRING"/>
+      <param defaultValue="#{NULL}" name="validation" ordinal="2" sqlType="STRING"/>
+      <param name="tbCorr" ordinal="3" sqlType="STRING"/>
    </query>
    <query id="qInsertaComentariosLG" returnUpdatedRowCount="true" useConfig="MSSQL">
-      <sql>INSERT INTO TB_566_OBS SELECT TB_CORR,TB_DATEADD,TB_DAYS,C55016,NOMBRE,PATERNO,MATERNO,CARACTER,COMPLEMENTARIOS,TIPOPERSONA,REFERENCIA,CNBV_NUMEROEXPEDIENT, ?, GETDATE(), ? FROM TB_566 WHERE TB_CORR = ?</sql>  
-	  <result element="qInsertaComentariosLGCResp" rowName="respComentariosLG">
-		<element column="1" name="Value" xsdType="integer"/>
+      <sql>INSERT INTO TB_566_OBS SELECT TB_CORR,TB_DATEADD,TB_DAYS,C55016,NOMBRE,PATERNO,MATERNO,CARACTER,COMPLEMENTARIOS,TIPOPERSONA,REFERENCIA,CNBV_NUMEROEXPEDIENT, ?, GETDATE(), ? FROM TB_566 WHERE TB_CORR = ?</sql>
+      <result element="qInsertaComentariosLGCResp" rowName="respComentariosLG">
+         <element column="1" name="Value" xsdType="integer"/>
       </result>
-      <param name="obs" ordinal="1" sqlType="STRING"/>	  
-	  <param defaultValue="#{NULL}" name="validation" ordinal="2" sqlType="STRING"/>	  
-	  <param name="tbCorr" ordinal="3" sqlType="STRING"/>	  
+      <param name="obs" ordinal="1" sqlType="STRING"/>
+      <param defaultValue="#{NULL}" name="validation" ordinal="2" sqlType="STRING"/>
+      <param name="tbCorr" ordinal="3" sqlType="STRING"/>
    </query>
    <query id="qInsertaComentariosLS" returnUpdatedRowCount="true" useConfig="MSSQL">
-      <sql>INSERT INTO PLD_SITI_OBS SELECT PER.ID_REG_PERSONA,PER.CARACTER,PER.PERSONA,PER.PATERNO,PER.MATERNO,PER.NOMBRE,PER.RFC,PER.RELACION,PER.DOMICILIO,PER.COMPLEMENTARIOS,EXP.CNBV_NUM_OFICIO,EXP.CNBV_NUM_EXPEDIENTE,EXP.CNBV_SOL_SIARA,EXP.CNBV_FOLIO,EXP.CNBV_OFICIO_YEAR,EXP.CNBV_AREA_CLAVE,EXP.CNBV_AREA_DESC,EXP.CNBV_FECHA_PUB,EXP.CNBV_DIAS_PLAZO,EXP.AUTORIDAD_NOMBRE,EXP.AUTORIDAD_ESP_NOMBRE,EXP.NOMBRE_SOLICITANTE,EXP.REFERENCIA,EXP.REFERENCIA1,EXP.REFERENCIA2,?,GETDATE(), ? FROM SITI_SOL_PERSONAS PER INNER JOIN SITI_SOLICITUD_ESP SE ON PER.ID_REG_SOL_ESP=SE.ID_REG_SOL_ESP INNER JOIN SITI_EXPEDIENTE EXP ON SE.ID_EXPEDIENTE=EXP.ID_EXPEDIENTE WHERE PER.ID_REG_PERSONA=?</sql> 
-	  <result element="qInsertaComentariosLSResp" rowName="respComentariosLS">
-		<element column="1" name="Value" xsdType="integer"/>
+      <sql>INSERT INTO PLD_SITI_OBS SELECT PER.ID_REG_PERSONA,PER.CARACTER,PER.PERSONA,PER.PATERNO,PER.MATERNO,PER.NOMBRE,PER.RFC,PER.RELACION,PER.DOMICILIO,PER.COMPLEMENTARIOS,EXP.CNBV_NUM_OFICIO,EXP.CNBV_NUM_EXPEDIENTE,EXP.CNBV_SOL_SIARA,EXP.CNBV_FOLIO,EXP.CNBV_OFICIO_YEAR,EXP.CNBV_AREA_CLAVE,EXP.CNBV_AREA_DESC,EXP.CNBV_FECHA_PUB,EXP.CNBV_DIAS_PLAZO,EXP.AUTORIDAD_NOMBRE,EXP.AUTORIDAD_ESP_NOMBRE,EXP.NOMBRE_SOLICITANTE,EXP.REFERENCIA,EXP.REFERENCIA1,EXP.REFERENCIA2,?,GETDATE(), ? FROM SITI_SOL_PERSONAS PER INNER JOIN SITI_SOLICITUD_ESP SE ON PER.ID_REG_SOL_ESP=SE.ID_REG_SOL_ESP INNER JOIN SITI_EXPEDIENTE EXP ON SE.ID_EXPEDIENTE=EXP.ID_EXPEDIENTE WHERE PER.ID_REG_PERSONA=?</sql>
+      <result element="qInsertaComentariosLSResp" rowName="respComentariosLS">
+         <element column="1" name="Value" xsdType="integer"/>
       </result>
-      <param name="obs" ordinal="1" sqlType="STRING"/>	  
-	  <param defaultValue="#{NULL}" name="validation" ordinal="2" sqlType="STRING"/>	  
-	  <param name="idReg" ordinal="3" sqlType="STRING"/>	  
-    </query>
-    <query id="qInsertaComentariosWC" returnUpdatedRowCount="true" useConfig="MSSQL">
-      <sql>INSERT INTO MONITORP.dbo.VWWORLDCHECK_OBS SELECT UID,FIRST_NAME,LAST_NAME,ALIASES,ALTERNATIVE_SPELLING,CATEGORY,TITLE,SUB_CATEGORY,POSITION,AGE,DATE_OF_BIRTH,PLACE_OF_BIRTH,PASSPORTS,SOCIAL_SECURITY,LOCATIONS,COUNTRIES,TYPE_OF_PERSON,FURTHER_INFORMATION,ENTERED_DATE,UPDATED_DATE,KEYWORDS, ?, GETDATE(), ? FROM MONITORP.dbo.VWWORLDCHECK WHERE UID = ?</sql>  
-	  <result element="qInsertaComentariosLWCResp" rowName="respComentariosWC">
-		<element column="1" name="Value" xsdType="integer"/>
+      <param name="obs" ordinal="1" sqlType="STRING"/>
+      <param defaultValue="#{NULL}" name="validation" ordinal="2" sqlType="STRING"/>
+      <param name="idReg" ordinal="3" sqlType="STRING"/>
+   </query>
+   <query id="qInsertaComentariosWC" returnUpdatedRowCount="true" useConfig="MSSQL">
+      <sql>INSERT INTO MONITORP.dbo.VWWORLDCHECK_OBS SELECT UID,FIRST_NAME,LAST_NAME,ALIASES,ALTERNATIVE_SPELLING,CATEGORY,TITLE,SUB_CATEGORY,POSITION,AGE,DATE_OF_BIRTH,PLACE_OF_BIRTH,PASSPORTS,SOCIAL_SECURITY,LOCATIONS,COUNTRIES,TYPE_OF_PERSON,FURTHER_INFORMATION,ENTERED_DATE,UPDATED_DATE,KEYWORDS, ?, GETDATE(), ? FROM MONITORP.dbo.VWWORLDCHECK WHERE UID = ?</sql>
+      <result element="qInsertaComentariosLWCResp" rowName="respComentariosWC">
+         <element column="1" name="Value" xsdType="integer"/>
       </result>
-      <param name="obs" ordinal="1" sqlType="STRING"/>	  
-	  <param defaultValue="#{NULL}" name="validation" ordinal="2" sqlType="STRING"/>	  
-	  <param name="uid" ordinal="3" sqlType="STRING"/>	  
-    </query>
-    <query id="qInsertaComentariosWCP" returnUpdatedRowCount="true" useConfig="MSSQL">
-      <sql>INSERT INTO MONITORP.dbo.VWWORLDCHECKP_OBS SELECT UID,FIRST_NAME,LAST_NAME,ALIASES,ALTERNATIVE_SPELLING,CATEGORY,TITLE,SUB_CATEGORY,POSITION,AGE,DATE_OF_BIRTH,PLACE_OF_BIRTH,PASSPORTS,SOCIAL_SECURITY,LOCATIONS,COUNTRIES,TYPE_OF_PERSON,FURTHER_INFORMATION,ENTERED_DATE,UPDATED_DATE,KEYWORDS, ?, GETDATE(),? FROM MONITORP.dbo.VWWORLDCHECKP WHERE UID = ?</sql>  
-	  <result element="qInsertaComentariosLWCPResp" rowName="respComentariosWCP">
-		<element column="1" name="Value" xsdType="integer"/>
+      <param name="obs" ordinal="1" sqlType="STRING"/>
+      <param defaultValue="#{NULL}" name="validation" ordinal="2" sqlType="STRING"/>
+      <param name="uid" ordinal="3" sqlType="STRING"/>
+   </query>
+   <query id="qInsertaComentariosWCP" returnUpdatedRowCount="true" useConfig="MSSQL">
+      <sql>INSERT INTO MONITORP.dbo.VWWORLDCHECKP_OBS SELECT UID,FIRST_NAME,LAST_NAME,ALIASES,ALTERNATIVE_SPELLING,CATEGORY,TITLE,SUB_CATEGORY,POSITION,AGE,DATE_OF_BIRTH,PLACE_OF_BIRTH,PASSPORTS,SOCIAL_SECURITY,LOCATIONS,COUNTRIES,TYPE_OF_PERSON,FURTHER_INFORMATION,ENTERED_DATE,UPDATED_DATE,KEYWORDS, ?, GETDATE(),? FROM MONITORP.dbo.VWWORLDCHECKP WHERE UID = ?</sql>
+      <result element="qInsertaComentariosLWCPResp" rowName="respComentariosWCP">
+         <element column="1" name="Value" xsdType="integer"/>
       </result>
-      <param name="obs" ordinal="1" sqlType="STRING"/>	  
-	  <param defaultValue="#{NULL}" name="validation" ordinal="2" sqlType="STRING"/>	  
-	  <param name="uid" ordinal="3" sqlType="STRING"/>	  
-   </query>  			   
+      <param name="obs" ordinal="1" sqlType="STRING"/>
+      <param defaultValue="#{NULL}" name="validation" ordinal="2" sqlType="STRING"/>
+      <param name="uid" ordinal="3" sqlType="STRING"/>
+   </query>
    <query id="getDetalleLGris" useConfig="MSSQL">
-      <sql>SELECT TB_CORR,TB_DATEADD,TB_DAYS,C55016,NOMBRE,PATERNO,MATERNO,CARACTER,COMPLEMENTARIOS,TIPOPERSONA,REFERENCIA,CNBV_NUMEROEXPEDIENT 
-			FROM TB_566 WHERE TB_CORR =?</sql>  
-	  <result element="getDetalleLGris" rowName="getComentariosLGrisResp">
-		<element column="tb_corr" name="tb_corr" xsdtype="integer"/>
-		<element column="tb_dateadd" name="tb_dateadd" xsdtype="string"/>
-		<element column="tb_days" name="tb_days" xsdtype="string"/>
-		<element column="c55016" name="c55016" xsdtype="string"/>
-		<element column="nombre" name="nombre" xsdtype="string"/>
-		<element column="paterno" name="paterno" xsdtype="string"/>
-		<element column="materno" name="materno" xsdtype="string"/>
-		<element column="caracter" name="caracter" xsdtype="string"/>
-		<element column="complementarios" name="complementarios" xsdtype="string"/>
-		<element column="tipopersona" name="tipopersona" xsdtype="string"/>
-		<element column="referencia" name="referencia" xsdtype="string"/>
-		<element column="cnbv_numeroexpedient" name="cnbv_numeroexpedient" xsdtype="string"/>
+      <sql>SELECT TB_CORR,TB_DATEADD,TB_DAYS,C55016,NOMBRE,PATERNO,MATERNO,CARACTER,COMPLEMENTARIOS,TIPOPERSONA,REFERENCIA,CNBV_NUMEROEXPEDIENT 			FROM TB_566 WHERE TB_CORR =?</sql>
+      <result element="getDetalleLGris" rowName="getComentariosLGrisResp">
+         <element column="tb_corr" name="tb_corr"/>
+         <element column="tb_dateadd" name="tb_dateadd"/>
+         <element column="tb_days" name="tb_days"/>
+         <element column="c55016" name="c55016"/>
+         <element column="nombre" name="nombre"/>
+         <element column="paterno" name="paterno"/>
+         <element column="materno" name="materno"/>
+         <element column="caracter" name="caracter"/>
+         <element column="complementarios" name="complementarios"/>
+         <element column="tipopersona" name="tipopersona"/>
+         <element column="referencia" name="referencia"/>
+         <element column="cnbv_numeroexpedient" name="cnbv_numeroexpedient"/>
       </result>
-      <param name="tbCorr" ordinal="1" sqlType="STRING"/>	  
+      <param name="tbCorr" ordinal="1" sqlType="STRING"/>
    </query>
-   <query id="getDetalleLNegra"  useConfig="MSSQL">
-      <sql>SELECT TB_CORR,TB_DATEADD,TB_DAYS,C55016,NOMBRE,JUSTIFICACION,AUTESPNOMBRE,AUTNOMBRE,CNBV_AREACLAVE,CNBVACLAGG,CNBVADESCP,CNBV_DIASPLAZO,CNBV_DIASPLAGG,CNBVFECHPBL,CNBV_FOLIO,
-			CNBV_FOLIOAGG,CNBVNROEXP,CNBV_NROOFICIO,CNBV_OFICIOYEAR,CNBVOFICIOYEARAGG,CNBVSOLICITUDSIARA,NOMBRESOLICITANTE,TREQUEQ,REFERENCIA1,REFERENCIA2,REFERENCIA3,SESPECPSC,SESPPSCOMP,
-			SESPPSDOMICILIO,SESPPSMATERNO,SESPPSNOMBRE,SESPPSPATERNO,SESPPSPERSONA,SESPPSPERSONID,SESPPSPERIDAGG,SESPPSOLRELACION,SESPSESPID,SESPSESPIDAGG,TASEGURAMIENTO,DIA,MES,ANIO 
-			FROM TB_501 WHERE TB_CORR=?</sql>  
-	  <result element="getDetalleLNegra" rowName="resultadoComentariosLNegra">
-		<element column="tb_corr" name="tb_corr" xsdtype="integer"/>
-		<element column="tb_dateadd" name="tb_dateadd" xsdtype="string"/>
-		<element column="tb_days" name="tb_days" xsdtype="string"/>
-		<element column="c55016" name="c55016" xsdtype="string"/>
-		<element column="c55016" name="c55016" xsdtype="string"/>
-		<element column="nombre" name="nombre" xsdtype="string"/>
-		<element column="justificacion" name="justificacion" xsdtype="string"/>
-		<element column="autespnombre" name="autespnombre" xsdtype="string"/>
-		<element column="autnombre" name="autnombre" xsdtype="string"/>
-		<element column="cnbv_areaclave" name="cnbv_areaclave" xsdtype="string"/>
-		<element column="cnbvaclagg" name="cnbvaclagg" xsdtype="string"/>
-		<element column="cnbvadescp" name="cnbvadescp" xsdtype="string"/>
-		<element column="cnbv_diasplazo" name="cnbv_diasplazo" xsdtype="string"/>
-		<element column="cnbv_diasplagg" name="cnbv_diasplagg" xsdtype="string"/>
-		<element column="cnbvfechpbl" name="cnbvfechpbl" xsdtype="string"/>
-		<element column="cnbv_folio" name="cnbv_folio" xsdtype="string"/>
-		<element column="cnbv_folioagg" name="cnbv_folioagg" xsdtype="string"/>
-		<element column="cnbvnroexp" name="cnbvnroexp" xsdtype="string"/>
-		<element column="cnbv_nrooficio" name="cnbv_nrooficio" xsdtype="string"/>
-		<element column="cnbv_oficioyear" name="cnbv_oficioyear" xsdtype="string"/>
-		<element column="cnbvoficioyearagg" name="cnbvoficioyearagg" xsdtype="string"/>
-		<element column="cnbvsolicitudsiara" name="cnbvsolicitudsiara" xsdtype="string"/>
-		<element column="nombresolicitante" name="nombresolicitante" xsdtype="string"/>
-		<element column="trequeq" name="trequeq" xsdtype="string"/>
-		<element column="referencia1" name="referencia1" xsdtype="string"/>
-		<element column="referencia2" name="referencia2" xsdtype="string"/>
-		<element column="referencia3" name="referencia3" xsdtype="string"/>
-		<element column="sespecpsc" name="sespecpsc" xsdtype="string"/>
-		<element column="sesppscomp" name="sesppscomp" xsdtype="string"/>
-		<element column="sesppsdomicilio" name="sesppsdomicilio" xsdtype="string"/>
-		<element column="sesppsmaterno" name="sesppsmaterno" xsdtype="string"/>
-		<element column="sesppsnombre" name="sesppsnombre" xsdtype="string"/>
-		<element column="sesppspaterno" name="sesppspaterno" xsdtype="string"/>
-		<element column="sesppspersona" name="sesppspersona" xsdtype="string"/>
-		<element column="sesppspersonid" name="sesppspersonid" xsdtype="string"/>
-		<element column="sesppsperidagg" name="sesppsperidagg" xsdtype="string"/>
-		<element column="sesppsolrelacion" name="sesppsolrelacion" xsdtype="string"/>
-		<element column="sespsespid" name="sespsespid" xsdtype="string"/>
-		<element column="sespsespidagg" name="sespsespidagg" xsdtype="string"/>
-		<element column="taseguramiento" name="taseguramiento" xsdtype="string"/>
-		<element column="dia" name="dia" xsdtype="string"/>
-		<element column="mes" name="mes" xsdtype="string"/>
-		<element column="anio" name="anio" xsdtype="string"/>
+   <query id="getDetalleLNegra" useConfig="MSSQL">
+      <sql>SELECT TB_CORR,TB_DATEADD,TB_DAYS,C55016,NOMBRE,JUSTIFICACION,AUTESPNOMBRE,AUTNOMBRE,CNBV_AREACLAVE,CNBVACLAGG,CNBVADESCP,CNBV_DIASPLAZO,CNBV_DIASPLAGG,CNBVFECHPBL,CNBV_FOLIO,			CNBV_FOLIOAGG,CNBVNROEXP,CNBV_NROOFICIO,CNBV_OFICIOYEAR,CNBVOFICIOYEARAGG,CNBVSOLICITUDSIARA,NOMBRESOLICITANTE,TREQUEQ,REFERENCIA1,REFERENCIA2,REFERENCIA3,SESPECPSC,SESPPSCOMP,			SESPPSDOMICILIO,SESPPSMATERNO,SESPPSNOMBRE,SESPPSPATERNO,SESPPSPERSONA,SESPPSPERSONID,SESPPSPERIDAGG,SESPPSOLRELACION,SESPSESPID,SESPSESPIDAGG,TASEGURAMIENTO,DIA,MES,ANIO 			FROM TB_501 WHERE TB_CORR=?</sql>
+      <result element="getDetalleLNegra" rowName="resultadoComentariosLNegra">
+         <element column="tb_corr" name="tb_corr"/>
+         <element column="tb_dateadd" name="tb_dateadd"/>
+         <element column="tb_days" name="tb_days"/>
+         <element column="c55016" name="c55016"/>
+         <element column="c55016" name="c55016"/>
+         <element column="nombre" name="nombre"/>
+         <element column="justificacion" name="justificacion"/>
+         <element column="autespnombre" name="autespnombre"/>
+         <element column="autnombre" name="autnombre"/>
+         <element column="cnbv_areaclave" name="cnbv_areaclave"/>
+         <element column="cnbvaclagg" name="cnbvaclagg"/>
+         <element column="cnbvadescp" name="cnbvadescp"/>
+         <element column="cnbv_diasplazo" name="cnbv_diasplazo"/>
+         <element column="cnbv_diasplagg" name="cnbv_diasplagg"/>
+         <element column="cnbvfechpbl" name="cnbvfechpbl"/>
+         <element column="cnbv_folio" name="cnbv_folio"/>
+         <element column="cnbv_folioagg" name="cnbv_folioagg"/>
+         <element column="cnbvnroexp" name="cnbvnroexp"/>
+         <element column="cnbv_nrooficio" name="cnbv_nrooficio"/>
+         <element column="cnbv_oficioyear" name="cnbv_oficioyear"/>
+         <element column="cnbvoficioyearagg" name="cnbvoficioyearagg"/>
+         <element column="cnbvsolicitudsiara" name="cnbvsolicitudsiara"/>
+         <element column="nombresolicitante" name="nombresolicitante"/>
+         <element column="trequeq" name="trequeq"/>
+         <element column="referencia1" name="referencia1"/>
+         <element column="referencia2" name="referencia2"/>
+         <element column="referencia3" name="referencia3"/>
+         <element column="sespecpsc" name="sespecpsc"/>
+         <element column="sesppscomp" name="sesppscomp"/>
+         <element column="sesppsdomicilio" name="sesppsdomicilio"/>
+         <element column="sesppsmaterno" name="sesppsmaterno"/>
+         <element column="sesppsnombre" name="sesppsnombre"/>
+         <element column="sesppspaterno" name="sesppspaterno"/>
+         <element column="sesppspersona" name="sesppspersona"/>
+         <element column="sesppspersonid" name="sesppspersonid"/>
+         <element column="sesppsperidagg" name="sesppsperidagg"/>
+         <element column="sesppsolrelacion" name="sesppsolrelacion"/>
+         <element column="sespsespid" name="sespsespid"/>
+         <element column="sespsespidagg" name="sespsespidagg"/>
+         <element column="taseguramiento" name="taseguramiento"/>
+         <element column="dia" name="dia"/>
+         <element column="mes" name="mes"/>
+         <element column="anio" name="anio"/>
       </result>
-      <param name="tbCorr" ordinal="1" sqlType="STRING"/>	  
+      <param name="tbCorr" ordinal="1" sqlType="STRING"/>
    </query>
-    <query id="getDetalleLWC"  useConfig="MSSQL">
-      <sql>SELECT UID,FIRST_NAME,LAST_NAME,ALIASES,ALTERNATIVE_SPELLING,CATEGORY,TITLE,SUB_CATEGORY,POSITION,AGE,DATE_OF_BIRTH,PLACE_OF_BIRTH,PASSPORTS,SOCIAL_SECURITY,LOCATIONS,COUNTRIES,
-				TYPE_OF_PERSON,FURTHER_INFORMATION,ENTERED_DATE,UPDATED_DATE,KEYWORDS 
-			FROM MONITORP.dbo.VWWORLDCHECK WHERE UID = ?</sql>  
-	  <result element="getDetalleLWC" rowName="getComentariosLWCResp">
-		<element column="uid" name="uid" xsdtype="integer"/>											  
-		<element column="first_name" name="first_name" xsdtype="string"/>
-		<element column="last_name" name="last_name" xsdtype="string"/>
-		<element column="aliases" name="aliases" xsdtype="string"/>
-		<element column="alternative_spelling" name="alternative_spelling" xsdtype="string"/>
-		<element column="category" name="category" xsdtype="string"/>
-		<element column="title" name="title" xsdtype="string"/>
-		<element column="sub_category" name="sub_category" xsdtype="string"/>
-		<element column="position" name="position" xsdtype="string"/>
-		<element column="age" name="age" xsdtype="string"/>
-		<element column="date_of_birth" name="date_of_birth" xsdtype="string"/>
-		<element column="place_of_birth" name="place_of_birth" xsdtype="string"/>
-		<element column="passports" name="passports" xsdtype="string"/>
-		<element column="social_security" name="social_security" xsdtype="string"/>
-		<element column="countries" name="countries" xsdtype="string"/>
-		<element column="further_information" name="further_information" xsdtype="string"/>
-		<element column="entered_date" name="entered_date" xsdtype="string"/>
-		<element column="updated_date" name="updated_date" xsdtype="string"/>
-		<element column="keywords" name="keywords" xsdtype="string"/>
+   <query id="getDetalleLWC" useConfig="MSSQL">
+      <sql>SELECT UID,FIRST_NAME,LAST_NAME,ALIASES,ALTERNATIVE_SPELLING,CATEGORY,TITLE,SUB_CATEGORY,POSITION,AGE,DATE_OF_BIRTH,PLACE_OF_BIRTH,PASSPORTS,SOCIAL_SECURITY,LOCATIONS,COUNTRIES,				TYPE_OF_PERSON,FURTHER_INFORMATION,ENTERED_DATE,UPDATED_DATE,KEYWORDS 			FROM MONITORP.dbo.VWWORLDCHECK WHERE UID = ?</sql>
+      <result element="getDetalleLWC" rowName="getComentariosLWCResp">
+         <element column="uid" name="uid"/>
+         <element column="first_name" name="first_name"/>
+         <element column="last_name" name="last_name"/>
+         <element column="aliases" name="aliases"/>
+         <element column="alternative_spelling" name="alternative_spelling"/>
+         <element column="category" name="category"/>
+         <element column="title" name="title"/>
+         <element column="sub_category" name="sub_category"/>
+         <element column="position" name="position"/>
+         <element column="age" name="age"/>
+         <element column="date_of_birth" name="date_of_birth"/>
+         <element column="place_of_birth" name="place_of_birth"/>
+         <element column="passports" name="passports"/>
+         <element column="social_security" name="social_security"/>
+         <element column="countries" name="countries"/>
+         <element column="further_information" name="further_information"/>
+         <element column="entered_date" name="entered_date"/>
+         <element column="updated_date" name="updated_date"/>
+         <element column="keywords" name="keywords"/>
       </result>
-      <param name="uid" ordinal="1" sqlType="STRING"/>	  
+      <param name="uid" ordinal="1" sqlType="STRING"/>
    </query>
    <query id="getDetalleLSiti" useConfig="MSSQL">
-      <sql>SELECT PER.ID_REG_PERSONA,PER.CARACTER,PER.PERSONA,PER.PATERNO,PER.MATERNO,PER.NOMBRE,PER.RFC,PER.RELACION,PER.DOMICILIO,PER.COMPLEMENTARIOS,EXP.CNBV_NUM_OFICIO,EXP.CNBV_NUM_EXPEDIENTE,
-			EXP.CNBV_SOL_SIARA,EXP.CNBV_FOLIO,EXP.CNBV_OFICIO_YEAR,EXP.CNBV_AREA_CLAVE,EXP.CNBV_AREA_DESC,EXP.CNBV_FECHA_PUB,EXP.CNBV_DIAS_PLAZO,EXP.AUTORIDAD_NOMBRE,
-			ISNULL(EXP.AUTORIDAD_ESP_NOMBRE,'') AS AUTORIDAD_ESP_NOMBRE,EXP.NOMBRE_SOLICITANTE,EXP.REFERENCIA,EXP.REFERENCIA1,EXP.REFERENCIA2 
-			FROM SITI_SOL_PERSONAS PER INNER JOIN SITI_SOLICITUD_ESP SE ON PER.ID_REG_SOL_ESP=SE.ID_REG_SOL_ESP INNER JOIN SITI_EXPEDIENTE EXP ON SE.ID_EXPEDIENTE=EXP.ID_EXPEDIENTE 
-			WHERE PER.ID_REG_PERSONA=?</sql>  
-	  <result element="getDetalleLSiti" rowName="getComentariosLSitiResp">
-		<element column="id_reg_persona" name="id_reg_persona" xsdtype="integer"/>
-		<element column="caracter" name="caracter" xsdtype="string"/>
-		<element column="paterno" name="paterno" xsdtype="string"/>
-		<element column="materno" name="materno" xsdtype="string"/>
-		<element column="nombre" name="nombre" xsdtype="string"/>
-		<element column="rfc" name="rfc" xsdtype="string"/>
-		<element column="relacion" name="relacion" xsdtype="string"/>
-		<element column="domicilio" name="domicilio" xsdtype="string"/>
-		<element column="complementarios" name="complementarios" xsdtype="string"/>
-		<element column="cnbv_num_oficio" name="cnbv_num_oficio" xsdtype="string"/>
-		<element column="cnbv_num_expediente" name="cnbv_num_expediente" xsdtype="string"/>
-		<element column="cnbv_sol_siara" name="cnbv_sol_siara" xsdtype="string"/>
-		<element column="cnbv_folio" name="cnbv_folio" xsdtype="string"/>
-		<element column="cnbv_oficio_year" name="cnbv_oficio_year" xsdtype="string"/>
-		<element column="cnbv_area_clave" name="cnbv_area_clave" xsdtype="string"/>
-		<element column="cnbv_area_desc" name="cnbv_area_desc" xsdtype="string"/>
-		<element column="cnbv_fecha_pub" name="cnbv_fecha_pub" xsdtype="string"/>
-		<element column="cnbv_dias_plazo" name="cnbv_dias_plazo" xsdtype="string"/>
-		<element column="autoridad_nombre" name="autoridad_nombre" xsdtype="string"/>
-		<element column="nombre_solicitante" name="autoridad_nombre" xsdtype="string"/>
-		<element column="referencia" name="referencia" xsdtype="string"/>
-		<element column="referencia1" name="referencia1" xsdtype="string"/>
-		<element column="referencia2" name="referencia2" xsdtype="string"/>
+      <sql>SELECT PER.ID_REG_PERSONA,PER.CARACTER,PER.PERSONA,PER.PATERNO,PER.MATERNO,PER.NOMBRE,PER.RFC,PER.RELACION,PER.DOMICILIO,PER.COMPLEMENTARIOS,EXP.CNBV_NUM_OFICIO,EXP.CNBV_NUM_EXPEDIENTE,			EXP.CNBV_SOL_SIARA,EXP.CNBV_FOLIO,EXP.CNBV_OFICIO_YEAR,EXP.CNBV_AREA_CLAVE,EXP.CNBV_AREA_DESC,EXP.CNBV_FECHA_PUB,EXP.CNBV_DIAS_PLAZO,EXP.AUTORIDAD_NOMBRE,			ISNULL(EXP.AUTORIDAD_ESP_NOMBRE,'') AS AUTORIDAD_ESP_NOMBRE,EXP.NOMBRE_SOLICITANTE,EXP.REFERENCIA,EXP.REFERENCIA1,EXP.REFERENCIA2 			FROM SITI_SOL_PERSONAS PER INNER JOIN SITI_SOLICITUD_ESP SE ON PER.ID_REG_SOL_ESP=SE.ID_REG_SOL_ESP INNER JOIN SITI_EXPEDIENTE EXP ON SE.ID_EXPEDIENTE=EXP.ID_EXPEDIENTE 			WHERE PER.ID_REG_PERSONA=?</sql>
+      <result element="getDetalleLSiti" rowName="getComentariosLSitiResp">
+         <element column="id_reg_persona" name="id_reg_persona"/>
+         <element column="caracter" name="caracter"/>
+         <element column="paterno" name="paterno"/>
+         <element column="materno" name="materno"/>
+         <element column="nombre" name="nombre"/>
+         <element column="rfc" name="rfc"/>
+         <element column="relacion" name="relacion"/>
+         <element column="domicilio" name="domicilio"/>
+         <element column="complementarios" name="complementarios"/>
+         <element column="cnbv_num_oficio" name="cnbv_num_oficio"/>
+         <element column="cnbv_num_expediente" name="cnbv_num_expediente"/>
+         <element column="cnbv_sol_siara" name="cnbv_sol_siara"/>
+         <element column="cnbv_folio" name="cnbv_folio"/>
+         <element column="cnbv_oficio_year" name="cnbv_oficio_year"/>
+         <element column="cnbv_area_clave" name="cnbv_area_clave"/>
+         <element column="cnbv_area_desc" name="cnbv_area_desc"/>
+         <element column="cnbv_fecha_pub" name="cnbv_fecha_pub"/>
+         <element column="cnbv_dias_plazo" name="cnbv_dias_plazo"/>
+         <element column="autoridad_nombre" name="autoridad_nombre"/>
+         <element column="nombre_solicitante" name="autoridad_nombre"/>
+         <element column="referencia" name="referencia"/>
+         <element column="referencia1" name="referencia1"/>
+         <element column="referencia2" name="referencia2"/>
       </result>
-      <param name="idReg" ordinal="1" sqlType="STRING"/>	  
+      <param name="idReg" ordinal="1" sqlType="STRING"/>
    </query>
-	<query id="qInsertaObsBusqueda" returnUpdatedRowCount="true" useConfig="MSSQL">
-      <sql>INSERT INTO OBS_BUSQUEDA_CAB (NOMBRE,OBSERVACIONES,USUARIO_ALTA,FECHA_ALTA,USUARIO_ACTUALIZACION,FECHA_ACTUALIZACION) VALUES (?,?,?,GETDATE(),NULL,NULL)</sql>  
-	  <result element="getObsBusquedaResp" rowName="resultadoObsBusqueda">
-		<element column="1" name="Value" xsdType="integer"/>
+   <query id="qInsertaObsBusqueda" returnGeneratedKeys="true" useConfig="MSSQL">
+      <sql>INSERT INTO OBS_BUSQUEDA_CAB (NOMBRE,OBSERVACIONES,USUARIO_ALTA,FECHA_ALTA,USUARIO_ACTUALIZACION,FECHA_ACTUALIZACION) VALUES (?,?,?,GETDATE(),NULL,NULL)</sql>
+      <result element="resultadoInsertBusquedaDet" rowName="resultadoObsBusqueda" useColumnNumbers="true">
+         <element column="1" name="id" xsdType="integer"/>
       </result>
-      <param name="nombre" ordinal="1" sqlType="STRING"/>  
-      <param name="observaciones" ordinal="2" sqlType="STRING"/>  
-      <param name="usuario_alta" ordinal="3" sqlType="STRING"/>  
+      <param name="nombre" ordinal="1" sqlType="STRING"/>
+      <param name="observaciones" ordinal="2" sqlType="STRING"/>
+      <param name="usuario_alta" ordinal="3" sqlType="STRING"/>
    </query>
    <query id="getObsBusquedaNombre" useConfig="MSSQL">
-      <sql>SELECT * FROM OBS_BUSQUEDA_CAB WHERE NOMBRE = ?</sql>  
-	  <result element="getObsBusquedaResp" rowName="resultadoObsBusqueda">
-		<element column="id" name="id" xsdType="string"/>
-		<element column="observaciones" name="observaciones" xsdType="string"/>
+      <sql>SELECT * FROM OBS_BUSQUEDA_CAB WHERE NOMBRE = ?</sql>
+      <result element="getObsBusquedaResp" rowName="resultadoObsBusqueda">
+         <element column="id" name="id" xsdType="string"/>
+         <element column="observaciones" name="observaciones" xsdType="string"/>
       </result>
-      <param name="nombre" ordinal="1" sqlType="STRING"/>  
+      <param name="nombre" ordinal="1" sqlType="STRING"/>
    </query>
-     <query id="qActualizaObsBusqueda" returnUpdatedRowCount="true" useConfig="MSSQL">
+   <query id="qActualizaObsBusqueda" returnUpdatedRowCount="true" useConfig="MSSQL">
       <sql>UPDATE OBS_BUSQUEDA_CAB SET OBSERVACIONES=?,USUARIO_ACTUALIZACION=?,FECHA_ACTUALIZACION=GETDATE() WHERE ID=?</sql>
       <result element="updateObsBusquedaResp" rowName="resultadoObsBusqueda">
-        <element column="1" name="Value" xsdType="integer"/>
+         <element column="1" name="Value" xsdType="integer"/>
       </result>
       <param defaultValue="#{NULL}" name="obs" ordinal="1" sqlType="STRING"/>
       <param defaultValue="#{NULL}" name="usuario" ordinal="2" sqlType="STRING"/>
       <param defaultValue="#{NULL}" name="id" ordinal="3" sqlType="STRING"/>
    </query>
-    <query id="qEliminaObsBusquedaDet" returnUpdatedRowCount="true" useConfig="MSSQL">
+   <query id="qEliminaObsBusquedaDet" returnUpdatedRowCount="true" useConfig="MSSQL">
       <sql>DELETE OBS_BUSQUEDA_DET WHERE ID=?</sql>
       <result element="deleteObsBusquedaDetResp" rowName="resultadoObsBusquedaDet">
-        <element column="1" name="Value" xsdType="integer"/>
+         <element column="1" name="Value" xsdType="integer"/>
       </result>
-      <param name="id" ordinal="1" sqlType="STRING"/>     
+      <param name="id" ordinal="1" sqlType="STRING"/>
    </query>
    <query id="qInsertaObsBusquedaDet" returnUpdatedRowCount="true" useConfig="MSSQL">
-      <sql>INSERT INTO OBS_BUSQUEDA_DET (ID,FOLIO,NOMBRE,LISTA,PORCENTAJE) VALUES (?,?,?,?,?)</sql>  
-	  <result element="qInsertaObsBusquedaDetResp" rowName="resultadoInsertBusquedaDet">
-		<element column="1" name="Value" xsdType="integer"/>
+      <sql>INSERT INTO OBS_BUSQUEDA_DET (ID,FOLIO,NOMBRE,LISTA,PORCENTAJE) VALUES (?,?,?,?,?)</sql>
+      <result element="qInsertaObsBusquedaDetResp" rowName="resultadoInsertBusquedaDet">
+         <element column="1" name="Value" xsdType="integer"/>
       </result>
-      <param name="id" ordinal="1" sqlType="STRING"/>	  
-	  <param name="folio" ordinal="2" sqlType="STRING"/>	  
-	  <param name="nombre" ordinal="3" sqlType="STRING"/>	  
-	  <param name="lista" ordinal="4" sqlType="STRING"/>	  
-	  <param name="porcentaje" ordinal="5" sqlType="STRING"/>	  
-   </query>  
+      <param name="id" ordinal="1" sqlType="STRING"/>
+      <param name="folio" ordinal="2" sqlType="STRING"/>
+      <param name="nombre" ordinal="3" sqlType="STRING"/>
+      <param name="lista" ordinal="4" sqlType="STRING"/>
+      <param name="porcentaje" ordinal="5" sqlType="STRING"/>
+   </query>
    <operation name="qInsertaObsBusquedaDet">
       <call-query href="qInsertaObsBusquedaDet">
          <with-param name="id" query-param="id"/>
@@ -305,13 +284,13 @@
          <with-param name="nombre" query-param="nombre"/>
       </call-query>
    </operation>
-    <operation name="qInsertaObsBusqueda">
+   <operation name="qInsertaObsBusqueda">
       <call-query href="qInsertaObsBusqueda">
          <with-param name="nombre" query-param="nombre"/>
          <with-param name="observaciones" query-param="observaciones"/>
          <with-param name="usuario_alta" query-param="usuario_alta"/>
       </call-query>
-   </operation>	
+   </operation>
    <operation name="getDetalleLWC">
       <call-query href="getDetalleLWC">
          <with-param name="uid" query-param="uid"/>
@@ -346,13 +325,13 @@
          <with-param name="uid" query-param="uid"/>
       </call-query>
    </operation>
-	<operation name="qInsertaComentariosWCP">
+   <operation name="qInsertaComentariosWCP">
       <call-query href="qInsertaComentariosWCP">
          <with-param name="obs" query-param="obs"/>
          <with-param name="validation" query-param="validation"/>
          <with-param name="uid" query-param="uid"/>
       </call-query>
-   </operation>  		  
+   </operation>
    <operation name="qInsertaComentariosLN">
       <call-query href="qInsertaComentariosLN">
          <with-param name="obs" query-param="obs"/>
@@ -366,13 +345,13 @@
          <with-param name="validation" query-param="validation"/>
          <with-param name="tbCorr" query-param="tbCorr"/>
       </call-query>
-   </operation>   
+   </operation>
    <operation name="getComentariosLGris">
       <call-query href="getComentariosLGris">
          <with-param name="tbCorr" query-param="tbCorr"/>
       </call-query>
    </operation>
-    <operation name="getComentariosLNegra">
+   <operation name="getComentariosLNegra">
       <call-query href="getComentariosLNegra">
          <with-param name="tbCorrN" query-param="tbCorrN"/>
       </call-query>
