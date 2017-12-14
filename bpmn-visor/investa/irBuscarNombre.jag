@@ -1,8 +1,15 @@
 
 <%
 include("/model/common.jag");
+var currentDate = new Date();
+var tiempo = 0;
+Math.round(Date.parse(currentDate) / 1000);
+var fini = Date.parse(currentDate); // Converting in Timestamp 
+
 var nombre = request.getParameter("nombre");		
 var modo = request.getParameter("modo");
+var fecha = request.getParameter("fecha");
+var user = session.get("user");	
 
 if(nombre == null){
 	nombre = "";	
@@ -49,8 +56,18 @@ if(nombre == null){
 }
 include("detalleBusquedaNombre.jag");		
 include("Controller/CtrlConsultaNombre.jag");
-
  lista = (nombre == "" || nombre == "null" || nombre == null ) ? "" : consultaNombre(nombre, modo);
+
+
+log.info("Fecha inicio: " + currentDate);
+currentDate = new Date();
+log.info("Fecha fin: " + currentDate);
+Math.round(Date.parse(currentDate) / 1000);
+var ffin = Date.parse(currentDate); // Converting in Timestamp 
+
+tiempo = (ffin-fini)/1000;
+log.info("tiempo: " + tiempo + " segundos.");
+
  %>
  
 		<link href="resources/plantilla/css/select2.css" rel="stylesheet" />
@@ -112,14 +129,14 @@ include("Controller/CtrlConsultaNombre.jag");
 			  </div>
 			  <div class="row">
 				<div class="col-md-4" align="center"> 
-					<input type="button" value="Enviar" id="btnEnviar" name="btnEnviar">&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" value="Borrar" id="btnBorrar" name="btnBorrar">	
+					<input class="btn btn-primary" type="button" value="Enviar" id="btnEnviar" name="btnEnviar">&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" class="btn btn-primary" value="Borrar" id="btnBorrar" name="btnBorrar">	
 				</div>
 			  </div>
 			</div>			
 			<br/>
 			<br/>
 			<div>
-				<%=createTablaCoincidencias(nombre, lista, Usuario_v)%>
+				<%=createTablaCoincidencias(nombre, lista, user, tiempo, fecha)%>
 			</div>
             
 
@@ -144,29 +161,46 @@ include("Controller/CtrlConsultaNombre.jag");
 
 <script>
 	
-	jQuery(document).ready(function(){   				
+	jQuery(document).ready(function(){   
+	var idReg ="";				
 		
 		$('#buscando').hide();
 						
 		$(".buscar" ).click(function() {
 			$('#buscando').show();        			
 		});
+
 	});
 	
 	
-		$("#btnEnviar").click(function(){	
+	$("#btnEnviar").click(function(){	
 		var nombre= $("#txtNombre").val();
 		var modo = "";
+		var format = new Date(<%new Date();%>);
+		var dia = format.getDate();
+		var mm = format.getMonth()+1;
+		var anio = format.getFullYear();
+		var usuario = "<%=user%>";
+		$('#form').empty();
+		
+	//	console.log(dia+mm+anio);
+		if(dia < 10){
+			dia = '0'+ dia;
+		}
+		if(mm < 10){
+			mm = '0' + mm;
+		}
+		var date = dia+'/'+mm+'/'+anio;
 		if ($("#chbModo").is(":checked") ) {
 			modo = "ok";
 		}
-			location.href='irBuscarNombre?nombre=' + nombre + '&&modo='+modo;
+			location.href='irBuscarNombre?nombre=' + nombre + '&&modo='+modo+'&&fecha='+date;
 			
 			$('#example tbody tr').remove();
 		});
 
 		$('#btnBorrar').click(function(){
-			location.href='irBuscarNombre?nombre';
+			location.href='irBuscarNombre';
 		});
 		
 		function showDetail(obj){
@@ -174,7 +208,7 @@ include("Controller/CtrlConsultaNombre.jag");
 			var tr = $("#example > tbody").find("tr").eq(index-1);
 			var folio = tr.find("td").eq(0).text();
 			var tipo = tr.find("td").eq(1).text();	
-			console.log("get folio "+ folio + "tipo " + tipo + tr.find("td").eq(2).text()	);
+	//		console.log("get folio "+ folio + "tipo " + tipo + tr.find("td").eq(2).text()	);
 	//		var ventanaDetalle = window.open(url, "nuevo", "directories=no, location=no, menubar=no, scrollbars=yes, statusbar=no, tittlebar=no, width=1000, height=600");
 	//			ventanaDetalle.focus();
 			consultaListas(folio, tipo);
@@ -183,10 +217,10 @@ include("Controller/CtrlConsultaNombre.jag");
 		$("#btnGuardar").click(function(){
 			var idRegistro = $("#txtID").val();
 			var obs = $("#txaComentario").val();
-			var folio = $("#txaComentario").val();		
-			var porcentaje = $("#txaComentario").val();
 			var usuario = "<%=user%>";
 			var nombre = "<%=nombre%>";
+
+			idReg = idRegistro;
 			
 			if(obs.trim() == ""){
 				 $("#idMsg").html('<div class="alert alert-warning">'+
@@ -199,13 +233,13 @@ include("Controller/CtrlConsultaNombre.jag");
 			if(idRegistro != ""){
 				actualizaObservacion(obs,usuario,idRegistro);
 			}else{				
-				altaObservacion(nombre, obs, usuario);
+				altaObservacion(nombre, obs, usuario, idReg);
 			}
 		});
 		
-		function altaObservacion(nombre, obs, usuario){
+		function altaObservacion(nombre, obs, usuario, idReg){
 			
-			console.log("Usuario " +usuario);
+		//	console.log("Usuario " +usuario);
 			var payload="";
 			
 			payload  = '<dat:qInsertaObsBusqueda xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
@@ -229,11 +263,12 @@ include("Controller/CtrlConsultaNombre.jag");
 				var res = "";
 				if( $(xmlHttpRequest.responseText).find('resultadoInsertBusquedaDet').text() != ''){
 					$(xmlHttpRequest.responseText).find('resultadoInsertBusquedaDet').each(function(){
-						 res = $(this).find("Value").text();
+						 res = $(this).find("id").text();
 					});
 				}
 				
-				if(res == 1){
+				if(res > 0){
+					actualizaObsDetalle(1, res);
 						$("#idMsg").html('<div class="alert alert-success">'+
 					'Se ha realizado la petición'+
 					'</div>');
@@ -248,7 +283,9 @@ include("Controller/CtrlConsultaNombre.jag");
 			
 			function actualizaObservacion(obs,usuario,idRegistro){
 				var payload="";
-				console.log("id " +idRegistro);
+			//	console.log("id " +idRegistro);
+				idReg = idRegistro;
+			//	console.log("idReg " +idReg);
 				payload  = '<dat:qActualizaObsBusqueda xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
 						payload += '<dat:obs>' +obs+ '</dat:obs>';
 						payload += '<dat:usuario>'+ usuario +'</dat:usuario>';
@@ -275,16 +312,137 @@ include("Controller/CtrlConsultaNombre.jag");
 				}
 				
 				if(res == 1){
-						$("#idMsg").html('<div class="alert alert-success">'+
-					'Se ha realizado la petición'+
-					'</div>');
+						actualizaObsDetalle(2, idReg);
 				}else{
 					$("#idMsg").html('<div class="alert alert-danger">'+
 					'Sucedio un error al guardar la Observación'+$(this).find("estatus").text()+
 					'</div>');
+					$('#ModalInfo').modal('show');
+				}
+				
+			
+			}
+
+			function imprime(){
+	/*			var content = document.getElementById('form').innerHTML;
+                var win = window.open();
+                win.document.write(content);
+				win.document.close();
+				win.focus(); 				
+                win.print();	// JavaScript Print Function
+				win.close();
+	*/
+				window.print();
+			}
+
+			function actualizaObsDetalle(tipo, idReg){
+				if (tipo == 1) { //Alta
+					insertDetalle(idReg);
+				} else if (tipo == 2) { //Actualización
+					deleteDetalle();
+
+				}
+			}
+
+			function insertDetalle(idRegis){
+				var payload="";	
+			//	var idRegistro = $("#txtID").val();
+				var folio = "";
+				var nombre = "";
+				var lista = "";
+				var porcentaje = "";
+
+				payload  = '<p:qInsertObsDetalle_batch_req xmlns:p="http://ws.wso2.org/dataservice">';
+				
+
+				$('#example tbody tr').each(function(index, el) {
+					folio = $(this).find('td').eq(0).text();
+					nombre = $(this).find('td').eq(2).text();
+					lista = $(this).find('td').eq(3).text();
+					porcentaje = $(this).find('td').eq(4).text();
+					payload +=      '<p:qInsertObsDetalle>';
+					payload +=         '<p:id>'+idRegis+'</p:id>';
+					payload +=         '<p:folio>'+folio+'</p:folio>';
+					payload +=         '<p:nombre>'+ nombre+'</p:nombre>';
+					payload +=         '<p:lista>'+lista+'</p:lista>';
+					payload +=         '<p:porcentaje>'+porcentaje+'</p:porcentaje>';
+					payload +=      '</p:qInsertObsDetalle>';
+				});	
+				payload +=   '</p:qInsertObsDetalle_batch_req>';
+
+				
+				 $.ajax({
+						url: '/commons/postSOAP',
+						type: 'post',
+						headers: {'Destino':'BpmnBusqueda', 'SOAPAction':'qInsertObsDetalle_batch_req'},
+						dataType: 'xml',
+						complete: obDetallesActRespon,
+						error: function (xhr, status, error) {},
+						data: payload
+				});
+				
+			}
+
+			function obDetallesActRespon(xmlHttpRequest, status){
+				var respas = $(xmlHttpRequest.responseText).find("[nodeName*='axis2:']").text();
+				var resxml = xmlHttpRequest.responseText.replace(/soapenv:Body/g,"resultado");
+				var resp = $(resxml).find("resultado").text();
+			//	 console.log ("Location1: " + resp);
+				if(resp == "SUCCESSFUL"){
+					$("#idMsg").html('<div class="alert alert-success">'+
+					'Se ha guardado la observación'+
+					'</div>');
+
+					$("#btnGuardar").attr('disabled','disabled');
+					$("#txaComentario").attr('disabled','disabled');
+				}else{
+					$("#idMsg").html('<div class="alert alert-danger">'+
+					'Sucedio un error al guardar el Detalle'+$(this).find("estatus").text()+
+					'</div>');
 				}
 				$('#ModalInfo').modal('show');
+			}
+
+			function deleteDetalle(){
+				var payload="";
+				var idRegistro = $("#txtID").val();
+				idReg = idRegistro;
+
+				payload  = '<dat:qEliminaObsBusquedaDet xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
+						payload += '<dat:id>' +idRegistro+ '</dat:id>';
+						payload += '</dat:qEliminaObsBusquedaDet>';
+				 $.ajax({
+						url: '/commons/postSOAP',
+						type: 'post',
+						headers: {'Destino':'BpmnVisorComentarios', 'SOAPAction':'qEliminaObsBusquedaDet'},
+						dataType: 'xml',
+						complete: comentariosDeletRespon,
+						error: function (xhr, status, error) {},
+						data: payload
+				}); 
+			}
+
+			function comentariosDeletRespon(xmlHttpRequest, status){
+			//console.log("coment" + $(xmlHttpRequest.responseText).find('respComentariosLN').text());
+				var res = "";
+				if( $(xmlHttpRequest.responseText).find('resultadoObsBusquedaDet').text() != ''){
+					$(xmlHttpRequest.responseText).find('resultadoObsBusquedaDet').each(function(){
+						 res = $(this).find("Value").text();
+					});
+				}
+				
+				if(res > 0){						
+					insertDetalle(idReg);
+				}else{
+					$("#idMsg").html('<div class="alert alert-danger">'+
+					'Sucedio un error al guardar la Observación'+$(this).find("estatus").text()+
+					'</div>');
+					$('#ModalInfo').modal('show');
+					console.log("id: " +idReg + " Error al eliminar detalle");
+				}
+				
 			
 			}
 	
+
 </script>

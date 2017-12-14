@@ -7,7 +7,7 @@
 <link rel='stylesheet prefetch' href='resources/plantilla/css/buttons.dataTables.min.css'>
  
  
-<div class="modal fade col-centered in" id="DetalleModal" tabindex="-1" role="dialog">
+<div id="DetalleModal" class="modal fade" tabindex="-1" role="dialog">
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -19,13 +19,26 @@
 			</div>
 			<div class="table-clear"></div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Regresar</button>
-				<button id="btnGuardaComent" type="button" class="btn btn-default" data-dismiss="modal">Guardar</button>
-				<button type="button" class="btn btn-default" onclick="javascript:imprimir();" data-dismiss="modal">Imprimir</button>
+				<button type="button" class="btn btn-primary" data-dismiss="modal">Regresar</button>
+				<input  id="btnGuardaComent" type="button" class="btn btn-primary" value="Guardar">
+				<button type="button" class="btn btn-primary" onclick="javascript:imprimir();" data-dismiss="modal">Imprimir</button>
 		  </div>
 		</div>
 	</div>
 </div>
+
+<div id="ModalInf" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog_confirm_mapLabel" aria-hidden="true">
+    <div class="modal-dialog ">
+      <div class="modal-content">
+        <div class="modal-body" align="center" >
+			<span id="idMsge"></span>
+		</div>
+		<div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Aceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 <script src='resources/plantilla/js/jquery-1.11.1.min.js'></script>
 <script>
@@ -80,6 +93,7 @@ function listasRespon(xmlHttpRequest, status){
 	var anio = format.getFullYear();
 	var usuario = "<%=user%>";
 	$('#form').empty();
+	$("#btnGuardaComent").prop('disabled',false);
 	
 	console.log(dia+mm+anio);
 	if(dia < 10){
@@ -565,7 +579,7 @@ function listasRespon(xmlHttpRequest, status){
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td width=\"22%\">INFO ADICIONAL:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("further_information").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "	            <td width=\"78%\"><textarea name=\"txtInfo\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" disabled=\"true\">"+ $(this).find("further_information").text() +"</textarea>    </td>";
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td width=\"22%\">FECHA DE CREACION:</td>";
@@ -642,10 +656,10 @@ function imprimir() {
 		var index;		
 			
 			if(coment.trim() == ""){
-				 $("#idMsg").html('<div class="alert alert-warning">'+
+				 $("#idMsge").html('<div class="alert alert-warning">'+
 					'El campo Comentario no puede ser vacío'+
 					'</div>');
-				$('#ModalInfo').modal('show');
+				$('#ModalInf').modal('show');
 				 return false;
 			}		
 			
@@ -718,16 +732,17 @@ function imprimir() {
 				}
 				
 				if(res == 1){
-				$("#idMsg").html('<div class="alert alert-success">'+
-					'Se ha realizado la petición'+
-					'</div>');
-				$('#txtObservaciones').prop('disabled', true);
+					$("#idMsge").html('<div class="alert alert-success">'+
+						'Se ha realizado la petición'+
+						'</div>');
+					$("#txtObservaciones").attr('disabled','disabled');
+					$("#btnGuardaComent").attr('disabled','disabled');
 				}else{
-					$("#idMsg").html('<div class="alert alert-danger">'+
+					$("#idMsge").html('<div class="alert alert-danger">'+
 					'Sucedio un error '+$(this).find("estatus").text()+
 					'</div>');
 				}
-				$('#ModalInfo').modal('show');
+				$('#ModalInf').modal('show');
 			
 			}
 

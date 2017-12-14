@@ -1,7 +1,6 @@
 <%
-
-	
 	function consultaNombre(_nombre,_mode){
+
 		var permisiveMode;
 		if(_mode == "ok"){
 			log.info("Modo " + _mode);
@@ -26,7 +25,6 @@
 		ws.setRequestHeader('SOAPAction', action);
 		ws.setRequestHeader('Content-Type','text/xml; charset=utf-8');
 		
-		
 		ws.send(payload.toXMLString());
 		var responseXML = new XML(ws.responseText.replace(/return/g,'resultado'));
 		log.info("Coincidencias: " + responseXML.toXMLString());
@@ -35,7 +33,7 @@
 	}
 	
 	
-	function createTablaCoincidencias(nombre, lista, usuario) {
+	function createTablaCoincidencias(nombre, lista, usuario, tiempo, fecha) {
 		var result = "";
 		var id =0;
 		var db ="";
@@ -61,7 +59,7 @@
 				//}
 				
 			
-				result += '<table id="example" cellspacing="0" class="table table-striped table-bordered" style="font-size: small; margin-right:auto; margin-left:auto; width:60%" >';
+				result += '<table id="example" cellspacing="0" class="table table-striped table-bordered" style="font-size: small; margin-right:auto; margin-left:auto; width:80%" >';
 				result += '<thead>';
 				result += '<tr>';
 				result += '<th style="display:none;"></th>';
@@ -104,29 +102,23 @@
 				} 
 				
 				result += '</tbody>';
-				result += '</table>';			
-				result += '<br/>';
-				result += '<br/>';
-				result += '<div>Timepo de ejecución</div>';
-				result += '<br/>';
-				result += '<br/>';	
-				result += '<table width="57%" class="table-content" style="margin-left:auto; margin-right:auto;">';
+				result += '</table>';
+				result += '<table width="80%" class="table-content" style="margin-left:auto; margin-right:auto;">';
 				result += '<tr><td style="display:none"><input type="text" id="txtID" value ="' + idRegistro+ '"></td><td style="display:none"></td></tr>';
-				result += '<tr>';
-				result += '<td><p>OBSERVACIONES (máximo 1000 caracteres):</p></td>';
-				result += '</tr>';
+				result += '<tr><td><br/><br/>Timepo de ejecución: ' + tiempo +' segundos.<br/><br/></td></tr>';
+				result += '<tr><td><p>OBSERVACIONES (máximo 1000 caracteres):</p></td></tr>';
 				result += '<tr>';
 				result += '<td><textarea id="txaComentario" maxlength="1000" rows="4" cols="50" class="form-control" >'+ observaciones+'</textarea></td>';
 				result += '</tr>';
 				result += '<tr>';
-				result += '<td>Fecha de Consulta</td>';
+				result += '<td><br/><br/>Fecha de Consulta: '+fecha+'</td>';
 				result += '</tr>';
 				result += '<tr>';
-				result += '<td>Consulta realizada por: '+ usuario +'</td>';
+				result += '<td><br/>Consulta realizada por: '+ usuario +'</td>';
 				result += '</tr>';				
 				result += '<tr>';
 				result += '<td style="padding:2%;" align="center"><input style="width:18%"  class="btn btn-primary" type="button" value="Guardar" id="btnGuardar" name="btnGuardar"> &nbsp;&nbsp;&nbsp;&nbsp;';
-				result += '<input style="width:18%"  class="btn btn-primary" type="button" value="Imprimir" id="btnImprimir" name="btnImprimir">';
+				result += '<input style="width:18%"  class="btn btn-primary" type="button" value="Imprimir" id="btnImprimir" name="btnImprimir" onclick="imprime()">';
 				result += '</td>';
 				result += '</tr>';
 				result += '</table>';

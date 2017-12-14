@@ -1,0 +1,25 @@
+<data enableBatchRequests="true" name="dsBpmnBusqueda" transports="http https local">
+   <config enableOData="false" id="MSSQL">
+      <property name="driverClassName">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
+      <property name="url">jdbc:sqlserver://28.224.30.47:1433;databaseName=Monitor</property>
+      <property name="username">imonitorplus</property>
+      <property name="password">Investa-14</property>
+   </config>
+   <query id="qInsertObsDetalle" useConfig="MSSQL">
+      <sql>INSERT INTO OBS_BUSQUEDA_DET (ID,FOLIO,NOMBRE,LISTA,PORCENTAJE) VALUES (?,?,?,?,?)</sql>
+      <param name="id" ordinal="1" sqlType="STRING"/>
+      <param name="folio" ordinal="2" sqlType="STRING"/>
+      <param name="nombre" ordinal="3" sqlType="STRING"/>
+      <param name="lista" ordinal="4" sqlType="STRING"/>
+      <param name="porcentaje" ordinal="5" sqlType="STRING"/>
+   </query>
+   <operation name="qInsertObsDetalle" returnRequestStatus="true">
+      <call-query href="qInsertObsDetalle">
+         <with-param name="id" query-param="id"/>
+         <with-param name="folio" query-param="folio"/>
+         <with-param name="nombre" query-param="nombre"/>
+         <with-param name="lista" query-param="lista"/>
+         <with-param name="porcentaje" query-param="porcentaje"/>
+      </call-query>
+   </operation>
+</data>
