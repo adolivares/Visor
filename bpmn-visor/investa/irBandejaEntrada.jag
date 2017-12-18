@@ -102,7 +102,7 @@ include("/model/common.jag");
 						Fecha: 
 					</td>
 					<td>
-						<input style="width: 55%;" type="text" id="txtFecha" name="txtFecha" readonly placeholder="1999-01-01" />
+						<input style="width: 55%;" type="text" id="txtFecha" name="txtFecha" />
 					</td>
 					<td>
 						Id Cliente: 
@@ -184,7 +184,7 @@ include("/model/common.jag");
 						Fecha: 
 					</td>
 					<td>
-						<input type="text" id="txtFechaB" name="txtFecha" placeholder="1999-01-01" />
+						<input type="text" id="txtFechaB" name="txtFecha"  />
 					</td>
 					<td>
 						Id Cliente: 

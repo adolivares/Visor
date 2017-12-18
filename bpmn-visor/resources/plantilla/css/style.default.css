@@ -3804,3 +3804,20 @@ div.dataTables_wrapper {
         margin: 0 auto;
     }
 .dataTables_filter { display: none; }
+
+#buttons {
+  padding: 14px;
+  position: relative;
+        float: right;
+}
+
+.dt-button,a.dt-button{
+	 -webkit-border-radius: 4;
+  -moz-border-radius: 4;
+  border-radius: 4px;
+  font-family: Arial;
+  color: #ffffff;
+  background: #4a0061;
+  text-decoration: none;
+  padding: 5px 10px;
+}

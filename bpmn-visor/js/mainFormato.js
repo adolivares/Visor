@@ -15,28 +15,30 @@ function generarPDF(){
 
 
 function imprimir() {
-	var tipolista="Negra";
+
 	var docDefinition = {
 		  footer: function(currentPage, pageCount) { return { text:'Página '+currentPage.toString() + ' de ' + pageCount,fontSize: 7,alignment: 'center'}; },
 		  header: function(currentPage, pageCount) {return {};},
 	   content: [
 		 { image: 'bee',width: 200,height: 50, style: 'header' },
-		 'INFORMACIÓN DETALLADA DE COINCIDENCIA',
 		 { text: '  ', style: 'anotherStyle' },
-		 { style: 'superMargin',text: [{text: 'Fecha: ', style: 'anotherStyle'},nXML[0]]},
-		 { style: 'superMargin',text: [{text: 'Id de búsqueda: ', style: 'anotherStyle'},nXML[1]]},
-		 { style: 'superMargin',text: [{text: 'Id Cliente: ', style: 'anotherStyle'},nXML[2]]},
-		 { style: 'superMargin',text: [{text: 'Nombre o Razón social: ', style: 'anotherStyle'},nXML[3]]},
-		 { style: 'superMargin',text: [{text: 'Apellido Paterno: ', style: 'anotherStyle'},nXML[4]]},
-		 { style: 'superMargin',text: [{text: 'Apellido Materno: ', style: 'anotherStyle'},nXML[5]]},
-		 { style: 'superMargin',text: [{text: 'Relación: ', style: 'anotherStyle'},nXML[6]]},
-		 { style: 'superMargin',text: [{text: 'Aplicación: ', style: 'anotherStyle'},nXML[7]]},
-		 { style: 'superMargin',text: [{text: 'Resultado Calificación: ', style: 'anotherStyle'},nXML[8]]},
-		 { style: 'superMargin',text: [{text: 'Tipo de Lista: ', style: 'anotherStyle'},nXML[9]]},
-		 { style: 'superMargin',text: [{text: 'Porcentaje de búsqueda: ', style: 'anotherStyle'},nXML[10]]},
-		 { style: 'superMargin',text: [{text: 'Porcentaje de coincidencia: ', style: 'anotherStyle'},nXML[11]]},
+		 { text: 'INFORMACIÓN DETALLADA DE COINCIDENCIA', bold: true, },
 		 { text: '  ', style: 'anotherStyle' },
-		 'DETALLE DE LA COINCIDENCIA',
+		 { style: 'superMargin',text: [{text: 'Fecha: ', style: 'anotherStyle'},{text: nXML[0], fontSize: 10,}]},
+		 { style: 'superMargin',text: [{text: 'Id de búsqueda: ', style: 'anotherStyle'},{text: nXML[1], fontSize: 10,}]},
+		 { style: 'superMargin',text: [{text: 'Id Cliente: ', style: 'anotherStyle'},{text: nXML[2], fontSize: 10,}]},
+		 { style: 'superMargin',text: [{text: 'Nombre o Razón social: ', style: 'anotherStyle'},{text: nXML[3], fontSize: 10,}]},
+		 { style: 'superMargin',text: [{text: 'Apellido Paterno: ', style: 'anotherStyle'},{text: nXML[4], fontSize: 10,}]},
+		 { style: 'superMargin',text: [{text: 'Apellido Materno: ', style: 'anotherStyle'},{text: nXML[5], fontSize: 10,}]},
+		 { style: 'superMargin',text: [{text: 'Relación: ', style: 'anotherStyle'},{text: nXML[6], fontSize: 10,}]},
+		 { style: 'superMargin',text: [{text: 'Aplicación: ', style: 'anotherStyle'},{text: nXML[7], fontSize: 10,}]},
+		 { style: 'superMargin',text: [{text: 'Resultado Calificación: ', style: 'anotherStyle'},{text: nXML[8], fontSize: 10,}]},
+		 { style: 'superMargin',text: [{text: 'Tipo de Lista: ', style: 'anotherStyle'},{text: nXML[9], fontSize: 10,}]},
+		 { style: 'superMargin',text: [{text: 'Porcentaje de búsqueda: ', style: 'anotherStyle'},{text: nXML[10], fontSize: 10,}]},
+		 { style: 'superMargin',text: [{text: 'Porcentaje de coincidencia: ', style: 'anotherStyle'},{text: nXML[11], fontSize: 10,}]},
+		 { text: '  ', style: 'anotherStyle' },
+		 { text: 'DETALLE DE LA COINCIDENCIA', bold: true, },
+		 { text: '  ', style: 'anotherStyle' },
 		 constructBody()
 		,{
 		  table: {
@@ -75,7 +77,8 @@ function imprimir() {
 		 anotherStyle: {
 		   bold: true,
 		   margin: [ 5, 2, 5, 10 ],
-		   alignment: 'left'
+		   alignment: 'left',
+		   fontSize: 13
 		 },
 		superMargin: {
 			 margin: [ 5, 2, 5, 10 ],
@@ -112,47 +115,47 @@ function constructBody(){
 		$(xmlHttpRequest).find('resultadoComentariosLNegra').each(function(){
 			res =	 [
 					{ text: 'LISTA NEGRA', style: 'anotherStyle' },
-					{ style: 'superMargin',text: [{text: 'FOLIO: ', style: 'anotherStyle'},$(this).find("tb_corr").text()]},
-					{ style: 'superMargin',text: [{text: 'FECHA: ', style: 'anotherStyle'},$(this).find("tb_dateadd").text() ]},
-					{ style: 'superMargin',text: [{text: 'DIAS: ', style: 'anotherStyle'},$(this).find("tb_days").text() ]},
-					{ style: 'superMargin',text: [{text: 'C55016: ', style: 'anotherStyle'},$(this).find("C55016").text()]},
-					{ style: 'superMargin',text: [{text: 'NOMBRE: ', style: 'anotherStyle'},$(this).find("nombre").text()]},
-					{ style: 'superMargin',text: [{text: 'JUSTIFICACION: ', style: 'anotherStyle'},$(this).find("justificacion").text()]},
-					{ style: 'superMargin',text: [{text: 'AUTORIDAD ESPECÍFICA NOMBRE: ', style: 'anotherStyle'},$(this).find("autespnombre").text()]},
-					{ style: 'superMargin',text: [{text: 'AUTORIDAD NOMBRE: ', style: 'anotherStyle'},$(this).find("autnombre").text()]},
-					{ style: 'superMargin',text: [{text: 'ÁREA CLAVE: ', style: 'anotherStyle'},$(this).find("cnbv_areaclave").text()]},
-					{ style: 'superMargin',text: [{text: 'ÁREA CLAVE / AGG: ', style: 'anotherStyle'},$(this).find("cnbvaclagg").text()]},
-					{ style: 'superMargin',text: [{text: 'AREA DESCRIPCIÓN: ', style: 'anotherStyle'},$(this).find("cnbvadescp").text()]},
-					{ style: 'superMargin',text: [{text: 'DÍAS PLAZO: ', style: 'anotherStyle'},$(this).find("cnbv_diasplazo").text()]},
-					{ style: 'superMargin',text: [{text: 'DÍAS PLAZO / AGG: ', style: 'anotherStyle'},$(this).find("cnbv_diasplagg").text()]},
-					{ style: 'superMargin',text: [{text: 'FECHA PUBLICACIÓN: ', style: 'anotherStyle'},$(this).find("cnbvfechpbl").text()]},
-					{ style: 'superMargin',text: [{text: 'FOLIO: ', style: 'anotherStyle'},$(this).find("cnbv_folio").text()]},
-					{ style: 'superMargin',text: [{text: 'FOLIO / AGG: ', style: 'anotherStyle'},$(this).find("cnbv_folioagg").text()]},
-					{ style: 'superMargin',text: [{text: 'NÚMERO EXPEDIENTE: ', style: 'anotherStyle'},$(this).find("cnbvnroexp").text()]},
-					{ style: 'superMargin',text: [{text: 'NÚMERO OFICIO: ', style: 'anotherStyle'},$(this).find("cnbv_nrooficio").text()]},
-					{ style: 'superMargin',text: [{text: 'OFICIO YEAR: ', style: 'anotherStyle'},$(this).find("cnbv_oficioyear").text()]},
-					{ style: 'superMargin',text: [{text: 'OFICIO YEAR / AGG: ', style: 'anotherStyle'},$(this).find("cnbvoficioyearagg").text()]},
-					{ style: 'superMargin',text: [{text: 'SOLICITUD SIARA: ', style: 'anotherStyle'},$(this).find("cnbvsolicitudsiara").text()]},
-					{ style: 'superMargin',text: [{text: 'NOMBRE SOLICITANTE: ', style: 'anotherStyle'},$(this).find("nombresolicitante").text()]},
-					{ style: 'superMargin',text: [{text: 'TIPO DE REQUERIMIENTO: ', style: 'anotherStyle'},$(this).find("trequeq").text()]},
-					{ style: 'superMargin',text: [{text: 'REFERENCIA 1: ', style: 'anotherStyle'},$(this).find("referencia1").text()]},
-					{ style: 'superMargin',text: [{text: 'REFERENCIA 2: ', style: 'anotherStyle'},$(this).find("referencia2").text()]},
-					{ style: 'superMargin',text: [{text: 'REFERENCIA 3: ', style: 'anotherStyle'},$(this).find("referencia3").text()]},
-					{ style: 'superMargin',text: [{text: 'CARACTER: ', style: 'anotherStyle'},$(this).find("sespecpsc").text()]},
-					{ style: 'superMargin',text: [{text: 'COMPLEMENTARIOS: ', style: 'anotherStyle'},$(this).find("sesppscomp").text()]},
-					{ style: 'superMargin',text: [{text: 'DOMICILIO: ', style: 'anotherStyle'},$(this).find("sesppsdomicilio").text()]},
-					{ style: 'superMargin',text: [{text: 'MATERNO: ', style: 'anotherStyle'},$(this).find("sesppsmaterno").text()]},
-					{ style: 'superMargin',text: [{text: 'NOMBRE: ', style: 'anotherStyle'},$(this).find("sesppsnombre").text()]},
-					{ style: 'superMargin',text: [{text: 'PATERNO: ', style: 'anotherStyle'},$(this).find("sesppspaterno").text()]},
-					{ style: 'superMargin',text: [{text: 'PERSONA ID: ', style: 'anotherStyle'},$(this).find("sesppspersonid").text()]},
-					{ style: 'superMargin',text: [{text: 'PERSONA ID / AGG: ', style: 'anotherStyle'},$(this).find("sesppsperidagg").text()]},
-					{ style: 'superMargin',text: [{text: 'RELACIÓN: ', style: 'anotherStyle'},$(this).find("sesppsolrelacion").text()]},
-					{ style: 'superMargin',text: [{text: 'SOLICITUD ESPECÍFICA ID: ', style: 'anotherStyle'},$(this).find("sespsespid").text()]},
-					{ style: 'superMargin',text: [{text: 'SOLICITUD ESPECÍFICA ID / AGG: ', style: 'anotherStyle'},$(this).find("sespsespidagg").text()]},
-					{ style: 'superMargin',text: [{text: 'TIENE ASEGURAMIENTO: ', style: 'anotherStyle'},$(this).find("taseguramiento").text()]},
-					{ style: 'superMargin',text: [{text: 'DÍA: ', style: 'anotherStyle'},$(this).find("dia").text()]},
-					{ style: 'superMargin',text: [{text: 'MES: ', style: 'anotherStyle'},$(this).find("mes").text()]},
-					{ style: 'superMargin',text: [{text: 'AÑO: ', style: 'anotherStyle'},$(this).find("anio").text()]}
+					{ style: 'superMargin',text: [{text: 'FOLIO: ', style: 'anotherStyle'},{text: $(this).find("tb_corr").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'FECHA: ', style: 'anotherStyle'},{text: $(this).find("tb_dateadd").text(), fontSize: 10,} ]},
+					{ style: 'superMargin',text: [{text: 'DÍAS: ', style: 'anotherStyle'},{text: $(this).find("tb_days").text(), fontSize: 10,} ]},
+					{ style: 'superMargin',text: [{text: 'C55016: ', style: 'anotherStyle'},{text: $(this).find("C55016").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'NOMBRE: ', style: 'anotherStyle'},{text: $(this).find("nombre").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'JUSTIFICACIÓN: ', style: 'anotherStyle'},{text: $(this).find("justificacion").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'AUTORIDAD ESPECÍFICA NOMBRE: ', style: 'anotherStyle'},{text: $(this).find("autespnombre").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'AUTORIDAD NOMBRE: ', style: 'anotherStyle'},{text: $(this).find("autnombre").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'ÁREA CLAVE: ', style: 'anotherStyle'},{text: $(this).find("cnbv_areaclave").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'ÁREA CLAVE / AGG: ', style: 'anotherStyle'},{text: $(this).find("cnbvaclagg").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'ÁREA DESCRIPCIÓN: ', style: 'anotherStyle'},{text: $(this).find("cnbvadescp").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'DÍAS PLAZO: ', style: 'anotherStyle'},{text: $(this).find("cnbv_diasplazo").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'DÍAS PLAZO / AGG: ', style: 'anotherStyle'},{text: $(this).find("cnbv_diasplagg").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'FECHA PUBLICACIÓN: ', style: 'anotherStyle'},{text: $(this).find("cnbvfechpbl").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'FOLIO: ', style: 'anotherStyle'},{text: $(this).find("cnbv_folio").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'FOLIO / AGG: ', style: 'anotherStyle'},{text: $(this).find("cnbv_folioagg").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'NÚMERO EXPEDIENTE: ', style: 'anotherStyle'},{text: $(this).find("cnbvnroexp").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'NÚMERO OFICIO: ', style: 'anotherStyle'},{text: $(this).find("cnbv_nrooficio").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'OFICIO YEAR: ', style: 'anotherStyle'},{text: $(this).find("cnbv_oficioyear").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'OFICIO YEAR / AGG: ', style: 'anotherStyle'},{text: $(this).find("cnbvoficioyearagg").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'SOLICITUD SIARA: ', style: 'anotherStyle'},{text: $(this).find("cnbvsolicitudsiara").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'NOMBRE SOLICITANTE: ', style: 'anotherStyle'},{text: $(this).find("nombresolicitante").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'TIPO DE REQUERIMIENTO: ', style: 'anotherStyle'},{text: $(this).find("trequeq").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'REFERENCIA 1: ', style: 'anotherStyle'},{text: $(this).find("referencia1").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'REFERENCIA 2: ', style: 'anotherStyle'},{text: $(this).find("referencia2").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'REFERENCIA 3: ', style: 'anotherStyle'},{text: $(this).find("referencia3").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'CARACTER: ', style: 'anotherStyle'},{text: $(this).find("sespecpsc").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'COMPLEMENTARIOS: ', style: 'anotherStyle'},{text: $(this).find("sesppscomp").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'DOMICILIO: ', style: 'anotherStyle'},{text: $(this).find("sesppsdomicilio").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'MATERNO: ', style: 'anotherStyle'},{text: $(this).find("sesppsmaterno").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'NOMBRE: ', style: 'anotherStyle'},{text: $(this).find("sesppsnombre").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'PATERNO: ', style: 'anotherStyle'},{text: $(this).find("sesppspaterno").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'PERSONA ID: ', style: 'anotherStyle'},{text: $(this).find("sesppspersonid").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'PERSONA ID / AGG: ', style: 'anotherStyle'},{text: $(this).find("sesppsperidagg").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'RELACIÓN: ', style: 'anotherStyle'},{text: $(this).find("sesppsolrelacion").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'SOLICITUD ESPECÍFICA ID: ', style: 'anotherStyle'},{text: $(this).find("sespsespid").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'SOLICITUD ESPECÍFICA ID / AGG: ', style: 'anotherStyle'},{text: $(this).find("sespsespidagg").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'TIENE ASEGURAMIENTO: ', style: 'anotherStyle'},{text: $(this).find("taseguramiento").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'DÍA: ', style: 'anotherStyle'},{text: $(this).find("dia").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'MES: ', style: 'anotherStyle'},{text: $(this).find("mes").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'AÑO: ', style: 'anotherStyle'},{text: $(this).find("anio").text(), fontSize: 10,}]}
 				];
 		});
 	}else if($(xmlHttpRequest).find('getComentariosLGrisResp').text() != ''){
@@ -161,18 +164,18 @@ function constructBody(){
 
 			res =	 [
 					{ text: 'LISTA GRIS', style: 'anotherStyle' },
-					{ style: 'superMargin',text: [{text: 'FOLIO: ', style: 'anotherStyle'},$(this).find("tb_corr").text()]},
-					{ style: 'superMargin',text: [{text: 'FECHA: ', style: 'anotherStyle'},$(this).find("tb_dateadd").text() ]},
-					{ style: 'superMargin',text: [{text: 'DIAS: ', style: 'anotherStyle'},$(this).find("tb_days").text() ]},
-					{ style: 'superMargin',text: [{text: 'C55016: ', style: 'anotherStyle'},$(this).find("C55016").text()]},
-					{ style: 'superMargin',text: [{text: 'NOMBRE: ', style: 'anotherStyle'},$(this).find("nombre").text()]},
-					{ style: 'superMargin',text: [{text: 'APELLIDO PATERNO: ', style: 'anotherStyle'},$(this).find("paterno").text()]},
-					{ style: 'superMargin',text: [{text: 'APELLIDO MATERNO: ', style: 'anotherStyle'},$(this).find("materno").text()]},
-					{ style: 'superMargin',text: [{text: 'CARACTER: ', style: 'anotherStyle'},$(this).find("caracter").text()]},
-					{ style: 'superMargin',text: [{text: 'COMPLEMENTARIOS: ', style: 'anotherStyle'},$(this).find("complementarios").text()]},
-					{ style: 'superMargin',text: [{text: 'TIPO PERSONA: ', style: 'anotherStyle'},$(this).find("tipopersona").text()]},
-					{ style: 'superMargin',text: [{text: 'REFERENCIA: ', style: 'anotherStyle'},$(this).find("referencia").text()]},
-					{ style: 'superMargin',text: [{text: 'NUMERO EXPEDIENTE: ', style: 'anotherStyle'},$(this).find("cnbv_numeroexpedient").text()]}
+					{ style: 'superMargin',text: [{text: 'FOLIO: ', style: 'anotherStyle'},{text: $(this).find("tb_corr").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'FECHA: ', style: 'anotherStyle'},{text: $(this).find("tb_dateadd").text(), fontSize: 10,} ]},
+					{ style: 'superMargin',text: [{text: 'DIAS: ', style: 'anotherStyle'},{text: $(this).find("tb_days").text(), fontSize: 10,} ]},
+					{ style: 'superMargin',text: [{text: 'C55016: ', style: 'anotherStyle'},{text: $(this).find("C55016").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'NOMBRE: ', style: 'anotherStyle'},{text: $(this).find("nombre").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'APELLIDO PATERNO: ', style: 'anotherStyle'},{text: $(this).find("paterno").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'APELLIDO MATERNO: ', style: 'anotherStyle'},{text: $(this).find("materno").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'CARACTER: ', style: 'anotherStyle'},{text: $(this).find("caracter").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'COMPLEMENTARIOS: ', style: 'anotherStyle'},{text: $(this).find("complementarios").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'TIPO PERSONA: ', style: 'anotherStyle'},{text: $(this).find("tipopersona").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'REFERENCIA: ', style: 'anotherStyle'},{text: $(this).find("referencia").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'NUMERO EXPEDIENTE: ', style: 'anotherStyle'},{text: $(this).find("cnbv_numeroexpedient").text(), fontSize: 10,}]}
 					
 				];
 		});
@@ -180,32 +183,32 @@ function constructBody(){
 		$(xmlHttpRequest).find('getComentariosLSitiResp').each(function(){
 			res =	 [
 					{ text: 'LISTA SITI', style: 'anotherStyle' },
-					{ style: 'superMargin',text: [{text: 'ID PERSONA: ', style: 'anotherStyle'},$(this).find("id_reg_persona").text()]},
-					{ style: 'superMargin',text: [{text: 'CARACTER: ', style: 'anotherStyle'},$(this).find("caracter").text() ]},
-					{ style: 'superMargin',text: [{text: 'PERSONA: ', style: 'anotherStyle'},$(this).find("persona").text() ]},
-					{ style: 'superMargin',text: [{text: 'PATERNO: ', style: 'anotherStyle'},$(this).find("paterno").text()]},
-					{ style: 'superMargin',text: [{text: 'MATERNO: ', style: 'anotherStyle'},$(this).find("materno").text()]},
-					{ style: 'superMargin',text: [{text: 'NOMBRE: ', style: 'anotherStyle'},$(this).find("nombre").text()]},
-					{ style: 'superMargin',text: [{text: 'RFC: ', style: 'anotherStyle'},$(this).find("rfc").text()]},
-					{ style: 'superMargin',text: [{text: 'RELACION: ', style: 'anotherStyle'},$(this).find("relacion").text()]},
-					{ style: 'superMargin',text: [{text: 'DOMICILIO: ', style: 'anotherStyle'},$(this).find("domicilio").text()]},
-					{ style: 'superMargin',text: [{text: 'COMPLEMENTARIOS: ', style: 'anotherStyle'},$(this).find("complementarios").text()]},
-					{ style: 'superMargin',text: [{text: 'CNBV_NUM_OFICIO: ', style: 'anotherStyle'},$(this).find("cnbv_num_oficio").text()]},
-					{ style: 'superMargin',text: [{text: 'CNBV_NUM_EXPEDIENTE: ', style: 'anotherStyle'},$(this).find("cnbv_num_expediente").text()]},
-					{ style: 'superMargin',text: [{text: 'CNBV_SOL_SIARA: ', style: 'anotherStyle'},$(this).find("cnbv_sol_siara").text()]},
-					{ style: 'superMargin',text: [{text: 'CNBV_FOLIO: ', style: 'anotherStyle'},$(this).find("cnbv_folio").text()]},
-					{ style: 'superMargin',text: [{text: 'CNBV_OFICIO_YEAR: ', style: 'anotherStyle'},$(this).find("cnbv_oficio_year").text()]},
-					{ style: 'superMargin',text: [{text: 'CNBV_AREA_CLAVE: ', style: 'anotherStyle'},$(this).find("passports").text()]},
-					{ style: 'superMargin',text: [{text: 'CNBV_AREA_DESC: ', style: 'anotherStyle'},$(this).find("cnbv_area_desc").text()]},
-					{ style: 'superMargin',text: [{text: 'CNBV_FECHA_PUB: ', style: 'anotherStyle'},$(this).find("locations").text()]},
-					{ style: 'superMargin',text: [{text: 'CNBV_DIAS_PLAZO: ', style: 'anotherStyle'},$(this).find("cnbv_dias_plazo").text()]},
-					{ style: 'superMargin',text: [{text: 'AUTORIDAD_NOMBRE: ', style: 'anotherStyle'},$(this).find("autoridad_nombre").text()]},
-					{ style: 'superMargin',text: [{text: 'AUTORIDAD_ESP_NOMBRE: ', style: 'anotherStyle'},$(this).find("further_information").text()]},
-					{ style: 'superMargin',text: [{text: 'NOMBRE_SOLICITANTE: ', style: 'anotherStyle'},$(this).find("entered_date").text()]},
-					{ style: 'superMargin',text: [{text: 'FECHA DE MODIFICACION: ', style: 'anotherStyle'},$(this).find("updated_date").text()]},
-					{ style: 'superMargin',text: [{text: 'REFERENCIA: ', style: 'anotherStyle'},$(this).find("referencia").text()]},
-					{ style: 'superMargin',text: [{text: 'REFERENCIA1: ', style: 'anotherStyle'},$(this).find("referencia1").text()]},
-					{ style: 'superMargin',text: [{text: 'REFERENCIA2: ', style: 'anotherStyle'},$(this).find("referencia2").text()]}
+					{ style: 'superMargin',text: [{text: 'ID PERSONA: ', style: 'anotherStyle'},{text: $(this).find("id_reg_persona").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'CARACTER: ', style: 'anotherStyle'},{text: $(this).find("caracter").text(), fontSize: 10,} ]},
+					{ style: 'superMargin',text: [{text: 'PERSONA: ', style: 'anotherStyle'},{text: $(this).find("persona").text(), fontSize: 10,} ]},
+					{ style: 'superMargin',text: [{text: 'PATERNO: ', style: 'anotherStyle'},{text: $(this).find("paterno").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'MATERNO: ', style: 'anotherStyle'},{text: $(this).find("materno").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'NOMBRE: ', style: 'anotherStyle'},{text: $(this).find("nombre").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'RFC: ', style: 'anotherStyle'},{text: $(this).find("rfc").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'RELACION: ', style: 'anotherStyle'},{text: $(this).find("relacion").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'DOMICILIO: ', style: 'anotherStyle'},{text: $(this).find("domicilio").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'COMPLEMENTARIOS: ', style: 'anotherStyle'},{text: $(this).find("complementarios").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'CNBV_NUM_OFICIO: ', style: 'anotherStyle'},{text: $(this).find("cnbv_num_oficio").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'CNBV_NUM_EXPEDIENTE: ', style: 'anotherStyle'},{text: $(this).find("cnbv_num_expediente").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'CNBV_SOL_SIARA: ', style: 'anotherStyle'},{text: $(this).find("cnbv_sol_siara").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'CNBV_FOLIO: ', style: 'anotherStyle'},{text: $(this).find("cnbv_folio").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'CNBV_OFICIO_YEAR: ', style: 'anotherStyle'},{text: $(this).find("cnbv_oficio_year").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'CNBV_AREA_CLAVE: ', style: 'anotherStyle'},{text: $(this).find("passports").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'CNBV_AREA_DESC: ', style: 'anotherStyle'},{text: $(this).find("cnbv_area_desc").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'CNBV_FECHA_PUB: ', style: 'anotherStyle'},{text: $(this).find("locations").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'CNBV_DIAS_PLAZO: ', style: 'anotherStyle'},{text: $(this).find("cnbv_dias_plazo").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'AUTORIDAD_NOMBRE: ', style: 'anotherStyle'},{text: $(this).find("autoridad_nombre").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'AUTORIDAD_ESP_NOMBRE: ', style: 'anotherStyle'},{text: $(this).find("further_information").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'NOMBRE_SOLICITANTE: ', style: 'anotherStyle'},{text: $(this).find("entered_date").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'FECHA DE MODIFICACIÓN: ', style: 'anotherStyle'},{text: $(this).find("updated_date").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'REFERENCIA: ', style: 'anotherStyle'},{text: $(this).find("referencia").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'REFERENCIA1: ', style: 'anotherStyle'},{text: $(this).find("referencia1").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'REFERENCIA2: ', style: 'anotherStyle'},{text: $(this).find("referencia2").text(), fontSize: 10,}]}
 				];
 		});	
 	}
@@ -214,27 +217,27 @@ function constructBody(){
 		$(xmlHttpRequest).find('getComentariosLWCResp').each(function(){
 		res =	 [
 					{ text: 'LISTA WORLD CHECK', style: 'anotherStyle' },
-					{ style: 'superMargin',text: [{text: 'FOLIO: ', style: 'anotherStyle'},$(this).find("uid").text()]},
-					{ style: 'superMargin',text: [{text: 'NOMBRE: ', style: 'anotherStyle'},$(this).find("first_name").text() ]},
-					{ style: 'superMargin',text: [{text: 'APELLIDO: ', style: 'anotherStyle'},$(this).find("last_name").text() ]},
-					{ style: 'superMargin',text: [{text: 'ALISASES: ', style: 'anotherStyle'},$(this).find("aliases").text()]},
-					{ style: 'superMargin',text: [{text: 'ALTERNATIVO: ', style: 'anotherStyle'},$(this).find("alternative_spelling").text()]},
-					{ style: 'superMargin',text: [{text: 'CATEGORIA: ', style: 'anotherStyle'},$(this).find("category").text()]},
-					{ style: 'superMargin',text: [{text: 'TITULO: ', style: 'anotherStyle'},$(this).find("title").text()]},
-					{ style: 'superMargin',text: [{text: 'SUB CATEGORIA: ', style: 'anotherStyle'},$(this).find("sub_category").text()]},
-					{ style: 'superMargin',text: [{text: 'POSICION: ', style: 'anotherStyle'},$(this).find("position").text()]},
-					{ style: 'superMargin',text: [{text: 'EDAD: ', style: 'anotherStyle'},$(this).find("age").text()]},
-					{ style: 'superMargin',text: [{text: 'FECHA DE NACIMIENTO: ', style: 'anotherStyle'},$(this).find("date_of_birth").text()]},
-					{ style: 'superMargin',text: [{text: 'LUGAR DE NACIMIENTO: ', style: 'anotherStyle'},$(this).find("place_of_birth").text()]},
-					{ style: 'superMargin',text: [{text: 'PASAPORTES: ', style: 'anotherStyle'},$(this).find("passports").text()]},
-					{ style: 'superMargin',text: [{text: 'SEGURO SOCIAL: ', style: 'anotherStyle'},$(this).find("social_security").text()]},
-					{ style: 'superMargin',text: [{text: 'UBICACIONES: ', style: 'anotherStyle'},$(this).find("locations").text()]},
-					{ style: 'superMargin',text: [{text: 'PAISES: ', style: 'anotherStyle'},$(this).find("countries").text()]},
-					{ style: 'superMargin',text: [{text: 'TIPO DE PERSONA: ', style: 'anotherStyle'},$(this).find("type_of_person").text()]},
-					{ style: 'superMargin',text: [{text: 'INFO ADICIONAL: ', style: 'anotherStyle'},$(this).find("further_information").text()]},
-					{ style: 'superMargin',text: [{text: 'FECHA DE CREACION: ', style: 'anotherStyle'},$(this).find("entered_date").text()]},
-					{ style: 'superMargin',text: [{text: 'FECHA DE MODIFICACION: ', style: 'anotherStyle'},$(this).find("updated_date").text()]},
-					{ style: 'superMargin',text: [{text: 'KEYWORDS: ', style: 'anotherStyle'},$(this).find("keywords").text()]}
+					{ style: 'superMargin',text: [{text: 'FOLIO: ', style: 'anotherStyle'},{text: $(this).find("uid").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'NOMBRE: ', style: 'anotherStyle'},{text: $(this).find("first_name").text(), fontSize: 10,} ]},
+					{ style: 'superMargin',text: [{text: 'APELLIDO: ', style: 'anotherStyle'},{text: $(this).find("last_name").text(), fontSize: 10,} ]},
+					{ style: 'superMargin',text: [{text: 'ALISASES: ', style: 'anotherStyle'},{text: $(this).find("aliases").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'ALTERNATIVO: ', style: 'anotherStyle'},{text: $(this).find("alternative_spelling").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'CATEGORÍA: ', style: 'anotherStyle'},{text: $(this).find("category").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'TÍTULO: ', style: 'anotherStyle'},{text: $(this).find("title").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'SUB CATEGORÍA: ', style: 'anotherStyle'},{text: $(this).find("sub_category").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'POSICIÓN: ', style: 'anotherStyle'},{text: $(this).find("position").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'EDAD: ', style: 'anotherStyle'},{text: $(this).find("age").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'FECHA DE NACIMIENTO: ', style: 'anotherStyle'},{text: $(this).find("date_of_birth").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'LUGAR DE NACIMIENTO: ', style: 'anotherStyle'},{text: $(this).find("place_of_birth").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'PASAPORTES: ', style: 'anotherStyle'},{text: $(this).find("passports").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'SEGURO SOCIAL: ', style: 'anotherStyle'},{text: $(this).find("social_security").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'UBICACIONES: ', style: 'anotherStyle'},{text: $(this).find("locations").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'PAISES: ', style: 'anotherStyle'},{text: $(this).find("countries").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'TIPO DE PERSONA: ', style: 'anotherStyle'},{text: $(this).find("type_of_person").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'INFO ADICIONAL: ', style: 'anotherStyle'},{text: $(this).find("further_information").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'FECHA DE CREACIÓN: ', style: 'anotherStyle'},{text: $(this).find("entered_date").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'FECHA DE MODIFICACIÓN: ', style: 'anotherStyle'},{text: $(this).find("updated_date").text(), fontSize: 10,}]},
+					{ style: 'superMargin',text: [{text: 'KEYWORDS: ', style: 'anotherStyle'},{text: $(this).find("keywords").text(), fontSize: 10,}]}
 				];
 		});	
 	}else{
@@ -264,14 +267,14 @@ function buildTableBody() {
 				$(xmlHttpRequestComent.responseText).find('resultadoComentariosLGris').each(function(){
 					 nombre = $(this).find("nombre").text();
 					 comentario = $(this).find("observations").text();	
-					var dataRow = [ $(this).find("observations_date").text().substring(0,10), $(this).find("hora").text(),  nombre +' ' + comentario, ' ' ];
+					var dataRow = [{text: $(this).find("observations_date").text().substring(0,10), fontSize: 10,} ,{text:  $(this).find("hora").text(), fontSize: 10,},{text:  nombre +' ' + comentario, fontSize: 10,}  , ' ' ];
 						body.push(dataRow);
 				});
 		}else if($(xmlHttpRequestComent.responseText).find('resultadoComentariosLSiti').text() != ''){
 				$(xmlHttpRequestComent.responseText).find('resultadoComentariosLSiti').each(function(){
 					 nombre = $(this).find("nombre").text();
 					 comentario = $(this).find("observations").text();
-					var dataRow = [ $(this).find("observations_date").text().substring(0,10), $(this).find("hora").text(),  nombre +' ' + comentario, ' ' ];
+					var dataRow = [{text: $(this).find("observations_date").text().substring(0,10), fontSize: 10,} ,{text:  $(this).find("hora").text(), fontSize: 10,},{text:  nombre +' ' + comentario, fontSize: 10,}  , ' ' ];
 						body.push(dataRow);
 				});
 			
@@ -280,7 +283,7 @@ function buildTableBody() {
 					nombre = $(this).find("nombre").text();
 					comentario = $(this).find("observations").text();
 					category = $(this).find("category").text();
-					var dataRow = [ $(this).find("observations_date").text().substring(0,10), $(this).find("hora").text(),  nombre +' '+ category+' ' + comentario, ' ' ];
+					var dataRow = [{text: $(this).find("observations_date").text().substring(0,10), fontSize: 10,} ,{text:  $(this).find("hora").text(), fontSize: 10,},{text:  nombre +' ' + comentario, fontSize: 10,}  , ' ' ];	
 						body.push(dataRow);
 				});
 		}else{

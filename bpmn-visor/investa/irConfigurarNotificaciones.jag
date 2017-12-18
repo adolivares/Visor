@@ -42,7 +42,9 @@ var user = session.get("user");
 }
 		
 	include("Controller/CtrlNotificaciones.jag");
-	var xmlAccion = payloadAccion();
+
+	var xmlTBL1 =payloadNotificacion();
+	var xmlTBL2 =payloadConfiguracion();
  %>
  
 		<link href="resources/plantilla/css/select2.css" rel="stylesheet" />
@@ -56,7 +58,6 @@ var user = session.get("user");
         <script src="resources/plantilla/js/respond.min.js"></script>
         <![endif]-->
 		
-    
 
 <div class="col-sm-10" >
     <div class="pageheader">
@@ -81,17 +82,17 @@ var user = session.get("user");
 			 <table id="example" cellspacing="0" class="table table-striped table-bordered" style="font-size: x-small;" width="100%">
                 <thead>
                     <tr>     
-                        <th style="width: 77px">Id Notificacion</th>
-                        <th style="width: 100px">Perfil</th>  
-                        <th style="width: 95px">Acción</th>    
-						<th style="width: 105px">Destinatario</th>  
-						<th style="width: 380px">CC</th>  							
-                        <th style="width: 38px"></th>
+                        <th>Id Notificacion</th>
+                        <th>Perfil</th>  
+                        <th>Acción</th>    
+						<th>Destinatario</th>  
+						<th>CC</th>  							
+                        <th></th>
 						<th style="display:none">ID_A</th>
                     </tr>
                 </thead>
 				<tbody>			
-					
+					<%=createTablaNotificaciones(xmlTBL1)%>
                 </tbody>
             </table>
 			<br/>			
@@ -113,7 +114,8 @@ var user = session.get("user");
 						<th style="display:none">ID_A</th>
                     </tr>
                 </thead>
-				<tbody>			
+				<tbody>	
+					<%=createTablaConfiguracion(xmlTBL2)%>				
                 </tbody>
             </table>
 			<br/>			
@@ -145,9 +147,9 @@ var user = session.get("user");
 									</tr>
 									<tr>
 										<td>Acción:</td>
-										<td><select id="cboAccion">
-										<option value="" id="cboAccion">- Seleccione -</option>
-											 <%=CrearSelectAccion(xmlAccion)%>  
+										<td>
+										<select id="cboAccion">
+											<option value="">- Seleccione -</option>
 										</select></td>
 									</tr>
 									<tr>
@@ -192,7 +194,7 @@ var user = session.get("user");
 				</div>
 			</div>
 			
-			<div class="modal fade col-centered in" id="NvoMensajeModal" tabindex="-1" role="dialog">
+			<div class="modal fade col-centered in" id="NvoMensajeModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog">
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
@@ -203,17 +205,20 @@ var user = session.get("user");
 							<table class="table-content" style="margin-right:auto; width:100%" >
 								<tr>
 								<input type="text" id="txtIdConfiguracion" style="display:none" value="0"/>
-									<td>Id Acción: *</td>
+									<td>Acción: *</td>
 									<td><select id="cboAccion2">
-										<option value="" >- Seleccione -</option>
-											 <%=CrearSelectAccion(xmlAccion)%>  
-										</select></td>
+											<option value="" >- Seleccione -</option>		 
+										</select>
+									</td>
 								</tr>
-								<tr><td>Asunto:</td>
+								<tr><td>Asunto: *</td>
 									<td><input type="text" id="txtAsunto" size="60"></td>
 								</tr>
-								<tr><td>Texto:</td>
+								<tr><td>Cuerpo del correo: *</td>
 									<td><textarea type="text" id="txtTexto" rows="6" cols="63"></textarea></td>
+								</tr>
+								<tr>
+									<td colspan="2"><span align="left" style="font-size:10px;">* Campos obligatorios</span></td>
 								</tr>
 							</table>
 						</div>
@@ -247,25 +252,9 @@ var user = session.get("user");
 <script>
 	
 	$(document).ready(function() {
-		$('#ModalCargando').modal('show');
-		actualizaTBL();
-		actualizaTBL2();
-		//llenaCboEmpresa();
-		$('#buscando').hide();
+		consultaAcciones();
 		
 		$('#example').DataTable({
-			"language": {
-				"lengthMenu": "Mostrar _MENU_ registros",
-				"zeroRecords": "No hay registros disponibles",
-				"info": "Mostrando página _PAGE_ de _PAGES_",
-				"infoEmpty": "No hay registros disponibles",
-				"infoFiltered": "(filtrado de _MAX_ registros totales)",
-				"search": "Buscar",
-				"paginate": {
-				  "previous": "Previo",
-				  "next":"Siguiente"
-				}
-			},
 			"paging":   false,
 			"ordering": false,
 			"scrollY": 200,
@@ -273,31 +262,13 @@ var user = session.get("user");
 			info:false,
 			
 		});
-		var table = $('#example').DataTable();
-		//table.column(6 ).visible( false );
-
 		$('#example2').DataTable({
-			"language": {
-				"lengthMenu": "Mostrar _MENU_ registros",
-				"zeroRecords": "No hay registros disponibles",
-				"info": "Mostrando página _PAGE_ de _PAGES_",
-				"infoEmpty": "No hay registros disponibles",
-				"infoFiltered": "(filtrado de _MAX_ registros totales)",
-				"search": "Buscar",
-				"paginate": {
-				  "previous": "Previo",
-				  "next":"Siguiente"
-				}
-			},
 			"paging":   false,
 			"ordering": false,
 			"scrollY": 200,
 			"searching": false,
 			info:false,
 		});
-
-		
-		
 	});
 	
 	$("#btnAgregar").click(function() {
@@ -405,11 +376,11 @@ var user = session.get("user");
 			$("#idMsg").html('<div class="alert alert-success">' +
                 'Se han guardado correctamente los datos' +
                 '</div>');
-				actualizaTBL();
+				location.href='irConfigurarNotificaciones';
 		} else if (estatus == 3) {
-               alert('Yaa existe este registro'); 
-			   $('#NvoNotificaModal').modal('show');
-			   return false;
+               $("#idMsg").html('<div class="alert alert-warning">' +
+                'Ya existe el registro' +
+                '</div>');
               
 		}else {
 			$("#idMsg").html('<div class="alert alert-warning">' +
@@ -451,6 +422,8 @@ var user = session.get("user");
 		$('#txtDestinatario').val('');
 		$('#txtIdNotificacion').val(0);
 		$("#tblCC >tbody").empty();
+		$('#cboPerfil').prop('disabled', false);
+		$('#cboAccion').prop('disabled', false);
 	});
 	$("#btnEditar").click(function() {
 		
@@ -463,11 +436,13 @@ var user = session.get("user");
 			$('#ModalInfo').modal('show');
 			return false;
 		}
+		$('#cboPerfil').prop('disabled', true);
+		$('#cboAccion').prop('disabled', true);
 		tr = $("#example >tbody").find("tr").eq(indexTBL);
 		$('#txtIdNotificacion').val(tr.find("td").eq(0).text());
 		$('#cboPerfil').val(tr.find("td").eq(1).text());
 		$('#txtDestinatario').val(tr.find("td").eq(3).text());
-		var nXML = tr.find("td").eq(4).text().split(",");
+		var nXML = ((tr.find("td").eq(4).text() !="")?tr.find("td").eq(4).text().split(","):'');
 		$('#cboAccion').val(tr.find("td").eq(6).text());
 		var row='';
 		for (i = 0; i < nXML.length; i++) { 
@@ -480,56 +455,7 @@ var user = session.get("user");
 		$('#NvoNotificaModal').modal('show');
 	});
 	
-	function actualizaTBL(){
-		 var payload = '<dat:qGetNotificaciones xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
-			payload += '<dat:idNotificacion></dat:idNotificacion>';
-			payload += '</dat:qGetNotificaciones>';
-			$.ajax({
-				url: '/commons/postSOAP',
-				type: 'post',
-				headers: {
-					'Destino': 'BpmnVisor',
-					'SOAPAction': 'urn:urn:qGetNotificaciones'
-				},
-				dataType: 'xml',
-				complete: consultaTbl,
-				error: function(xhr, status, error) {},
-				data: payload
-			});
-	}
-	function consultaTbl(xmlHttpRequest, status) {
-		$("#example >tbody").empty();
-		
-		$(xmlHttpRequest.responseText).find('resultadoNotificaciones').each(function() {
-		var destinatario='';
-		var cc='';
-		var idc;	
-			$(this).find('resultadoCorreos').each(function() {
-				if($(this).find("tipo").text()=="CC"){
-					cc +=$(this).find("correo").text()+", ";
-				}else{
-					destinatario=$(this).find("correo").text();
-				}
-			});
-			$(this).find('resultadoAccion').each(function() {
-				
-					idc =$(this).find("id_accion").text();
-				
-			});
-			var row = "<tr>";
-				row += "<td style='width: 79px'>"+$(this).find("id_notificacion").text()+"</td>";
-				row += "<td style='width: 105px'>"+$(this).find("id_erfil_usuario").text()+"</td>";
-				row += "<td style='width: 105px'>"+$(this).find("descripcion").text()+"</td>";
-				row += "<td style='width: 105px'>"+destinatario+"</td>";
-				row += "<td style='width: 375px'>"+cc+"</td>";
-				row += "<td style='width: 38px'><input type='radio' name='notificacion' onclick='getId(this)'></td>";
-				row += "<td style='display:none'>"+$(this).find("id_accio").text()+"</td>";
-				row += "</tr>";
-            
-			$('#example tbody').append(row );
-        });
-		$('#ModalCargando').modal('hide');
-	}
+	
 	$("#btnGuardarConfig").click(function() {
 		
 		var accion =$('#cboAccion2').val();
@@ -577,7 +503,7 @@ var user = session.get("user");
 			$("#idMsg").html('<div class="alert alert-success">' +
                 'Se han guardado correctamente los datos' +
                 '</div>');
-				actualizaTBL2();
+				location.href='irConfigurarNotificaciones';
 		} else if (estatus == 3) {
                $("#idMsg").html('<div class="alert alert-warning">' +
                 'Ya existe el registro' +
@@ -589,40 +515,7 @@ var user = session.get("user");
 		}
         $('#ModalInfo').modal('show');
 	}
-	function actualizaTBL2(){
-		 var payload = '<dat:qGetMsj xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
-			payload += '<dat:idConfiguracion></dat:idConfiguracion>';
-			payload += '</dat:qGetMsj>';
-			$.ajax({
-				url: '/commons/postSOAP',
-				type: 'post',
-				headers: {
-					'Destino': 'BpmnVisor',
-					'SOAPAction': 'urn:urn:qGetMsj'
-				},
-				dataType: 'xml',
-				complete: consultaTbl2,
-				error: function(xhr, status, error) {},
-				data: payload
-			});
-	}
-	function consultaTbl2(xmlHttpRequest, status) {
-		$("#example2 >tbody").empty();
-		
-		$(xmlHttpRequest.responseText).find('resultadoMsjs').each(function() {
-			var row = "<tr>";
-				row += "<td style='width: 78px'>"+$(this).find("id_configuracion_msj").text()+"</td>";
-				row += "<td style='width: 69px'>"+$(this).find("descripcion").text()+"</td>";
-				row += "<td style='width: 105px'>"+$(this).find("asunto").text()+"</td>";
-				row += "<td style='width: 100px'>"+$(this).find("texto").text()+"</td>";
-				row += "<td><input type='radio' name='msj' onclick='getId2(this)'></td>";
-				row += "<td style='display:none'>"+$(this).find("id_accio").text()+"</td>";
-				row += "</tr>";
-            
-			$('#example2 tbody').append(row );
-        });
-		
-	}
+	
 	var indexTBL2=-1;
 	function getId2(combo){
 		indexTBL2 = $(combo).closest('tr').index();
@@ -642,7 +535,7 @@ var user = session.get("user");
 		$('#txtAsunto').val(tr.find("td").eq(2).text());
 		$('#txtTexto').val(tr.find("td").eq(3).text());
 		$('#cboAccion2').val(tr.find("td").eq(5).text());
-		
+		$('#cboAccion2').prop('disabled', true);
 		$('#NvoMensajeModal').modal('show');
 	});
 	
@@ -651,12 +544,60 @@ var user = session.get("user");
 		$('#txtAsunto').val("");
 		$('#txtTexto').val("");
 		$('#txtIdConfiguracion').val(0);
+		$('#cboAccion2').prop('disabled', false);
 	}
+	function Acciones(id){	
+		$("#cboAccion").html(""); //reset child options
+		switch(id) {
+			case 'QA_AnalistaCumplimiento':
+				$(ResponseXML).find('resultadoAccion').each( function() {
+					if($(this).find("id_accion").text() !=2){
+						$("#cboAccion").append("<option value="+$(this).find("id_accion").text()+">"+$(this).find("descripcion").text()+"</option>");
+					}
+				});
+				break;
+			case 'QA_GerenteCumplimiento':
+				$(ResponseXML).find('resultadoAccion').each( function() {
+					if($(this).find("id_accion").text() !=3 && $(this).find("id_accion").text() !=6){
+						$("#cboAccion").append("<option value="+$(this).find("id_accion").text()+">"+$(this).find("descripcion").text()+"</option>");
+					}
+				})
+				break;
+			default:
+			$(ResponseXML).find('resultadoAccion').each( function() {
+				$("#cboAccion").append("<option value="+$(this).find("id_accion").text()+">"+$(this).find("descripcion").text()+"</option>");
+			})
+		}	
+	}
+	function consultaAcciones() {
+	$('#ModalCargando').modal('show');
+	var payload = '<dat:qGetCatAccion xmlns:dat="http://ws.wso2.org/dataservice">';
+        payload += '<dat:idAccion></dat:idAccion>';
+		payload += '</dat:qGetCatAccion>';
+    
+    $.ajax({
+        url: '/commons/postSOAP',
+        type: 'post',
+        headers: {'Destino':'BpmnVisor', 'SOAPAction':'urn:qGetCatAccion'},
+        dataType: 'xml',
+        complete: myCallbackProceso,
+        error: function (xhr, status, error) {},
+        data: payload
+    });
+    
+	}
+	var ResponseXML = '';
+	function myCallbackProceso(xmlHttpRequest, status){
+		$('#ModalCargando').modal('hide');
+		var idRegistro="";
+		var procesos = xmlHttpRequest.responseText;
+		ResponseXML = procesos;
+		$(ResponseXML).find('resultadoAccion').each( function() {
+			$("#cboAccion2").append("<option value="+$(this).find("id_accion").text()+">"+$(this).find("descripcion").text()+"</option>");
+		});
+	}
+	$("#cboPerfil").change(function() {
+		Acciones($(this).val());
+	});
 	
-$("#btnSend").click(function() { 
-       var textNew = $('#txtEscala').val();
-       $.get("Mail", { action: "Escalar", id:61 },
-	   function(data){
-	   });
-});
 </script>

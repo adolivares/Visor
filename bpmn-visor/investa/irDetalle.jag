@@ -5,6 +5,7 @@ var nConsulta = request.getParameter("id");
 var nTipo = request.getParameter("tip");		
 var nXml = request.getParameter("xml");			
 var nidB = request.getParameter("idB");			
+var ntip = request.getParameter("idTip");			
  if (request.isSecure()) {//check whether the request is secure or not
 
     var authSuccess = session.get("authSuccess");
@@ -146,15 +147,16 @@ var payload2 = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap
 									<td><%=((responseXML..*::getDetalle.*::resultadoDetalle[i].*::obs.toString()==1)?'OK':'')%></td>
 									<td style="display:none"><%=responseXML..*::getDetalle.*::resultadoDetalle[i].*::tipo_lista.toString()%></td>
 									<td style="display:none"><%=responseXML..*::getDetalle.*::resultadoDetalle[i].*::getConfiguracionResponse.*::resultadoConfiguracion.*::id_lista.toString()%></td>	
+									<td style="display:none"><%=responseXML..*::getDetalle.*::resultadoDetalle[i].*::id_mb_consulta.toString()%></td>	
 								</tr>
 								<%}%>
 							</tbody>
 						</table>
-					
 				</div>
 				<div class="short-div"></div>
 			</div>
 			<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+				<input type="text" id="txtID_mbConsulta" style="display:none"/>
 				<div id="form" style="float:left; width:100%; height:430px; margin-left:3%; overflow-y:scroll;" class="panel panel-default"></div>
 			</div>
 		</div>
@@ -176,6 +178,7 @@ var payload2 = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap
 							<button  type="button" class="btn btn-default" onclick="generarPDF()"  >Generar PDF</button>
 						</td>					
 					</tr>
+					<%if(ntip !=2){%>
 					<tr>
 						<td><br><br></td>
 					</tr>
@@ -204,6 +207,7 @@ var payload2 = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap
 							<%print('<a href="irCalificacionCoincidencias?idConsulta='+nidB+'" style="width:100%"  class="btn btn-primary">Regresar</a>');%>
 						</td>
 					</tr>
+					<%}%>
 				</table>
 			</div>
 		</div>
@@ -225,14 +229,14 @@ var resultado="";
 var xx="<%=nXml%>";
 xx.replace(/'/g, '')
 var nXML = xx.split(",");
-
-
+ 
 
 	$('#listCoincidencias tbody tr').on('click', function(event) {
 			$(this).addClass('highlight').siblings().removeClass('highlight');
 			var folio = $(this).find("td").eq(6).html();
 			var tipo = $(this).find("td").eq(8).html();
 			$('#txtFolio').val(folio);
+			$('#txtID_mbConsulta').val($(this).find("td").eq(10).html());
 			consultaListas(folio, tipo,'listasRespon')
 			
 	});
@@ -839,18 +843,18 @@ function listasRespon(xmlHttpRequest, status){
 		var tr;
 		var index;	
 
-		var urn = "";	
+		var urn = "";		
 		
 
 		nombre = $("#txtName").val();
 
-		if(coment.trim() == ""){
-			 $("#idMsg").html('<div class="alert alert-warning">'+
-				'El campo Comentario no puede ser vacío'+
-				'</div>');
-			$('#ModalInfo').modal('show');
-			 return false;
-		}	
+			if(coment.trim() == ""){
+				 $("#idMsg").html('<div class="alert alert-warning">'+
+					'El campo Comentario no puede ser vacío'+
+					'</div>');
+				$('#ModalInfo').modal('show');
+				 return false;
+			}	
 			
 		payload  = '<dat:qInsertaObservaciones xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
         payload += '<dat:idLista>' + tipo + '</dat:idLista>';
@@ -860,22 +864,23 @@ function listasRespon(xmlHttpRequest, status){
         payload += '<dat:paterno>'  +paterno +'</dat:paterno>';
         payload += '<dat:materno>' + materno+'</dat:materno>';
         payload += '<dat:observacion>' + coment + '</dat:observacion>';
-        payload += '<dat:categoria>'+ categoria +'</dat:categoria>';
-        payload += '<dat:usuario>'+ usuario +'</dat:usuario>';
+					payload += '<dat:categoria>' + categoria + '</dat:categoria>';
+					payload += '<dat:comentarios>' + coment + '</dat:comentarios>';
+					payload += '<dat:usuario>' + usuario + '</dat:usuario>';
         payload += '</dat:qInsertaObservaciones>';
         urn = 'urn:qInsertaObservaciones'; 
-        $.ajax({
-            url: '/commons/postSOAP',
-            type: 'post',
+		   $.ajax({
+					url: '/commons/postSOAP',
+					type: 'post',
             headers: {
                 'Destino': 'BpmnVisor',
                 'SOAPAction': urn
             },
-            dataType: 'xml',
-            complete: comentariosIRespon,
-            error: function(xhr, status, error) {},
-            data: payload
-        });
+					dataType: 'xml',
+					complete: comentariosIRespon,
+					error: function (xhr, status, error) {},
+					data: payload
+			}); 
 	});	
 	
 	function comentariosIRespon(xmlHttpRequest, status){
@@ -911,9 +916,11 @@ function listasRespon(xmlHttpRequest, status){
 		$('#ModalInfo').modal('show');		
 	}
 	function consulta(){
+		
 		var id = $("#txtFolio").val();
 		var tipo = $("#txtTipo").val();
-			consultaComentarios(id, tipo);
+		var idMB_C = $("#txtID_mbConsulta").val();
+		consultaComentarios(id, tipo,idMB_C);
 	}
 function AutorizaEstatus(){
 	var payload = '<dat:qConsultaEstatusAutoriaza xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';

@@ -111,6 +111,7 @@
 				result += '<td style="display:none">'+aXML.*::nombre_encontrado.toString()+'</td>';
 				result += '<td style="display:none">2</td>';
 				result += '<td style="display:none">'+aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::id_lista.toString()+'</td>';
+				result += '<td style="display:none">'+aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::categoria.toString()+'</td>';
 				result += '</tr>';
 			id++;
 			

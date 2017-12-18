@@ -59,7 +59,7 @@
          <element column="PORCENTAJE_COINCIDENCIA" name="porcentaje_coincidencias" xsdType="string"/>
          <element column="ID_MB_CAT_EVALUACION" name="id_mb_cat_evaluacion" xsdType="string"/>
          <element column="ID_CONFIGURACION_PERFIL" name="id_configuracion_perfil" xsdType="string"/>
-       <call-query href="qGetConfiguracion">
+		 <call-query href="qGetConfiguracion">
             <with-param name="idConfig" query-param="ID_CONFIGURACION_PERFIL"/>
          </call-query>
       </result>
@@ -82,8 +82,8 @@
          <element column="ID_MB_CAT_EVALUACION" name="id_mb_cat_evaluacion" xsdType="string"/>
          <element column="ID_CLIENTE" name="id_cliente" xsdType="integer"/>
          <element column="TIPO_PERSONA" name="tipo_persona" xsdType="string"/>
-       <element column="ID_CONFIGURACION_PERFIL" name="id_configuracion_perfil" xsdType="string"/>
-       <call-query href="qGetConfiguracion">
+		 <element column="ID_CONFIGURACION_PERFIL" name="id_configuracion_perfil" xsdType="string"/>
+		 <call-query href="qGetConfiguracion">
             <with-param name="idConfig" query-param="ID_CONFIGURACION_PERFIL"/>
          </call-query>
       </result>
@@ -258,7 +258,7 @@
          <element column="PORCENTAJE_COINCIDENCIA" name="porcentaje_coincidencia" xsdType="string"/>
          <element column="ID_CONFIGURACION_PERFIL" name="id_configuracion_perfil" xsdType="string"/>
          <element column="OBS" name="obs" xsdType="string"/>
-       <call-query href="qGetConfiguracion">
+		 <call-query href="qGetConfiguracion">
             <with-param name="idConfig" query-param="ID_CONFIGURACION_PERFIL"/>
          </call-query>
       </result>
@@ -394,8 +394,8 @@
          <element column="ID_BANDEJA_VISOR" name="id_bandeja_visor" xsdType="string"/>
          <element column="ID_MB_CONSULTA" name="id_mb_consulta" xsdType="string"/>
          <element column="FECHA_CONSULTA" name="fecha_consulta" xsdType="string"/>
-         <element column="MODO_BUSQUEDA" name="mod_busqueda" xsdType="string"/>
-         <element column="ID_APLICACION" name="id_aplicacion" xsdType="string"/>
+         <element column="OPERACION" name="operacion" xsdType="string"/>
+         <element column="APLICACION" name="aplicacion" xsdType="string"/>
          <element column="ID_CLIENTE_CRM" name="id_cliente" xsdType="string"/>
          <element column="TIPO_BUSQUEDA" name="tipo_busqueda" xsdType="string"/>
          <element column="NOMBRE_CLIENTE" name="nombre_cliente" xsdType="string"/>

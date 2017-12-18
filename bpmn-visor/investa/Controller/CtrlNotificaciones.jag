@@ -27,7 +27,13 @@
 		
 		for each (var aXML in responseXML..*::resultadoAccion){
 			if(aXML.*::estatus.toString()==1){
-			result += '<option value="' + aXML.*::id_accion.toString()+'">' + aXML.*::descripcion.toString() + '</option>';
+				if(bAnalista || bDirector){
+					if(bAnalista && aXML.*::id_accion.toString() !=2 || bDirector && aXML.*::id_accion.toString() !=1){
+						result += '<option value="' + aXML.*::id_accion.toString()+'">' + aXML.*::descripcion.toString() + '</option>';
+					}
+				}else{
+					result += '<option value="' + aXML.*::id_accion.toString()+'">' + aXML.*::descripcion.toString() + '</option>';
+				}
 			}
 		}    
 		return result;
@@ -68,7 +74,7 @@
 				result += '<td>'+getCorreo(aXML.*::getCorreos,'DESTINATARIO')+'</td>';
 				result += '<td>'+getCorreo(aXML.*::getCorreos,'CC')+'</td>';
 				result += '<td><input type="radio" name="noti"  onclick="getId(this)"></td>';
-				result += '<td>'+aXML.*::getAccion.*::resultadoAccion.*::id_accion.toString()+'</td>';
+				result += '<td style="display:none">'+aXML.*::getAccion.*::resultadoAccion.*::id_accion.toString()+'</td>';
 				result += '</tr>';
 		}
 		return result;
@@ -78,17 +84,56 @@
 		var leg =lista..*::resultadoCorreos.length();
 		leg = leg-1;
 		var conta =0;
-		log.info(tip+'XXXXXXXXXXX'+lista..*::resultadoCorreos.length());
+		//log.info(tip+'XXXXXXXXXXX'+lista..*::resultadoCorreos.length());
 			for each (var aXML in lista..*::resultadoCorreos){
 				if(aXML.*::tipo ==tip){
 					conta++
 					if(tip=='DESTINATARIO'){
 						res +=aXML.*::correo;
 					}else{
-						res +=aXML.*::correo+((leg !=conta)?',':'');
+						res +=aXML.*::correo+((leg !=conta)?', ':'');
 					}
 				}
 			}
 		return res
+	}
+	function payloadConfiguracion(){
+		var payload = <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dat="http://ws.wso2.org/dataservice">
+					   <soapenv:Header/>
+					   <soapenv:Body>
+						  <dat:qGetMsj>
+							 <dat:idConfiguracion></dat:idConfiguracion>
+						  </dat:qGetMsj>
+					   </soapenv:Body>
+					</soapenv:Envelope>;
+
+		var url = URL_ESB + "BpmnVisor";
+		var ws = new XMLHttpRequest();
+		var action = "urn:qGetMsj";
+		ws.open("POST", url, false);
+		ws.setRequestHeader('SOAPAction', action);
+		ws.setRequestHeader('Content-Type','text/xml; charset=utf-8');
+
+		ws.send(payload.toXMLString());
+		var responseXML = new XML(ws.responseText);
+		log.info("XML CONFIGURACIONES: " + responseXML.toXMLString());
+		return responseXML;
+	}
+	function createTablaConfiguracion(lista) {
+		var result = "";
+		var id =0;
+
+		for each (var aXML in lista..*::getMsjResponse..*::resultadoMsjs){
+			
+				result += '<tr>';
+				result += '<td>'+aXML.*::id_configuracion_msj.toString()+'</td>';
+				result += '<td>'+aXML.*::getAccion.*::resultadoAccion.*::descripcion.toString()+'</td>';
+				result += '<td>'+aXML.*::asunto.toString()+'</td>';
+				result += '<td>'+aXML.*::texto.toString()+'</td>';
+				result += '<td><input type="radio" name="noti"  onclick="getId2(this)"></td>';
+				result += '<td style="display:none">'+aXML.*::getAccion.*::resultadoAccion.*::id_accion.toString()+'</td>';
+				result += '</tr>';
+		}
+		return result;
 	}
 %>

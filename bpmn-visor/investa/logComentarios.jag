@@ -87,7 +87,7 @@
 				 category = $(this).find("categoria").text();
 				 nombre = nombre + ', '+ lista + ', '+category;
 				 row += '<td><p>' + nombre +'</p><p>' + comentario +'</p></td>';
-				 row += '<td>'+$(this).find("usuario_alta").text()'</td>';			 
+				 row += '<td>'+$(this).find("usuario_alta").text()+'</td>';			 
 				  $('#listComentarios > tbody').append(row);
 			  $('#ComentariosModal').modal('show');
 			});

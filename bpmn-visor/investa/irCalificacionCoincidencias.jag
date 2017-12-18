@@ -103,23 +103,12 @@ include("Controller/CtrlVisorCalificacion.jag");
     <div class="contentpanel">
         <p class="mb20"></p>
         <div class="panel panel-primary-head">
-            <div>
-                <!--<h4 class="panel-title"></h4>-->
-                <div class="panel panel-primary" id="buscando">
-                    <div class="panel-heading">
-                        <div class="panel-btns">
-                            <a href="#" class="panel-minimize tooltips" data-toggle="tooltip" title="Minimize Panel"><i class="fa fa-minus"></i></a>
-                            <a href="#" class="panel-close tooltips" data-toggle="tooltip" title="Close Panel"><i class="fa fa-times"></i></a>
-                        </div><!-- panel-btns -->
-                        <h3 class="panel-title" align="center">Procesando</h3>
-                    </div>
-                    <div class="panel-body">
-                        <p align="center"> <img alt="" src="resources/plantilla/images/loaders/loader17.gif">&nbsp;&nbsp;Consultando Cliente...</p>
-                    </div><!-- panel-body -->
-                </div><!-- panel -->
-            </div><!-- panel-heading -->
             
-            <h1>Calificaci&oacute;n de Coincidencias en Listas</h1>
+            <% if(tip ==2){%>
+				<h1>Consulta del detalle de coincidencias en Listas</h1>
+			<%}else{%>
+				<h1>Calificaci&oacute;n de Coincidencias en Listas</h1>
+			<%}%>
             <table id="example" cellspacing="0" class="table table-striped table-bordered"  style="font-size: x-small">
                 <thead>
                     <tr>
@@ -142,7 +131,7 @@ include("Controller/CtrlVisorCalificacion.jag");
                         <th style="display:none;"></th>   
                         <th style="display:none;"></th>   
                         <th style="display:none;"></th>   
-                        <th style="display:none;"></th>  
+                        <th style="display:none;"></th>   
                     </tr>
                 </thead>
                 <tbody>                 
@@ -150,8 +139,8 @@ include("Controller/CtrlVisorCalificacion.jag");
                 </tbody>
             </table>
             <br>
-            <div align="right" style="<%=((tip==2)?'':'display:none')%>"><input style="width:100%"  class="btn btn-primary" type="button" value="Ver Comentarios" id="btnComentarios" onclick="consulta()" name="btnComentarios"></div>
-            <!--input type="button" value="Elimina" id="btn" name="btn" data-toggle="modal" data-target="#EliminacionModal"-->          
+			<div id="buttons" align="right"></div>
+                     
             <br/>
             <br/>
             <table width="98%" class="table-content" id="tabBtn" style="<%=((tip==2)?'display:none':'')%>">
@@ -204,7 +193,7 @@ include("Controller/CtrlVisorCalificacion.jag");
                 <div class="modal-content">
                   <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h5 id="H1">Ésta persona ya fue calificada. ¿Deseas solicitar la eliminación de la calificación?
+                    <h5 id="H1">Esta persona ya fue calificada. ¿Deseas solicitar la eliminación de la calificación?
                         <p>(Favor de introducir una justificación)</p>  
                     </h5>
                     <h4 class="modal-title" id="H2">SOLICITUD DE ELIMINACIÓN DE CALIFICACIÓN</h4>
@@ -223,7 +212,7 @@ include("Controller/CtrlVisorCalificacion.jag");
                             <tr><td align="right">ID Cliente: </td>
                                 <td><span id="idClienteElim"></span></td>
                             </tr>
-                            <tr><td align="right">Presona Calificada: </td>
+                            <tr><td align="right">Persona Calificada: </td>
                                 <td><span id="personaCalifiElim"></span></td>
                             </tr>
                             <tr><td align="right" valign="top">Justificación:</td>
@@ -269,18 +258,6 @@ var indexTBL2 = "";
 
 $(document).ready(function() {
     $('#example').DataTable({
-    "language": {
-                "lengthMenu": "Mostrar _MENU_ registros",
-                "zeroRecords": "No hay registros disponibles",
-                "info": "Mostrando página _PAGE_ de _PAGES_",
-                "infoEmpty": "No hay registros disponibles",
-                "infoFiltered": "(filtrado de _MAX_ registros totales)",
-                "search": "Buscar",
-                "paginate": {
-                  "previous": "Previo",
-                  "next":"Siguiente"
-                }
-        },
         "scrollY": 300,
         "scrollX": true
     });
@@ -288,8 +265,32 @@ $(document).ready(function() {
         "scrollY": 300,
         "scrollX": true
     });
+	var table = $('#example').DataTable();
     var mensaje = "";
     var myfile = "";
+	var tb = "<%=tip%>";
+	if(tb ==2){
+		var buttons = new $.fn.dataTable.Buttons(table, {
+		buttons: [
+					{
+						text: 'Exportar PDF',
+						extend: 'pdfHtml5',
+						orientation: 'landscape',
+						pageSize: 'LEGAL',
+					    exportOptions: {
+							columns: [ 0, 1, 2, 3,4,5,6,7,8,9,10,11,12]
+						},
+						title: 'Consulta del detalle de coincidencias en Listas'
+					},{
+							text: 'Ver comentarios',
+							action: function ( ) {
+								consulta();
+							}
+					}
+                    
+                ]
+		}).container().appendTo($('#buttons'));
+	}
 
     document.getElementById("uploadBtn").onchange = function() {
         mensaje = "";
@@ -314,7 +315,7 @@ $(document).ready(function() {
 
 $('#listCoincidencias tbody').on('click', 'tr', function() {
     var folio = $(this).find("td").eq(3).html();
-    console.log(folio);
+    //console.log(folio);
 });
 
 
@@ -683,7 +684,7 @@ function irDetalle(combo) {
         tr.find('td').eq(12).text()
     ];
     xml.push(array7);
-    location.href = 'irDetalle?id=' + tr.find("td").eq(16).text() + '&&tip=' + tr.find("td").eq(17).text() + '&&xml=' + xml+'&&idB=' + tr.find('td').eq(2).text();
+    location.href = 'irDetalle?id=' + tr.find("td").eq(16).text() + '&&tip=' + tr.find("td").eq(17).text() + '&&xml=' + xml+'&&idB=' + tr.find('td').eq(2).text()+'&&idTip=<%=tip%>';
 
 }
 </script>
