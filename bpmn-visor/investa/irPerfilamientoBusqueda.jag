@@ -74,141 +74,134 @@ include("/model/common.jag");
                     <li><a href="irBandejaEntrada"><i class="glyphicon glyphicon-home"></i></a></li>
                     <li><a>Visor</a></li>
                 </ul>
-                <h4>Configuración de Perfiles de Búsqueda</h4>
+                <h4>Perfilamiento búsqueda</h4>
             </div>
         </div><!-- media -->
     </div><!-- pageheader -->
  <section>
     <div class="contentpanel">
         <p class="mb20"></p>
-        <div class="panel panel-primary-head">
-            <div>
-                <!--<h4 class="panel-title"></h4>-->
-                <div class="panel panel-primary" id="buscando">
-                    <div class="panel-heading">
-                        <div class="panel-btns">
-                            <a href="#" class="panel-minimize tooltips" data-toggle="tooltip" title="Minimize Panel"><i class="fa fa-minus"></i></a>
-                            <a href="#" class="panel-close tooltips" data-toggle="tooltip" title="Close Panel"><i class="fa fa-times"></i></a>
-                        </div><!-- panel-btns -->
-                        <h3 class="panel-title" align="center">Procesando</h3>
-                    </div>
-                    <div class="panel-body">
-                        <p align="center"> <img alt="" src="resources/plantilla/images/loaders/loader17.gif">&nbsp;&nbsp;Consultando Cliente...</p>
-                    </div><!-- panel-body -->
-                </div><!-- panel -->
-            </div><!-- panel-heading -->
-			
-			<div class="row">            
-				<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-					 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-						<div>Perfil:</div>
-								<select id="slPerfil" name="slPerfil" class="form-control" style="width:80%">
-									<%=createSelectPerfiles(xmlPerfiles)%>
-								</select>
-					</div>
-					<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-						<div id="modal">							
-							<table id="tblListas" class="table-striped table-bordered table-list" style="margin-left:15%;">
-								<thead><th style="display:none;"></th><th>Lista</th><th>%</th></thead>
-								<tbody>							
-									<%=createTableListas(xmlCatListas)%>
-								</tbody>							
-							</table>
-						</div>					
-						 
-						<br/><br/><br/><br/>
-					</div>					
-					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 list-config">				
-						<table id="tblConfiguracion" class="table-striped table-bordered table-list">
-							<thead>
-								<th>Perfil</th>
-								<th>Lista</th>
-								<th>Categoria</th>
-								<th style="display:none;"></th>
-								<th style="display:none;"></th>
-								<th style="display:none;"></th>
-								<th style="display:none;"></th>
-								<th style="display:none;"></th>
-								<th style="display:none;"></th>
-							</thead>
-							<tbody>
-								<%=createTableConfig(xmlConfiguracion)%>
-							</tbody>							
-						</table>
-					</div>
-				</div>
-				<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-						<table id="tblCategoria" class="table-striped table-bordered table-list">
-							<thead>
-								<th style="display:none;"></th>
-								<th>Categoria</th>
-								<th><input type="checkbox" name="cbAllCat" id="cbAllCat"></th>
-								<th>Transaccion</th>
-								<th>Prioridad</th>
-							</thead>
-							<tbody>								
-							</tbody>							
-						</table>
-					</div>
-				</div>
-			</div>			
-			<table style="width:60%; margin-left:auto; margin-right:auto;">
-				<tr>
-					<td align="right" style="padding:5%">
-						<input class="btn btn-primary" type="button" value="Aplicar" id="btnAplicar" name="btnAplicar" >
-					</td>
-				</tr>				
-			</table>
-			<div class="row"> 
-				
-				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-				<br/><br/>				
-				  <h3>Asignación de Perfiles a Aplicaciones</h3>
-				  <hr>
-				  <br/><br/>
-					<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-								<div>Aplicaciónn:</div>
-										<select id="slAplicacion" name="slAplicacion" class="form-control" >
-											<%=createSelectAplicacion(xmlAplicacion)%>
-										</select>
-					</div>
-					<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-								<div>Operación:</div>
-										<select id="slOperacion" name="slOperacion" class="form-control">
-											<%=createSelectOperacion(xmlOperacion)%>
-										</select>
-					</div>
-					<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-								<div>Origen del cliente:</div>
-										<select id="slOrigen" name="slOrigen" class="form-control">
-											<%=createSelectOrigen(xmlOrigen)%>
-										</select>
-					</div>
-					<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-								<table id="tblPerfil" class="table-striped table-bordered table-list" style="margin-left:auto;">
-									<thead>
-										<th style="display:none;"></th>
-										<th>Perfil</th>
-										<th></th>
-									</thead>
-									<tbody>	
-										<%=createTablePerfiles(xmlPerfiles)%>
+        <div class="panel panel-primary-head"> 
+            <fieldset class="col-md-12">
+            	<legend>Configuración de Perfiles de Búsqueda</legend>
+				<div class="row">            
+					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+						 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+							<div>Perfil:</div>
+									<select id="slPerfil" name="slPerfil" class="form-control" style="width:80%">
+										<%=createSelectPerfiles(xmlPerfiles)%>
+									</select>
+						</div>
+						<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+							<div id="modal">							
+								<table id="tblListas" class="table-striped table-bordered table-list" style="margin-left:15%;">
+									<thead><th style="display:none;"></th><th>Lista</th><th>%</th></thead>
+									<tbody>							
+										<%=createTableListas(xmlCatListas)%>
 									</tbody>							
 								</table>
-					</div>				
-					<br/> <br/>
-					<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-						<table style="width:60%; margin-left:auto; margin-right:auto; margin-bottom:10%;">
+							</div>					
+							 
+							<br/><br/><br/><br/>
+						</div>					
+						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 list-config">				
+							<table id="tblConfiguracion" class="table-striped table-bordered table-list">
+								<thead>
+									<th>Perfil</th>
+									<th>Lista</th>
+									<th>Categoria</th>
+									<th style="display:none;"></th>
+									<th style="display:none;"></th>
+									<th style="display:none;"></th>
+									<th style="display:none;"></th>
+									<th style="display:none;"></th>
+									<th style="display:none;"></th>
+								</thead>
+								<tbody>
+									<%=createTableConfig(xmlConfiguracion)%>
+								</tbody>							
+							</table>
+							<br/><br/><br/><br/>
+							<div>&nbsp;</div>
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+						<div class="col-xs-6 col-sm-6 col-md-12 col-lg-12">
+							<table id="tblCategoria" class="table-striped table-bordered table-list">
+								<thead>
+									<th style="display:none;"></th>
+									<th>Categoria</th>
+									<th><input type="checkbox" name="cbAllCat" id="cbAllCat"></th>
+									<th>Transacción</th>
+									<th>Prioridad</th>
+								</thead>
+								<tbody>								
+								</tbody>							
+							</table>								
+						</div>						
+					</div>
+					<div>
+						<table style="width:86%;">
 							<tr>
-								<td style="padding:7%">
-									<input class="btn btn-primary" type="button" value="Aplicar" id="btnAplicarAsig" name="btnAplicarAsig" >
+								<td align="right" style="padding-left:5%">
+									<input class="btn btn-primary" type="button" value="Aplicar" id="btnAplicar" name="btnAplicar" >
 								</td>
 							</tr>				
-						</table>					
-					</div>		
+						</table>
+					</div>
 				</div>	
-			</div>		
+			</fieldset>
+			<fieldset class="col-md-12">
+				<legend>Asignación de Perfiles a Aplicaciones</legend>
+				<div class="row">					
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">	
+					  <br/>
+					  	<h5>Opciones para On-Line</h5>
+					  	<br/><br/>
+						<div class="col-xs-2 col-sm-2 col-md-2 col-lg-3">
+									<div>Aplicación:</div>
+											<select id="slAplicacion" name="slAplicacion" class="form-control" style="width: 80%" >
+												<%=createSelectAplicacion(xmlAplicacion)%>
+											</select>
+						</div>
+						<div class="col-xs-2 col-sm-2 col-md-2 col-lg-3">
+									<div>Operación:</div>
+											<select id="slOperacion" name="slOperacion" class="form-control" style="width: 80%" >
+												<%=createSelectOperacion(xmlOperacion)%>
+											</select>
+						</div>
+						<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+									<div>Origen del cliente:</div>
+											<select id="slOrigen" name="slOrigen" class="form-control">
+												<%=createSelectOrigen(xmlOrigen)%>
+											</select>
+						</div>
+						<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+									<table id="tblPerfil" class="table-striped table-bordered table-list" style="margin-left:auto;">
+										<thead>
+											<th style="display:none;"></th>
+											<th>Perfil</th>
+											<th></th>
+										</thead>
+										<tbody>	
+											<%=createTablePerfiles(xmlPerfiles)%>
+										</tbody>							
+									</table>
+						</div>		
+						<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+							<table style="width:60%; margin-left:auto; margin-right:auto; margin-bottom:10%;">
+								<tr>
+									<td style="padding:7%">
+										<input class="btn btn-primary" type="button" value="Aplicar" id="btnAplicarAsig" name="btnAplicarAsig" >
+									</td>
+								</tr>				
+							</table>					
+						</div>
+							
+					</div>	
+					<br/><br/>	
+				</div>	
+			</fieldset>	
 			<div class="modal fade" id="detalleConfiguracion">
 			  <div class="modal-dialog">
 				<div class="modal-content">
@@ -236,10 +229,10 @@ include("/model/common.jag");
 				  <div class="modal-body">	
 					<div class="alert alert-warning">¿Desea actualizar el Porcentaje?</div>
 						<br/>
-						<table>
+						<table style="margin-left: auto">
 							<tr>
-								<td>Porcentaje</td>
-								<td><input type="text" id="txtPorcentaje" value=''></td>
+								<td>Porcentaje: </td>
+								<td style="padding-left: 7%;"><input type="text" id="txtPorcentaje" value='' style="width: 60%;"></td>
 							</tr>							
 						</table>						
 						<input type="hidden" id="txtId" value=''>
@@ -276,8 +269,8 @@ include("/model/common.jag");
 <script>
 	
 	
-	jQuery(document).ready(function(){   				
-		
+	jQuery(document).ready(function(){  
+	$('#ModalCargando').modal('show'); 	
 		var lista = "";	
 		var rowConfig = "";
 		var slct ="";
@@ -291,12 +284,6 @@ include("/model/common.jag");
 		var listExiste;
 		var rowListas='';
 		var rowsAplicar=0;
-		
-		$('#buscando').hide();
-						
-		$(".buscar" ).click(function() {
-			$('#buscando').show();        			
-		});	
 		
 		
 		// $('#porcentaje').click(function() {
@@ -314,7 +301,7 @@ include("/model/common.jag");
 				// .open();			
 		// });
 		
-	
+	$('#ModalCargando').modal('hide');
 	});
 	
 	$('#tblListas tbody td').click(function() {

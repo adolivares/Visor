@@ -1038,7 +1038,7 @@ a:focus {
 
 /***** 6.1 BUTTONS PAGE STYLES *****/
  #tabBtn > .btn {
-	 padding: 5px 7px;
+     padding: 5px 7px;
 }
 
 .btn-dark {
@@ -2363,7 +2363,7 @@ a:focus {
 .table-list > thead > tr > td, 
 .table-list > tbody > tr > td
 {
-	padding: 2px 8px;
+    padding: 2px 8px;
 }
 
 .table-content > thead > tr > th, 
@@ -2371,45 +2371,45 @@ a:focus {
 .table-content > thead > tr > td, 
 .table-content > tbody > tr > td
 {
-	padding: 3px;
+    padding: 3px;
 }
 
 #detalleList input{
-	width:100%;
+    width:100%;
 }
 
 .table-list > tbody > tr > td{
-	font-size:12px;
+    font-size:12px;
 }
 .table-list > thead{
-	background-color:#4b1060;
-	color:#ffffff;
+    background-color:#4b1060;
+    color:#ffffff;
 }
 .table-clear{
-	clear:both;
-	margin-top:5%;
+    clear:both;
+    margin-top:5%;
 }
 
 .list{
-	width:30%;
-	overflow-x: hidden; 
-	overflow-y: inherited;
-	max-height: 300px;
+    width:30%;
+    overflow-x: hidden; 
+    overflow-y: inherited;
+    max-height: 300px;
 }
 .list2{
-	width:100%;
-	overflow-x: hidden; 
-	overflow-y: inherited;
-	max-height: 400px;
+    width:100%;
+    overflow-x: hidden; 
+    overflow-y: inherited;
+    max-height: 400px;
 }
 
 .list-Coment{
-	margin-right:auto;
-	margin-left:auto;
-	width:90%;
-	overflow-x: hidden; 
-	overflow-y: inherited;
-	max-height: 400px;	
+    margin-right:auto;
+    margin-left:auto;
+    width:90%;
+    overflow-x: hidden; 
+    overflow-y: inherited;
+    max-height: 400px;  
 }
 
 #tblConfiguracion tbody {
@@ -2424,11 +2424,11 @@ a:focus {
 }
 
 .list-config{
-	width:76%;
+    width:80%;
 }
 
 #listComentarios > tbody {
-	font-size: 12px;
+    font-size: 12px;
 }
 
 
@@ -3785,20 +3785,20 @@ body.signin {
   padding: 5px 10px;
 }
 .container{
-	width:1100px;
+    width:1100px;
 }
 
 .modal-header{
-	background-color:#4b1060;
-	color : #FFFFFF;
+    background-color:#4b1060;
+    color : #FFFFFF;
 }
 .modal-title{
-	color : #FFFFFF;
-}	
+    color : #FFFFFF;
+}   
 
 .table-striped tbody tr.highlight td {
     background-color:  #d2b4de;
-}	   
+}      
 div.dataTables_wrapper {
         width: 1050px;
         margin: 0 auto;
@@ -3812,7 +3812,7 @@ div.dataTables_wrapper {
 }
 
 .dt-button,a.dt-button{
-	 -webkit-border-radius: 4;
+     -webkit-border-radius: 4;
   -moz-border-radius: 4;
   border-radius: 4px;
   font-family: Arial;
@@ -3821,3 +3821,12 @@ div.dataTables_wrapper {
   text-decoration: none;
   padding: 5px 10px;
 }
+
+fieldset 
+    {
+        border: 1px solid #ddd !important;       
+        border-radius:4px;
+        padding-left:10px!important;
+        padding-bottom: 20px!important;
+        margin-bottom: 5%;
+    }  
