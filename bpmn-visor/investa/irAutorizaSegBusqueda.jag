@@ -76,21 +76,6 @@ var xmlAsignaciones = getAsignaciones(Usuario_v);
     <div class="contentpanel">
         <p class="mb20"></p>
         <div class="panel panel-primary-head">
-            <div>
-                <!--<h4 class="panel-title"></h4>-->
-                <div class="panel panel-primary" id="buscando">
-                    <div class="panel-heading">
-                        <div class="panel-btns">
-                            <a href="#" class="panel-minimize tooltips" data-toggle="tooltip" title="Minimize Panel"><i class="fa fa-minus"></i></a>
-                            <a href="#" class="panel-close tooltips" data-toggle="tooltip" title="Close Panel"><i class="fa fa-times"></i></a>
-                        </div><!-- panel-btns -->
-                        <h3 class="panel-title" align="center">Procesando</h3>
-                    </div>
-                    <div class="panel-body">
-                        <p align="center"> <img alt="" src="resources/plantilla/images/loaders/loader17.gif">&nbsp;&nbsp;Consultando Cliente...</p>
-                    </div><!-- panel-body -->
-                </div><!-- panel -->
-            </div><!-- panel-heading -->
 			
             <h3>Perfiles Asignados a Aplicacones</h3>
 			<br/>
@@ -116,12 +101,12 @@ var xmlAsignaciones = getAsignaciones(Usuario_v);
                 </tbody>
             </table>
 			<br/>
-			<table width="100%" class="table-content" id="tabBtn">
+			<table width="80%" class="table-content" id="tabBtn">
 				<tr>
-					<td align="right">
+					<td align="center" style="padding: 20px;">
 						<input class="btn btn-primary" type="button" value="Rechazar" id="btnRechazar" name="btnRechazar">
 					</td>					
-					<td>
+					<td align="center" style="padding: 20px;">
 						<input class="btn btn-primary" type="button" value="Autorizar" id="btnAutorizar" name="btnAutorizar">
 					</td>										
 				</tr>				
@@ -135,6 +120,24 @@ var xmlAsignaciones = getAsignaciones(Usuario_v);
 				  </div>
 				  <div class="modal-body">
 					
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+					<button type="button" class="btn btn-primary">Aceptar</button>
+				  </div>
+				</div><!-- /.modal-content -->
+			  </div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+
+			<div class="modal fade" id="confirmaRechazo">
+			  <div class="modal-dialog">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h4 class="modal-title">Rechazo</h4>
+				  </div>
+				  <div class="modal-body">
+
 				  </div>
 				  <div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -169,17 +172,15 @@ var xmlAsignaciones = getAsignaciones(Usuario_v);
 	
 	
 		
-	jQuery(document).ready(function(){   
+	jQuery(document).ready(function(){ 
+	$('#ModalProcesando').modal('show');  
 		var repetido = 0;
-		
-		$('#buscando').hide();
-						
-		$(".buscar" ).click(function() {
-			$('#buscando').show();        			
-		});
+		var rowIndex;
+	$('#ModalProcesando').modal('hide');	
 	});
 	
 	$('#btnAutorizar').click(function(){
+		$('#ModalProcesando').modal('show');  
 		var cont = 0;
 		var usuario = "<%=user%>";
 		var perfiles =[];
@@ -191,7 +192,7 @@ var xmlAsignaciones = getAsignaciones(Usuario_v);
 			cont++;		
 			var datos = {};				
 			var index = $(this).index();
-			
+			rowIndex = index + 1;
 		
 			if($('#cbPerfil' + cont).is(':checked')){	
 			console.log("checked");			
@@ -208,6 +209,7 @@ var xmlAsignaciones = getAsignaciones(Usuario_v);
 				datos.idAsignacion = idAsignacion;
 				datos.idPerfil = idPerfil;
 				datos.cbPerfil = cbPerfil;
+				datos.rowIndex = rowIndex;
 				
 				perfiles.push(datos);
 				
@@ -218,19 +220,21 @@ var xmlAsignaciones = getAsignaciones(Usuario_v);
 		if(perfiles.length > 0){
 			var i = 0;
 			for(perfil in perfiles){				
-				console.log(i  +"Datos idPerfil " + perfiles[i].idPerfil); 
-				autorizaAsignacion(perfiles[i].idAplicaion, perfiles[i].idOperacion, perfiles[i].idOerigen, perfiles[i].idAsignacion, perfiles[i].idPerfil, perfiles[i].cbPerfil);
+			autorizaAsignacion(perfiles[i].idAplicaion, perfiles[i].idOperacion, perfiles[i].idOerigen, perfiles[i].idAsignacion, perfiles[i].idPerfil, perfiles[i].cbPerfil, perfiles[i].rowIndex);				
+
 				i++;
 			}
 		}else{
-			
+			 $("#idMsg").html('<div class="alert alert-danger">'+
+						  'Seleccione una asignación para continual'+
+						  '</div>');
+			  $('#ModalInfo').modal('show');
 		}
 	});
 	
    
-	function autorizaAsignacion(_idAplicacion, _idOperacion, _idOrigen,_asignacion, _idPerfil, cbPerfil){
+	function autorizaAsignacion(_idAplicacion, _idOperacion, _idOrigen,_asignacion, _idPerfil, cbPerfil, rowIndex){
 		var usuario = "<%=user%>"
-		console.log("autorizaAsignacion");
 		var payload  = '<dat:qAutorizaAsignacionPerfil xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
 			payload += '<dat:idAplicacion>' + _idAplicacion + '</dat:idAplicacion>';
 			payload += '<dat:idOperacion>' + _idOperacion + '</dat:idOperacion>';
@@ -252,7 +256,7 @@ var xmlAsignaciones = getAsignaciones(Usuario_v);
 						  'Se ha autorizado la asignación ' +
 						  '</div>');
 						  var cb = "#cbPerfil" + cbPerfil;
-						  location.href='irAutorizaSegmentosBusqueda';
+						  $('#tblAsignacion').find('tr').eq(rowIndex).remove();
 						//  console.log(cb);
 						   $(cb).attr('checked',false);
 					}else if($(this).find("estatus").text()==0){
@@ -265,6 +269,7 @@ var xmlAsignaciones = getAsignaciones(Usuario_v);
 						  'Sucedio un error '+$(this).find("codigoError").text()+
 						  '</div>');
 					 }
+					 $('#ModalProcesando').modal('hide');  
 					 $('#ModalInfo').modal('show');
 					 
 					});
@@ -276,7 +281,39 @@ var xmlAsignaciones = getAsignaciones(Usuario_v);
 	}
 
 	$('#btnRechazar').click(function() {
-	//	$('#tblAsignacion').
+		$('#ModalProcesando').modal('show');  
+			var cont = 0;
+			var usuario = "<%=user%>";
+			var perfiles =[];
+			$('#tblAsignacion tbody tr').each(function(){
+			cont++;		
+			var datos = {};				
+			var index = $(this).index();			
+			rowIndex = index + 1;
+			
+		
+			if($('#cbPerfil' + cont).is(':checked')){	
+				var idAsignacion = $(this).find('td').eq(0).text();				
+				datos.idAsignacion = idAsignacion;
+				datos.rowIndex = rowIndex;				
+				perfiles.push(datos);
+				
+			}
+			
+		});
+
+		if(perfiles.length > 0){
+			var i = 0;
+			for(perfil in perfiles){				
+				cancelaAsignacion( perfiles[i].idAsignacion, perfiles[i].rowIndex);
+				i++;
+			}
+		}else{
+			 $("#idMsg").html('<div class="alert alert-danger">'+
+						  'Seleccione una asignación para continual'+
+						  '</div>');
+			  $('#ModalInfo').modal('show');
+		}
 	});
 
 	$("#cbAllCat").change(function(){  	 
@@ -295,20 +332,17 @@ var xmlAsignaciones = getAsignaciones(Usuario_v);
 			var idOperacion = $('select[name=slOperacion]').val();
 			var idOrigen = $('select[name=slOrigen]').val()
 		
-			cancelaAsignacion(idAplicacion, idOperacion, idOrigen, idPerfil, cbPerfil)
+		//	cancelaAsignacion(idAplicacion, idOperacion, idOrigen, idPerfil, cbPerfil)
 			
 				
 		}
 		
 	}
 	
-	function cancelaAsignacion(_idAplicacion, _idOperacion, _idOrigen, _idPerfil, _cbPerfil){
+	function cancelaAsignacion(_idAsignacion, rowIndex){
 		
 		var payload  = '<dat:qCancelaAsignacion xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
-			payload += '<dat:idAplicacion>' + _idPerfil + '</dat:idAplicacion>';
-			payload += '<dat:idOperacion>' + _idPerfil + '</dat:idOperacion>';
-			payload += '<dat:idOrigen>' + _idPerfil + '</dat:idOrigen>';
-			payload += '<dat:idPerfil>' + _idPerfil + '</dat:idPerfil>';
+			payload += '<dat:idPerfilAsig>' + _idAsignacion + '</dat:idPerfilAsig>';
 			payload += '</dat:qCancelaAsignacion>';			
 	
 		$.ajax({
@@ -317,18 +351,19 @@ var xmlAsignaciones = getAsignaciones(Usuario_v);
 			headers: {'Destino':'BpmnVisorSEGListas', 'SOAPAction':'urn:qCancelaAsignacion'},
 			dataType: 'xml',
 			complete: function asignacionResponse(xmlHttpRequest, status){
-					$(xmlHttpRequest.responseText).find('resultadoActualizaConfiguracion').each(function(){
+					$(xmlHttpRequest.responseText).find('resultadoCancelaAsignacion').each(function(){
 					 if($(this).find("estatus").text()==1){
 						$("#idMsg").html('<div class="alert alert-success">'+
 							'Se ha cancelado la asignación ' +
 							'</div>');
-						$("input[name=cbPerfil" + _cbPerfil +"]").attr('checked',false);
+						 $('#tblAsignacion').find('tr').eq(rowIndex).remove();
 						location.href='irAutorizaSegmentosBusqueda';
 					}else {
 						  $("#idMsg").html('<div class="alert alert-danger">'+
 						  'Sucedio un error '+$(this).find("codigoError").text()+
 						  '</div>');
 					 }
+					 $('#ModalProcesando').modal('show');  
 					 $('#ModalInfo').modal('show');
 					 
 					});

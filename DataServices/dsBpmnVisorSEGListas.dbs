@@ -213,14 +213,11 @@
       <param name="estatus" ordinal="1" sqlType="INTEGER" type="OUT"/>
    </query>
    <query id="qCancelaAsignacion" useConfig="SEGListas">
-      <sql>{? = call VISOR_PKG_SEGL_LISTAS.do_segl_cancela_asig (?, ?, ?, ?)}</sql>
+      <sql>{? = call VISOR_PKG_SEGL_LISTAS.do_segl_cancela_asig (?)}</sql>
       <result element="qCancelaAsignacionResponse" rowName="resultadoCancelaAsignacion">
          <element column="estatus" name="estatus" xsdType="string"/>
       </result>
-      <param name="idAplicacion" ordinal="2" sqlType="STRING"/>
-      <param name="idOperacion" ordinal="3" sqlType="STRING"/>
-      <param name="idOrigen" ordinal="4" sqlType="STRING"/>
-      <param name="idPerfil" ordinal="5" sqlType="STRING"/>
+      <param name="idPerfilAsig" ordinal="2" sqlType="STRING"/>
       <param name="estatus" ordinal="1" sqlType="INTEGER" type="OUT"/>
    </query>
    <query id="qInsertaRowCatalogo" useConfig="SEGListas">
@@ -328,10 +325,7 @@
    </operation>      
    <operation name="qCancelaAsignacion">
       <call-query href="qCancelaAsignacion">
-         <with-param name="idAplicacion" query-param="idAplicacion"/>
-         <with-param name="idOperacion" query-param="idOperacion"/>
-         <with-param name="idOrigen" query-param="idOrigen"/>
-         <with-param name="idPerfil" query-param="idPerfil"/>
+         <with-param name="idPerfilAsig" query-param="idPerfilAsig"/>
       </call-query>
    </operation>  
    <operation name="qActualizaConfiguracionPerfil">

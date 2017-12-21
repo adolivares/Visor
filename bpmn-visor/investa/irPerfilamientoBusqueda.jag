@@ -1,6 +1,7 @@
 
 <%
 include("/model/common.jag");
+var user = session.get("user");
 /*<!--
  ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
@@ -270,7 +271,7 @@ include("/model/common.jag");
 	
 	
 	jQuery(document).ready(function(){  
-	$('#ModalCargando').modal('show'); 	
+	$('#ModalProcesando').modal('show'); 	
 		var lista = "";	
 		var rowConfig = "";
 		var slct ="";
@@ -301,10 +302,11 @@ include("/model/common.jag");
 				// .open();			
 		// });
 		
-	$('#ModalCargando').modal('hide');
+	$('#ModalProcesando').modal('hide');
 	});
 	
 	$('#tblListas tbody td').click(function() {
+		$('#ModalProcesando').modal('show'); 
 		rowListas = $(this).parent().index();
 		var tr = $(this).parent(); 
 		var id = tr.find("td").eq(0).html();
@@ -436,6 +438,7 @@ include("/model/common.jag");
 		var id="";
 		var categoria="";
 		var cont = 0;
+		$('#tblCategoria tbody tr').remove();
 		
 		if($(xmlHttpRequest.responseText).find('resultadoConsultaListasCateg').text() != ''){
 			$(xmlHttpRequest.responseText).find('resultadoConsultaListasCateg').each(function(){
@@ -451,7 +454,9 @@ include("/model/common.jag");
 			row += '<td> <input type="checkbox" name="cbTransaccion' + cont + '" id="cbTransaccion"></td>';
 			row += '<td><select id="slPrioridad' + cont +'" name="slPrioridad' + cont +'" disabled class="slPrioridad" ><option value="0">- Seleccione -</option></select></td>';	
 			row += '</tr>';
+					
 				$('#tblCategoria > tbody').append(row);
+				$('#ModalProcesando').modal('hide'); 
 			});
 		}
 	}
