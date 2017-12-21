@@ -5,6 +5,12 @@
       <property name="username">imonitorplus</property>
       <property name="password">Investa-14</property>
    </config>
+   <config enableOData="false" id="SEGListas">
+      <property name="driverClassName">oracle.jdbc.driver.OracleDriver</property>
+      <property name="url">jdbc:oracle:thin:@45.40.139.98:1521:XE</property>
+      <property name="username">VISOR</property>
+      <property name="password">qwerty01</property>
+   </config>
    <query id="qInsertObsDetalle" useConfig="MSSQL">
       <sql>INSERT INTO OBS_BUSQUEDA_DET (ID,FOLIO,NOMBRE,LISTA,PORCENTAJE) VALUES (?,?,?,?,?)</sql>
       <param name="id" ordinal="1" sqlType="STRING"/>
@@ -13,6 +19,17 @@
       <param name="lista" ordinal="4" sqlType="STRING"/>
       <param name="porcentaje" ordinal="5" sqlType="STRING"/>
    </query>
+   <query id="qInsertaRelCategoriaListas" useConfig="SEGListas">
+      <sql>INSERT INTO SEG_CATEG_LISTAS (ID_CATEGORIA, ID_LISTA) VALUES(?,?)</sql>
+      <param name="idCategoria" ordinal="1" sqlType="STRING"/>
+      <param name="idLista" ordinal="2" sqlType="STRING"/>
+   </query>
+   <operation name="qInsertaRelCategoriaListas" returnRequestStatus="true">
+      <call-query href="qInsertaRelCategoriaListas">
+         <with-param name="idCategoria" query-param="idCategoria"/>
+         <with-param name="idLista" query-param="idLista"/>
+      </call-query>
+   </operation>
    <operation name="qInsertObsDetalle" returnRequestStatus="true">
       <call-query href="qInsertObsDetalle">
          <with-param name="id" query-param="id"/>

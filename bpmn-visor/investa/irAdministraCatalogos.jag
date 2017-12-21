@@ -7,7 +7,7 @@ var _userTran = request.getParameter("usuario");
 var _descripcion = request.getParameter("desc");
 var _porcentaje = request.getParameter("porcent");
 var _transac = request.getParameter("transac");
-var estatus = "";
+var estatus = 0;
 _modulo = _modulo==null?"":_modulo;
 _catalogo = _catalogo ==null?"":_catalogo;
 _id = _id==null?"":_id;
@@ -58,8 +58,16 @@ _transac = _transac==null?"":_transac;
 }
 include("Controller/CtrlAdministraCatalogos.jag");
 if( _transac == 1 && _modulo != "" && _catalogo != "" && _descripcion != "" && _userTran != "" && _porcentaje != ""){
-	var xmlResponseAlta = guardaCatalogo(_descripcion, _userTran, _catalogo, _porcentaje)
-	estatus = getEstatusAlta(xmlResponseAlta)
+	var xmlResponseAlta
+	if(_catalogo == 'CATEGORIA'){
+		xmlResponseAlta = guardaCategoria(_descripcion, _userTran);
+		estatus = getEstatusAlta(xmlResponseAlta, 2);
+	}else{
+		xmlResponseAlta = guardaCatalogo(_descripcion, _userTran, _catalogo, _porcentaje);
+		estatus = getEstatusAlta(xmlResponseAlta, 1);
+	}
+	
+	
 	log.info("Estatus Alta: "+estatus);
 }else if( _transac == 2 && _modulo != "" && _catalogo != "" && _id != "" && _descripcion != "" && _userTran != ""  && _porcentaje != ""){
 	var xmlResponse = actualizaCatalogo(_id, _descripcion, _catalogo, _userTran, _porcentaje);
@@ -70,7 +78,6 @@ if( _transac == 1 && _modulo != "" && _catalogo != "" && _descripcion != "" && _
 	estatus = getEstatus(xmlResponse);
 	log.info("Estatus elimina: "+estatus);
 }
-
 
  %>
  
@@ -204,6 +211,46 @@ if( _transac == 1 && _modulo != "" && _catalogo != "" && _descripcion != "" && _
 				</div><!-- /.modal-content -->
 			  </div><!-- /.modal-dialog -->
 			</div><!-- /.modal -->
+
+			<div class="modal fade" id="relCategoriaListas">
+			  <div class="modal-dialog  modal-sm">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h4 class="modal-title"><p class="catTitle"></p></h4>
+				  </div>
+				  <div class="modal-body">
+					<div class="row">
+						<div class="col-md-12">						
+							<div class="row padding10 ">
+								<div class="row padding10">
+									<div class="col-md-12 titleCatalogo"></div>									
+								</div>	
+								<div class="col-md-12">
+									<input type="hidden" id="txtIdCategoria" name="txtIdCategoria">
+									<table id="tblLista" cellspacing="0" class="table-striped table-bordered table-list" style="margin-left:auto; margin-right:auto;">
+										<thead>
+											<th style="display:none;"></th>
+											<th>Lista</th>
+											<th></th>
+										</thead>
+										<tbody>											
+										</tbody>									
+									</table>
+								</div>								
+							</div>							
+						</div>						
+					</div>
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+					<button type="button" class="btn btn-primary" id="btnAltaRelacion" data-dismiss="modal">Aceptar</button>
+				  </div>
+				</div><!-- /.modal-content -->
+			  </div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+
+
 			<div class="modal fade" id="modalConfirma">
 			  <div class="modal-dialog">
 				<div class="modal-content">
@@ -248,6 +295,8 @@ if( _transac == 1 && _modulo != "" && _catalogo != "" && _descripcion != "" && _
 	
 	$(document).ready(function() {
 		var textCatalogo='';
+		var nvoRegistro='';
+		var aListas=[];
 		$('#buscando').hide();                                
 		$(".buscar" ).click(function() {
 			$('#buscando').show();        			
@@ -257,7 +306,7 @@ if( _transac == 1 && _modulo != "" && _catalogo != "" && _descripcion != "" && _
 				//	{catalogo: 'Acción', value: 'accion'},
 					{catalogo: 'Aplicación', value: 'aplicacion'},
 					{catalogo: 'Categoria', value: 'categoria'},
-					{catalogo: 'Listas', value: 'listas'},
+				//	{catalogo: 'Listas', value: 'listas'},
 					{catalogo: 'Operación', value: 'operacion'},
 					{catalogo: 'Origen Cliente', value: 'origencl'},
 					{catalogo: 'Perfil Listas', value: 'listperfil'},
@@ -267,6 +316,8 @@ if( _transac == 1 && _modulo != "" && _catalogo != "" && _descripcion != "" && _
 		
 		var modulo = '';
 		var selectCat = '';
+		var alta = false;
+
 		
 		<%if (_modulo != ""){%>
 			$('#selModulo').val("<%=_modulo%>");
@@ -277,13 +328,14 @@ if( _transac == 1 && _modulo != "" && _catalogo != "" && _descripcion != "" && _
 			var catalogo = "<%=_catalogo%>";
 			$('#selCatalogo').val(catalogo.toLowerCase());
 			clearCatalogo();			
-			showCalogo("<%=_catalogo%>");
+			showCatalogo("<%=_catalogo%>");
 		<%}%>
 		
 		<%if(estatus != ""){%>
 			var mssge = "";
-			<%if (estatus == 1){%>	
+			<%if (estatus >= 1){%>	
 				<%if (_transac == 1){%>	
+					alta = true;
 					mssge = "Se guardó corectamente";
 				<%}else if (_transac == 2){%>	
 					mssge = "Se actualizó correctamente";
@@ -294,7 +346,15 @@ if( _transac == 1 && _modulo != "" && _catalogo != "" && _descripcion != "" && _
 				$("#idMsg").html('<div class="alert alert-success">'+
 					mssge +
 					'</div>');
-				$('#ModalInfo').modal('show');	
+				var catalogoResp = "<%=_catalogo%>";
+				if(alta && catalogoResp == 'CATEGORIA'){
+					$('#txtIdCategoria').val(<%=estatus%>);
+					getListas(<%=estatus%>);
+
+				}else{
+					$('#ModalInfo').modal('show');	
+				}
+				
 			<%}else{%>
 				$("#idMsg").html('<div class="alert alert-danger">'+
 						'Sucedio un error '+$(this).find("codigoError").text()+
@@ -318,7 +378,7 @@ if( _transac == 1 && _modulo != "" && _catalogo != "" && _descripcion != "" && _
 			var catalogo = $(this).val();
 			textCatalogo = $(this).text();
 			clearCatalogo();			
-			showCalogo(catalogo);
+			showCatalogo(catalogo);
 		});
 		
 	});
@@ -331,21 +391,22 @@ if( _transac == 1 && _modulo != "" && _catalogo != "" && _descripcion != "" && _
 		$('#txtIdElimina').val('');		
 	}
 	
-	function showCalogo(_catalogo){
+	function showCatalogo(_catalogo){
 		_catalogo = _catalogo.toLowerCase();
 		
-		if(_catalogo != 'listas'){
-				$(".porcentaje").css("display", "none");
-				getCatalogo(_catalogo);
-			}else{
-				getCatalogoListas();
-			}
+		if(_catalogo != 'listas'){				
+			$(".porcentaje").css("display", "none");
+			getCatalogo(_catalogo);
+		}else{		
+			getCatalogoListas();			
+		}
 			
 	}
 	
 	
 	$('#btnAlta').click(function(){
 		var dato = $('#txtNuevo').val();
+		nvoRegistro = dato;
 		var porcentaje=0;
 		console.log("dato "+ dato);
 		if(validaCat()){
@@ -368,9 +429,10 @@ if( _transac == 1 && _modulo != "" && _catalogo != "" && _descripcion != "" && _
 					}
 				}
 				modulo = 'visor';		
-				selectCat =catalogo;
-				
-				guardarCatalogo(dato, catalogo, porcentaje, modulo);
+				selectCat = catalogo;
+				console.log("selectCat "+ selectCat);
+
+				guardarCatalogo(dato, catalogo, porcentaje, modulo);				
 			}
 		}
 	});
@@ -420,7 +482,7 @@ if( _transac == 1 && _modulo != "" && _catalogo != "" && _descripcion != "" && _
 					porcentaje=0;
 				}
 			}
-			modulo = 'visor';
+			modulo = $('#selModulo').val();
 			selectCat =catalogo;
 			catalogo = catalogo.toUpperCase();
 			
@@ -445,7 +507,7 @@ if( _transac == 1 && _modulo != "" && _catalogo != "" && _descripcion != "" && _
 		var id=$('#txtIdElimina').val();
 		var catalogo = $('#selCatalogo').val();
 		var usuario = "<%=user%>";
-		modulo = 'visor';
+		modulo = $('#selModulo').val();
 		selectCat =catalogo.toUpperCase();
 		location.href='irAdministraCatalogos?mod=' + modulo + '&&cat=' +selectCat + '&&id='+id+'&&usuario='+usuario+'&&transac=3';
 	});
@@ -489,7 +551,9 @@ if( _transac == 1 && _modulo != "" && _catalogo != "" && _descripcion != "" && _
 	
 	function getCatalogo(_catalogo){
 		var cat = _catalogo.toUpperCase();
+		selectCat = cat;
 		console.log("cat " + cat);
+
 		
 		var payload  = '<dat:qGetCatalogos xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
 			payload += '<dat:catalogo>'+cat+'</dat:catalogo>';
@@ -584,7 +648,112 @@ if( _transac == 1 && _modulo != "" && _catalogo != "" && _descripcion != "" && _
 		 $("#contentCat").css("display", "block");
 	}
 	
+	function getListas(idCategoria){
+		console.log("idCategoria " + idCategoria);
+
+		var payload  = '<dat:qGetListasCategoriaRel xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
+			payload += '<dat:idCategoria>'+idCategoria+'</dat:idCategoria>';
+			payload += '<dat:tipo>2</dat:tipo>'; //Por relacionar
+			payload += '</dat:qGetListasCategoriaRel>';
+		$.ajax({
+			url: '/commons/postSOAP',
+			type: 'post',
+			headers: {'Destino':'BpmnVisorSEGListas', 'SOAPAction':'urn:qGetListasCategoriaRel'},
+			dataType: 'xml',
+			complete: ctListasResponse,
+			error: function (xhr, status, error) {},
+			data: payload
+		});       
+	}
+
+	function ctListasResponse(xmlHttpRequest, status){
+		var nvoRegistro = "<%=_descripcion%>";
+		var i=0;
+		var row="";	
+		$(xmlHttpRequest.responseText).find('resultadoInsertCateg').each(function(){
+			idLista =  $(this).find("id_lista").text();
+			descripcion = $(this).find("lista").text();		
+			$('#tblLista > tbody > tr').remove();
+			$('.titleCatalogo p').remove();
+
+					
+				row += '<tr>';
+				row += '<td style="display:none;">' + idLista + '</td>';
+				row += '<td>' + descripcion + '</td>';
+				row += '<td><input type="checkbox" id="cbLista'+i+'" name="cbLista"></td>';
+				row += '</tr>';
+
+			i++;
+				
+			});
+		$('#tblLista > tbody').append(row);
+		$('.titleCatalogo').append('<p>Selecciona a que listas pertenece la Categoria: '+nvoRegistro.toUpperCase()+'</p>');
+
+		$('#relCategoriaListas').modal('show');
+
+	}
+
+	$('#btnAltaRelacion').click(function() {
+		console.log("alta relacion");
+		var check = false;
+		var payload  = '<dat:qInsertaRelCategoriaListas_batch_req xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorBusqueda">';
+		var idCategoria = $('#txtIdCategoria').val();
+		$('input[name=cbLista]').each(function(){			
+			if ($(this).is(':checked') ) {
+				check = true;
+				var indx = $(this).parent().parent().index();	
+				var tr = $("#tblLista > tbody").find("tr").eq(indx);
+				var idList = tr.find('td').eq(0).text();
+				console.log("indx: "+ indx);
+				console.log("idList: "+ idList);
+
+				payload += '<dat:qInsertaRelCategoriaListas>';
+				payload += '<dat:idCategoria>'+idCategoria+'</dat:idCategoria>';
+				payload += '<dat:idLista>'+idList+'</dat:idLista>'; 
+				payload += '</dat:qInsertaRelCategoriaListas>'; 
+				
+			}
+		});
+			payload += '</dat:qInsertaRelCategoriaListas_batch_req>';
+		if(check){
+			
+			$.ajax({
+				url: '/commons/postSOAP',
+				type: 'post',
+				headers: {'Destino':'BpmnBusqueda', 'SOAPAction':'urn:qInsertaRelCategoriaListas_batch_req'},
+				dataType: 'xml',
+				complete: relacionResponse,
+				error: function (xhr, status, error) {},
+				data: payload
+			});       
+		}else{
+			$("#idMsg").html('<div class="alert alert-danger">'+
+				  'Seleccione una lista para continuar'+
+				  '</div>');
+			$('#ModalInfo').modal('show');
+			return;
+		}
+	});
+	function relacionResponse(xmlHttpRequest, status){
+	var resxml = xmlHttpRequest.responseText.replace(/soapenv:Body/g,"resultado");
+				var resp = $(resxml).find("resultado").text();
+			//	 console.log ("Location1: " + resp);
+				if(resp == "SUCCESSFUL"){
+					$("#idMsg").html('<div class="alert alert-success">'+
+					'Se ha guardado correctamente'+
+					'</div>');
+
+					$("#btnGuardar").attr('disabled','disabled');
+					$("#txaComentario").attr('disabled','disabled');
+				}else{
+					$("#idMsg").html('<div class="alert alert-danger">'+
+					'Sucedio un error al guardar la relación: '+$(this).find("resultado").text()+
+					'</div>');
+				}
+				$('#ModalInfo').modal('show');
+	}
 	
+
 
 </script>
 </body>

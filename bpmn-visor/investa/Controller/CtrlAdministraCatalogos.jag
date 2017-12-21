@@ -27,15 +27,50 @@
 		log.info("RESPONSE XML GUARDAR CAT: " + responseXML.toXMLString());
 		return responseXML;
 	}
+
+	function guardaCategoria(_descripcion, _usuario){
+		var payload = <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dat="http://ws.wso2.org/dataservice">
+					   <soapenv:Header/>
+					   <soapenv:Body>
+						  <dat:qInsertaCategoria>
+							 <dat:categoria>{_descripcion}</dat:categoria>
+							 <dat:usuario>{_usuario}</dat:usuario>
+						  </dat:qInsertaCategoria>
+					   </soapenv:Body>
+					</soapenv:Envelope>;
+		log.info(payload);
+		var url = URL_ESB + "BpmnVisorSEGListas";
+		var ws = new XMLHttpRequest();
+		var action = "urn:qInsertaCategoria";
+		ws.open("POST", url, false);
+		ws.setRequestHeader('SOAPAction', action);
+		ws.setRequestHeader('Content-Type','text/xml; charset=utf-8');
+		ws.send(payload.toXMLString());
+		var responseXML = new XML(ws.responseText);
+		//log.info(" usuario " + _usuario );
+		log.info("RESPONSE XML GUARDAR CAT: " + responseXML.toXMLString());
+		return responseXML;
+	}
 	
-	function getEstatusAlta(resAlta){
+	function getEstatusAlta(resAlta, cat){
 		var result = "";
-			for each (var aXML in resAlta..*::qInsertRowCatalogoResponse..*::resultadoInsertCat){	
-			if(aXML != "" || aXML != null){
-				result = +aXML.*::estatus.toString();					
+			log.info(" cat " + cat );
+			if(cat == 2){
+				for each (var aXML in resAlta..*::qInsertaCategResponse..*::resultadoInsertCateg){	
+					if(aXML != "" || aXML != null){
+						result = +aXML.*::estatus.toString();					
+					}
+				}
+			}else{
+				for each (var aXML in resAlta..*::qInsertRowCatalogoResponse..*::resultadoInsertCat){	
+					if(aXML != "" || aXML != null){
+						result = +aXML.*::estatus.toString();					
+					}
+				}
+			
+				log.info(" result " + result );
 			}
-		}
-	return result;
+		return result;
 	}
 	
 	
@@ -66,7 +101,7 @@
 		ws.send(payload.toXMLString());
 		var responseXML = new XML(ws.responseText);
 		//log.info(" usuario " + _usuario );
-		log.info("RESPONSE XML Asignacion: " + responseXML.toXMLString());
+		log.info("RESPONSE XML ACTUALIZA CAT: " + responseXML.toXMLString());
 		return responseXML;
 	}
 	
@@ -104,15 +139,14 @@
 		ws.send(payload.toXMLString());
 		var responseXML = new XML(ws.responseText);
 		//log.info(" usuario " + _usuario );
-		log.info("RESPONSE XML Asignacion: " + responseXML.toXMLString());
+		log.info("RESPONSE XML ELIMINA CAT: " + responseXML.toXMLString());
 		return responseXML;
 	}
 	
 	function getEstatus(resElimina){
 		var result = "";
 		var cont = 0;
-			for each (var aXML in resElimina..*::qEliminaCatalogoResponse..*::resultadoEliminaCat){
-		
+			for each (var aXML in resElimina..*::qEliminaCatalogoResponse..*::resultadoEliminaCat){		
 			cont++;
 			if(aXML != "" || aXML != null){
 				result = +aXML.*::estatus.toString();					

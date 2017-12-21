@@ -1,6 +1,7 @@
 
 <%
 include("/model/common.jag");
+var user = session.get("user");	
 /*<!--
  ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
@@ -107,7 +108,7 @@ var xmlAsignaciones = getAsignaciones(Usuario_v);
 						<th>Origen Cliente</th> 
 						<th style="display:none;"></th> 						
 						<th>Perfil</th>
-                        <th style="width: 7px"><input type="checkbox" id="cbAnalista1" ></th> 
+                        <th style="width: 7px"><input type="checkbox" id="cbAllCat" ></th> 
                     </tr>
                 </thead>
 				<tbody>		
@@ -248,9 +249,10 @@ var xmlAsignaciones = getAsignaciones(Usuario_v);
 					$(xmlHttpRequest.responseText).find('qAutorizaAsignacionResponse').each(function(){
 					 if($(this).find("estatus").text()==1){
 						  $("#idMsg").html('<div class="alert alert-success">'+
-						  'Se ha realizado la petición ' +
+						  'Se ha autorizado la asignación ' +
 						  '</div>');
 						  var cb = "#cbPerfil" + cbPerfil;
+						  location.href='irAutorizaSegmentosBusqueda';
 						//  console.log(cb);
 						   $(cb).attr('checked',false);
 					}else if($(this).find("estatus").text()==0){
@@ -272,6 +274,14 @@ var xmlAsignaciones = getAsignaciones(Usuario_v);
 		}); 
 			
 	}
+
+	$('#btnRechazar').click(function() {
+	//	$('#tblAsignacion').
+	});
+
+	$("#cbAllCat").change(function(){  	 
+		$(".cbPerf").prop('checked', $(this).prop("checked")); 
+	});
 	
 	function getAsignacion(){
 		for (list in listExiste){
@@ -285,7 +295,7 @@ var xmlAsignaciones = getAsignaciones(Usuario_v);
 			var idOperacion = $('select[name=slOperacion]').val();
 			var idOrigen = $('select[name=slOrigen]').val()
 		
-			ancelaAsignacion(idAplicacion, idOperacion, idOrigen, idPerfil, cbPerfil)
+			cancelaAsignacion(idAplicacion, idOperacion, idOrigen, idPerfil, cbPerfil)
 			
 				
 		}
@@ -310,10 +320,10 @@ var xmlAsignaciones = getAsignaciones(Usuario_v);
 					$(xmlHttpRequest.responseText).find('resultadoActualizaConfiguracion').each(function(){
 					 if($(this).find("estatus").text()==1){
 						$("#idMsg").html('<div class="alert alert-success">'+
-							'Se ha realizado la petición ' +
+							'Se ha cancelado la asignación ' +
 							'</div>');
 						$("input[name=cbPerfil" + _cbPerfil +"]").attr('checked',false);
-					
+						location.href='irAutorizaSegmentosBusqueda';
 					}else {
 						  $("#idMsg").html('<div class="alert alert-danger">'+
 						  'Sucedio un error '+$(this).find("codigoError").text()+

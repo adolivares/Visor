@@ -979,11 +979,11 @@ include("/model/common.jag");
 			if ($(this).is(':checked') ) {
 				bPerfil = true;				
 				cbPerfil = $(this).val();	
-				console.log("cbPerfil" +cbPerfil );
+			//	console.log("cbPerfil" +cbPerfil );
 				var indx = $(this).parent().parent().index();	
 				var tr = $("#tblPerfil > tbody").find("tr").eq(indx);
 				idPerfil = tr.find("td").eq(0).text();	
-				console.log("idOrigen " + idOrigen);
+			//	console.log("idOrigen " + idOrigen);
 			
 				data.adAplic = idAplicacion;
 				data.idOperacion = idOperacion;
@@ -1124,9 +1124,16 @@ include("/model/common.jag");
 									'Se han dado de alta correctamente ' +
 									'</div>');	
 			$('#ModalInfo').modal('show');	
-			
+			clerAsignacion();
 
 		}	
+	}
+
+	function clerAsignacion(){
+		$('#slAplicacion').val(0);
+		$('#slOperacion').val(0);
+		$('#slOrigen').val(0);
+		$('input[name = cbPerfil]').attr('checked', false);
 	}
 	
 	
