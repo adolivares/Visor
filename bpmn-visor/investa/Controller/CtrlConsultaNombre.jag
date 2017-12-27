@@ -38,20 +38,22 @@
 		var id =0;
 		var db ="";
 		var tipo=0;		
-		
+		var observacione="";
+
+		log.info('Nombre get Coments ' + nombre.toUpperCase());
+		var obsercaciones = consultaObservaciones(nombre.toUpperCase());
+		idRegistro = obsercaciones..*::resultadoObsBusqueda.*::id.toString();
+		observaciones = obsercaciones..*::resultadoObsBusqueda.*::observaciones.toString();	
 		
 		if(lista != ""){
 			var estatus = lista..*::resultado.*::estatus.toString();			
 			var idRegistro="";
-			var observacione="";
+			
 			log.info('ESTATUS ' + estatus);
 			if(estatus == 1){
 			
-				log.info('Nombre get Coments ' + nombre.toUpperCase());
-				var obsercaciones = consultaObservaciones(nombre.toUpperCase());	
 				//if(obsercaciones..*::resultadoObsBusqueda != "" || obsercaciones..*::resultadoObsBusqueda != ""){
-					idRegistro = obsercaciones..*::resultadoObsBusqueda.*::id.toString();
-					observaciones = obsercaciones..*::resultadoObsBusqueda.*::observaciones.toString();
+					
 					if(idRegistro == null){
 						idRegistro ="";
 					}
@@ -108,8 +110,8 @@
 				result += '<tr><td><br/><br/>Timepo de ejecución: ' + tiempo +' segundos.<br/><br/></td></tr>';
 				result += '<tr><td><p>OBSERVACIONES (máximo 1000 caracteres):</p></td></tr>';
 				result += '<tr>';
-				result += '<td><textarea id="txaComentario" maxlength="1000" rows="4" cols="50" class="form-control" >'+ observaciones+'</textarea></td>';
-				result += '</tr>';
+				result += '<td><textarea id="txaComentario" onkeyup="validarTexto(this,1000)" rows="4" cols="50" class="form-control" >'+ observaciones+'</textarea></td>';
+				result += '</tr>';	
 				result += '<tr>';
 				result += '<td><br/><br/>Fecha de Consulta: '+fecha+'</td>';
 				result += '</tr>';
@@ -124,7 +126,27 @@
 				result += '</table>';
 				
 			}else{
-				result = "<td colspan=5>No se encontraron Resultados</td>";		
+				
+				result +='<table  width="80%" class="table-content" style="margin-left:auto; margin-right:auto;">';
+				result += '<tr><td style="display:none"><input type="text" id="txtID" value ="' + idRegistro+ '"></td><td style="display:none"></td></tr>';
+				result += '<tr><td align="center"><h3>No se encontraron Resultados</h3></td></tr>';	
+				result += '<tr><td><br/><br/>Timepo de ejecución: ' + tiempo +' segundos.<br/><br/></td></tr>';
+				result += '<tr><td><p>OBSERVACIONES (máximo 1000 caracteres):</p></td></tr>';
+				result += '<tr>';
+				result += '<td><textarea id="txaComentario" onkeyup="validarTexto(this,1000)" rows="4" cols="50" class="form-control" >'+ observaciones+'</textarea></td>';
+				result += '</tr>';	
+				result += '<tr>';
+				result += '<td><br/><br/>Fecha de Consulta: '+fecha+'</td>';
+				result += '</tr>';
+				result += '<tr>';
+				result += '<td><br/>Consulta realizada por: '+ usuario +'</td>';
+				result += '</tr>';				
+				result += '<tr>';
+				result += '<td style="padding:2%;" align="center"><input style="width:18%"  class="btn btn-primary" type="button" value="Guardar" id="btnGuardar" name="btnGuardar"> &nbsp;&nbsp;&nbsp;&nbsp;';
+				result += '<input style="width:18%"  class="btn btn-primary" type="button" value="Imprimir" id="btnImprimir" name="btnImprimir" onclick="imprime()">';
+				result += '</td>';
+				result += '</tr>';
+				result +='<table>';	
 			}	
 		}
 		return result;		

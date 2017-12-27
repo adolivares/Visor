@@ -172,7 +172,18 @@ log.info("tiempo: " + tiempo + " segundos.");
 
 	});
 	
-	
+	 function validarTexto(objetoTextarea, maxLength){
+	 	var texto = objetoTextarea.value;
+        if(texto.length > maxLength) {
+          objetoTextarea.value = objetoTextarea.value.substr(0,maxLength);
+          alert('¡ATENCION!\n\n' +
+            'Se ha sobrepasado la longitud máxima permitida para el texto (' +
+            maxLength + ' caracteres)\n\n' +
+            'Se han truncado caracteres finales');
+        }
+        return false
+      } 
+
 	$("#btnEnviar").click(function(){	
 		var nombre= $("#txtNombre").val();
 		var modo = "";
@@ -216,6 +227,7 @@ log.info("tiempo: " + tiempo + " segundos.");
 		
 		$("#btnGuardar").click(function(){
 			var idRegistro = $("#txtID").val();
+			console.log("id " +idRegistro)
 			var obs = $("#txaComentario").val();
 			var usuario = "<%=user%>";
 			var nombre = "<%=nombre%>";
@@ -351,11 +363,12 @@ log.info("tiempo: " + tiempo + " segundos.");
 				var nombre = "";
 				var lista = "";
 				var porcentaje = "";
+				var cont=0;
 
 				payload  = '<p:qInsertObsDetalle_batch_req xmlns:p="http://ws.wso2.org/dataservice">';
 				
 
-				$('#example tbody tr').each(function(index, el) {
+				$('#example tbody tr').each(function(index, el) {					
 					folio = $(this).find('td').eq(0).text();
 					nombre = $(this).find('td').eq(2).text();
 					lista = $(this).find('td').eq(3).text();
@@ -367,19 +380,22 @@ log.info("tiempo: " + tiempo + " segundos.");
 					payload +=         '<p:lista>'+lista+'</p:lista>';
 					payload +=         '<p:porcentaje>'+porcentaje+'</p:porcentaje>';
 					payload +=      '</p:qInsertObsDetalle>';
+					cont++;
 				});	
 				payload +=   '</p:qInsertObsDetalle_batch_req>';
 
 				
-				 $.ajax({
-						url: '/commons/postSOAP',
-						type: 'post',
-						headers: {'Destino':'BpmnBusqueda', 'SOAPAction':'qInsertObsDetalle_batch_req'},
-						dataType: 'xml',
-						complete: obDetallesActRespon,
-						error: function (xhr, status, error) {},
-						data: payload
-				});
+				if(cont > 0){
+					 $.ajax({
+							url: '/commons/postSOAP',
+							type: 'post',
+							headers: {'Destino':'BpmnBusqueda', 'SOAPAction':'qInsertObsDetalle_batch_req'},
+							dataType: 'xml',
+							complete: obDetallesActRespon,
+							error: function (xhr, status, error) {},
+							data: payload				
+					});
+				}
 				
 			}
 
@@ -442,7 +458,6 @@ log.info("tiempo: " + tiempo + " segundos.");
 				}
 				
 			
-			}
-	
+			}	
 
 </script>

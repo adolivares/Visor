@@ -110,7 +110,7 @@ var user = session.get("user");
 								<thead>
 									<th>Perfil</th>
 									<th>Lista</th>
-									<th>Categoria</th>
+									<th>Categoría</th>
 									<th style="display:none;"></th>
 									<th style="display:none;"></th>
 									<th style="display:none;"></th>
@@ -131,7 +131,7 @@ var user = session.get("user");
 							<table id="tblCategoria" class="table-striped table-bordered table-list">
 								<thead>
 									<th style="display:none;"></th>
-									<th>Categoria</th>
+									<th>Categoría</th>
 									<th><input type="checkbox" name="cbAllCat" id="cbAllCat"></th>
 									<th>Transacción</th>
 									<th>Prioridad</th>
