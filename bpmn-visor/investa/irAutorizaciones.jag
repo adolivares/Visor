@@ -1,6 +1,7 @@
 
 <%
 include("/model/common.jag");
+var user = session.get("user"); 
 /*<!--
  ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
@@ -29,8 +30,8 @@ include("/model/common.jag");
     } else {
         include("/template/partials/header.jag");
         include("/template/partials/navigation.jag");
-		include("detalleCoincidencias.jag");
-		include("logComentarios.jag");
+        include("detalleCoincidencias.jag");
+        include("logComentarios.jag");
     }
 
 } else {
@@ -46,7 +47,7 @@ include("Controller/CtrlVisorBandeja.jag");
 var xmlBandeja = getTablaBandejaEntrada("",Usuario_v,'ELIMINACION');
  %>
  
-		<link href="resources/plantilla/css/select2.css" rel="stylesheet" />
+        <link href="resources/plantilla/css/select2.css" rel="stylesheet" />
         <link href="resources/plantilla/css/dataTables.responsive.css" rel="stylesheet">
 
         <link rel='stylesheet prefetch' href='resources/plantilla/css/jquery.dataTables.min.css'> 
@@ -56,7 +57,7 @@ var xmlBandeja = getTablaBandejaEntrada("",Usuario_v,'ELIMINACION');
         <script src="resources/plantilla/js/html5shiv.js"></script>
         <script src="resources/plantilla/js/respond.min.js"></script>
         <![endif]-->
-		
+        
     
 
 <div class="col-sm-10" >
@@ -81,49 +82,50 @@ var xmlBandeja = getTablaBandejaEntrada("",Usuario_v,'ELIMINACION');
             <table id="example" cellspacing="0" class="table table-striped table-bordered" style="font-size: x-small"  width="100%">
                 <thead>
                     <tr>
-                        <th style="display:none;"></th>                                    	
-                        <th>Fecha consulta</th>                                     	
+                        <th style="display:none;"></th>                                     
+                        <th>Fecha consulta</th>                                         
                         <th>Id Búsqueda</th>
                         <th>Id Cliente</th>
                         <th>Nombre</th>  
-						<th>Apellido paterno</th>  
-						<th>Apellido materno</th>
+                        <th>Apellido paterno</th>  
+                        <th>Apellido materno</th>
                         <th>Relación</th>  
-						<th>Aplicación</th>  						
+                        <th>Aplicación</th>                         
                         <th>Resultado</th>                                     
                         <th>Lista</th>               
-						<th>Porcentaje coincidencia</th>      
+                        <th>Porcentaje coincidencia</th>      
                         <th>Ver Detalle</th>                     
                         <th style="width: 7px"><input type="checkbox" id="cbAnalista1" ></th>    
-						<th style="display:none;"></th>						
+                        <th style="display:none;"></th>                     
+                        <th style="display:none;"></th>                     
                     </tr>
                 </thead>
-				<tbody>			
-						<%=createTablaBandejaAutorizacion(xmlBandeja,1)%>				
+                <tbody>         
+                        <%=createTablaBandejaAutorizacion(xmlBandeja,1)%>               
                 </tbody>
             </table>
-			<br/>
-		
-			<table width="100%" class="table-content" id="tabBtn">
-				<tr>
-					<td valign="top" align="right">
-						
-						<input class="btn btn-primary" type="button" value="Ver Comentarios" id="btnComentarios" name="btnComentarios" onclick="consulta()" >
-					</td>
-					<td style="width:30%">						
-						<textarea id="txaComentario" rows="3" cols="90" placeholder="Ingrese comentario ..."></textarea>	
-					</td>
-					<td align="left">
-						<input class="btn btn-primary" type="button" value="Guardar Comentarios" id="btnGuardaComent" name="btnGuardaComent">
-					</td>
-					<td align="right">
-						<input class="btn btn-primary" type="button" value="Rechazar" id="btnRechazar" name="btnRechazar">
-					</td>					
-					<td>
-						<input class="btn btn-primary" type="button" value="Autorizar" id="btnAutorizar" name="btnAutorizar">
-					</td>										
-				</tr>				
-			</table>
+            <br/>
+        
+            <table width="100%" class="table-content" id="tabBtn">
+                <tr>
+                    <td valign="top" align="right">
+                        
+                        <input class="btn btn-primary" type="button" value="Ver Comentarios" id="btnComentarios" name="btnComentarios" onclick="consulta()" >
+                    </td>
+                    <td style="width:30%">                      
+                        <textarea id="txaComentario" rows="3" cols="90" placeholder="Ingrese comentario ..."></textarea>    
+                    </td>
+                    <td align="left">
+                        <input class="btn btn-primary" type="button" value="Guardar Comentarios" id="btnGuardaComent" name="btnGuardaComent">
+                    </td>
+                    <td align="right">
+                        <input class="btn btn-primary" type="button" value="Rechazar" id="btnRechazar" name="btnRechazar">
+                    </td>                   
+                    <td>
+                        <input class="btn btn-primary" type="button" value="Autorizar" id="btnAutorizar" name="btnAutorizar">
+                    </td>                                       
+                </tr>               
+            </table>
         </div><!-- panel-heading -->
     </div><!-- contentpanel -->
  </section>
@@ -151,18 +153,18 @@ var payload = '';
 $(document).ready(function() {
 
     $('#example').DataTable({
-		"language": {
-				"lengthMenu": "Mostrar _MENU_ registros",
-				"zeroRecords": "No hay registros disponibles",
-				"info": "Mostrando página _PAGE_ de _PAGES_",
-				"infoEmpty": "No hay registros disponibles",
-				"infoFiltered": "(filtrado de _MAX_ registros totales)",
-				"search": "Buscar",
-				"paginate": {
-				  "previous": "Previo",
-				  "next":"Siguiente"
-				}
-			},
+        "language": {
+                "lengthMenu": "Mostrar _MENU_ registros",
+                "zeroRecords": "No hay registros disponibles",
+                "info": "Mostrando página _PAGE_ de _PAGES_",
+                "infoEmpty": "No hay registros disponibles",
+                "infoFiltered": "(filtrado de _MAX_ registros totales)",
+                "search": "Buscar",
+                "paginate": {
+                  "previous": "Previo",
+                  "next":"Siguiente"
+                }
+            },
         "scrollY": 200,
         "scrollX": true
     });
@@ -194,9 +196,10 @@ function consulta() {
     var tr = $("#example >tbody").find("tr").eq(indexTBL);
 
     var id = tr.find("td").eq(14).text();
-    var tipo = tr.find("td").eq(10).text();
-	$('#ModalCargando').modal('show');
-    consultaComentarios(id, tipo);
+    var tipo = tr.find("td").eq(15).text();
+    var idConsulta = tr.find("td").eq(2).text();
+    $('#ModalCargando').modal('show');
+    consultaComentarios(id, tipo, idConsulta);
 
     //$('#ComentariosModal').modal('show');
 }
@@ -204,7 +207,7 @@ function consulta() {
 
 function valorChk(combo) {
     indexTBL = $(combo).closest('tr').index();
-	console.log(indexTBL);
+    console.log(indexTBL);
     //alert(indexTBL);
 }
 $("#btnGuardaComent").click(function() {
@@ -233,63 +236,52 @@ $("#btnGuardaComent").click(function() {
     tr = $("#example >tbody").find("tr").eq(indexTBL);
 
 
-    var tipo = tr.find("td").eq(10).text();
-    var sId = tr.find("td").eq(14).text();
-    var val = tr.find("td").eq(9).text();
-    if (val == "+") {
-        val = "positivo";
-    } else if (val == "-") {
-        val = "negativo";;
-    } else {
-        val = "";
-    }
+    
+        var idConsulta = tr.find("td").eq(2).text();
+        var tipo = tr.find("td").eq(15).text();
+        var sId = tr.find("td").eq(14).text();
+        var val = tr.find("td").eq(9).text();
+        var nombre = tr.find("td").eq(4).text();
+        var paterno = tr.find("td").eq(5).text();
+        var materno = tr.find("td").eq(6).text();
+        var usuario = "<%=user%>";
+        var categoria = tr.find("td").eq(16).text();;
+        var urn = "";
+        var payload = "";
 
-    switch (tipo) {
-        case "1":
-            payload = '<dat:qInsertaComentariosLN xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
-            payload += '<dat:obs>' + coment + '</dat:obs>';
-            payload += '<dat:validation>' + val + '</dat:validation>';
-            payload += '<dat:tbCorr>' + sId + '</dat:tbCorr>';
-            payload += '</dat:qInsertaComentariosLN>';
-            urn = 'urn:qInsertaComentariosLN';
-            break;
-        case "2":
-            payload = '<dat:qInsertaComentariosLG xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
-            payload += '<dat:obs>' + coment + '</dat:obs>';
-            payload += '<dat:validation>' + val + '</dat:validation>';
-            payload += '<dat:tbCorr>' + sId + '</dat:tbCorr>';
-            payload += '</dat:qInsertaComentariosLG>';
-            urn = 'urn:qInsertaComentariosLG';
-            break;
-        case "3":
-            payload = '<dat:qInsertaComentariosLS xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
-            payload += '<dat:obs>' + coment + '</dat:obs>';
-            payload += '<dat:validation>' + val + '</dat:validation>';
-            payload += '<dat:idReg>' + sId + '</dat:idReg>';
-            payload += '</dat:qInsertaComentariosLS>';
-            urn = 'urn:qInsertaComentariosLS';
-            break;
-        case "4":
-            payload = '<dat:qInsertaComentariosWC xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
-            payload += '<dat:obs>' + coment + '</dat:obs>';
-            payload += '<dat:validation>' + val + '</dat:validation>';
-            payload += '<dat:uid>' + sId + '</dat:uid>';
-            payload += '</dat:qInsertaComentariosWC>';
-            urn = 'urn:qInsertaComentariosWC';
-    }
+        if (val == "+") {
+            val = "positivo";
+        } else if (val == "-") {
+            val = "negativo";;
+        } else {
+            val = "";
+        }
+    
+        payload  = '<dat:qInsertaObservaciones xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
+        payload += '<dat:idLista>' + tipo + '</dat:idLista>';
+        payload += '<dat:tbCorr>' + sId + '</dat:tbCorr>';
+        payload += '<dat:idConsulta>' + idConsulta + '</dat:idConsulta>';
+        payload += '<dat:name>' + nombre + '</dat:name>';
+        payload += '<dat:paterno>'  +paterno +'</dat:paterno>';
+        payload += '<dat:materno>' + materno+'</dat:materno>';
+        payload += '<dat:observacion>' + coment + '</dat:observacion>';
+        payload += '<dat:categoria>'+ categoria +'</dat:categoria>';
+        payload += '<dat:usuario>'+ usuario +'</dat:usuario>';
+        payload += '</dat:qInsertaObservaciones>';
+        urn = 'urn:qInsertaObservaciones'; 
+        $.ajax({
+            url: '/commons/postSOAP',
+            type: 'post',
+            headers: {
+                'Destino': 'BpmnVisor',
+                'SOAPAction': urn
+            },
+            dataType: 'xml',
+            complete: comentariosIRespon,
+            error: function(xhr, status, error) {},
+            data: payload
+        });
 
-    $.ajax({
-        url: '/commons/postSOAP',
-        type: 'post',
-        headers: {
-            'Destino': 'BpmnVisorComentarios',
-            'SOAPAction': urn
-        },
-        dataType: 'xml',
-        complete: comentariosIRespon,
-        error: function(xhr, status, error) {},
-        data: payload
-    });
 
 
 });
@@ -299,23 +291,11 @@ $("#btnGuardaComent").click(function() {
 function comentariosIRespon(xmlHttpRequest, status) {
     //console.log("coment" + $(xmlHttpRequest.responseText).find('respComentariosLN').text());
     var res = "";
-    if ($(xmlHttpRequest.responseText).find('respComentariosLN').text() != '') {
-        $(xmlHttpRequest.responseText).find('respComentariosLN').each(function() {
-            res = $(this).find("Value").text();
+    if ($(xmlHttpRequest.responseText).find('resultadoInsertComentLS').text() != '') {
+        $(xmlHttpRequest.responseText).find('resultadoInsertComentLS').each(function() {
+            res = $(this).find("estatus").text();
         });
-    } else if ($(xmlHttpRequest.responseText).find('respComentariosLG').text() != '') {
-        $(xmlHttpRequest.responseText).find('respComentariosLG').each(function() {
-            res = $(this).find("Value").text();
-        });
-    } else if ($(xmlHttpRequest.responseText).find('respComentariosLS').text() != '') {
-        $(xmlHttpRequest.responseText).find('respComentariosLS').each(function() {
-            res = $(this).find("Value").text();
-        });
-    } else if ($(xmlHttpRequest.responseText).find('respComentariosWC').text() != '') {
-        $(xmlHttpRequest.responseText).find('respComentariosWC').each(function() {
-            res = $(this).find("Value").text();
-        });
-    }
+    } 
 
     if (res == 1) {
         $("#idMsg").html('<div class="alert alert-success">' +
@@ -360,13 +340,13 @@ $("#btnAutorizar").click(function() {
     tr = $("#example >tbody").find("tr").eq(indexTBL);
 
     var sId = tr.find("td").eq(0).text();
-	$("#t1").val(tr.find("td").eq(4).text() + " "+tr.find("td").eq(5).text() + " "+tr.find("td").eq(6).text());//cliente
-	$("#t2").val(tr.find("td").eq(3).text());//idcliente
-	$("#t3").val(4);//tipo
-	$("#t4").val(tr.find("td").eq(1).text());//fecha
-	$("#t5").val(sId);
-	$("#t6").val('Solicitó:');
-	$("#t7").val(tr.find("td").eq(4).text() + " "+tr.find("td").eq(5).text() + " "+tr.find("td").eq(6).text());//persona
+    $("#t1").val(tr.find("td").eq(4).text() + " "+tr.find("td").eq(5).text() + " "+tr.find("td").eq(6).text());//cliente
+    $("#t2").val(tr.find("td").eq(3).text());//idcliente
+    $("#t3").val(4);//tipo
+    $("#t4").val(tr.find("td").eq(1).text());//fecha
+    $("#t5").val(sId);
+    $("#t6").val('Solicitó:');
+    $("#t7").val(tr.find("td").eq(4).text() + " "+tr.find("td").eq(5).text() + " "+tr.find("td").eq(6).text());//persona
     //envio_autoriza(sId,'Autorizado');
    envio_escala_del(sId, 'Autorizado', _analista, _gerente, _oficial, _director);
 });
@@ -399,13 +379,13 @@ $("#btnRechazar").click(function() {
     tr = $("#example >tbody").find("tr").eq(indexTBL);
 
     var sId = tr.find("td").eq(0).text();
-	$("#t1").val(tr.find("td").eq(4).text() + " "+tr.find("td").eq(5).text() + " "+tr.find("td").eq(6).text());//cliente
-	$("#t2").val(tr.find("td").eq(3).text());//idcliente
-	$("#t3").val(5);//tipo
-	$("#t4").val(tr.find("td").eq(1).text());//fecha
-	$("#t5").val(sId);
-	$("#t6").val('Solicitó:');
-	$("#t7").val(tr.find("td").eq(4).text() + " "+tr.find("td").eq(5).text() + " "+tr.find("td").eq(6).text());//persona
+    $("#t1").val(tr.find("td").eq(4).text() + " "+tr.find("td").eq(5).text() + " "+tr.find("td").eq(6).text());//cliente
+    $("#t2").val(tr.find("td").eq(3).text());//idcliente
+    $("#t3").val(5);//tipo
+    $("#t4").val(tr.find("td").eq(1).text());//fecha
+    $("#t5").val(sId);
+    $("#t6").val('Solicitó:');
+    $("#t7").val(tr.find("td").eq(4).text() + " "+tr.find("td").eq(5).text() + " "+tr.find("td").eq(6).text());//persona
     //envio_autoriza(sId,'Rechazado');
     envio_escala_del(sId, 'Rechaza', _analista, _gerente, _oficial, _director);
 });
@@ -447,7 +427,7 @@ function EscalaDelegacionRespon(xmlHttpRequest, status) {
             $('#MyModal1').modal('hide');
             $('#MyModal2').modal('hide');
             $('#ModalInfo').modal('show');
-			envioCorreo();
+            envioCorreo();
             location.href = 'irAutorizaciones';
         } else {
             $("#idMsg").html('<div class="alert alert-danger">' +
@@ -487,7 +467,7 @@ function ResponseAutorizacion(xmlHttpRequest, status) {
             $("#idMsg").html('<div class="alert alert-success">' +
                 'Se ha realizado la petición' +
                 '</div>');
-				envioCorreo();
+                envioCorreo();
             location.href = 'irAutorizaciones';
         } else {
             $("#idMsg").html('<div class="alert alert-danger">' +
@@ -499,12 +479,12 @@ function ResponseAutorizacion(xmlHttpRequest, status) {
     });
 }
 function envioCorreo(){
-		//envio de correo
-				var textNew = $('#txtEscala').val();
-				   $.get("Mail", { action: $('#t6').val(),cliente:$('#t1').val(),idCiente:$('#t2').val(),persona:'',tipo:$('#t3').val(),fecha:$('#t4').val(),justificacio:$('#t5').val(),grup:'<%=Grupo_v%>'},
-				   function(data){	
-				 });
-	}
+        //envio de correo
+                var textNew = $('#txtEscala').val();
+                   $.get("Mail", { action: $('#t6').val(),cliente:$('#t1').val(),idCiente:$('#t2').val(),persona:'',tipo:$('#t3').val(),fecha:$('#t4').val(),justificacio:$('#t5').val(),grup:'<%=Grupo_v%>'},
+                   function(data){  
+                 });
+    }
 </script>
 <input type="text" id="t1" style="display:none"/>
 <input type="text" id="t2" style="display:none"/>

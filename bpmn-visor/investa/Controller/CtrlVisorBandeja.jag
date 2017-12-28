@@ -85,8 +85,8 @@
 				result += '<td>CLIENTE</td>';
 				result += '<td>'+id_aplicacion+'</td>';
 				result += '<td>'+((aXML.*::id_mb_cat_evaluacion.toString() ==1)?'<strong><span style="color:red; font-size:14px;">+</span>&nbsp;&nbsp;<span style="color:red; font-size:14px;">+</span></strong>':'<strong><span style="color:red; font-size:14px;">+</span>&nbsp;&nbsp;<span style="color:black; font-size:14px;">-</span></strong>')+'</td>';
-				result += '<td>'+aXML.*::tipo_listas.toString()+'</td>';
-				result += '<td>'+aXML.*::porcentaje_coincidencias.toString()+'</td>';
+				result += '<td>'+aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::lista.toString()+'</td>';
+				result += '<td>'+aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::porcentaje.toString()+'</td>';
 				if(aXML.*::id_mb_cat_evaluacion.toString() != ''){
 					result += '<td><a  class="btn btn-primary" type="button" href="irDetalle?id='+aXML.*::nombre_encontrado.toString()+'&&tip=1">Detalle</a></td>';
 					result += '<td align="center"><input type="checkbox"  onclick="valorChk(this)"/></td>';
@@ -95,6 +95,8 @@
 					result += '<td align="center"></td>';
 				}
 				result += '<td style="display:none">'+aXML.*::tabla_correlativos.toString()+'</td>';
+				result += '<td style="display:none">'+aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::id_lista.toString()+'</td>';
+				result += '<td style="display:none">'+aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::categoria.toString()+'</td>';
 				result += '</tr>';
 			id++;
 			
@@ -112,8 +114,8 @@
 				result += '<td>BENEFICIARIO</td>';
 				result += '<td>'+id_aplicacion+'</td>';
 				result += '<td>'+((aXML.*::id_mb_cat_evaluacion.toString() ==1)?'<strong><span style="color:red; font-size:14px;">+ </span>&nbsp;&nbsp;<span style="color:red; font-size:14px;">+ </span></strong>':'<strong><span style="color:red; font-size:14px;">+</span>&nbsp;&nbsp;<span style="color:black; font-size:14px;">-</span></strong>')+'</td>';
-				result += '<td>'+aXML.*::tipo_listas.toString()+'</td>';
-				result += '<td>'+aXML.*::porcentaje_coincidencias.toString()+'</td>';
+				result += '<td>'+aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::lista.toString()+'</td>';
+				result += '<td>'+aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::porcentaje.toString()+'</td>';
 				if(aXML.*::id_mb_cat_evaluacion.toString() != ''){
 					result += '<td><a  class="btn btn-primary" type="button" href="irDetalle?id='+aXML.*::nombre_encontrado.toString()+'&&tip=2">Detalle</a></td>';
 					result += '<td align="center"><input type="checkbox" name="tabla1" onclick="valorChk(this)"/></td>';
@@ -122,6 +124,8 @@
 					result += '<td></td>';
 				}
 				result += '<td style="display:none">'+aXML.*::tabla_correlativos.toString()+'</td>';
+				result += '<td style="display:none">'+aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::id_lista.toString()+'</td>';
+				result += '<td style="display:none">'+aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::categoria.toString()+'</td>';
 				result += '</tr>';
 			id++;
 			
