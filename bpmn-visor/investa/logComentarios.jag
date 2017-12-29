@@ -83,11 +83,12 @@
 				 row += '<td>' + hora +'</td>'; 
 				 nombre = $(this).find("nombre").text();
 				 comentario = $(this).find("observaciones").text();
-				 lista = $(this).find("id_lista").text();
+				 lista = $(this).find("lista").text();
 				 category = $(this).find("categoria").text();
 				 nombre = nombre + ', '+ lista + ', '+category;
 				 row += '<td><p>' + nombre +'</p><p>' + comentario +'</p></td>';
-				 row += '<td>'+$(this).find("usuario_alta").text()+'</td>';			 
+				 row += '<td>'+$(this).find("usuario_alta").text()+'</td></tr>';	
+
 				  $('#listComentarios > tbody').append(row);
 			  $('#ComentariosModal').modal('show');
 			});

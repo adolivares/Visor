@@ -317,7 +317,8 @@ var user = session.get("user");
 			console.log("porcentaje " + porcentaje);
 			$('#txtPorcentaje').val(porcentaje);
 			$('#txtId').val(id);
-			$('#txtLista').val(lista);			
+			$('#txtLista').val(lista);	
+			$('#ModalProcesando').modal('hide'); 		
 			$('#modalPorcentaje').modal({backdrop: 'static', keyboard: false})
 		}else if ($(this).hasClass("lista")){			
 			tr.addClass('highlight').siblings().removeClass('highlight');			
@@ -608,6 +609,7 @@ var user = session.get("user");
 				i++;
 			}
 			
+
 		}else{
 			 $("#idMsg").html('<div class="alert alert-danger">'+
 				  'Seleccione una categoria'+
@@ -666,7 +668,9 @@ var user = session.get("user");
 				$("#idMsg").html('<div class="alert alert-success">'+
 										'Se han dado de alta correctamente ' +
 										'</div>');	
-				$('#ModalInfo').modal('show');				
+				$('#ModalInfo').modal('show');	
+
+				getConfiguraciones();			
 			}	
 		
 		
@@ -715,7 +719,6 @@ var user = session.get("user");
 					 }
 					if(rowsAplicar == cont){
 						detalle(exito, existe);
-						getConfiguraciones();
 					}
 				});
 				
@@ -762,7 +765,7 @@ var user = session.get("user");
 				row += '<td style="display:none">'+$(this).find("id_prioridad").text()+'</td>';
 				row += '<td style="display:none">'+$(this).find("prioridad").text()+'</td>';
 				row += '</tr>';		
-			$('#tblConfiguracion tbody').append(row );
+			$('#tblConfiguracion tbody').append(row);
         });
 	}
 	

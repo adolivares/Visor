@@ -281,7 +281,7 @@ function listasRespon(xmlHttpRequest, status){
 			form += "       </tr>";
 			form += "	    <tr>";
 			form += "			<td width=\"35%\">OBSERVACIONES (máximo 1000 caracteres):</td>";
-			form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
+			form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" onkeyup=\"validarTexto(this,1000)\"  name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
 			form += "       </tr>";	
 			form += "	    <tr>";
 			form += "			<td colspan=\"2\" style=\"font-size:13px;\">Fecha de la consulta: " + date + "</td>";
@@ -355,7 +355,7 @@ function listasRespon(xmlHttpRequest, status){
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td width=\"22%\">OBSERVACIONES (máximo 1000 caracteres):</td>";
-			form += "	            <td width=\"78%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
+			form += "	            <td width=\"78%\"><textarea id=\"txtObservaciones\" onkeyup=\"validarTexto(this,1000)\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Fecha de la consulta: " + date + "</td>";
@@ -482,7 +482,7 @@ function listasRespon(xmlHttpRequest, status){
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td width=\"22%\">OBSERVACIONES (máximo 1000 caracteres):</td>";
-			form += "	            <td width=\"78%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
+			form += "	            <td width=\"78%\"><textarea id=\"txtObservaciones\" onkeyup=\"validarTexto(this,1000)\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Fecha de la consulta: " + date + "</td>";
@@ -595,7 +595,7 @@ function listasRespon(xmlHttpRequest, status){
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td width=\"22%\">OBSERVACIONES (máximo 1000 caracteres):</td>";
-			form += "	            <td width=\"78%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
+			form += "	            <td width=\"78%\"><textarea id=\"txtObservaciones\" onkeyup=\"validarTexto(this,1000)\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Fecha de la consulta: " + date + "</td>";

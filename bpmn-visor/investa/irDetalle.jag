@@ -479,7 +479,7 @@ function listasRespon(xmlHttpRequest, status){
 			form += "       </tr>";
 			form += "	    <tr>";
 			form += "			<td width=\"35%\">OBSERVACIONES (máximo 1000 caracteres):</td>";
-			form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
+			form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" onkeyup=\"validarTexto(this,1000)\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
 			form += "       </tr>";	
 			form += "	    <tr>";
 			form += "			<td colspan=\"2\" style=\"font-size:13px;\">Fecha de la consulta: " + date + "</td>";
@@ -557,7 +557,7 @@ function listasRespon(xmlHttpRequest, status){
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td width=\"22%\">OBSERVACIONES (máximo 1000 caracteres):</td>";
-			form += "	            <td width=\"78%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
+			form += "	            <td width=\"78%\"><textarea id=\"txtObservaciones\" onkeyup=\"validarTexto(this,1000)\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Fecha de la consulta: " + date + "</td>";
@@ -686,7 +686,7 @@ function listasRespon(xmlHttpRequest, status){
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td width=\"22%\">OBSERVACIONES (máximo 1000 caracteres):</td>";
-			form += "	            <td width=\"78%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
+			form += "	            <td width=\"78%\"><textarea id=\"txtObservaciones\" onkeyup=\"validarTexto(this,1000)\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Fecha de la consulta: " + date + "</td>";
@@ -802,7 +802,7 @@ function listasRespon(xmlHttpRequest, status){
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td width=\"22%\">OBSERVACIONES (máximo 1000 caracteres):</td>";
-			form += "	            <td width=\"78%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
+			form += "	            <td width=\"78%\"><textarea id=\"txtObservaciones\" onkeyup=\"validarTexto(this,1000)\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Fecha de la consulta: " + date + "</td>";
@@ -827,18 +827,38 @@ function listasRespon(xmlHttpRequest, status){
 	}	
 }
 
+
+	 function validarTexto(objetoTextarea, maxLength){
+     var validChars = /[^a-zA-ZñÑáéíóúÁÉÍÓÚ0-9\\,\\.\\;\s]/g; 
+      var texto = objetoTextarea.value;    
+       
+        if(texto.length > maxLength) {
+          objetoTextarea.value = objetoTextarea.value.substr(0,maxLength);
+          alert('¡ATENCION!\n\n' +
+            'Se ha sobrepasado la longitud máxima permitida para el texto (' +
+            maxLength + ' caracteres)\n\n' +
+            'Se han truncado caracteres finales');
+        }else{
+            if (texto.match(validChars)) {
+                objetoTextarea.value = objetoTextarea.value.replace(validChars, '');
+            }
+        }
+        return  false;
+      } 
+
+
 	$("#btnGuardaComent").click(function() {
 		var payload="";
 		var cont = 0;
 		var coment = $("#txtObservaciones").val();	
 		var sId = $("#txtFolio").val();
-		var tipo = $('.highlight').find('td').eq(9).text();
+		var tipo = $('.highlight').find('td').eq(8).text();
 		var usuario = "<%=user%>";
 		var nombre = $('.highlight').find('td').eq(0).text();
 		var paterno = $('.highlight').find('td').eq(1).text();
 		var materno = $('.highlight').find('td').eq(2).text();
 		var categoria = $('.highlight').find('td').eq(4).text();
-		var idConsulta = "<%=nidB%>";
+		var idConsulta = $("#txtID_mbConsulta").val();
 		var val = "";
 		var tr;
 		var index;	
@@ -918,8 +938,9 @@ function listasRespon(xmlHttpRequest, status){
 	function consulta(){
 		
 		var id = $("#txtFolio").val();
-		var tipo = $("#txtTipo").val();
 		var idMB_C = $("#txtID_mbConsulta").val();
+		var tipo = $('.highlight').find('td').eq(8).text();
+
 		consultaComentarios(id, tipo,idMB_C);
 	}
 function AutorizaEstatus(){

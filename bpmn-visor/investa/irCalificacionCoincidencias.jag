@@ -105,10 +105,10 @@ include("Controller/CtrlVisorCalificacion.jag");
         <div class="panel panel-primary-head">
             
             <% if(tip ==2){%>
-				<h1>Consulta del detalle de coincidencias en Listas</h1>
-			<%}else{%>
-				<h1>Calificaci&oacute;n de Coincidencias en Listas</h1>
-			<%}%>
+                <h1>Consulta del detalle de coincidencias en Listas</h1>
+            <%}else{%>
+                <h1>Calificaci&oacute;n de Coincidencias en Listas</h1>
+            <%}%>
             <table id="example" cellspacing="0" class="table table-striped table-bordered"  style="font-size: x-small">
                 <thead>
                     <tr>
@@ -139,17 +139,17 @@ include("Controller/CtrlVisorCalificacion.jag");
                 </tbody>
             </table>
             <br>
-			<div id="buttons" align="right"></div>
+            <div id="buttons" align="right"></div>
                      
             <br/>
             <br/>
             <table width="98%" class="table-content" id="tabBtn" style="<%=((tip==2)?'display:none':'')%>">
                 <tr>
                     <td>
-                        <input style="width:100%"  class="btn btn-primary" type="button" value="Ver Comentarios" id="btnComentarios" onclick="consulta()" name="btnComentarios">
+                        <input style="width:100%"  class="btn btn-primary" type="button" value="Ver Comentarios" id="btnComentarios" onclick="consulta();" name="btnComentarios">
                     </td>
                     <td colspan="3">                        
-                        <textarea id="txaComentario" rows="3" cols="125" class="form-control" placeholder="Ingrese comentario ..."></textarea>  
+                        <textarea id="txaComentario" onkeyup="validarTexto(this,1000)" rows="3" cols="125" class="form-control"  placeholder="Ingrese comentario ..."></textarea>  
                     </td>
                     <td>
                         <input style="width:100%"  class="btn btn-primary" type="button" value="Guardar Comentarios" id="btnGuardaComent" name="btnGuardaComent">
@@ -255,6 +255,23 @@ include("Controller/CtrlVisorCalificacion.jag");
 <script>
 var indexTBL2 = "";
 
+function validarTexto(objetoTextarea, maxLength){
+     var validChars = /[^a-zA-ZñÑáéíóúÁÉÍÓÚ0-9\\,\\.\\;\s]/g; 
+      var texto = objetoTextarea.value;    
+       
+        if(texto.length > maxLength) {
+          objetoTextarea.value = objetoTextarea.value.substr(0,maxLength);
+          alert('¡ATENCION!\n\n' +
+            'Se ha sobrepasado la longitud máxima permitida para el texto (' +
+            maxLength + ' caracteres)\n\n' +
+            'Se han truncado caracteres finales');
+        }else{
+            if (texto.match(validChars)) {
+                objetoTextarea.value = objetoTextarea.value.replace(validChars, '');
+            }
+        }
+        return  false;
+      } 
 
 $(document).ready(function() {
     $('#example').DataTable({
@@ -265,33 +282,36 @@ $(document).ready(function() {
         "scrollY": 300,
         "scrollX": true
     });
-	var table = $('#example').DataTable();
+    var table = $('#example').DataTable();
     var mensaje = "";
     var myfile = "";
-	var tb = "<%=tip%>";
-	if(tb ==2){
-		var buttons = new $.fn.dataTable.Buttons(table, {
-		buttons: [
-					{
-						text: 'Exportar PDF',
-						extend: 'pdfHtml5',
-						orientation: 'landscape',
-						pageSize: 'LEGAL',
-					    exportOptions: {
-							columns: [ 0, 1, 2, 3,4,5,6,7,8,9,10,11,12]
-						},
-						title: 'Consulta del detalle de coincidencias en Listas'
-					},{
-							text: 'Ver comentarios',
-							action: function ( ) {
-								consulta();
-							}
-					}
+    var tb = "<%=tip%>";
+    if(tb ==2){
+        var buttons = new $.fn.dataTable.Buttons(table, {
+        buttons: [
+                    {
+                        text: 'Exportar PDF',
+                        extend: 'pdfHtml5',
+                        orientation: 'landscape',
+                        pageSize: 'LEGAL',
+                        exportOptions: {
+                            columns: [ 0, 1, 2, 3,4,5,6,7,8,9,10,11,12]
+                        },
+                        title: 'Consulta del detalle de coincidencias en Listas'
+                    },{
+                            text: 'Ver comentarios',
+                            action: function ( ) {
+                                consulta();
+                            }
+                    }
                     
                 ]
-		}).container().appendTo($('#buttons'));
-	}
+        }).container().appendTo($('#buttons'));
+    }
 
+     
+
+   
     document.getElementById("uploadBtn").onchange = function() {
         mensaje = "";
         myfile = $(this).val();
@@ -373,14 +393,17 @@ $("#btnGuardaComent").click(function() {
     var index;
 
     if (validaCheck()) {
-        if (coment.trim() == "") {
+        if (coment.trim() == "") {            
             $("#idMsg").html('<div class="alert alert-warning">' +
                 'El campo Comentario no puede ser vacío' +
                 '</div>');
             $('#ModalInfo').modal('show');
             return false;
         }
+
+        coment = coment.replace("&", "&amp;");
         $("input[name=tabla1]").each(function(inde) {
+
             if ($(this).is(':checked')) {
                 index = $(this).val();
             }

@@ -113,7 +113,7 @@ var xmlBandeja = getTablaBandejaEntrada("",Usuario_v,'ELIMINACION');
                         <input class="btn btn-primary" type="button" value="Ver Comentarios" id="btnComentarios" name="btnComentarios" onclick="consulta()" >
                     </td>
                     <td style="width:30%">                      
-                        <textarea id="txaComentario" rows="3" cols="90" placeholder="Ingrese comentario ..."></textarea>    
+                        <textarea id="txaComentario" onkeyup="validarTexto(this,1000)" rows="3" cols="90" placeholder="Ingrese comentario ..."></textarea>    
                     </td>
                     <td align="left">
                         <input class="btn btn-primary" type="button" value="Guardar Comentarios" id="btnGuardaComent" name="btnGuardaComent">
@@ -180,6 +180,24 @@ jQuery(document).ready(function() {
         $('#buscando').show();
     });
 });
+
+function validarTexto(objetoTextarea, maxLength){
+        var validChars = /[^a-zA-ZñÑáéíóúÁÉÍÓÚ0-9\\,\\.\\;\s]/g; 
+        var texto = objetoTextarea.value;    
+       
+        if(texto.length > maxLength) {
+          objetoTextarea.value = objetoTextarea.value.substr(0,maxLength);
+          alert('¡ATENCION!\n\n' +
+            'Se ha sobrepasado la longitud máxima permitida para el texto (' +
+            maxLength + ' caracteres)\n\n' +
+            'Se han truncado caracteres finales');
+        }else{
+            if (texto.match(validChars)) {
+                objetoTextarea.value = objetoTextarea.value.replace(validChars, '');
+            }
+        }
+        return  false;
+    } 
 
 function consulta() {
     var count = 0;

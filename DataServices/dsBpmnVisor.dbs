@@ -59,7 +59,7 @@
          <element column="PORCENTAJE_COINCIDENCIA" name="porcentaje_coincidencias" xsdType="string"/>
          <element column="ID_MB_CAT_EVALUACION" name="id_mb_cat_evaluacion" xsdType="string"/>
          <element column="ID_CONFIGURACION_PERFIL" name="id_configuracion_perfil" xsdType="string"/>
-		 <call-query href="qGetConfiguracion">
+       <call-query href="qGetConfiguracion">
             <with-param name="idConfig" query-param="ID_CONFIGURACION_PERFIL"/>
          </call-query>
       </result>
@@ -82,8 +82,8 @@
          <element column="ID_MB_CAT_EVALUACION" name="id_mb_cat_evaluacion" xsdType="string"/>
          <element column="ID_CLIENTE" name="id_cliente" xsdType="integer"/>
          <element column="TIPO_PERSONA" name="tipo_persona" xsdType="string"/>
-		 <element column="ID_CONFIGURACION_PERFIL" name="id_configuracion_perfil" xsdType="string"/>
-		 <call-query href="qGetConfiguracion">
+       <element column="ID_CONFIGURACION_PERFIL" name="id_configuracion_perfil" xsdType="string"/>
+       <call-query href="qGetConfiguracion">
             <with-param name="idConfig" query-param="ID_CONFIGURACION_PERFIL"/>
          </call-query>
       </result>
@@ -258,7 +258,7 @@
          <element column="PORCENTAJE_COINCIDENCIA" name="porcentaje_coincidencia" xsdType="string"/>
          <element column="ID_CONFIGURACION_PERFIL" name="id_configuracion_perfil" xsdType="string"/>
          <element column="OBS" name="obs" xsdType="string"/>
-		 <call-query href="qGetConfiguracion">
+       <call-query href="qGetConfiguracion">
             <with-param name="idConfig" query-param="ID_CONFIGURACION_PERFIL"/>
          </call-query>
       </result>
@@ -523,7 +523,8 @@
    <query id="qGetObservaciones" useConfig="visor">
       <sql>{? = call VISOR_PKG_BPMN_VISOR.get_comentarios(?,?,?)}</sql>
       <result element="qGetComentsResponse" rowName="resultadoGetComents">
-         <element column="ID_LISTA" name="id_lista" xsdType="string"/>         
+         <element column="ID_LISTA" name="id_lista" xsdType="string"/>    
+         <element column="LISTA" name="lista" xsdType="string"/>         
          <element column="ID_MB_CONSULTA" name="id_consulta" xsdType="string"/>         
          <element column="TB_CORR" name="tb_corr" xsdType="string"/>         
          <element column="NOMBRE" name="nombre" xsdType="string"/>    

@@ -56,8 +56,8 @@ if(nombre == null){
 }
 include("detalleBusquedaNombre.jag");		
 include("Controller/CtrlConsultaNombre.jag");
- lista = (nombre == "" || nombre == "null" || nombre == null ) ? "" : consultaNombre(nombre, modo);
-
+var lista = (nombre == "" || nombre == "null" || nombre == null ) ? "" : consultaNombre(nombre, modo);
+log.info("lista: " + lista );
 
 log.info("Fecha inicio: " + currentDate);
 currentDate = new Date();
@@ -162,7 +162,8 @@ log.info("tiempo: " + tiempo + " segundos.");
 <script>
 	
 	jQuery(document).ready(function(){   
-	var idReg ="";				
+	var idReg ="";		
+	$('#ModalProcesando').modal('hide'); 		
 		
 		$('#buscando').hide();
 						
@@ -172,19 +173,26 @@ log.info("tiempo: " + tiempo + " segundos.");
 
 	});
 	
-	 function validarTexto(objetoTextarea, maxLength){
-	 	var texto = objetoTextarea.value;
-        if(texto.length > maxLength) {
-          objetoTextarea.value = objetoTextarea.value.substr(0,maxLength);
-          alert('¡ATENCION!\n\n' +
-            'Se ha sobrepasado la longitud máxima permitida para el texto (' +
-            maxLength + ' caracteres)\n\n' +
-            'Se han truncado caracteres finales');
-        }
-        return false
-      } 
+	function validarTexto(objetoTextarea, maxLength){
+	 	var validChars = /[^a-zA-ZñÑáéíóúÁÉÍÓÚ0-9\\,\\.\\;\s]/g; 
+	  	var texto = objetoTextarea.value;    
+	   
+	    if(texto.length > maxLength) {
+	      objetoTextarea.value = objetoTextarea.value.substr(0,maxLength);
+	      alert('¡ATENCION!\n\n' +
+	        'Se ha sobrepasado la longitud máxima permitida para el texto (' +
+	        maxLength + ' caracteres)\n\n' +
+	        'Se han truncado caracteres finales');
+	    }else{
+	        if (texto.match(validChars)) {
+	            objetoTextarea.value = objetoTextarea.value.replace(validChars, '');
+	        }
+	    }
+	    return  false;
+	} 
 
-	$("#btnEnviar").click(function(){	
+	$("#btnEnviar").click(function(){
+	$('#ModalProcesando').modal('show'); 	
 		var nombre= $("#txtNombre").val();
 		var modo = "";
 		var format = new Date(<%new Date();%>);
@@ -254,7 +262,7 @@ log.info("tiempo: " + tiempo + " segundos.");
 		//	console.log("Usuario " +usuario);
 			var payload="";
 			
-			payload  = '<dat:qInsertaObsBusqueda xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
+			payload  = '<dat:qInsertaObsBusqueda xmlns:dat="http://ws.wso2.org/dataservice" mlns:dsb="dsBpmnVisorComentarios">';
 					payload += '<dat:nombre>' +nombre+ '</dat:nombre>';
 					payload += '<dat:observaciones>'+ obs +'</dat:observaciones>';
 					payload += '<dat:usuario_alta>' + usuario + '</dat:usuario_alta>';
