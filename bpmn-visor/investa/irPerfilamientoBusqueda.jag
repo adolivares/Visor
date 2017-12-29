@@ -105,7 +105,7 @@ var user = session.get("user");
 							 
 							<br/><br/><br/><br/>
 						</div>					
-						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 list-config">				
+						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="width: 95%">				
 							<table id="tblConfiguracion" class="table-striped table-bordered table-list">
 								<thead>
 									<th>Perfil</th>
@@ -285,7 +285,7 @@ var user = session.get("user");
 		var listExiste;
 		var rowListas='';
 		var rowsAplicar=0;
-		
+		var xmlPrioridad= new XMLHttpRequest();
 		
 		// $('#porcentaje').click(function() {
 			// $('#tblListas tbody tr input').remove();
@@ -325,6 +325,7 @@ var user = session.get("user");
 			//console.log("Lista " + id);
 			$('#tblCategoria tbody tr').remove();			
 			getCategorias(id);
+			getPrioridad();	
 		}
 		
 		
@@ -401,12 +402,27 @@ var user = session.get("user");
 	
 	$("#cbAllCat").change(function(){  	 
 		$(".cbCat").prop('checked', $(this).prop("checked")); 
-		
+		var option;
 		if($(this).prop("checked")){
 			iCat = 2;
-			getPrioridad();
+
+			//getPrioridad();	
+			$('.slPrioridad').prop('disabled', false);	
+			var Select = $('.slPrioridad');
+			Select.prop('disabled', false);		
+		//		getPrioridad();
+			$(xmlPrioridad.responseText).find('resultadoConsultaCatPrioridad').each(function(){	
+				id =  $(this).find("id_prioridad").text();
+				desc = $(this).find("descripcion").text();
+				option = "";
+				option += "<option value='" + id + "'>" + desc + "</option>";
+				
+				Select.append(option);
+			//	Select.prop('disabled', true);
+			});
+	
 		}else{
-			$('.slPrioridad').prop('disabled', 'disabled');		 
+			$('.slPrioridad').prop('disabled', true);		 
 
 			$('.slPrioridad')
 				.find('option')
@@ -467,11 +483,24 @@ var user = session.get("user");
 		var dato = element.value;
 		slct = dato;
 		iCat = 1;
+		var option;
 		console.log(" Categoria: " + slct);
-		if (element.checked){			
-			getPrioridad();				
+		if (element.checked){
+			var Select = $('select[name="slPrioridad' + slct + '"]');
+			Select.prop('disabled', false);		
+		//		getPrioridad();
+			$(xmlPrioridad.responseText).find('resultadoConsultaCatPrioridad').each(function(){	
+				id =  $(this).find("id_prioridad").text();
+				desc = $(this).find("descripcion").text();
+				option = "";
+				option += "<option value='" + id + "'>" + desc + "</option>";
+				
+				Select.append(option);
+			//	Select.prop('disabled', true);
+			});
+
 		}else{
-			$('select[name="slPrioridad' + slct + '"]').prop('disabled', 'disabled');		 
+			$('select[name="slPrioridad' + slct + '"]').prop('disabled', true);		 
 
 			$('select[name="slPrioridad' + slct + '"]')
 				.find('option')
@@ -503,15 +532,17 @@ var user = session.get("user");
 		var descripcion="";
 		var option;
 		var Select;
-		if(iCat == 1){
+/*		if(iCat == 1){
 			var Select = $('select[name="slPrioridad' + slct + '"]');
 		}else{
 			var Select =  $('.slPrioridad');
 		}
 		
-		
+*/		
+		var Select =  $('.slPrioridad');
 		if($(xmlHttpRequest.responseText).find('resultadoConsultaCatPrioridad').text() != ''){
-			
+			xmlPrioridad = xmlHttpRequest;
+		/*	
 			$(xmlHttpRequest.responseText).find('resultadoConsultaCatPrioridad').each(function(){	
 			id =  $(this).find("id_prioridad").text();
 			descripcion = $(this).find("descripcion").text();
@@ -519,8 +550,10 @@ var user = session.get("user");
 			option += "<option value='" + id + "'>" + descripcion + "</option>";
 			
 			Select.append(option);
-			Select.prop('disabled', false);
+		//	Select.prop('disabled', true);
 			});
+
+			*/
 		}
 	}
 		
