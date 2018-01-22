@@ -1,0 +1,19 @@
+ <?xml version='1.0' encoding='UTF-8'?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+	<soapenv:Body>
+		<qGetComentsResponse xmlns="http://ws.wso2.org/dataservice">
+			<resultadoGetComents>
+				<id_lista>1</id_lista>
+				<lista>Lista negra</lista>
+				<id_consulta>128544</id_consulta>
+				<tb_corr>235</tb_corr>
+				<nombre>CATANZARO MERCADOS GLOBALES, S.A. DE C.V.</nombre>
+				<observaciones>ASDFGH</observaciones>
+				<categoria xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>
+				<fecha_alta>2018-01-04T07:46:53.000-06:00</fecha_alta>
+				<usuario_alta>pruebas.ti_5</usuario_alta>
+				<estatus>1</estatus>
+			</resultadoGetComents>
+		</qGetComentsResponse>
+	</soapenv:Body>
+</soapenv:Envelope>

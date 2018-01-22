@@ -43,6 +43,7 @@ include("/model/common.jag");
 }
 	include("Controller/CtrlVisorBandeja.jag");
 	var xmlBandeja = getTablaBandejaEntrada("",Usuario_v,"BANDEJA");
+	var xmlBandejaB = getTablaBandejaEntradaBatch("",Usuario_v,"BANDEJA");
  %>
 
 		<link href="resources/plantilla/css/select2.css" rel="stylesheet" />
@@ -70,7 +71,7 @@ include("/model/common.jag");
                     <li><a href="irBandejaEntrada"><i class="glyphicon glyphicon-home"></i></a></li>
                     <li><a>Coincidencias en listas</a></li>
                 </ul>
-                <h4>Coincidencias en listas</h4>
+                <h4>Bandeja de entrada</h4>
             </div>
         </div><!-- media -->
     </div><!-- pageheader -->
@@ -95,14 +96,14 @@ include("/model/common.jag");
             </div>panel-heading -->
 		
 			
-            <h1>Coincidencias Asignadas</h1>
+            <h1>Bandeja de entrada coincidencias Asignadas</h1>
 			<table cellspacing="0" class="" style="margin-right:auto; margin-left:auto; width:100%">	
 				<tr>
 					<td>
 						Fecha: 
 					</td>
 					<td>
-						<input style="width: 55%;" type="text" id="txtFecha" name="txtFecha" />
+						<input type="text" id="txtFecha" name="txtFecha" />
 					</td>
 					<td>
 						Id Cliente: 
@@ -146,7 +147,7 @@ include("/model/common.jag");
                     </tr>
                 </thead>
                 <tbody>
-					<%=createTablaBandejaEntrada(xmlBandeja,1)%>
+					<%=createTablaBandejaEntrada(xmlBandeja)%>
                 </tbody>
             </table>
 			<table width="100%">
@@ -177,7 +178,7 @@ include("/model/common.jag");
 					<td style="padding:2%; width:10%" valign="top"><button id="Analiza" style="float:right" type="button" class="btn btn-primary" >Analizar</button></td>
 				</tr>
 			</table>
-            <h1>Coincidencias Asignadas BATCH</h1>
+            <h1>Bandeja de entrada coincidencias Asignadas BATCH</h1>
 			<table cellspacing="0" class="" style="margin-right:auto; margin-left:auto; width:100%">	
 				<tr>
 					<td>
@@ -228,7 +229,7 @@ include("/model/common.jag");
                     </tr>
                 </thead>
                 <tbody>
-					<%=createTablaBandejaEntrada(xmlBandeja,2)%>
+					<%=createTablaBandejaEntradaBatch(xmlBandejaB)%>
                 </tbody>
             </table>
 			<table width="100%">
@@ -352,6 +353,7 @@ include("/model/common.jag");
 <input type="text" id="t4" style="display:none"/>
 <input type="text" id="t5" style="display:none"/>
 <input type="text" id="t6" style="display:none"/>
+<input type="text" id="t7" style="display:none"/>
  <script type="text/javascript" src="resources/plantilla/js/jquery-ui-1.10.3.min.js"></script>	
 <script src='resources/plantilla/js/jquery.dataTables2.min.js'></script>
 <script src='resources/plantilla/js/dataTables.buttons.js'></script>
@@ -555,6 +557,7 @@ include("/model/common.jag");
 		$("#t1").val(tr.find("td").eq(4).text());
 		$("#t2").val(tr.find("td").eq(3).text());
 		$("#t4").val(tr.find("td").eq(1).text());
+		$("#t7").val(tr.find("td").eq(7).text());
 
 	}
 	//funcion de escalamiento
@@ -648,15 +651,15 @@ include("/model/common.jag");
 				$("#idMsg").html('<div class="alert alert-danger">' +
 					'Sucedio un error ' + $(this).find("estatus").text() +
 					'</div>');
+				$('#ModalInfo').modal('show');
 			}
-			$('#ModalInfo').modal('show');
 
 		});
 	}
 	function envioCorreo(){
 		//envio de correo
 				var textNew = $('#txtEscala').val();
-				   $.get("Mail", { action: $('#t6').val(),cliente:$('#t1').val(),idCiente:$('#t2').val(),persona:'',tipo:$('#t3').val(),fecha:$('#t4').val(),justificacio:$('#t5').val(),grup:'<%=Grupo_v%>'},
+				   $.get("Mail", { action: $('#t6').val(),cliente:$('#t1').val(),idCiente:$('#t2').val(),persona:'',tipo:$('#t3').val(),fecha:$('#t4').val(),justificacio:$('#t5').val(),grup:'<%=Grupo_v%>',apli:$('#t7').val()},
 				   function(data){	
 				 });
 	}
@@ -674,7 +677,7 @@ include("/model/common.jag");
 		var tr;
 
 		tr = $("#example >tbody").find("tr").eq(indexTBL);
-		location.href = 'irCalificacionCoincidencias?idConsulta=' + tr.find("td").eq(2).text();
+		location.href = 'irCalificacionCoincidencias?idConsulta=' + tr.find("td").eq(2).text()+"&&idb="+tr.find("td").eq(0).text();
 	});
 	$("#analiza2").click(function() {
 		
@@ -689,7 +692,7 @@ include("/model/common.jag");
 		var tr;
 	
 		tr = $("#example2 >tbody").find("tr").eq(indexTBL2);
-		location.href = 'irCalificacionCoincidencias?idConsulta=' + tr.find("td").eq(2).text();
+		location.href = 'irCalificacionCoincidenciasBatch?idConsulta=' + tr.find("td").eq(2).text()+"&&idb="+tr.find("td").eq(0).text();
 	});
 	
 	function llenaValor(combo){

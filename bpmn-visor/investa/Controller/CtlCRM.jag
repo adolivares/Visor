@@ -15,7 +15,7 @@
 						   </soapenv:Body>
 						</soapenv:Envelope>;
 
-		var url = URL_ESB + "SgCRM";
+		var url = URL_ESB + "SgCRM2";
 		var ws = new XMLHttpRequest();
 		var action = "http://28.224.30.202/sugarcrm/custom/service/globeone/soap.php/login";
 		ws.open("POST", url, false);
@@ -39,7 +39,7 @@
 						   </soapenv:Body>
 						</soapenv:Envelope>;
 
-		var url = URL_ESB + "SgCRM";
+		var url = URL_ESB + "SgCRM2";
 		var ws = new XMLHttpRequest();
 		var action = "http://28.224.30.202/sugarcrm/custom/service/globeone/soap.php/logout";
 		ws.open("POST", url, false);
@@ -74,7 +74,7 @@
 						</soapenv:Body> 
 					</soapenv:Envelope> ;
 		log.info('XML ENVIO '+payload);
-		var url = URL_ESB + "SgCRM";
+		var url = URL_ESB + "SgCRM2";
 		var ws = new XMLHttpRequest();
 		var action = "http://28.224.30.202/sugarcrm/custom/service/globeone/soap.php/setResultadoListasNegrasGlobeOne";
 		ws.open("POST", url, false);
@@ -113,37 +113,40 @@
 			return responseXML..*::doActualizaEvaluacionResponse.*::resultado.*::estatus.toString();
 		
 	}
-	function envioGlobeone2(_session,_idCliente,_tipoPersona,_positivoNegativo,_idConsultaListas,_tipoCliente){
+	function envioGlobeone2(_session,_apli,_notifi,_tipocli,_idcliente,_tiporel,_idevaluacion,_estatuseva,_idconsultalista,_fechaconsulta){
 		var payload = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sug="http://www.sugarcrm.com/sugarcrm">
 						   <soapenv:Header/>
 						   <soapenv:Body>
 							  <sug:setResultadodeListas>
 								 <session>{_session}</session>
-								 <aplicacion>INA</aplicacion>
-								 <notificacion>0</notificacion>
-								 <tipoCliente>0005</tipoCliente>
-								 <idCliente>00201038</idCliente>
-								 <tipoRelacion>CLI</tipoRelacion>
-								 <idEvaluacion>0</idEvaluacion>
-								 <estatusEvaluacion>NEGATIVO</estatusEvaluacion>
-								 <idConsultaListas>8294</idConsultaListas>
-								 <fechaConsulta>2017-12-13</fechaConsulta>
+								 <aplicacion>{_apli}</aplicacion>
+								 <notificacion>{_notifi}</notificacion>
+								 <tipoCliente>{_tipocli}</tipoCliente>
+								 <idCliente>{_idcliente}</idCliente>
+								 <tipoRelacion>{_tiporel}</tipoRelacion>
+								 <idEvaluacion>{_idevaluacion}</idEvaluacion>
+								 <estatusEvaluacion>{_estatuseva}</estatusEvaluacion>
+								 <idConsultaListas>{_idconsultalista}</idConsultaListas>
+								 <fechaConsulta>{_fechaconsulta}</fechaConsulta>
 							  </sug:setResultadodeListas>
 						   </soapenv:Body>
 						</soapenv:Envelope>;
 		log.info('XML ENVIO '+payload);
-		var url = URL_ESB + "SgCRM";
+		var url = URL_ESB + "SgCRM2";
 		var ws = new XMLHttpRequest();
-		var action = "http://28.224.30.202/sugarcrm/custom/service/globeone/soap.php/setResultadoListasNegrasGlobeOne";
+		var action = "http://28.224.30.202/sugarcrm/custom/service/v4_1_custom/soap.php/setResultadodeListas";
 		ws.open("POST", url, false);
 		ws.setRequestHeader('SOAPAction', action);
 		ws.setRequestHeader('Content-Type','text/xml; charset=utf-8');
 
 		ws.send(payload.toXMLString());
-		var responseXML = new XML(ws.responseText.replace(/return/g,'resultado'));
+		var responseXML = new XML(ws.responseText);
 		//responseXML.toXMLString().replace('return','resultado');
-		log.info("XML ENVIO A CRM GLOBEONE: " + responseXML.toXMLString() );
+		log.info("XML ENVIO A CRM GLOBEONE 2: " + responseXML.toXMLString() );
+		log.info("XML ENVIO : " + responseXML.toXMLString() );
+		log.info("XML ENVIO : " + responseXML.toXMLString() );
+		log.info("XML ENVIO : " + responseXML.toXMLString() );
 		getLogout(_session);//se cierra session
-		return responseXML.toXMLString();
+		return responseXML..*::setResultadodeListasResponse;
 	}
 %>

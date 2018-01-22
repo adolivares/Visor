@@ -19,20 +19,27 @@ function getAsignaciones(_usuario){
 		ws.send(payload.toXMLString());
 		var responseXML = new XML(ws.responseText);
 		log.info(" usuario " + _usuario );
-		log.info("RESPONSE XML Asignacion: " + responseXML.toXMLString());
+	//	log.info("RESPONSE XML Asignacion: " + responseXML.toXMLString());
 		return responseXML;
 	}
 	
 	function createTableAsignaciones(configuraciones){
 		var result = "";
 		var cont = 0;
+		var style = "";
 			for each (var aXML in configuraciones..*::getMBConsultaPerfAsignados..*::resultadoConsultaPerfil){
+			style = "";
 			//log.info('dentro '+aXML.*::getMBConsultaConfiguracion..*::resultadoConsultaConfiguracion.*::id_perfil.toString());			
 			cont++;
+			if(aXML.*::estatus_aprobo.toString() == "0" && aXML.*::estatus.text() == "0"){
+				style = 'style="color:#FF0000"';
+			}
+
+
 			if(aXML == "" || aXML == null){
 				log.info('configuraciones resultadoConsultaPerfil null '+ aXML);
 			}else{
-				result += '<tr>';
+				result += '<tr ' + style+'>';
 				result += '<td style="display:none">'+aXML.*::id_perfil_asignados.toString()+'</td>';
 				result += '<td>'+aXML.*::solicitante.toString()+'</td>';
 				result += '<td>En linea</td>';
@@ -44,6 +51,8 @@ function getAsignaciones(_usuario){
 				result += '<td>'+aXML.*::origen.toString()+'</td>';
 				result += '<td style="display:none">'+aXML.*::id_perfil.toString()+'</td>';
 				result += '<td>'+aXML.*::perfil.toString()+'</td>';
+				result += '<td style="display:none">'+aXML.*::estatus_aprobo.toString()+'</td>';
+				result += '<td style="display:none">'+aXML.*::estatus.toString()+'</td>';
 				result += '<td><input type="checkbox" name="cbPerfil" id="cbPerfil' + cont +'"  value="' + cont + '"></td>';				
 				result += '</tr>';		
 			}

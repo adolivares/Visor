@@ -68,7 +68,7 @@ var xmlAsignaciones = getAsignaciones(Usuario_v);
                     <li><a href="irBandejaEntrada"><i class="glyphicon glyphicon-home"></i></a></li>
                     <li><a>Bandeja de entrada</a></li>
                 </ul>
-                <h4>Autorización de Configuración de Segmentos de Búsqueda</h4>
+                <h4>Autorización de perfiles de búsqueda</h4>
             </div>
         </div><!-- media -->
     </div><!-- pageheader -->
@@ -94,10 +94,12 @@ var xmlAsignaciones = getAsignaciones(Usuario_v);
 						<th style="display:none;"></th> 						
 						<th>Perfil</th>
                         <th style="width: 7px"><input type="checkbox" id="cbAllCat" ></th> 
+                        <th style="display:none;"></th>      
+                        <th style="display:none;"></th>      
                     </tr>
                 </thead>
 				<tbody>		
-					<%=createTableAsignaciones(xmlAsignaciones)%>
+					<%=createTableAsignaciones(xmlAsignaciones)%> 
                 </tbody>
             </table>
 			<br/>
@@ -294,9 +296,18 @@ var xmlAsignaciones = getAsignaciones(Usuario_v);
 			
 		
 			if($('#cbPerfil' + cont).is(':checked')){	
-				var idAsignacion = $(this).find('td').eq(0).text();				
+				var idAsignacion = $(this).find('td').eq(0).text();
+				var trans = 1;
+				var estatus =  $(this).find('td').eq(12).text();
+				var estatusAprobo =  $(this).find('td').eq(11).text(); 
+				if(estatus == "0" && estatusAprobo == "0"){
+					trans = 2
+				}	
+
 				datos.idAsignacion = idAsignacion;
-				datos.rowIndex = rowIndex;				
+				datos.rowIndex = rowIndex;
+				datos.trans = trans;
+
 				perfiles.push(datos);
 				
 			}
@@ -307,7 +318,7 @@ var xmlAsignaciones = getAsignaciones(Usuario_v);
 
 			var i = 0;
 			for(perfil in perfiles){				
-				cancelaAsignacion( perfiles[i].idAsignacion, perfiles[i].rowIndex);
+				cancelaAsignacion( perfiles[i].idAsignacion, perfiles[i].rowIndex, perfiles[i].trans);
 				i++;
 			}
 		}else{
@@ -342,10 +353,11 @@ var xmlAsignaciones = getAsignaciones(Usuario_v);
 		
 	}
 	
-	function cancelaAsignacion(_idAsignacion, rowIndex){
+	function cancelaAsignacion(_idAsignacion, rowIndex, trans){
 		
 		var payload  = '<dat:qCancelaAsignacion xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
 			payload += '<dat:idPerfilAsig>' + _idAsignacion + '</dat:idPerfilAsig>';
+			payload += '<dat:operacion>' + trans + '</dat:operacion>';
 			payload += '</dat:qCancelaAsignacion>';			
 	
 		$.ajax({
@@ -366,7 +378,7 @@ var xmlAsignaciones = getAsignaciones(Usuario_v);
 						  'Sucedio un error '+$(this).find("codigoError").text()+
 						  '</div>');
 					 }
-					 $('#ModalProcesando').modal('show');  
+					 $('#ModalProcesando').modal('hide');  
 					 $('#ModalInfo').modal('show');
 					 
 					});

@@ -1,0 +1,59 @@
+<data name="dsSitiR29" transports="http https local">
+   <config enableOData="false" id="MSSQL">
+      <property name="driverClassName">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
+      <property name="url">jdbc:sqlserver://28.224.30.47:1433;databaseName=Monitor</property>
+      <property name="username">imonitorplus</property>
+      <property name="password">Investa-14</property>
+   </config>
+   <query id="getExpedienteConErrores" useConfig="MSSQL">
+      <sql>SELECT EXP.CNBV_NUM_OFICIO,EXP.CNBV_NUM_EXPEDIENTE,EXP.CNBV_SOL_SIARA,EXP.CNBV_FOLIO,    EXP.CNBV_OFICIO_YEAR,EXP.CNBV_FECHA_PUB,EXP.CNBV_DIAS_PLAZO,AC.ID_CLAVE AS ID_AUTORIDAD_NOMBRE,    EXP.AUTORIDAD_NOMBRE,EXP.TIENE_ASEGURAMIENTO,EXP.MONTO_ASEGURADO,EXP.CONTIENE_LOCALIZADOS,    EXP.CONTIENE_ERRORES,EXP.REG_CON_ERRORES,    ERR.XML_ERR_EXPEDIENTE,AREA.ID_AREA,AREA.DESCRIPCION AS DESC_AREA     FROM SITI_EXPEDIENTE EXP     LEFT JOIN SITI_EXPEDIENTE_ERR ERR ON EXP.ID_EXPEDIENTE = ERR.ID_EXPEDIENTE     INNER JOIN CAT_SITI_AREAS AREA ON EXP.CNBV_AREA_CLAVE = AREA.ID_AREA     LEFT JOIN CAT_R29_AUT_COMP AC ON UPPER(EXP.AUTORIDAD_NOMBRE) = UPPER(AC.TXT_AUTORIDAD)     WHERE EXP.ID_EXPEDIENTE = ?     AND EXP.CONTIENE_ERRORES = 1</sql>
+      <result element="getExpedienteConErroresResp" rowName="resultadoExpedienteConErrores">
+         <element column="CNBV_NUM_OFICIO" name="cnbv_num_oficio" xsdType="string"/>
+         <element column="CNBV_NUM_EXPEDIENTE" name="cnbv_num_expediente" xsdType="string"/>
+         <element column="CNBV_SOL_SIARA" name="cnbv_sol_siara" xsdType="string"/>
+         <element column="CNBV_FOLIO" name="cnbv_folio" xsdType="string"/>
+         <element column="CNBV_OFICIO_YEAR" name="cnbv_oficio_year" xsdType="string"/>
+         <element column="CNBV_FECHA_PUB" name="cnbv_fecha_pub" xsdType="string"/>
+         <element column="CNBV_DIAS_PLAZO" name="cnbv_dias_plazo" xsdType="string"/>
+         <element column="ID_AUTORIDAD_NOMBRE" name="id_autoridad_nombre" xsdType="string"/>
+         <element column="AUTORIDAD_NOMBRE" name="autoridad_nombre" xsdType="integer"/>
+         <element column="TIENE_ASEGURAMIENTO" name="tiene_aseguramiento" xsdType="integer"/>
+         <element column="MONTO_ASEGURADO" name="monto_asegurado" xsdType="integer"/>
+         <element column="CONTIENE_LOCALIZADOS" name="contiene_localizados" xsdType="integer"/>
+         <element column="CONTIENE_ERRORES" name="contiene_errores" xsdType="string"/>
+         <element column="REG_CON_ERRORES" name="reg_con_errores" xsdType="integer"/>
+         <element column="ID_AREA" name="id_area" xsdType="integer"/>
+         <element column="DESC_AREA" name="desc_area" xsdType="integer"/>
+      </result>
+      <param name="idExpediente" ordinal="1" sqlType="STRING"/>
+   </query>
+   <query id="getPersonaConErrores" useConfig="MSSQL">
+      <sql>SELECT PER.ID_REG_SOL_ESP,CAR.ID_CLAVE,PER.CARACTER,PER.PERSONA,PER.PATERNO,PER.MATERNO,PER.NOMBRE,PER.RFC,				PER.REG_CON_ERRORES,PER.CONTIENE_ALIAS,ERR.XML_ERR_PERSONA				FROM SITI_SOL_PERSONAS PER				INNER JOIN SITI_SOL_PERSONAS_ERR ERR ON PER.ID_REG_PERSONA = ERR.ID_REG_PERSONA				LEFT JOIN CAT_R29_TIPO_CARAC CAR ON UPPER(PER.CARACTER) = UPPER(CAR.TXT_TIPO_CARAC)				WHERE PER.ID_REG_PERSONA = ?				AND PER.REG_CON_ERRORES = 1;</sql>
+      <result element="getPersonaConErroresResp" rowName="resultadoPersonaConErrores">
+         <element column="ID_REG_SOL_ESP" name="id_reg_sol_esp" xsdType="string"/>
+         <element column="ID_CLAVE" name="id_clave" xsdType="string"/>
+         <element column="CARACTER" name="caracter" xsdType="string"/>
+         <element column="PATERNO" name="peterno" xsdType="string"/>
+         <element column="MATERNO" name="materno" xsdType="string"/>
+         <element column="NOMBRE" name="nombre" xsdType="string"/>
+         <element column="RFC" name="rfc" xsdType="string"/>
+         <element column="REG_CON_ERRORES" name="reg_con_errores" xsdType="string"/>
+         <element column="CONTIENE_ALIAS" name="contiene_alias" xsdType="integer"/>
+         <element column="PERSONA" name="persona" xsdType="integer"/>
+         <element column="XML_ERR_PERSONA" name="xml_err_persona" xsdType="integer"/>
+      </result>
+      <param name="id_reg_persona" ordinal="1" sqlType="STRING"/>
+   </query>
+  
+   <operation name="getExpedienteConErrores">
+      <call-query href="getExpedienteConErrores">
+         <with-param name="idExpediente" query-param="idExpediente"/>
+      </call-query>
+   </operation>
+   
+   <operation name="getPersonaConErrores">
+      <call-query href="getPersonaConErrores">
+         <with-param name="id_reg_persona" query-param="id_reg_persona"/>
+      </call-query>
+   </operation>
+</data>

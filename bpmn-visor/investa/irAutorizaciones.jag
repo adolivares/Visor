@@ -44,7 +44,7 @@ var user = session.get("user");
 }
 include("logComentarios.jag");
 include("Controller/CtrlVisorBandeja.jag");
-var xmlBandeja = getTablaBandejaEntrada("",Usuario_v,'ELIMINACION');
+var xmlBandeja = getTablaBandejaEntradaAuto("",Usuario_v,'ELIMINACION');
  %>
  
         <link href="resources/plantilla/css/select2.css" rel="stylesheet" />
@@ -96,12 +96,11 @@ var xmlBandeja = getTablaBandejaEntrada("",Usuario_v,'ELIMINACION');
                         <th>Porcentaje coincidencia</th>      
                         <th>Ver Detalle</th>                     
                         <th style="width: 7px"><input type="checkbox" id="cbAnalista1" ></th>    
-                        <th style="display:none;"></th>                     
-                        <th style="display:none;"></th>                     
+                        <th style="display:none;"></th>                                       
                     </tr>
                 </thead>
                 <tbody>         
-                        <%=createTablaBandejaAutorizacion(xmlBandeja,1)%>               
+                        <%=createTablaBandejaAutorizacion(xmlBandeja)%>               
                 </tbody>
             </table>
             <br/>
@@ -365,7 +364,7 @@ $("#btnAutorizar").click(function() {
     $("#t5").val(sId);
     $("#t6").val('Solicitó:');
     $("#t7").val(tr.find("td").eq(4).text() + " "+tr.find("td").eq(5).text() + " "+tr.find("td").eq(6).text());//persona
-    //envio_autoriza(sId,'Autorizado');
+    envio_autoriza(tr.find("td").eq(2).text(),'Autorizado');
    envio_escala_del(sId, 'Autorizado', _analista, _gerente, _oficial, _director);
 });
 $("#btnRechazar").click(function() {

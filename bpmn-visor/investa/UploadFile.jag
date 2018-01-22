@@ -1,0 +1,104 @@
+<%
+include("/model/common.jag");
+var user = session.get("user");
+
+if(request.getParameter("action")!="") {
+	include("Controller/CtlCRM.jag");
+	var login = getLoginCRM();
+	var idConsulta = request.getParameter("idConsulta");		
+	var idCliente = request.getParameter("idCliente");	
+	var tipoCliente = request.getParameter("tipoCliente");	
+	var tipoPerson = request.getParameter("tipoPerson");	
+	var fileList= request.getParameter("imga");
+	var resultado="";	
+	var xmlF="";	
+		log.info(login);
+		log.info("codigoRespuesta: " +idConsulta);
+		log.info("codigoRespuesta: " +idCliente);
+		log.info("codigoRespuesta: " +tipoCliente);
+		log.info("codigoRespuesta: " +tipoPerson);
+		log.info("img: " +fileList);
+		for(i in fileList){
+                    var file = fileList[i];
+                    var name = fileList[i].name;
+                    log.info("file "+ name);
+
+                    //Convierte a base64
+                    var reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = function () {
+                        console.log(reader.result);
+						xmlF+="<imageData>";
+						xmlF+="<tipoDeDocumento>Apostillado</tipoDeDocumento>";
+						xmlF+="<imagenBase64>"+reader.result+"</imagenBase64>";
+						xmlF+="<tipoArchivo>"+file.type+"</tipoArchivo>";
+						xmlF+="</imageData>";
+						log.info(xmlF);
+						document.getElementById("demo").innerHTML = xmlF;
+                    };
+                    reader.onerror = function (error) {
+                     console.log('Error: ', error);
+                   };	                 
+                }
+	if(tipoPerson ==1){
+		log.info("xml evio crm: " +xmlF);
+		resultado = cargaImagenesCRM_PFisicas(login,idCliente,tipoCliente,xmlF);
+	}else{
+		log.info("xml evio crm: " +xmlF);
+		resultado = cargaImagenesCRM_PMorales(login,idCliente,tipoCliente,xmlF);
+	}
+
+	log.info("codigoRespuesta: " +resultado.toString());
+	log.info("cadenaRespuesta: " +resultado.toString());
+	
+	
+}
+function getBase64(file) {
+       var reader = new FileReader();
+       var cod= "";
+       reader.readAsDataURL(file);
+       reader.onload = function () {
+        // console.log(reader.result);
+         cod = reader.result;
+       };
+       reader.onerror = function (error) {
+         console.log('Error: ', error);
+         return false;
+       };
+       return cod;
+    }
+%>
+
+<script>
+    var user = "<%=user%>";
+  
+	$(document).ready(function(){
+		$('#myModal').modal('show');
+	});
+</script>
+
+ <!-- Modal -->
+  <div class="modal fade" id="myModal" data-backdrop="static" data-keyboard="false" role="dialog">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+			<div class="modal-header">
+			
+				<h3 class="modal-title">&nbsp;</h3>
+		    </div>
+		    <div class="modal-body" align="center" >
+				<%if(resultado != "" ){%>
+					<p align="center"> <div class="alert alert-success">se actualizo correctamente </div></p>
+				<%}%>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Aceptar</button>
+			   
+			</div>
+        </div>
+    </div>
+  </div>
+  
+  
+  
+  
+  <textarea id="demo"></textarea>

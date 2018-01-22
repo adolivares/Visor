@@ -22,40 +22,127 @@
 		ws.send(payload.toXMLString());
 		var responseXML = new XML(ws.responseText);
 		//log.info("RESPONSE XML BANDEJA: " + responseXML.toXMLString());
+		log.info("RESPONSE XML BANDEJA: " );
+		return responseXML;
+	}
+	function getTablaBandejaEntradaBatch(_idConsulta,_tipoBusqueda,idAutoriza){
+		var payload = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dat="http://ws.wso2.org/dataservice">
+					   <soapenv:Header/>
+					   <soapenv:Body>
+						  <dat:qConsultaBandejaEntradaBatch>
+							 <dat:idMbConsulta>{_idConsulta}</dat:idMbConsulta>
+							 <dat:relacion>{_tipoBusqueda}</dat:relacion>
+							 <dat:idAutoriza>{idAutoriza}</dat:idAutoriza>
+						  </dat:qConsultaBandejaEntradaBatch>
+					   </soapenv:Body>
+					</soapenv:Envelope>;
+
+		var url = URL_ESB + "BpmnVisor";
+		var ws = new XMLHttpRequest();
+		var action2 = "urn:qConsultaBandejaEntradaBatch";
+		ws.open("POST", url, false);
+		ws.setRequestHeader('SOAPAction', action2);
+		ws.setRequestHeader('Content-Type','text/xml; charset=utf-8');
+
+		ws.send(payload.toXMLString());
+		var responseXML = new XML(ws.responseText);
+		log.info("RESPONSE XML BANDEJA batch: " + responseXML.toXMLString());
+		//log.info("RESPONSE XML BANDEJA BATCH: " );
+		return responseXML;
+	}
+	function getTablaBandejaEntradaAuto(_idConsulta,_tipoBusqueda,idAutoriza){
+		var payload = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dat="http://ws.wso2.org/dataservice">
+					   <soapenv:Header/>
+					   <soapenv:Body>
+						  <dat:qConsultaBandejaAutorizacion>
+							 <dat:idMbConsulta>{_idConsulta}</dat:idMbConsulta>
+							 <dat:relacion>{_tipoBusqueda}</dat:relacion>
+							 <dat:idAutoriza>{idAutoriza}</dat:idAutoriza>
+						  </dat:qConsultaBandejaAutorizacion>
+					   </soapenv:Body>
+					</soapenv:Envelope>;
+
+		var url = URL_ESB + "BpmnVisor";
+		var ws = new XMLHttpRequest();
+		var action = "urn:qConsultaBandejaAutorizacion";
+		ws.open("POST", url, false);
+		ws.setRequestHeader('SOAPAction', action);
+		ws.setRequestHeader('Content-Type','text/xml; charset=utf-8');
+
+		ws.send(payload.toXMLString());
+		var responseXML = new XML(ws.responseText);
+		//log.info("RESPONSE XML BANDEJA AUTORIZACION: " + responseXML.toXMLString());
 		return responseXML;
 	}
 	
-	function createTablaBandejaEntrada(lista,tipo) {
+	function createTablaBandejaEntrada(lista) {
 		var result = "";
-		var id =0;
+
 		for each (var aXML in lista..*::getBandejaEntrada..*::resultadoBandeja){
-			if(aXML.*::getMBConsulta.*::resultadoMbConsulta.*::tipo_busqueda.toString() ==tipo){
-				if(aXML.*::getMBConsulta.*::resultadoMbConsulta.*::getMBConsultaCliente.*::resultadoConsultaCliente.*::getConfiguracionResponse.*::resultadoConfiguracion.*::id_prioridad.toString()== 1){
+			
+			if(aXML.*::estatus_califica.toString()== 0){
+				if(aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::id_prioridad.toString()== 1){
 					var semaforo ='<input type="image" id="delete" src="images/circulo-rojo.png" />';
-				}else if(aXML.*::getMBConsulta.*::resultadoMbConsulta.*::getMBConsultaCliente.*::resultadoConsultaCliente.*::getConfiguracionResponse.*::resultadoConfiguracion.*::id_prioridad.toString()== 2){
+				}else if(aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::id_prioridad.toString()== 2){
 					var semaforo ='<input type="image" id="delete" src="images/circulo-naranja.png" />';
 				}else{
 					var semaforo ='<input type="image" id="delete" src="images/circulo-verde.png" />';
 				}
 				
+				
 				result += '<tr>';
 				result += '<td style="display:none">'+aXML.*::id_bandeja_visor.toString()+'</td>';
-				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::fecha_consulta.toString().substring(0,10)+'</td>';
-				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::id_mb_consulta.toString()+'</td>';
-				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::id_cliente_crm.toString()+'</td>';
-				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::getMBConsultaCliente.*::resultadoConsultaCliente.*::nombre_cliente.toString()+'</td>';
-				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::getMBConsultaCliente.*::resultadoConsultaCliente.*::apaterno_cliente.toString()+'</td>';
-				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::getMBConsultaCliente.*::resultadoConsultaCliente.*::amaterno_cliente.toString()+'</td>';
-				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::id_aplicacion.toString()+'</td>';
-				result += '<td><strong><span style="color:red; font-size:14px;">+ +</span></strong></td>';
-				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::getMBConsultaCliente.*::resultadoConsultaCliente.*::getConfiguracionResponse.*::resultadoConfiguracion.*::lista.toString()+'</td>';
-				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::getMBConsultaCliente.*::resultadoConsultaCliente.*::getConfiguracionResponse.*::resultadoConfiguracion.*::porcentaje.toString()+'</td>';
-				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::id_operacion.toString()+'</td>';
-				result += '<td>'+aXML.*::getMBConsulta.*::resultadoMbConsulta.*::getMBConsultaCliente.*::resultadoConsultaCliente.*::porcentaje_coincidencias.toString()+'</td>';
+				result += '<td>'+aXML.*::fecha_consulta.toString().substring(0,10)+'</td>';
+				result += '<td>'+aXML.*::id_mb_consulta.toString()+'</td>';
+				result += '<td>'+aXML.*::id_cliente_crm.toString()+'</td>';
+				result += '<td>'+aXML.*::nombre_cliente.toString()+'</td>';
+				result += '<td>'+aXML.*::apaterno_cliente.toString()+'</td>';
+				result += '<td>'+aXML.*::amaterno_cliente.toString()+'</td>';
+				result += '<td>'+aXML.*::id_aplicacion.toString()+'</td>';
+				result += '<td><strong><span style="font-size:14px;">'+aXML.*::getEvaluacion.*::resultado.*::simbologia.toString()+'</span></strong></td>';
+				result += '<td>'+aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::lista.toString()+'</td>';
+				result += '<td>'+aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::porcentaje.toString()+'</td>';
+				result += '<td>'+aXML.*::id_operacion.toString()+'</td>';
+				result += '<td>'+aXML.*::porcentaje_coincidencia.toString()+'</td>';
 				result += '<td>'+semaforo+'</td>';
-				result += '<td><input type="radio" name="tabla'+tipo+'" onclick="'+((tipo==1)?'llenaValor(this)':'llenaValor2(this)')+'"/></td>';
+				result += '<td><input type="radio" name="tabla1" onclick="llenaValor(this)"/></td>';
 				result += '</tr>';
-			id++;
+			}
+		}
+		return result;
+	}
+	function createTablaBandejaEntradaBatch(lista) {
+		var result = "";
+
+		for each (var aXML in lista..*::getBandejaEntradaBatch..*::resultadoBandejaBatch){
+			
+			if(aXML.*::estatus_califica.toString()== 0){
+				if(aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::id_prioridad.toString()== 1){
+					var semaforo ='<input type="image" id="delete" src="images/circulo-rojo.png" />';
+				}else if(aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::id_prioridad.toString()== 2){
+					var semaforo ='<input type="image" id="delete" src="images/circulo-naranja.png" />';
+				}else{
+					var semaforo ='<input type="image" id="delete" src="images/circulo-verde.png" />';
+				}
+				
+				
+				result += '<tr>';
+				result += '<td style="display:none">'+aXML.*::id_bandeja_visor.toString()+'</td>';
+				result += '<td>'+aXML.*::fecha_consulta.toString().substring(0,10)+'</td>';
+				result += '<td>'+aXML.*::id_mb_consulta.toString()+'</td>';
+				result += '<td>'+aXML.*::id_cliente_crm.toString()+'</td>';
+				result += '<td>'+aXML.*::nombre_cliente.toString()+'</td>';
+				result += '<td>'+aXML.*::apaterno_cliente.toString()+'</td>';
+				result += '<td>'+aXML.*::amaterno_cliente.toString()+'</td>';
+				result += '<td>'+aXML.*::id_aplicacion.toString()+'</td>';
+				result += '<td><strong><span style="font-size:14px;">'+aXML.*::getEvaluacion.*::resultado.*::simbologia.toString()+'</span></strong></td>';
+				result += '<td>'+aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::lista.toString()+'</td>';
+				result += '<td>'+aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::porcentaje.toString()+'</td>';
+				result += '<td>'+aXML.*::id_operacion.toString()+'</td>';
+				result += '<td>'+aXML.*::porcentaje_coincidencia.toString()+'</td>';
+				result += '<td>'+semaforo+'</td>';
+				result += '<td><input type="radio" name="tabla1" onclick="llenaValor2(this)"/></td>';
+				result += '</tr>';
 			}
 		}
 		return result;
@@ -63,76 +150,97 @@
 	function createTablaBandejaAutorizacion(lista) {
 		var result = "";
 		var id =0;
-		for each( var bXML in lista..*::resultadoBandeja){
+		for each( var bXML in lista..*::resultadoBandejaAut){
 			var idBandeja=bXML.*::id_bandeja_visor.toString();
-		log.info('id bandeja '+ idBandeja);
-		for each( var zXML in bXML..*::resultadoMbConsulta){
+			log.info('id bandeja '+ idBandeja);
+			for each( var zXML in bXML..*::resultadoMbConsulta){
 			
-			var fecha = zXML.*::fecha_consulta.toString();
-			var id_aplicacion = zXML..*::id_aplicacion.toString();
-			var id_cliente_crm = zXML..*::id_cliente_crm.toString();
-			var porcentaje_busqueda = zXML..*::porcentaje_busqueda.toString();
-			log.info('fecha '+fecha + id_aplicacion);
-		for each (var aXML in zXML..*::getMBConsultaCliente..*::resultadoConsultaCliente){
-				result += '<tr>';
-				result += '<td style="display:none">'+idBandeja+'</td>';
-				result += '<td>'+fecha.substring(0,10)+'</td>';
-				result += '<td>'+aXML.*::id_mb_consulta.toString()+'</td>';
-				result += '<td>'+id_cliente_crm+'</td>';
-				result += '<td>'+aXML.*::nombre_cliente.toString()+'</td>';
-				result += '<td>'+aXML.*::apaterno_cliente.toString()+'</td>';
-				result += '<td>'+aXML.*::amaterno_cliente.toString()+'</td>';
-				result += '<td>CLIENTE</td>';
-				result += '<td>'+id_aplicacion+'</td>';
-				result += '<td>'+((aXML.*::id_mb_cat_evaluacion.toString() ==1)?'<strong><span style="color:red; font-size:14px;">+</span>&nbsp;&nbsp;<span style="color:red; font-size:14px;">+</span></strong>':'<strong><span style="color:red; font-size:14px;">+</span>&nbsp;&nbsp;<span style="color:black; font-size:14px;">-</span></strong>')+'</td>';
-				result += '<td>'+aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::lista.toString()+'</td>';
-				result += '<td>'+aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::porcentaje.toString()+'</td>';
-				if(aXML.*::id_mb_cat_evaluacion.toString() != ''){
-					result += '<td><a  class="btn btn-primary" type="button" href="irDetalle?id='+aXML.*::nombre_encontrado.toString()+'&&tip=1">Detalle</a></td>';
-					result += '<td align="center"><input type="checkbox"  onclick="valorChk(this)"/></td>';
-				}else{
-					result += '<td></td>';
-					result += '<td align="center"></td>';
-				}
-				result += '<td style="display:none">'+aXML.*::tabla_correlativos.toString()+'</td>';
-				result += '<td style="display:none">'+aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::id_lista.toString()+'</td>';
-				result += '<td style="display:none">'+aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::categoria.toString()+'</td>';
-				result += '</tr>';
-			id++;
-			
-		}
-		for each (var aXML in zXML..*::getMBConsultaBeneficiario..*::resultadoConsultaBeneficiario){
-			
-				result += '<tr>';
-				result += '<td style="display:none">'+idBandeja+'</td>';
-				result += '<td>'+fecha.substring(0,10)+'</td>';
-				result += '<td>'+aXML.*::id_mb_consulta.toString()+'</td>';
-				result += '<td>'+id_cliente_crm+'</td>';
-				result += '<td>'+aXML.*::nombre_beneficiario.toString()+'</td>';
-				result += '<td>'+aXML.*::apaterno_beneficiario.toString()+'</td>';
-				result += '<td>'+aXML.*::amaterno_beneficiario.toString()+'</td>';
-				result += '<td>BENEFICIARIO</td>';
-				result += '<td>'+id_aplicacion+'</td>';
-				result += '<td>'+((aXML.*::id_mb_cat_evaluacion.toString() ==1)?'<strong><span style="color:red; font-size:14px;">+ </span>&nbsp;&nbsp;<span style="color:red; font-size:14px;">+ </span></strong>':'<strong><span style="color:red; font-size:14px;">+</span>&nbsp;&nbsp;<span style="color:black; font-size:14px;">-</span></strong>')+'</td>';
-				result += '<td>'+aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::lista.toString()+'</td>';
-				result += '<td>'+aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::porcentaje.toString()+'</td>';
-				if(aXML.*::id_mb_cat_evaluacion.toString() != ''){
-					result += '<td><a  class="btn btn-primary" type="button" href="irDetalle?id='+aXML.*::nombre_encontrado.toString()+'&&tip=2">Detalle</a></td>';
-					result += '<td align="center"><input type="checkbox" name="tabla1" onclick="valorChk(this)"/></td>';
-				}else{
-					result += '<td></td>';
-					result += '<td></td>';
-				}
-				result += '<td style="display:none">'+aXML.*::tabla_correlativos.toString()+'</td>';
-				result += '<td style="display:none">'+aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::id_lista.toString()+'</td>';
-				result += '<td style="display:none">'+aXML.*::getConfiguracionResponse.*::resultadoConfiguracion.*::categoria.toString()+'</td>';
-				result += '</tr>';
-			id++;
-			
-		}
-		}
+				var fecha = zXML.*::fecha_consulta.toString();
+				var id_aplicacion = zXML..*::id_aplicacion.toString();
+				var id_cliente_crm = zXML..*::id_cliente_crm.toString();
+				var porcentaje_busqueda = zXML..*::porcentaje_busqueda.toString();
+				log.info('fecha '+fecha + id_aplicacion);
+					for each (var aXML in zXML..*::getMBConsultaCliente..*::resultadoConsultaCliente){
+							result += '<tr>';
+							result += '<td style="display:none">'+idBandeja+'</td>';
+							result += '<td>'+fecha.substring(0,10)+'</td>';
+							result += '<td>'+aXML.*::id_mb_consulta.toString()+'</td>';
+							result += '<td>'+id_cliente_crm+'</td>';
+							result += '<td>'+aXML.*::nombre_cliente.toString()+'</td>';
+							result += '<td>'+aXML.*::apaterno_cliente.toString()+'</td>';
+							result += '<td>'+aXML.*::amaterno_cliente.toString()+'</td>';
+							result += '<td>CLIENTE</td>';
+							result += '<td>'+id_aplicacion+'</td>';
+							result += '<td>'+((aXML.*::id_mb_cat_evaluacion.toString() ==1)?'<strong><span style="color:red; font-size:14px;">+</span>&nbsp;&nbsp;<span style="color:red; font-size:14px;">+</span></strong>':'<strong><span style="color:red; font-size:14px;">+</span>&nbsp;&nbsp;<span style="color:black; font-size:14px;">-</span></strong>')+'</td>';
+							result += '<td>'+aXML.*::tipo_listas.toString()+'</td>';
+							result += '<td>'+aXML.*::porcentaje_coincidencias.toString()+'</td>';
+							if(aXML.*::id_mb_cat_evaluacion.toString() != ''){
+								result += '<td><a  class="btn btn-primary" type="button" href="irDetalle?id='+aXML.*::nombre_encontrado.toString()+'&&tip=1">Detalle</a></td>';
+								result += '<td align="center"><input type="checkbox"  onclick="valorChk(this)"/></td>';
+							}else{
+								result += '<td></td>';
+								result += '<td align="center"></td>';
+							}
+							result += '<td style="display:none">'+aXML.*::tabla_correlativos.toString()+'</td>';
+							result += '</tr>';
+						id++;
+						
+					}
+					for each (var aXML in zXML..*::getMBConsultaBeneficiario..*::resultadoConsultaBeneficiario){
+						
+							result += '<tr>';
+							result += '<td style="display:none">'+idBandeja+'</td>';
+							result += '<td>'+fecha.substring(0,10)+'</td>';
+							result += '<td>'+aXML.*::id_mb_consulta.toString()+'</td>';
+							result += '<td>'+id_cliente_crm+'</td>';
+							result += '<td>'+aXML.*::nombre_beneficiario.toString()+'</td>';
+							result += '<td>'+aXML.*::apaterno_beneficiario.toString()+'</td>';
+							result += '<td>'+aXML.*::amaterno_beneficiario.toString()+'</td>';
+							result += '<td>BENEFICIARIO</td>';
+							result += '<td>'+id_aplicacion+'</td>';
+							result += '<td>'+((aXML.*::id_mb_cat_evaluacion.toString() ==1)?'<strong><span style="color:red; font-size:14px;">+ </span>&nbsp;&nbsp;<span style="color:red; font-size:14px;">+ </span></strong>':'<strong><span style="color:red; font-size:14px;">+</span>&nbsp;&nbsp;<span style="color:black; font-size:14px;">-</span></strong>')+'</td>';
+							result += '<td>'+aXML.*::tipo_listas.toString()+'</td>';
+							result += '<td>'+aXML.*::porcentaje_coincidencias.toString()+'</td>';
+							if(aXML.*::id_mb_cat_evaluacion.toString() != ''){
+								result += '<td><a  class="btn btn-primary" type="button" href="irDetalle?id='+aXML.*::nombre_encontrado.toString()+'&&tip=2">Detalle</a></td>';
+								result += '<td align="center"><input type="checkbox" name="tabla1" onclick="valorChk(this)"/></td>';
+							}else{
+								result += '<td></td>';
+								result += '<td></td>';
+							}
+							result += '<td style="display:none">'+aXML.*::tabla_correlativos.toString()+'</td>';
+							result += '</tr>';
+						id++;
+						
+					}
+			}
 		}
 		return result;
+	}
+	
+	function getTablaBandejaEntradaAuto2(_idConsulta,_tipoBusqueda,idAutoriza){
+		var payload = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dat="http://ws.wso2.org/dataservice">
+					   <soapenv:Header/>
+					   <soapenv:Body>
+						  <dat:qConsultaBandejaAutorizacion>
+							 <dat:idMbConsulta>{_idConsulta}</dat:idMbConsulta>
+							 <dat:relacion>{_tipoBusqueda}</dat:relacion>
+							 <dat:idAutoriza>{idAutoriza}</dat:idAutoriza>
+						  </dat:qConsultaBandejaAutorizacion>
+					   </soapenv:Body>
+					</soapenv:Envelope>;
+
+		var url = URL_ESB + "BpmnVisor";
+		var ws = new XMLHttpRequest();
+		var action = "urn:qConsultaBandejaAutorizacion";
+		ws.open("POST", url, false);
+		ws.setRequestHeader('SOAPAction', action);
+		ws.setRequestHeader('Content-Type','text/xml; charset=utf-8');
+
+		ws.send(payload.toXMLString());
+		var responseXML = new XML(ws.responseText);
+		//log.info("RESPONSE XML BANDEJA AUTORIZACION: " + responseXML.toXMLString());
+		return responseXML;
 	}
 	
 %>

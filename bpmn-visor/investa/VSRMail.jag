@@ -63,6 +63,7 @@ var user = session.get("user");
 			var persona = request.getParameter("persona");			
 			var fechaB = request.getParameter("fecha");
 			var justificacio = request.getParameter("justificacio");
+			var aplicacion = request.getParameter("apli");
 			
 			if(tipo ==4 || tipo ==5){
 				justificacio = getJusti(justificacio);
@@ -75,7 +76,7 @@ var user = session.get("user");
 							 "<destinatario>"+destinatario+"</destinatario>"+
 							 "<cc>"+cc+"</cc>"+
 							 "<fecha_busqueda>"+fechaB+"</fecha_busqueda>"+
-							 "<aplicacion></aplicacion>"+
+							 "<aplicacion>"+aplicacion+"</aplicacion>"+
 							 "<cliente>"+Cliente+"</cliente>"+
 							 "<idCliente>"+idCliente+"</idCliente>"+
 							 "<persona_calificada>"+persona+"</persona_calificada>"+

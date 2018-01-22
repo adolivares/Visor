@@ -46,13 +46,13 @@ var aplication = request.getParameter("app");
 }
 var responseXML = '';
 if(fechaini != '' && fechaini != null||fechafin !='' && fechafin != null||idC!='' && idC != null|| aplication != '' && aplication != null){
-	
+
 	var payload = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dat="http://ws.wso2.org/dataservice">
 					   <soapenv:Header/>
 					   <soapenv:Body>
 						  <dat:qGetConsultas>
 							 <dat:fechaini>{fechaini}</dat:fechaini>
-							 <dat:fechafin>{fechafin}</dat:fechafin>
+							 <dat:fechafin>{fechafin+'23:59:59'}</dat:fechafin>
 							 <dat:idCliente>{idC}</dat:idCliente>
 							 <dat:aplication>{aplication}</dat:aplication>
 						  </dat:qGetConsultas>
@@ -98,7 +98,7 @@ if(fechaini != '' && fechaini != null||fechafin !='' && fechafin != null||idC!='
                     <li><a href="irAdminRiesgos"><i class="glyphicon glyphicon-home"></i></a></li>
                     <li><a>Bandeja de entrada</a></li>
                 </ul>
-                <h4>Coincidencias en Listas</h4>
+                <h4>Consultas</h4>
             </div>
         </div><!-- media -->
     </div><!-- pageheader -->
@@ -130,7 +130,7 @@ if(fechaini != '' && fechaini != null||fechafin !='' && fechafin != null||idC!='
 							<th>Apellido paterno</th>   
 							<th>Apellido materno</th>                                     
 							<th>Aplicación</th>                                                                
-							<th>Tipo operacíon</th>                                                                     
+							<th>Estatus calificado</th>                                                                    
 							<th></th>                                                          
 							<th><input name="select_all" value="1" type="checkbox"></th>                                                           
 						</tr>
@@ -147,9 +147,14 @@ if(fechaini != '' && fechaini != null||fechafin !='' && fechafin != null||idC!='
 								<td><%=responseXML..*::getConsultasResponse.*::resultadoConsultas[i].*::apaterno_cliente.toString()%></td>
 								<td><%=responseXML..*::getConsultasResponse.*::resultadoConsultas[i].*::amaterno_cliente.toString()%></td>
 								<td><%=responseXML..*::getConsultasResponse.*::resultadoConsultas[i].*::aplicacion.toString()%></td>
-								<td><%=responseXML..*::getConsultasResponse.*::resultadoConsultas[i].*::operacion.toString()%></td>
-								<td><a href="irCalificacionCoincidencias?idConsulta=<%=responseXML..*::getConsultasResponse.*::resultadoConsultas[i].*::id_mb_consulta.toString()%>&&tip=2" class="btn btn-primary">Detalle</a></td>
-								<td><input type="radio" name="notificacion" onclick="getId(this)"></td>
+								<td><%=((responseXML..*::getConsultasResponse.*::resultadoConsultas[i].*::estatus_califica.toString()==1)?'<input type="image" id="delete" src="images/checked.png" />':'')%></td>
+								<%if(responseXML..*::getConsultasResponse.*::resultadoConsultas[i].*::encontrado_listas.toString()!=0){%>
+									<td><a href="irCalificacionCoincidencias?idConsulta=<%=responseXML..*::getConsultasResponse.*::resultadoConsultas[i].*::id_mb_consulta.toString()%>&&tip=2" class="btn btn-primary">Detalle</a></td>
+									<td><input type="radio" name="notificacion" onclick="getId(this)"></td>
+								<%}else{%>
+									<td></td>
+									<td></td>
+								<%}%>
 							</tr>
 						<%}}%>
 					</tbody>
@@ -250,6 +255,11 @@ $(document).ready(function() {
            	    mensaje += (mensaje == "") ? "" : "\n";
           	    mensaje += "<strong>La fecha desde no puede ser mayor a la fecha hasta</strong>.";
             }
+        }
+		var hoy = new Date("dd/mm/yy");
+		if($("#txtFechaHasta").val() > hoy) {
+           	    mensaje += (mensaje == "") ? "" : "\n";
+          	    mensaje += "<strong>La fecha hasta no puede ser mayor a la fecha actual</strong>.";
         }
 		var idcliente = $("#txtIdCliente").val();
 		var aplicacion = $("#txtAplicacion").val();

@@ -185,6 +185,31 @@
       </result>
       <param name="uid" ordinal="1" sqlType="STRING"/>
    </query>
+   <query id="getDetalleLWCP" useConfig="MSSQL">
+      <sql>SELECT UID,FIRST_NAME,LAST_NAME,ALIASES,ALTERNATIVE_SPELLING,CATEGORY,TITLE,SUB_CATEGORY,POSITION,AGE,DATE_OF_BIRTH,PLACE_OF_BIRTH,PASSPORTS,SOCIAL_SECURITY,LOCATIONS,COUNTRIES,				TYPE_OF_PERSON,FURTHER_INFORMATION,ENTERED_DATE,UPDATED_DATE,KEYWORDS 			FROM MONITORP.dbo.VWWORLDCHECKP WHERE UID = ?</sql>
+      <result element="getDetalleLWCP" rowName="getDetalleLWCPResp">
+         <element column="uid" name="uid"/>
+         <element column="first_name" name="first_name"/>
+         <element column="last_name" name="last_name"/>
+         <element column="aliases" name="aliases"/>
+         <element column="alternative_spelling" name="alternative_spelling"/>
+         <element column="category" name="category"/>
+         <element column="title" name="title"/>
+         <element column="sub_category" name="sub_category"/>
+         <element column="position" name="position"/>
+         <element column="age" name="age"/>
+         <element column="date_of_birth" name="date_of_birth"/>
+         <element column="place_of_birth" name="place_of_birth"/>
+         <element column="passports" name="passports"/>
+         <element column="social_security" name="social_security"/>
+         <element column="countries" name="countries"/>
+         <element column="further_information" name="further_information"/>
+         <element column="entered_date" name="entered_date"/>
+         <element column="updated_date" name="updated_date"/>
+         <element column="keywords" name="keywords"/>
+      </result>
+      <param name="uid" ordinal="1" sqlType="STRING"/>
+   </query>
    <query id="getDetalleLSiti" useConfig="MSSQL">
       <sql>SELECT PER.ID_REG_PERSONA,PER.CARACTER,PER.PERSONA,PER.PATERNO,PER.MATERNO,PER.NOMBRE,PER.RFC,PER.RELACION,PER.DOMICILIO,PER.COMPLEMENTARIOS,EXP.CNBV_NUM_OFICIO,EXP.CNBV_NUM_EXPEDIENTE,			EXP.CNBV_SOL_SIARA,EXP.CNBV_FOLIO,EXP.CNBV_OFICIO_YEAR,EXP.CNBV_AREA_CLAVE,EXP.CNBV_AREA_DESC,EXP.CNBV_FECHA_PUB,EXP.CNBV_DIAS_PLAZO,EXP.AUTORIDAD_NOMBRE,			ISNULL(EXP.AUTORIDAD_ESP_NOMBRE,'') AS AUTORIDAD_ESP_NOMBRE,EXP.NOMBRE_SOLICITANTE,EXP.REFERENCIA,EXP.REFERENCIA1,EXP.REFERENCIA2 			FROM SITI_SOL_PERSONAS PER INNER JOIN SITI_SOLICITUD_ESP SE ON PER.ID_REG_SOL_ESP=SE.ID_REG_SOL_ESP INNER JOIN SITI_EXPEDIENTE EXP ON SE.ID_EXPEDIENTE=EXP.ID_EXPEDIENTE 			WHERE PER.ID_REG_PERSONA=?</sql>
       <result element="getDetalleLSiti" rowName="getComentariosLSitiResp">
@@ -296,6 +321,11 @@
          <with-param name="uid" query-param="uid"/>
       </call-query>
    </operation>
+   <operation name="getDetalleLWCP">
+      <call-query href="getDetalleLWCP">
+         <with-param name="uid" query-param="uid"/>
+      </call-query>
+   </operation>
    <operation name="getDetalleLSiti">
       <call-query href="getDetalleLSiti">
          <with-param name="idReg" query-param="idReg"/>
@@ -366,4 +396,5 @@
          <with-param name="uid" query-param="uid"/>
       </call-query>
    </operation>
+   
 </data>

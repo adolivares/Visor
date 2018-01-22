@@ -151,7 +151,7 @@ if( _transac == 1 && _modulo != "" && _catalogo != "" && _descripcion != "" && _
 					<div class="row padding10 ">
 						<div class="col-md-2">Nuevo Registro: </div>
 						<div class="col-md-2">
-							<input type="text" id="txtNuevo" name="txtNuevo">
+							<input type="text" id="txtNuevo" name="txtNuevo" onkeyup="validarTexto(this)">
 						</div>
 						<div class="col-md-2" style="padding-left:30px">
 							<input type="button" id="btnAlta" value="Alta" style="width:90px">
@@ -311,13 +311,12 @@ if( _transac == 1 && _modulo != "" && _catalogo != "" && _descripcion != "" && _
 					{catalogo: 'Origen Cliente', value: 'origencl'},
 					{catalogo: 'Perfil Listas', value: 'listperfil'},
 					{catalogo: 'Perfil Usuario', value: 'usrperfil'},
-					{catalogo: 'Aplicacion', value: 'aplicacion'},
 					{catalogo: 'Prioridad', value: 'prioridad'}];
 		
 		var modulo = '';
 		var selectCat = '';
 		var alta = false;
-
+		
 		
 		<%if (_modulo != ""){%>
 			$('#selModulo').val("<%=_modulo%>");
@@ -332,11 +331,26 @@ if( _transac == 1 && _modulo != "" && _catalogo != "" && _descripcion != "" && _
 		<%}%>
 		
 		<%if(estatus != ""){%>
+			
 			var mssge = "";
-			<%if (estatus >= 1){%>	
+			<%if (estatus == -1){%>
+					mssge = "El registro ya se encuentra dado de alta.";	
+					$("#idMsg").html('<div class="alert alert-success">'+
+					mssge +
+					'</div>');
+				var catalogoResp = "<%=_catalogo%>";
+				if(alta && catalogoResp == 'CATEGORIA'){
+					$('#txtIdCategoria').val(<%=estatus%>);
+					getListas(<%=estatus%>);
+
+				}else{
+					$('#ModalInfo').modal('show');	
+				}
+
+			<%}else if (estatus >= 1){%>	
 				<%if (_transac == 1){%>	
 					alta = true;
-					mssge = "Se guardó corectamente";
+					mssge = "Se guardó correctamente";
 				<%}else if (_transac == 2){%>	
 					mssge = "Se actualizó correctamente";
 				<%}else if (_transac == 3){%>	
@@ -354,10 +368,9 @@ if( _transac == 1 && _modulo != "" && _catalogo != "" && _descripcion != "" && _
 				}else{
 					$('#ModalInfo').modal('show');	
 				}
-				
 			<%}else{%>
 				$("#idMsg").html('<div class="alert alert-danger">'+
-						'Sucedio un error '+$(this).find("codigoError").text()+
+						'Sucedio un error '+
 						'</div>');
 				$('#ModalInfo').modal('show');	
 			<%}%>
@@ -383,6 +396,17 @@ if( _transac == 1 && _modulo != "" && _catalogo != "" && _descripcion != "" && _
 		
 	});
 	
+
+	function validarTexto(objetoTextarea){
+	 	var validChars = /[^a-zA-ZñÑáéíóúÁÉÍÓÚ0-9\\,\\.\\;\s]/g; 
+	  	var texto = objetoTextarea.value;  
+	    
+	        if (texto.match(validChars)) {
+	            objetoTextarea.value = objetoTextarea.value.replace(validChars, '');
+	        }
+	    
+	    	return  false;
+		} 
 	function clearCatalogo(){		
 		$('#tblCatalogo > tbody tr').remove();
 		$('#tblCatalogo > thead tr').remove();

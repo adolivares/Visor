@@ -125,7 +125,7 @@ log.info("tiempo: " + tiempo + " segundos.");
 				<div class="col-md-4"><input style="width:100%" type="text" id="txtNombre" name="txtNombre" value="<%=nombre.toUpperCase()%>" /></div>
 			  </div>
 			  <div class="row">
-				<div class="col-md-4" style="padding:1%"><label><input type="checkbox" id="chbModo" name="usuarios"> Modo permisivo</label></div>
+				<div class="col-md-4" style="padding:1%"><!--label><input type="checkbox" id="chbModo" name="usuarios"> Modo permisivo</label--></div>
 			  </div>
 			  <div class="row">
 				<div class="col-md-4" align="center"> 
@@ -138,8 +138,6 @@ log.info("tiempo: " + tiempo + " segundos.");
 			<div>
 				<%=createTablaCoincidencias(nombre, lista, user, tiempo, fecha)%>
 			</div>
-            
-
         </div><!-- panel-heading -->
     </div><!-- contentpanel -->
  </section>
@@ -156,7 +154,6 @@ log.info("tiempo: " + tiempo + " segundos.");
 <script src="resources/plantilla/js/bootstrap.min.js"></script>
 <script src="resources/plantilla//js/dataTables.responsive.js"></script>
 <script src="resources/plantilla/js/select2.min.js"></script>
-<script src="resources/plantilla/js/custom.js"></script>
          
 
 <script>

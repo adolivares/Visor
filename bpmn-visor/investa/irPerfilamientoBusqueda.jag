@@ -47,7 +47,7 @@ var user = session.get("user");
 	var xmlAplicacion = getAplicacion("");
 	var xmlOperacion = getOperacion("");
 	var xmlOrigen = getOrigen("");
-	var xmlConfiguracion = getConfiguracion("");
+	//var xmlConfiguracion = getConfiguracion("");
 	
  %>
  
@@ -75,7 +75,7 @@ var user = session.get("user");
                     <li><a href="irBandejaEntrada"><i class="glyphicon glyphicon-home"></i></a></li>
                     <li><a>Visor</a></li>
                 </ul>
-                <h4>Perfilamiento búsqueda</h4>
+                <h4>Perfilamiento de búsqueda</h4>
             </div>
         </div><!-- media -->
     </div><!-- pageheader -->
@@ -89,9 +89,9 @@ var user = session.get("user");
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 						 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 							<div>Perfil:</div>
-									<select id="slPerfil" name="slPerfil" class="form-control" style="width:80%">
-										<%=createSelectPerfiles(xmlPerfiles)%>
-									</select>
+								<select id="slPerfil" name="slPerfil" class="form-control" style="width:80%">
+									<%=createSelectPerfiles(xmlPerfiles)%>
+								</select>
 						</div>
 						<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 							<div id="modal">							
@@ -101,8 +101,7 @@ var user = session.get("user");
 										<%=createTableListas(xmlCatListas)%>
 									</tbody>							
 								</table>
-							</div>					
-							 
+							</div>
 							<br/><br/><br/><br/>
 						</div>					
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="width: 95%">				
@@ -119,7 +118,6 @@ var user = session.get("user");
 									<th style="display:none;"></th>
 								</thead>
 								<tbody>
-									<%=createTableConfig(xmlConfiguracion)%>
 								</tbody>							
 							</table>
 							<br/><br/><br/><br/>
@@ -135,6 +133,10 @@ var user = session.get("user");
 									<th><input type="checkbox" name="cbAllCat" id="cbAllCat"></th>
 									<th>Transacción</th>
 									<th>Prioridad</th>
+									<th style="display:none;"></th>
+									<th style="display:none;"></th>
+									<th style="display:none;"></th>
+									<th style="display:none;"></th>
 								</thead>
 								<tbody>								
 								</tbody>							
@@ -160,34 +162,34 @@ var user = session.get("user");
 					  	<h5>Opciones para On-Line</h5>
 					  	<br/><br/>
 						<div class="col-xs-2 col-sm-2 col-md-2 col-lg-3">
-									<div>Aplicación:</div>
-											<select id="slAplicacion" name="slAplicacion" class="form-control" style="width: 80%" >
-												<%=createSelectAplicacion(xmlAplicacion)%>
-											</select>
+						<div>Aplicación:</div>
+								<select id="slAplicacion" name="slAplicacion" class="form-control" style="width: 80%" >
+									<%=createSelectAplicacion(xmlAplicacion)%>
+								</select>
 						</div>
 						<div class="col-xs-2 col-sm-2 col-md-2 col-lg-3">
-									<div>Operación:</div>
-											<select id="slOperacion" name="slOperacion" class="form-control" style="width: 80%" >
-												<%=createSelectOperacion(xmlOperacion)%>
-											</select>
+						<div>Operación:</div>
+								<select id="slOperacion" name="slOperacion" class="form-control" style="width: 80%" >
+									<%=createSelectOperacion(xmlOperacion)%>
+								</select>
 						</div>
 						<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-									<div>Origen del cliente:</div>
-											<select id="slOrigen" name="slOrigen" class="form-control">
-												<%=createSelectOrigen(xmlOrigen)%>
-											</select>
+						<div>Origen del cliente:</div>
+								<select id="slOrigen" name="slOrigen" class="form-control">
+									<%=createSelectOrigen(xmlOrigen)%>
+								</select>
 						</div>
 						<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-									<table id="tblPerfil" class="table-striped table-bordered table-list" style="margin-left:auto;">
-										<thead>
-											<th style="display:none;"></th>
-											<th>Perfil</th>
-											<th></th>
-										</thead>
-										<tbody>	
-											<%=createTablePerfiles(xmlPerfiles)%>
-										</tbody>							
-									</table>
+							<table id="tblPerfil" class="table-striped table-bordered table-list" style="margin-left:auto;">
+								<thead>
+									<th style="display:none;"></th>
+									<th>Perfil</th>
+									<th></th>
+								</thead>
+								<tbody>	
+								
+								</tbody>							
+							</table>
 						</div>		
 						<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
 							<table style="width:60%; margin-left:auto; margin-right:auto; margin-bottom:10%;">
@@ -199,6 +201,24 @@ var user = session.get("user");
 							</table>					
 						</div>
 							
+					</div>
+					<div class="row">					
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+							<table id="tblperfilesAsig" class="table-striped table-bordered table-list">
+								<thead>
+									<th>Aplicación</th>
+									<th>Operación</th>
+									<th>Origen cliente</th>
+									<th>Perfil</th>
+									<th style="display:none;"></th>
+									<th style="display:none;"></th>
+									<th style="display:none;"></th>
+								</thead>
+								<tbody>							
+
+								</tbody>							
+							</table>
+					</div>
 					</div>	
 					<br/><br/>	
 				</div>	
@@ -216,7 +236,43 @@ var user = session.get("user");
 				  </div>
 				  <div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="confirmaOperacion();">Aceptar</button>
+				  </div>
+				</div><!-- /.modal-content -->
+			  </div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+			<div class="modal fade" id="detalleConfiguracionAct">
+			  <div class="modal-dialog">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				  </div>
+				  <div class="modal-body">
+					<div id="idMessag">
+					</div>	
+					<input type="hidden" id="txtDetalleConf" value=''>
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
 					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="confirmActualizaConf();">Aceptar</button>
+				  </div>
+				</div><!-- /.modal-content -->
+			  </div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+			<div class="modal fade" id="detalleAsignacion">
+			  <div class="modal-dialog">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				  </div>
+				  <div class="modal-body">
+					<div id="idMess">
+					</div>	
+					<input type="hidden" id="txtDetalleConf" value=''>
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" >Aceptar</button>
 				  </div>
 				</div><!-- /.modal-content -->
 			  </div><!-- /.modal-dialog -->
@@ -233,7 +289,7 @@ var user = session.get("user");
 						<table style="margin-left: auto">
 							<tr>
 								<td>Porcentaje: </td>
-								<td style="padding-left: 7%;"><input type="text" id="txtPorcentaje" value='' style="width: 60%;"></td>
+								<td style="padding-left: 7%;"><input type="text" id="txtPorcentaje" value='' style="width: 60%;" maxlength="3"></td>
 							</tr>							
 						</table>						
 						<input type="hidden" id="txtId" value=''>
@@ -271,6 +327,14 @@ var user = session.get("user");
 	
 	
 	jQuery(document).ready(function(){  
+	
+	$('#slAplicacion').change(function() {
+	 	$('#slOperacion').val(0);	
+	 	$('#slOrigen').val(0);	
+		$('#tblPerfil tbody tr').remove();		
+		$('#tblperfilesAsig tbody tr').remove();		
+	 });
+	
 	$('#ModalProcesando').modal('show'); 	
 		var lista = "";	
 		var rowConfig = "";
@@ -286,6 +350,12 @@ var user = session.get("user");
 		var rowListas='';
 		var rowsAplicar=0;
 		var xmlPrioridad= new XMLHttpRequest();
+<<<<<<< HEAD
+		var nuevaConf=true;
+		var idListSelect ="";
+		var listaConfig = "";
+=======
+>>>>>>> fa0793f798ed9d3f9e724809b81e8b1eed52580c
 		
 		// $('#porcentaje').click(function() {
 			// $('#tblListas tbody tr input').remove();
@@ -309,23 +379,45 @@ var user = session.get("user");
 		$('#ModalProcesando').modal('show'); 
 		rowListas = $(this).parent().index();
 		var tr = $(this).parent(); 
-		var id = tr.find("td").eq(0).html();
+		var idLista = tr.find("td").eq(0).html();
+		idListSelect = idLista;
 		lista = tr.find("td").eq(1).html();	
-		var porcentaje = tr.find("td").eq(2).html();	
+		var porcentaje = tr.find("td").eq(2).html();
+		var idPerfil = $('select[name=slPerfil]').val();	
 		
 		if($(this).hasClass("porcentaje")){
 			console.log("porcentaje " + porcentaje);
 			$('#txtPorcentaje').val(porcentaje);
+<<<<<<< HEAD
+			$('#txtId').val(idLista);
+=======
 			$('#txtId').val(id);
+>>>>>>> fa0793f798ed9d3f9e724809b81e8b1eed52580c
 			$('#txtLista').val(lista);	
 			$('#ModalProcesando').modal('hide'); 		
 			$('#modalPorcentaje').modal({backdrop: 'static', keyboard: false})
 		}else if ($(this).hasClass("lista")){			
 			tr.addClass('highlight').siblings().removeClass('highlight');			
 			//console.log("Lista " + id);
+<<<<<<< HEAD
+			$('#tblCategoria tbody tr').remove();
+			if(idPerfil == 0){
+				$('#ModalProcesando').modal('hide'); 
+				 $("#idMsg").html('<div class="alert alert-danger">'+
+					  'Seleccione un Perfil'+
+					  '</div>');
+				$('#ModalInfo').modal('show');
+				return;
+			}	
+			getPrioridad();	
+			getCategorias(idLista,idPerfil);
+			//getCategorias2(idLista);
+			
+=======
 			$('#tblCategoria tbody tr').remove();			
 			getCategorias(id);
 			getPrioridad();	
+>>>>>>> fa0793f798ed9d3f9e724809b81e8b1eed52580c
 		}
 		
 		
@@ -346,6 +438,10 @@ var user = session.get("user");
 	
 		console.log("Actualiza porcentaje " );
 		var porcentaje = $('#txtPorcentaje').val();
+		if(porcentaje > 100){
+			alert('El porcentaje no debe ser mayor a 100 %');
+			return;
+		}
 		var idLista = $('#txtId').val();
 		var sLista = $('#txtLista').val();
 		rowListas = rowListas +1;
@@ -432,20 +528,21 @@ var user = session.get("user");
 		}
 	});
 	
-	 function getCategorias(_idLista){
-		var payload  = '<dat:qGetMBConsultaListaCategorias xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
-			payload += '<dat:idLista>'+_idLista+'</dat:idLista>';
-			payload += '</dat:qGetMBConsultaListaCategorias>';
+	 function getCategorias(_idLista, _idPerfil){
+		var payloadCateg  = '<dat:qGetMBConsultaCategoriaAplicado xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
+			payloadCateg += '<dat:idLista>'+_idLista+'</dat:idLista>';
+			payloadCateg += '<dat:idPerfil>'+_idPerfil+'</dat:idPerfil>';
+			payloadCateg += '</dat:qGetMBConsultaCategoriaAplicado>';
 
 		
 		$.ajax({
 			url: '/commons/postSOAP',
 			type: 'post',
-			headers: {'Destino':'BpmnVisorSEGListas', 'SOAPAction':'urn:qGetMBConsultaListaCategorias'},
+			headers: {'Destino':'BpmnVisorSEGListas', 'SOAPAction':'urn:qGetMBConsultaCategoriaAplicado '},
 			dataType: 'xml',
 			complete: categoriasResponse,
 			error: function (xhr, status, error) {},
-			data: payload
+			data: payloadCateg
 		});                    
 	}            
 	
@@ -455,26 +552,66 @@ var user = session.get("user");
 		var id="";
 		var categoria="";
 		var cont = 0;
+		var idConfig = "";
+		var idTran ="";
+		var idPrioridad="";
+		var idCategoria="";
+		var Select = $('.slPrioridad');
+		var option;
+
 		$('#tblCategoria tbody tr').remove();
+
+			
 		
-		if($(xmlHttpRequest.responseText).find('resultadoConsultaListasCateg').text() != ''){
-			$(xmlHttpRequest.responseText).find('resultadoConsultaListasCateg').each(function(){
+		if($(xmlHttpRequest.responseText).find('resultadoConsultaCateg').text() != ''){
+			$(xmlHttpRequest.responseText).find('resultadoConsultaCateg').each(function(){
 			cont++;
 			id =  $(this).find("id_categListas").text();
-			categoria = $(this).find("categoria").text();
-			
+			categoria = $(this).find("descCategoria").text();		
+			idCategoria = $(this).find("id_categoria").text();		
+			idConfig =  $(this).find("id_configuracion_perfil").text();
+			idTran =  $(this).find("transaccion").text();
+			idPrioridad =  $(this).find("id_prioridad").text();
+			var trans = idTran=="true"?'checked':'';
+			var chCategoria = idConfig !=""?'checked':'';
+			var disabledSl = idConfig !=""?'':'disabled';
+			var selectedPrio = '';
+			var option = "";
+			if(idConfig != ""){
+				nuevaConf = false;
+				$(xmlPrioridad.responseText).find('resultadoConsultaCatPrioridad').each(function(){	
+					selectedPrio ='';
+					var idPrio =  $(this).find("id_prioridad").text();
+					var desc = $(this).find("descripcion").text();
+					if(idPrioridad == idPrio ){
+						selectedPrio = 'selected';
+					}
+					
+					option += "<option value='" + idPrio+ "' "+selectedPrio +">" + desc + "</option>";
+
+					//	Select.prop('disabled', true);
+				});
+			}
+
 			var row="";			
 			row += '<tr>';
 			row += '<td style="display:none;">' + id + '</td>';
-			row += '<td>' + categoria + '</td>';
-			row += '<td> <input type="checkbox" name="cbCategoria' + cont +'" id="cbCategoria" value="' + cont + '" onchange="actCategoria(this)" class ="cbCat"></td>';
-			row += '<td> <input type="checkbox" name="cbTransaccion' + cont + '" id="cbTransaccion"></td>';
-			row += '<td><select id="slPrioridad' + cont +'" name="slPrioridad' + cont +'" disabled class="slPrioridad" ><option value="0">- Seleccione -</option></select></td>';	
+			row += '<td '+((idCategoria ==0)?'colspan="4")':'')+'">' + categoria + '</td>';
+			row += '<td '+((idCategoria ==0)?'style="display:none;"':'')+'> <input type="checkbox" name="cbCategoria' + cont +'" id="cbCategoria" value="' + cont + '" onchange="actCategoria(this)" class ="cbCat" '+chCategoria+'></td>';
+			row += '<td '+((idCategoria ==0)?'style="display:none;"':'')+'> <input type="checkbox" name="cbTransaccion' + cont + '" id="cbTransaccion" '+ trans +'></td>';
+			row += '<td '+((idCategoria ==0)?'style="display:none;"':'')+'><select id="slPrioridad' + cont +'" name="slPrioridad' + cont +'" '+disabledSl+' class="slPrioridad" ><option value="0">- Seleccione -</option>'+option+'</select></td>';			
+			row += '<td style="display:none;">' + idConfig + '</td>';
+			row += '<td style="display:none;">' + idTran + '</td>';
+			row += '<td style="display:none;">' + idPrioridad + '</td>';
+			row += '<td style="display:none;">' + idCategoria + '</td>';
 			row += '</tr>';
 					
 				$('#tblCategoria > tbody').append(row);
 				$('#ModalProcesando').modal('hide'); 
 			});
+		}else{
+			$('#ModalProcesando').modal('hide'); 
+			console.log('no hay datos');
 		}
 	}
 	
@@ -511,9 +648,9 @@ var user = session.get("user");
 	}
 	
 	function getPrioridad(){
-		var payload  = '<dat:qGetMBConsultaCatPrioridad xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
-			payload += '<dat:idPerfil></dat:idPerfil>';
-			payload += '</dat:qGetMBConsultaCatPrioridad>';
+		var payloadPrio  = '<dat:qGetMBConsultaCatPrioridad xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
+			payloadPrio += '<dat:idPerfil></dat:idPerfil>';
+			payloadPrio += '</dat:qGetMBConsultaCatPrioridad>';
 		
 		$.ajax({
 			url: '/commons/postSOAP',
@@ -522,7 +659,7 @@ var user = session.get("user");
 			dataType: 'xml',
 			complete: prioridadResponse,
 			error: function (xhr, status, error) {},
-			data: payload
+			data: payloadPrio
 		});  
 	}
 	
@@ -563,12 +700,17 @@ var user = session.get("user");
 		var cont = 0;
 		var cheked = 0;
 		var categorias=[];
+		var listElimina=[];
+		var idConfig = "";
+		var descCategoria = "";
 		var idPerfil = $('select[name=slPerfil]').val();
+		var sPerfil = $("#slPerfil").find("option:selected").text();
 		console.log("idPerfil " + idPerfil);
 		var transaccion="false";
 		var porcent = $('.highlight').find('td').eq(2).text();
 		$('#txtDetalleConfig').val(1);
-		
+		var lista = $('.highlight').find('td').eq(1).text();
+
 		rowsAplicar = 0;
 		existe = 0;
 		exito = 0;
@@ -584,35 +726,40 @@ var user = session.get("user");
 		}	
 		$("#tblCategoria tbody tr").each(function(){
 			cont++;
-			var indexC = $(this).index()
-			
+			 indexC = $(this).index()
+			idConfig = $(this).find('td').eq(5).text();
+			descCategoria = $(this).find('td').eq(1).text();
+			var listaCat = "";
+			var idPrioridad = "";
 			//estatus =-3;
 			
-			var datos={};			
-			if ($("input[name=cbCategoria" + cont +"]").is(":checked") ) {
+			var datos={};
+			var datosElim = {};			
+			if ($("input[name=cbCategoria" + cont +"]").is(":checked") || $(this).find('td').eq(8).text()==0) {
 				rowConfig = indexC;
 				cheked++;
 				console.log("rowConfig " + rowConfig);
-				var listaCat = $(this).find('td').eq(0).text();
+				 listaCat = $(this).find('td').eq(0).text();
 				cbCategoria = $("input[name=cbCategoria" + cont +"]").val();
-				
-				if ($("input[name=cbTransaccion" + cont +"]").is(":checked") ) {
-					transaccion = "true";
-				}else{
-					transaccion = "false";
-				}				
-				
-				var idPrioridad = $('select[name=slPrioridad' + cont +']').val();
-				
-				if(idPrioridad == "0"){
-					 $("#idMsg").html('<div class="alert alert-danger">'+
-						  'Seleccione una Prioridad'+
-						  '</div>');
-					$('#ModalInfo').modal('show');
-					categorias=[];
-					return false;
-				}	
-				
+				if($(this).find('td').eq(8).text()!=0){
+					
+					if ($("input[name=cbTransaccion" + cont +"]").is(":checked") ) {
+						transaccion = "true";
+					}else{
+						transaccion = "false";
+					}				
+					
+					idPrioridad = $('select[name=slPrioridad' + cont +']').val();
+					
+					if(idPrioridad == "0"){
+						 $("#idMsg").html('<div class="alert alert-danger">'+
+							  'Seleccione una Prioridad'+
+							  '</div>');
+						$('#ModalInfo').modal('show');
+						categorias=[];
+						return false;
+					}	
+				}
 				datos.idPerfil = idPerfil;
 				datos.listaCat = listaCat;
 				datos.transaccion = transaccion;
@@ -621,42 +768,144 @@ var user = session.get("user");
 				datos.porcentaje = porcent;				
 				datos.cbCategoria = cbCategoria;
 				datos.rowConfig = rowConfig;
-				datos.slPrioridad = cont;	
+				datos.slPrioridadRow = cont;
+				datos.idConfig = idConfig;
+				datos.operacion = 1;		
 				
 				categorias.push(datos);
 				
 				//console.log("perfil " + perfil + " lista " + lista + " categoria " + categoria);
 				//aplicaConfiguracion(idPerfil, listaCat, transaccion, idPrioridad, usuario,cbCategoria);	
+			}else{
+				
+				if(idConfig != "" ){
+						rowConfig = indexC;
+						listaCat = $(this).find('td').eq(0).text();
+						
+						datosElim.idConfig = idConfig;	
+						datosElim.descCategoria = descCategoria;	
+						datosElim.idPerfil = idPerfil;	
+						datosElim.lista = lista;
+						listElimina.push(datosElim);		
+						
+						datos.idPerfil = idPerfil;
+						datos.listaCat = listaCat;
+						datos.transaccion = "";
+						datos.idPrioridad = "";				
+						datos.usuario = usuario;				
+						datos.porcentaje = "";				
+						datos.cbCategoria = "";
+						datos.rowConfig = "";
+						datos.slPrioridadRow = "";
+						datos.idConfig = idConfig;
+						datos.operacion = 2;
+						
+						categorias.push(datos);						
+					}
 			}
 			
 		//console.log("Estatus " +estatus);	
 				
-		});		
-		if(cheked > 0){
+		});	
+		if(listElimina.length > 0){
+			var table="";
+			listaConfig = categorias;
+			for(var list in listElimina){	
+					
+					table += '<tr>';
+					table += '<td style=" width: 30%">' +sPerfil+ '</td>';
+					table += '<td style=" width: 30%">' +listElimina[list].lista+ '</td>';
+					table += '<td style=" width: 30%">' +listElimina[list].descCategoria+ '</td>';
+					table += '</tr>';
+
+				}	
+			$("#idMessage").html('<div class="alert alert-warning">'+
+								'¿Desea eliminar las siguientes configuraciones? </div>' +
+								'<div><table id="tblDetalleConfig">' +
+								'  <tr>'+
+								'   <td>'+
+								'      <table class="table-striped table-bordered table-list" width="500" >'+
+								'       <thead>'+
+								'			<tr><th style=" width: 30%">Perfil</th>'+
+								'				<th style=" width: 30%">Lista</th>'+
+								'				<th  style=" width: 30%">Categoría</th>'+
+								'			</tr></thead>'+
+								'       </table>'+
+								'    </td>'+
+								'  </tr><tr>'+
+								'  <td>'+
+								'       <div style="width:500px; height:360px; overflow:auto;">'+
+								'         <table class="table-striped table-bordered table-list" style="width:100%">'+
+								'          <tbody>' + table +'</tbody>'	+						
+								'         </table>' + 
+								'       </div>'+
+								'   </td>'+
+								'  </tr>'+
+								'</table>'+
+								'<input type="hidden" id="txtOperacion" value=2 >' +
+								'</div>');	
+
+
+								
+
+
+				$('#detalleConfiguracion').modal('show');		
+		}else if(cheked > 0){
 			var i = 1;
 			listAplicado =[];
 			listExiste =[];
 			rowsAplicar = categorias.length;
 			for(categoria in categorias){
-				aplicaConfiguracion(categorias[categoria].idPerfil, categorias[categoria].listaCat, categorias[categoria].transaccion, categorias[categoria].idPrioridad, categorias[categoria].usuario, categorias[categoria].porcentaje,categorias[categoria].cbCategoria,categorias[categoria].slPrioridad, i,categorias[categoria].rowConfig);	
+				aplicaConfiguracion(categorias[categoria].idPerfil, categorias[categoria].listaCat, categorias[categoria].transaccion, categorias[categoria].idPrioridad, categorias[categoria].usuario, categorias[categoria].porcentaje,categorias[categoria].cbCategoria,categorias[categoria].slPrioridadRow, i,categorias[categoria].rowConfig,categorias[categoria].idConfig,categorias[categoria].operacion );	
 				i++;
 			}
 			
 
 		}else{
-			 $("#idMsg").html('<div class="alert alert-danger">'+
+			if(idListSelect == 1 || idListSelect == 3 || idListSelect == 4 ){
+					 $("#idMsg").html('<div class="alert alert-danger">'+
 				  'Seleccione una categoria'+
-				  '</div>');
-			$('#ModalInfo').modal('show');
-			return;
+				  '</div>');					
+					$('#ModalInfo').modal('show');
+					return;
+			}
+			
 		}
 			
-		
+		consultaConfig(idPerfil);	
 		
 	});
-	function detalle(exito, existe){
-		console.log("exito " + exito);
+	var listaPerfilesAsig = [];
+	function confirmaOperacion(){
+		var operacion = $('#txtOperacion').val();
+		if(operacion == 1){
+			//Actualiza
+			confirmActualizaConf();
+		}else if(operacion == 2){			
+			var i = 1;
+			listAplicado =[];
+			listExiste =[];
+			rowsAplicar = listaConfig.length;
+			for(c in listaConfig){
+				aplicaConfiguracion(listaConfig[c].idPerfil, listaConfig[c].listaCat, listaConfig[c].transaccion, listaConfig[c].idPrioridad, listaConfig[c].usuario, listaConfig[c].porcentaje,listaConfig[c].cbCategoria,listaConfig[c].slPrioridadRow, i,listaConfig[c].rowConfig,listaConfig[c].idConfig,listaConfig[c].operacion );	
+				i++;
+			}			
+		}else if(operacion ==3){
+				var i = 1;
+			rowsAplicar = listaPerfilesAsig.length;
 			
+			for(perfil in listaPerfilesAsig){
+				altaAsignacion(listaPerfilesAsig[perfil].adAplic, listaPerfilesAsig[perfil].idOperacion, listaPerfilesAsig[perfil].idOrigen, listaPerfilesAsig[perfil].idPerfil, listaPerfilesAsig[perfil].cbPerfil,listaPerfilesAsig[perfil].rowPerfil, i, listaPerfilesAsig[perfil].operation );
+				i++
+			}
+		}
+
+	}
+
+	function detalle(exito, existe){
+		//$('#detalleConfiguracion').modal('hide');	
+		console.log("exito " + exito);
+		var idPerfil = $('select[name=slPerfil]').val();	
 		console.log("existe " + existe);
 		if(existe > 0){
 				var table ='';
@@ -665,25 +914,38 @@ var user = session.get("user");
 				for(var list in listExiste){	
 					 var categoria = $('#tblCategoria tr:eq(' + (listExiste[list]+1)+ ') td:eq(1)').text();
 					table += '<tr>';
-					table += '<td>' +sPerfil+ '</td>';
-					table += '<td>' +lista+ '</td>';
-					table += '<td>' +categoria+ '</td>';
+					table += '<td style=" width: 30%">' +sPerfil+ '</td>';
+					table += '<td style=" width: 30%">' +lista+ '</td>';
+					table += '<td style=" width: 30%">' +categoria+ '</td>';
 					table += '</tr>';
 				}			
 				
-				$("#idMessage").html('<div class="alert alert-warning">'+
-								'Las siguientes configraciones ya existen. ¿Desea actualizarlas? </div>' +
-								'<div><table id="tblDetalleConfig" class="table-striped table-bordered table-list">' +
-								'<thead>' +
-								'	<th>Perfil</th>'+
-								'	<th>Lista</th>'+
-								'	<th>Categoria</th>'+
-								'	<th style="display:none"></th>'+
-								'</thead>'+
-								'<tbody>' + table +'</tbody>'+
-								'</table>' +
+				$("#idMessag").html('<div class="alert alert-warning">'+
+								'Las siguientes configuraciones ya existen. ¿Desea actualizarlas? </div>' +
+								'<div><table id="tblDetalleConfig">' +
+								'  <tr>'+
+								'   <td>'+
+								'      <table class="table-striped table-bordered table-list" width="500" >'+
+								'       <thead>'+
+								'			<tr><th style=" width: 30%">Perfil</th>'+
+								'				<th style=" width: 30%">Lista</th>'+
+								'				<th  style=" width: 30%">Categoría</th>'+
+								'			</tr></thead>'+
+								'       </table>'+
+								'    </td>'+
+								'  </tr><tr>'+
+								'  <td>'+
+								'       <div style="width:500px; height:360px; overflow:auto;">'+
+								'         <table class="table-striped table-bordered table-list" style="width:100%">'+
+								'          <tbody>' + table +'</tbody>'	+						
+								'         </table>' + 
+								'       </div>'+
+								'   </td>'+
+								'  </tr>'+
+								'</table>'+
+								'<input type="hidden" id="txtOperacion" value=1>' +
 								'</div>');	
-				$('#detalleConfiguracion').modal('show');		
+				$('#detalleConfiguracionAct').modal('show');		
 			
 			}else if(exito > 0){
 				var table ='';
@@ -703,13 +965,17 @@ var user = session.get("user");
 										'</div>');	
 				$('#ModalInfo').modal('show');	
 
+<<<<<<< HEAD
+				consultaConfig(idPerfil);			
+=======
 				getConfiguraciones();			
+>>>>>>> fa0793f798ed9d3f9e724809b81e8b1eed52580c
 			}	
 		
 		
 	}
 	
-	function aplicaConfiguracion(_perfil, _lista, _transaccion, _prioridad, _usuario,_porcentaje, cbCategoria, slPrioridad, cont, rowConf){
+	function aplicaConfiguracion(_perfil, _lista, _transaccion, _prioridad, _usuario,_porcentaje, cbCategoria, _slPrioridad, cont, rowConf, _idConfig, _idOperacion){
 	
 		var payload  = '<dat:qInsertaConfiguracion xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
 			payload += '<dat:idPerfil>' + _perfil + '</dat:idPerfil>';
@@ -720,6 +986,8 @@ var user = session.get("user");
 			payload += '<dat:estatusAprob>0</dat:estatusAprob>';
 			payload += '<dat:usuarioAlta>' + _usuario + '</dat:usuarioAlta>';
 			payload += '<dat:porcentaje>' + _porcentaje + '</dat:porcentaje>';
+			payload += '<dat:idConfigura>' + _idConfig + '</dat:idConfigura>';
+			payload += '<dat:operacionApl>' + _idOperacion + '</dat:operacionApl>';
 			payload += '</dat:qInsertaConfiguracion>';	
 		
 		$.ajax({
@@ -736,9 +1004,12 @@ var user = session.get("user");
 					dato = rowConf 
 					console.log("rowConf response" + rowConf);
 					
-					 if($(this).find("estatus").text()==1){										
-						$("input[name=cbCategoria" + cbCategoria +"]").attr('checked',false);
-						$('select[name="slPrioridad' + slPrioridad + '"]').prop('disabled', true);
+					 if($(this).find("estatus").text()==1){	
+					/* 	if(_idOperacion != 2){
+					 		$("input[name=cbCategoria" + cbCategoria +"]").attr('checked',false);
+							$('select[name="slPrioridad' + slPrioridad + '"]').prop('disabled', true);
+					 	}								
+					*/	
 						exito++; 
 						listAplicado.push(dato);
 					}else if($(this).find("estatus").text()==0){
@@ -764,24 +1035,11 @@ var user = session.get("user");
    
 	}
 	
-	function getConfiguraciones(){
-		var payload  = '<dat:qGetMBConsultaConfiguracion xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
-			payload += '<dat:idConfiguracion></dat:idConfiguracion>';
-			payload += '</dat:qGetMBConsultaConfiguracion>';	
-		//	console.log("payload " + payload);
-			
-		$.ajax({
-			url: '/commons/postSOAP',
-			type: 'post',
-			headers: {'Destino':'BpmnVisorSEGListas', 'SOAPAction':'urn:qGetMBConsultaConfiguracion'},
-			dataType: 'xml',
-			complete: responseConfig,
-			error: function (xhr, status, error) {},
-			data: payload
-		});  
-	}
 	
 	
+<<<<<<< HEAD
+	
+=======
 	function responseConfig(xmlHttpRequest, status) {
 		$("#tblConfiguracion >tbody").empty();
 		
@@ -801,6 +1059,7 @@ var user = session.get("user");
 			$('#tblConfiguracion tbody').append(row);
         });
 	}
+>>>>>>> fa0793f798ed9d3f9e724809b81e8b1eed52580c
 	
 	function confirmActualizaConf(){
 	//	$('detalleConfiguracion').hide();
@@ -811,6 +1070,7 @@ var user = session.get("user");
 			var cont = 0;
 			var cheked = 0;
 			var categorias=[];
+			var listElimina=[];
 			var idPerfil = $('select[name=slPerfil]').val();
 			console.log("idPerfil " + idPerfil);
 			var transaccion="false";
@@ -820,6 +1080,7 @@ var user = session.get("user");
 			exito = 0;
 			listAplicado =[];
 			listExiste =[];
+			datosElim = {};
 			
 			if(idPerfil == 0){
 				 $("#idMsg").html('<div class="alert alert-danger">'+
@@ -833,29 +1094,35 @@ var user = session.get("user");
 				var indexC = $(this).index()
 				
 				//estatus =-3;
-				
-				var datos={};			
-				if ($("input[name=cbCategoria" + cont +"]").is(":checked") ) {
+				var idConfigElim = $(this).find('td').eq(5).text();
+				var datos={};
+				var listaCat = "";
+				var idPrioridad ="";
+
+				if ($("input[name=cbCategoria" + cont +"]").is(":checked") || $(this).find('td').eq(8).text() ==0) {
 					rowConfig = indexC;
 					cheked++;
-					var listaCat = $(this).find('td').eq(0).text();
+					listaCat = $(this).find('td').eq(0).text();
 					cbCategoria = $("input[name=cbCategoria" + cont +"]").val();
 					
-					if ($("input[name=cbTransaccion" + cont +"]").is(":checked") ) {
-						transaccion = "true";
-					}else{
-						transaccion = "false";
-					}				
 					
-					var idPrioridad = $('select[name=slPrioridad' + cont +']').val();
-					
-					if(idPrioridad == "0"){
-						 $("#idMsg").html('<div class="alert alert-danger">'+
-							  'Seleccione una Prioridad'+
-							  '</div>');
-						$('#ModalInfo').modal('show');
-						categorias=[];
-						return false;
+					if($(this).find('td').eq(8).text() !=0){
+						if ($("input[name=cbTransaccion" + cont +"]").is(":checked") ) {
+							transaccion = "true";
+						}else{
+							transaccion = "false";
+						}				
+						
+						var idPrioridad = $('select[name=slPrioridad' + cont +']').val();
+						
+						if(idPrioridad == "0"){
+							 $("#idMsg").html('<div class="alert alert-danger">'+
+								  'Seleccione una Prioridad'+
+								  '</div>');
+							$('#ModalInfo').modal('show');
+								categorias=[];
+							return false;
+						}	
 					}	
 					
 					datos.idPerfil = idPerfil;
@@ -866,27 +1133,35 @@ var user = session.get("user");
 					datos.porcentaje = porcent;				
 					datos.cbCategoria = cbCategoria;
 					datos.rowConfig = rowConfig;
-					datos.slPrioridad = cont;	
+					datos.slPrioridad = cont;
+					
 					
 					categorias.push(datos);
 					
 					//console.log("perfil " + perfil + " lista " + lista + " categoria " + categoria);
 					//aplicaConfiguracion(idPerfil, listaCat, transaccion, idPrioridad, usuario,cbCategoria);	
 				}
+				else {					
+					
+				}
 				
 			//console.log("Estatus " +estatus);	
 					
 			});		
-			if(cheked > 0){
+			if(categorias.length > 0){
 				var i = 1;
 				listAplicado =[];
 				listExiste =[];
 				rowsAplicar = categorias.length;
 				for(categoria in categorias){
-					actualizaConfiguracion(categorias[categoria].idPerfil, categorias[categoria].listaCat, categorias[categoria].transaccion, categorias[categoria].idPrioridad, categorias[categoria].porcentaje,categorias[categoria].cbCategoria,categorias[categoria].slPrioridad, i,categorias[categoria].rowConfig);	
+					actualizaConfiguracion(categorias[categoria].idPerfil, categorias[categoria].listaCat, categorias[categoria].transaccion, categorias[categoria].idPrioridad, categorias[categoria].porcentaje,categorias[categoria].cbCategoria,categorias[categoria].slPrioridad, i,categorias[categoria].rowConfig,categorias[categoria].idConfig,categorias[categoria].operacion );	
 					i++;
 				}
-				
+		/*	}else if(listElimina.length > 0){
+				for(i in listElimina){
+					eliminaConfiguracion(listElimina[i].idConfigElim);
+				}
+		*/		
 			}else{
 				 $("#idMsg").html('<div class="alert alert-danger">'+
 					  'Seleccione una categoria'+
@@ -894,11 +1169,13 @@ var user = session.get("user");
 				$('#ModalInfo').modal('show');
 				return;
 			}
+
+			consultaConfig(idPerfil);	
 			
 		}
 	}	
 	
-	function actualizaConfiguracion(_idPerfil,_listaCat,_transaccion,_idPrioridad,_porsentaje,_cbCategoria, _slPrioridad,_rowconfig){
+	function actualizaConfiguracion(_idPerfil,_listaCat,_transaccion,_idPrioridad,_porsentaje,_cbCategoria, _slPrioridad,_rowconfig, idConfig, operacion){
 			var usuario = "<%=user%>";
 		//	console.log("idOrigen " + _idOrigen);
 		var payload  = '<dat:qActualizaConfiguracionPerfil xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
@@ -923,9 +1200,10 @@ var user = session.get("user");
 						$("#idMsg").html('<div class="alert alert-success">'+
 							'Se ha realizado la petición ' +
 							'</div>');
+						/*
 						$("input[name=cbCategoria" + _cbCategoria +"]").attr('checked',false);
 						$('select[name="slPrioridad' + _slPrioridad + '"]').prop('disabled', true);
-					
+					*/
 					}else {
 						  $("#idMsg").html('<div class="alert alert-danger">'+
 						  'Sucedio un error '+$(this).find("codigoError").text()+
@@ -939,6 +1217,47 @@ var user = session.get("user");
 			data: payload
 		});  
 	}
+	
+	function eliminaConfiguracion(_idConfiguracion){
+		var payloadDel  = '<dat:qEliminaConfiguracion  xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
+			payloadDel += '<dat:idConfiguracion>' + _idConfiguracion + '</dat:idConfiguracion>';
+			payloadDel += '</dat:qEliminaConfiguracion >';			
+			
+		//	console.log("payload " + payload);
+			
+		$.ajax({
+			url: '/commons/postSOAP',
+			type: 'post',
+			headers: {'Destino':'BpmnVisorSEGListas', 'SOAPAction':'urn:qEliminaConfiguracion'},
+			dataType: 'xml',
+			complete: function asignacionResponse(xmlHttpRequest, status){
+					$(xmlHttpRequest.responseText).find('resultadoEliminaCateg').each(function(){
+					 if($(this).find("estatus").text()==1){
+						$("#idMsg").html('<div class="alert alert-success">'+
+							'Se ha realizado la petición ' +
+							'</div>');					
+					}else {
+						  $("#idMsg").html('<div class="alert alert-danger">'+
+						  'Sucedio un error '+$(this).find("codigoError").text()+
+						  '</div>');
+					 }
+					 $('#ModalInfo').modal('show');
+					 
+					});
+				},
+			error: function (xhr, status, error) {},
+			data: payloadDel
+		});  
+	}
+
+	 $('select[name=slOrigen]').change(function() {
+	 	var idApicacion = $('select[name=slAplicacion]').val();	
+			var idOperacion = $('select[name=slOperacion]').val();
+			var idOrigen = $('select[name=slOrigen]').val();
+		getPerfilesApl(idApicacion, idOperacion,idOrigen);
+	 	getPerfilesAsignados(idApicacion, idOperacion,idOrigen);	
+	 });
+	
 	
 	
 	function validaDatos(element){
@@ -980,6 +1299,10 @@ var user = session.get("user");
 		var idOperacion = $('select[name=slOperacion]').val();
 		var idOrigen = $('select[name=slOrigen]').val()
 		var bPerfil = false;
+		var sAplicacion = $("#slAplicacion").find("option:selected").text();
+		var sOperacion = $("#slOperacion").find("option:selected").text();
+		var sOrigen = $("#slOrigen").find("option:selected").text();
+
 		rowsAplicar = 0;
 		existe = 0;
 		exito = 0;
@@ -1009,13 +1332,16 @@ var user = session.get("user");
 			return;
 		}
 		 var perfiles =[];
+		 var perfilesElim = [];
 		
 		 var cont = 0;
 		$('input[name=cbPerfil]').each(function(){
 			cont++;
 			cbPerfil = "";
 			var idPerfil="";
+			var perfil = "";
 			var data = {};
+			var datos = {};
 			 
 			if ($(this).is(':checked') ) {
 				bPerfil = true;				
@@ -1031,13 +1357,40 @@ var user = session.get("user");
 				data.idOrigen = idOrigen;
 				data.idPerfil = idPerfil;
 				data.cbPerfil = cbPerfil;
-				data.rowPerfil = indx;			
+				data.rowPerfil = indx;
+				data.operation = 1;			
 
 				perfiles.push(data);				
 				
+			}else{
+				cbPerfil = $(this).val();	
+				var indx = $(this).parent().parent().index();	
+				var tr = $("#tblPerfil > tbody").find("tr").eq(indx);
+				idPerfil = tr.find("td").eq(0).text();
+				perfil = tr.find("td").eq(1).text();
+
+				var aplicado = tr.find("td").eq(3).text();
+				if(aplicado != "0"){
+					datos.adAplic = sAplicacion;
+					datos.idOperacion = sOperacion;
+					datos.idOrigen = sOrigen;
+					datos.idPerfil = perfil;
+					
+					perfilesElim.push(datos);
+
+					data.adAplic = idAplicacion;
+					data.idOperacion = idOperacion;
+					data.idOrigen = idOrigen;
+					data.idPerfil = idPerfil;
+					data.cbPerfil = cbPerfil;
+					data.rowPerfil = indx;
+					data.operation = 2;	
+					perfiles.push(data);
+				}
 			}
+			
 		});
-		
+		listaPerfilesAsig = perfiles;
 		if(!bPerfil){
 			$("#idMsg").html('<div class="alert alert-danger">'+
 			'Seleccione un Perfil'+
@@ -1045,13 +1398,38 @@ var user = session.get("user");
 			$('#ModalInfo').modal('show');
 			return;
 		}
-		
-		if(cont > 0){		
+		if(perfilesElim.length > 0){
+			var table="";
+		//	listaConfig = categorias;
+			for(var list in perfilesElim){	
+					
+					table += '<tr>';
+					table += '<td>' +perfilesElim[list].adAplic+ '</td>';
+					table += '<td>' +perfilesElim[list].idOperacion+ '</td>';
+					table += '<td>' +perfilesElim[list].idOrigen+ '</td>';
+					table += '<td>' +perfilesElim[list].idPerfil+ '</td>';
+					table += '</tr>';
+				}	
+			$("#idMessage").html('<div class="alert alert-warning">'+
+								'¿Desea eliminar las siguientes configuraciones? </div>' +
+								'<div><table id="tblDetalleConfig" class="table-striped table-bordered table-list">' +
+								'<thead>' +
+								'	<th>Aplicación</th>'+
+								'	<th>Operación</th>'+
+								'	<th>Origen cliente</th>'+
+								'	<th>Perfil</th>'+
+								'</thead>'+
+								'<tbody>' + table +'</tbody>'+
+								'</table>' +
+								'<input type="hidden" id="txtOperacion" value=3 >' +
+								'</div>');	
+				$('#detalleConfiguracion').modal('show');	
+		}else if(cont > 0){		
 			var i = 1;
 			rowsAplicar = perfiles.length;
 			
 			for(perfil in perfiles){
-				altaAsignacion(perfiles[perfil].adAplic, perfiles[perfil].idOperacion, perfiles[perfil].idOrigen, perfiles[perfil].idPerfil, perfiles[perfil].cbPerfil,perfiles[perfil].rowPerfil, i);
+				altaAsignacion(perfiles[perfil].adAplic, perfiles[perfil].idOperacion, perfiles[perfil].idOrigen, perfiles[perfil].idPerfil, perfiles[perfil].cbPerfil,perfiles[perfil].rowPerfil, i, perfiles[perfil].operation );
 				i++
 			}
 		}
@@ -1060,8 +1438,11 @@ var user = session.get("user");
 		
 		
 	});
+
+
+
 	
-	function altaAsignacion(_idAplicacion, _idOperacion, _idOrigen, _idPerfil, cbPerfil, _rowPerfil, cont){
+	function altaAsignacion(_idAplicacion, _idOperacion, _idOrigen, _idPerfil, cbPerfil, _rowPerfil, cont, operacion){
 		var usuario = "<%=user%>";
 		var relacion = "<%=Usuario_v%>";
 	//	console.log("idOrigen " + _idOrigen);
@@ -1072,6 +1453,7 @@ var user = session.get("user");
 		payload += '<dat:idPerfil>' + _idPerfil + '</dat:idPerfil>';
 		payload += '<dat:usuarioAlta>' + usuario + '</dat:usuarioAlta>';
 		payload += '<dat:relacion>' + relacion + '</dat:relacion>';
+		payload += '<dat:operacion>' + operacion + '</dat:operacion>';
 		payload += '</dat:qInsertaAsignacionPerfil>';			
 		
 		//	console.log("payload " + payload);
@@ -1112,8 +1494,13 @@ var user = session.get("user");
 	}
 	
 	function detalleAsignacion(_exito, _existe){
+		var idApicacion = $('select[name=slAplicacion]').val();	
+			var idOperacion = $('select[name=slOperacion]').val();
+			var idOrigen = $('select[name=slOrigen]').val();
 		console.log("exito " + exito);			
 		console.log("existe " + existe);
+		getPerfilesApl(idApicacion, idOperacion,idOrigen);
+		getPerfilesAsignados(idApicacion, idOperacion,idOrigen);
 		if(existe > 0){
 			var table ='';					
 			for(var list in listExiste){	
@@ -1124,7 +1511,7 @@ var user = session.get("user");
 				table += '</tr>';
 			}			
 			
-			$("#idMessage").html('<div class="alert alert-warning">'+
+			$("#idMess").html('<div class="alert alert-warning">'+
 								'<p>No es posible autorizar los siguientes perfiles.</p><p>Ya cumplen con las características especificadas</p> </div>' +
 								'<div><table id="tblDetalleAsig" class="table-striped table-bordered table-list">' +
 								'<thead>' +
@@ -1133,7 +1520,7 @@ var user = session.get("user");
 								'<tbody>' + table +'</tbody>'+
 								'</table>' +
 								'</div>');	
-			$('#detalleConfiguracion').modal('show');		
+			$('#detalleAsignacion').modal('show');		
 			
 		}else if(exito > 0){
 			var sAplicacion = $("#slAplicacion option:selected").text();
@@ -1167,7 +1554,8 @@ var user = session.get("user");
 			$('#ModalInfo').modal('show');	
 			clerAsignacion();
 
-		}	
+		}
+		getPerfilesAsignados(idApicacion, idOperacion,idOrigen);
 	}
 
 	function clerAsignacion(){
@@ -1177,5 +1565,238 @@ var user = session.get("user");
 		$('input[name = cbPerfil]').attr('checked', false);
 	}
 	
+	$('#slPerfil').change(function() {
+		$("#tblConfiguracion >tbody").empty();
+		$('#tblCategoria tbody tr').remove();
+		$('#tblListas > tbody >tr').removeClass('highlight');
+		if($(this).val() > 0){
+			consultaConfig($(this).val());
+		}
+	});
+
+	function consultaConfig(_idPerfil){
+		var payloadConfig = '<dat:qGetMBConsultaConfiguracion xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="BpmnVisorSEGListas">';
+		    payloadConfig += '<dat:idConfiguracion></dat:idConfiguracion>';
+		    payloadConfig += '<dat:idPerfil>' + _idPerfil + '</dat:idPerfil>';
+		    payloadConfig += '</dat:qGetMBConsultaConfiguracion>';
+		    $.ajax({
+		        url: '/commons/postSOAP',
+		        type: 'post',
+		        headers: {
+		            'Destino': 'BpmnVisorSEGListas',
+		            'SOAPAction': 'urn:qGetMBConsultaConfiguracion'
+		        },
+		        dataType: 'xml',
+		        complete: responseConfig,
+		        error: function(xhr, status, error) {},
+		        data: payloadConfig
+	    	});
+	}
+
+	function responseConfig(xmlHttpRequest, status) {
+		$("#tblConfiguracion >tbody").empty();
+		
+		$(xmlHttpRequest.responseText).find('resultadoConsultaConfiguracion').each(function() {
+		
+			var row = '<tr>';
+				row += '<td>'+$(this).find("perfil").text()+'</td>';
+				row += '<td>'+$(this).find("lista").text()+'</td>';
+				row += '<td>'+$(this).find("categoria").text()+'</td>';
+				row += '<td style="display:none">'+ $(this).find("id_configuracion_perfil").text()+'</td>';
+				row += '<td style="display:none">'+$(this).find("id_perfil").text()+'</td>';
+				row += '<td style="display:none">'+$(this).find("id_categ_listas").text()+'</td>';
+				row += '<td style="display:none">'+$(this).find("transaccion").text()+'</td>';
+				row += '<td style="display:none">'+$(this).find("id_prioridad").text()+'</td>';
+				row += '<td style="display:none">'+$(this).find("prioridad").text()+'</td>';
+				row += '</tr>';		
+			$('#tblConfiguracion tbody').append(row);
+        });
+	}
+
+
+	 function getPerfilesAsignados(_iaAplicacion, _idOperacion,idOrigen){
+		var payloadCateg  = '<dat:qGetPerfilesAsignados xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
+			payloadCateg += '<dat:idAplicacion>'+_iaAplicacion+'</dat:idAplicacion>';
+			payloadCateg += '<dat:idOperacion>'+_idOperacion+'</dat:idOperacion>';
+			payloadCateg += '<dat:idOrigen>'+idOrigen+'</dat:idOrigen>';
+			payloadCateg += '</dat:qGetPerfilesAsignados >';
+
+		
+		$.ajax({
+			url: '/commons/postSOAP',
+			type: 'post',
+			headers: {'Destino':'BpmnVisorSEGListas', 'SOAPAction':'urn:qGetPerfilesAsignados  '},
+			dataType: 'xml',
+			complete: perilesResponse,
+			error: function (xhr, status, error) {},
+			data: payloadCateg
+		});                    
+	}            
 	
+	
+	function perilesResponse(xmlHttpRequest, status){
+		//alert(xmlHttpRequest.responseText);	
+		var id="";
+		var categoria="";
+		var cont = 0;
+		var idConfig = "";
+		var idTran ="";
+		var idPrioridad="";
+		var Select = $('.slPrioridad');
+		var option;
+
+		$('#tblperfilesAsig tbody tr').remove();
+
+			
+		
+		if($(xmlHttpRequest.responseText).find('resultadoPerfiles').text() != ''){
+			$(xmlHttpRequest.responseText).find('resultadoPerfiles').each(function(){
+			cont++;
+			var idPerfAsig =  $(this).find("id_perfil_asignados").text();
+			var aplicacion = $(this).find("aplicacion").text();		
+			var operacion =  $(this).find("operacion").text();
+			var origen =  $(this).find("origen").text();
+			var perfil =  $(this).find("perfil").text();
+			var estatusapr =  $(this).find("estatus_aprobo").text();
+
+			var row="";			
+			row += '<tr>';
+			row += '<td ">' + aplicacion + '</td>';
+			row += '<td>' + operacion + '</td>';
+			row += '<td>' + origen + '</td>';						
+			row += '<td>' + perfil + '</td>';						
+			row += '<td style="display:none;">' + estatusapr + '</td>';
+			row += '<td style="display:none;">' + idPerfAsig + '</td>';
+			row += '</tr>';
+					
+				$('#tblperfilesAsig > tbody').append(row);
+				$('#ModalProcesando').modal('hide'); 
+			});
+		}
+	}
+
+	 function getPerfilesApl(_iaAplicacion, _idOperacion,idOrigen){
+		var payloadCateg  = '<dat:qGetPerfilesApl  xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
+			payloadCateg += '<dat:idAplicacion>'+_iaAplicacion+'</dat:idAplicacion>';
+			payloadCateg += '<dat:idOperacion>'+_idOperacion+'</dat:idOperacion>';
+			payloadCateg += '<dat:idOrigen>'+idOrigen+'</dat:idOrigen>';
+			payloadCateg += '</dat:qGetPerfilesApl  >';
+
+		
+		$.ajax({
+			url: '/commons/postSOAP',
+			type: 'post',
+			headers: {'Destino':'BpmnVisorSEGListas', 'SOAPAction':'urn:qGetPerfilesApl   '},
+			dataType: 'xml',
+			complete: perilesAplResponse,
+			error: function (xhr, status, error) {},
+			data: payloadCateg
+		});                    
+	}            
+	
+	
+	function perilesAplResponse(xmlHttpRequest, status){
+		//alert(xmlHttpRequest.responseText);	
+		var id="";
+		var cont = 0;
+		var idConfig = "";
+		var idTran ="";
+		var option;
+
+		$('#tblPerfil tbody tr').remove();
+
+			
+		
+		if($(xmlHttpRequest.responseText).find('resultadoPerfiles').text() != ''){
+			$(xmlHttpRequest.responseText).find('resultadoPerfiles').each(function(){
+			cont++;
+			var idPerfil =  $(this).find("id_perfil").text();
+			var perfil =  $(this).find("perfil").text();
+			var aplicado =  $(this).find("aplicado").text();			
+			var result="";	
+			var chPerfil = aplicado != 0?'checked':'';
+			if(aplicado > 0){
+
+			}
+
+				result += '<tr>';
+				result += '<td style="display:none">'+idPerfil+'</td>';
+				result += '<td>'+perfil+'</td>';				
+				result += '<td> <input type="checkbox" name="cbPerfil" id="cbPerfil' + cont +'" onclick="validaDatos(this)" value="' + idPerfil + '" '+chPerfil+'></td>';
+				result += '<td style="display:none">'+aplicado+'</td>';				
+				result += '</tr>';				
+					
+				$('#tblPerfil > tbody').append(result);
+				$('#ModalProcesando').modal('hide'); 
+			});
+		}
+	}
+	
+	
+	///fdghklñkjgfdghkljfdghkljgfdghjklgfdxcgjkljfxdghkljhfvcbnñlkjxc
+	
+	
+	
+	
+	
+	 function getCategorias2(_idLista){
+		var payloadCateg  = '<dat:qGetCategoriaLista  xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorSEGListas">';
+			payloadCateg += '<dat:idLista>'+_idLista+'</dat:idLista>';
+			payloadCateg += '</dat:qGetCategoriaLista >';
+
+		
+		$.ajax({
+			url: '/commons/postSOAP',
+			type: 'post',
+			headers: {'Destino':'BpmnVisorSEGListas', 'SOAPAction':'urn:qGetCategoriaLista '},
+			dataType: 'xml',
+			complete: categoriasResponse2,
+			error: function (xhr, status, error) {},
+			data: payloadCateg
+		});                    
+	}            
+	
+	
+	function categoriasResponse2(xmlHttpRequest, status){
+		//alert(xmlHttpRequest.responseText);	
+		
+		$('#tblCategoria tbody tr').remove();
+
+			
+		var cont =0;
+		if($(xmlHttpRequest.responseText).find('qGetCategoriaListaResponse').text() != ''){
+			$(xmlHttpRequest.responseText).find('resultadoCatListas').each(function(){
+		 cont++;
+			var id =  $(this).find("id_categ_listas").text();
+			var categoria = $(this).find("categoria").text();		
+			var idCategoria = $(this).find("id_categoria").text();		
+			var idConfig =  $(this).find("id_configuracion_perfil").text();
+			var idTran =  $(this).find("transaccion").text();
+			var idPrioridad =  $(this).find("id_prioridad").text();
+			var trans = idTran=="true"?'checked':'';
+			var chCategoria = idConfig !=""?'checked':'';
+			var disabledSl = idConfig !=""?'':'disabled';
+			var selectedPrio = '';
+			var option = "";
+			
+
+			var row="";			
+			row += '<tr>';
+			row += '<td style="display:none;">' + id + '</td>';
+			row += '<td '+((idCategoria ==0)?'colspan="4")':'')+'">' + categoria + '</td>';
+			row += '<td '+((idCategoria ==0)?'style="display:none;"':'')+'> <input type="checkbox" name="cbCategoria' + cont +'" id="cbCategoria" value="' + cont + '" onchange="actCategoria(this)" class ="cbCat" '+chCategoria+'></td>';
+			row += '<td '+((idCategoria ==0)?'style="display:none;"':'')+'> <input type="checkbox" name="cbTransaccion' + cont + '" id="cbTransaccion" '+ trans +'></td>';
+			row += '<td '+((idCategoria ==0)?'style="display:none;"':'')+'><select id="slPrioridad' + cont +'" name="slPrioridad' + cont +'" '+disabledSl+' class="slPrioridad" ><option value="0">- Seleccione -</option>'+option+'</select></td>';			
+			row += '<td style="display:none;">' + idCategoria + '</td>';
+			row += '</tr>';
+					
+				$('#tblCategoria > tbody').append(row);
+				$('#ModalProcesando').modal('hide'); 
+			});
+		}else{
+			$('#ModalProcesando').modal('hide'); 
+			console.log('no hay datos');
+		}
+	}
+
 </script>

@@ -1,22 +1,54 @@
 var objCP1 = new Object();
 var objCP2 = new Object();
+var listDatos = [];
+var data = [];
+var msg = "";
+var resultado="";
 
-function generarPDF(){
-	if(resultado==""){
+
+	
+
+
+function generarPDF(list){
+	listDatos = [];
+	console.log(resp + " main")
+
+
+ 	if(resultado==""){
 		$("#idMsg").html('<div class="alert alert-warning">'+
 			'No hay resultados para generar el pdf '+$(this).find("estatus").text()+
 			'</div>');
 	}
-	$('#ModalGenerandoPDF').modal('show');
-	var id = $("#txtFolio").val();
-	var tipo = $("#txtTipo").val();
-	var idMB_C = $("#txtID_mbConsulta").val();
+
+
+
+	if(list.length > 0){
+		$('#ModalGenerandoPDF').modal('show');
+
+
+		for(i in list){
+			var idFolio = list[i].folio;
+			var tipoList = list[i].tipoList;
+			var idMB_C = list[i].idBusqueda;
+			var urn ="";
+			var payloadDet="";
+				
+
+			data = [list[i].fecha, list[i].idBusqueda, list[i].idCliente, list[i].nombre, list[i].apaterno, list[i].amaterno, list[i].relacion, list[i].aplicacion, list[i].resultado, list[i].tipoList,  list[i].porcentBusq, list[i].porcenCoin, list[i].folio, list[i].estatus, list[i].lista];
+			  
+				consultaComentarios2(idFolio,tipoList,idMB_C, data, resultado);		
+				
+			}
+		
+		
+	}	
 	
-	consultaComentarios2(id,tipo,idMB_C);
 }
 
 
-function imprimir() {
+
+
+function imprimir(data, resultado) {
 
 	var docDefinition = {
 		  footer: function(currentPage, pageCount) { return { text:'Página '+currentPage.toString() + ' de ' + pageCount,fontSize: 7,alignment: 'center'}; },
@@ -26,23 +58,23 @@ function imprimir() {
 		 { text: '  ', style: 'anotherStyle' },
 		 { text: 'INFORMACIÓN DETALLADA DE COINCIDENCIA', bold: true, },
 		 { text: '  ', style: 'anotherStyle' },
-		 { style: 'superMargin',text: [{text: 'Fecha: ', style: 'anotherStyle'},{text: nXML[0], fontSize: 10,}]},
-		 { style: 'superMargin',text: [{text: 'Id de búsqueda: ', style: 'anotherStyle'},{text: nXML[1], fontSize: 10,}]},
-		 { style: 'superMargin',text: [{text: 'Id Cliente: ', style: 'anotherStyle'},{text: nXML[2], fontSize: 10,}]},
-		 { style: 'superMargin',text: [{text: 'Nombre o Razón social: ', style: 'anotherStyle'},{text: nXML[3], fontSize: 10,}]},
-		 { style: 'superMargin',text: [{text: 'Apellido Paterno: ', style: 'anotherStyle'},{text: nXML[4], fontSize: 10,}]},
-		 { style: 'superMargin',text: [{text: 'Apellido Materno: ', style: 'anotherStyle'},{text: nXML[5], fontSize: 10,}]},
-		 { style: 'superMargin',text: [{text: 'Relación: ', style: 'anotherStyle'},{text: nXML[6], fontSize: 10,}]},
-		 { style: 'superMargin',text: [{text: 'Aplicación: ', style: 'anotherStyle'},{text: nXML[7], fontSize: 10,}]},
-		 { style: 'superMargin',text: [{text: 'Resultado Calificación:  ', style: 'anotherStyle'},{text: nXML[8], fontSize: 10,}]},
-		 { style: 'superMargin',text: [{text: 'Tipo de Lista: ', style: 'anotherStyle'},{text: nXML[9], fontSize: 10,}]},
-		 { style: 'superMargin',text: [{text: 'Porcentaje de búsqueda: ', style: 'anotherStyle'},{text: nXML[10], fontSize: 10,}]},
-		 { style: 'superMargin',text: [{text: 'Porcentaje de coincidencia: ', style: 'anotherStyle'},{text: nXML[11], fontSize: 10,}]},
-		 { style: 'superMargin',text: [{text: 'Estatus : ', style: 'anotherStyle'},{text: $("#txtEstado").val(), fontSize: 10,}]},
+		 { style: 'superMargin',text: [{text: 'Fecha: ', style: 'anotherStyle'},{text: data[0], fontSize: 10,}]},
+		 { style: 'superMargin',text: [{text: 'Id de búsqueda: ', style: 'anotherStyle'},{text: data[1], fontSize: 10,}]},
+		 { style: 'superMargin',text: [{text: 'Id Cliente: ', style: 'anotherStyle'},{text: data[2], fontSize: 10,}]},
+		 { style: 'superMargin',text: [{text: 'Nombre o Razón social: ', style: 'anotherStyle'},{text: data[3], fontSize: 10,}]},
+		 { style: 'superMargin',text: [{text: 'Apellido Paterno: ', style: 'anotherStyle'},{text: data[4], fontSize: 10,}]},
+		 { style: 'superMargin',text: [{text: 'Apellido Materno: ', style: 'anotherStyle'},{text: data[5], fontSize: 10,}]},
+		 { style: 'superMargin',text: [{text: 'Relación: ', style: 'anotherStyle'},{text: data[6], fontSize: 10,}]},
+		 { style: 'superMargin',text: [{text: 'Aplicación: ', style: 'anotherStyle'},{text: data[7], fontSize: 10,}]},
+		 { style: 'superMargin',text: [{text: 'Resultado Calificación:  ', style: 'anotherStyle'},{text: data[8], fontSize: 10,}]},
+		 { style: 'superMargin',text: [{text: 'Tipo de Lista: ', style: 'anotherStyle'},{text: data[14], fontSize: 10,}]},
+		 { style: 'superMargin',text: [{text: 'Porcentaje de búsqueda: ', style: 'anotherStyle'},{text: data[10], fontSize: 10,}]},
+		 { style: 'superMargin',text: [{text: 'Porcentaje de coincidencia: ', style: 'anotherStyle'},{text: data[11], fontSize: 10,}]},
+		 { style: 'superMargin',text: [{text: 'Estatus : ', style: 'anotherStyle'},{text: data[13], fontSize: 10,}]},
 		 { text: '  ', style: 'anotherStyle' },
 		 { text: 'DETALLE DE LA COINCIDENCIA', bold: true, },
 		 { text: '  ', style: 'anotherStyle' },
-		 constructBody()
+		 constructBody(resultado)
 		,{
 		  table: {
 			// headers are automatically repeated if the table spans over multiple pages
@@ -93,9 +125,9 @@ function imprimir() {
   pdfMake.createPdf(docDefinition).download('Detalle coincidencia.pdf');
   $('#ModalGenerandoPDF').modal('hide');
 }
-function constructBody(){
+function constructBody(resultado){
 	
-	xmlHttpRequest = resultado;
+	xmlHttpRequest = resp;
 	var form ="";
 	var res ="";
 	var format = new Date(new Date());
@@ -304,7 +336,7 @@ toDataURL('images/logo.jpg', function(dataUrl) {
 });
 
 
-function consultaComentarios2(id, tipo, idConsulta){
+function consultaComentarios2(id, tipo, idConsulta, data, resultado){
 		var payload;
 		var urn;
 		 $('#listComentarios tbody tr').remove();
@@ -334,7 +366,7 @@ function consultaComentarios2(id, tipo, idConsulta){
 		
 		xmlHttpRequestComent='';
 		xmlHttpRequestComent = xmlHttpRequest;
-		imprimir();
+		imprimir(data, resultado);
 	}
  
 

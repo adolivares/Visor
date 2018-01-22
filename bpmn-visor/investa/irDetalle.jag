@@ -6,6 +6,10 @@ var nTipo = request.getParameter("tip");
 var nXml = request.getParameter("xml");			
 var nidB = request.getParameter("idB");			
 var ntip = request.getParameter("idTip");			
+var ntipoRel = request.getParameter("idtiporel");			
+var nidC = request.getParameter("idc");			
+var ntipoC = request.getParameter("tipoC");			
+var nidcons = request.getParameter("idcons");			
  if (request.isSecure()) {//check whether the request is secure or not
 
     var authSuccess = session.get("authSuccess");
@@ -55,16 +59,16 @@ var payload2 = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap
 	var payload = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dat="http://ws.wso2.org/dataservice">
 					   <soapenv:Header/>
 					   <soapenv:Body>
-						  <dat:qConsultaDetalle>
-							 <dat:nombre>{nConsulta}</dat:nombre>
-							 <dat:tipo>{nTipo}</dat:tipo>
-						  </dat:qConsultaDetalle>
+						  <dat:qGetCoincidencias>
+							 <dat:idMbConsulta>{nidB}</dat:idMbConsulta>
+							 <dat:idRelacion>{ntipoRel}</dat:idRelacion>
+						  </dat:qGetCoincidencias>
 					   </soapenv:Body>
 					</soapenv:Envelope>;
 	
     var url = URL_ESB + "BpmnVisor";
     var ws = new XMLHttpRequest();
-    var action = "urn:qConsultaDetalle";
+    var action = "urn:qGetCoincidencias";
     ws.open("POST", url, false);
     ws.setRequestHeader('SOAPAction', action);
     ws.setRequestHeader('Content-Type','text/xml; charset=utf-8');
@@ -72,26 +76,7 @@ var payload2 = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap
     ws.send(payload.toXMLString());
     var responseXML = new XML(ws.responseText);
 	log.info("XML CONSULTA DETALLE: " + responseXML.toXMLString());
-	function tipoLista(tipo){
-		var lista;
-			switch(tipo) {
-					case '1':
-						lista='Lista Negra';
-						break;
-					case '2':
-						lista=' ListaGris';
-						break;
-					case '3':
-						lista='Lista SITI';
-						break;
-					case '4':
-						lista='World Check';
-						break;
-					default:
-						false;
-				}
-				return lista;
-	}
+	
 	include("logComentarios.jag");
 %>
 <script src="/bpmn-visor/js/mainFormato.js"></script>
@@ -124,30 +109,28 @@ var payload2 = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap
 						<table align="left" id="listCoincidencias"  class="table-striped table-bordered table-list" style="margin-left:auto;  margin-right:auto; width:100%; font-size:10px;">
 							<thead>
 								<tr>
-									<th>NOMBRE</th>
-									<th>APELLIDO PATERNO</th>
-									<th>APELLIDO MATERNO</th>
+									<th>NOMBRE / RAZÓN SOCIAL</th>
 									<th>LISTA</th>
 									<th>CATEGORIA</th>
 									<th>%</th>
 									<th>FOLIO</th>
 									<th>OBS</th>
+									<th>ALIAS</th>
 								</tr>
 							</thead>
 							<tbody>	
-								<%for (i = 0; i < responseXML..*::getDetalle.*::resultadoDetalle.length(); i++) { var name = responseXML..*::getDetalle.*::resultadoDetalle[i].*::nombre_encontrado.toString(). split(" ");%>
+								<%for (i = 0; i < responseXML..*::resultadoCoincidencias.length(); i++) { var name = responseXML..*::resultadoCoincidencias[i].*::nombre_encontrado.toString(). split(" ");%>
 								<tr style="cursor:pointer;">
-									<td><%=name[0]%></td>
-									<td><%=name[1]%></td>
-									<td><%=name[2]%></td>
-									<td><%=tipoLista(responseXML..*::getDetalle.*::resultadoDetalle[i].*::tipo_lista.toString())%></td>
-									<td><%=responseXML..*::getDetalle.*::resultadoDetalle[i].*::getConfiguracionResponse.*::resultadoConfiguracion.*::categoria.toString()%></td>
-									<td><%=responseXML..*::getDetalle.*::resultadoDetalle[i].*::porcentaje_coincidencia.toString()%></td>
-									<td><%=responseXML..*::getDetalle.*::resultadoDetalle[i].*::tabla_correlativo.toString()%></td>
-									<td><%=((responseXML..*::getDetalle.*::resultadoDetalle[i].*::obs.toString()==1)?'OK':'')%></td>
-									<td style="display:none"><%=responseXML..*::getDetalle.*::resultadoDetalle[i].*::tipo_lista.toString()%></td>
-									<td style="display:none"><%=responseXML..*::getDetalle.*::resultadoDetalle[i].*::getConfiguracionResponse.*::resultadoConfiguracion.*::id_lista.toString()%></td>	
-									<td style="display:none"><%=responseXML..*::getDetalle.*::resultadoDetalle[i].*::id_mb_consulta.toString()%></td>	
+									<td><%=responseXML..*::resultadoCoincidencias[i].*::nombre_encontrado.toString()%></td><!--0-->
+									<td><%=responseXML..*::resultadoCoincidencias[i].*::lista.toString()%></td>
+									<td><%=responseXML..*::resultadoCoincidencias[i].*::categoria.toString()%></td>
+									<td><%=responseXML..*::resultadoCoincidencias[i].*::porcentaje_coincidencia.toString()%></td>
+									<td><%=responseXML..*::resultadoCoincidencias[i].*::tabla_correlativo.toString()%></td>
+									<td><%=((responseXML..*::resultadoCoincidencias[i].*::obs.toString()!=0)?'OK':'')%></td><!--6-->
+									<td style="display:none"><%=responseXML..*::resultadoCoincidencias[i].*::tipo_lista.toString()%></td>
+									<td style="display:none"><%=responseXML..*::resultadoCoincidencias[i].*::encontrado_lista.toString()%></td>	
+									<td style="display:none"><%=responseXML..*::resultadoCoincidencias[i].*::id_mb_consulta.toString()%></td>	
+									<td></td>
 								</tr>
 								<%}%>
 							</tbody>
@@ -157,6 +140,7 @@ var payload2 = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap
 			</div>
 			<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
 				<input type="text" id="txtID_mbConsulta" style="display:none"/>
+				<input type="text" id="txtEstado" style="display:none" value="<%=((responseXML2..*::getRelacion.*::resultadoRelacion.*::estatus_califica.toString()==1)?'Calificado':'No tiene calificación')%>"/>
 				<div id="form" style="float:left; width:100%; height:430px; margin-left:3%; overflow-y:scroll;" class="panel panel-default"></div>
 			</div>
 		</div>
@@ -169,7 +153,7 @@ var payload2 = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap
 						<td>
 						</td>
 						<td>
-							<button id="btnVerComntarios" type="button" class="btn btn-default" onclick="consulta()">Ver comentarios</button>
+							<button id="btnVerComntarios" type="button" class="btn btn-default" onclick="consultaC()">Ver comentarios</button>
 						</td>
 						<td>						
 							<button id="btnGuardaComent" type="button" class="btn btn-default" <%=((responseXML2..*::getRelacion.*::resultadoRelacion.*::estatus_califica.toString()==1)?'disabled':'')%>>Guardar comentarios</button>
@@ -180,34 +164,48 @@ var payload2 = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap
 					</tr>
 					<%if(ntip !=2){%>
 					<tr>
-						<td><br><br></td>
-					</tr>
-					<tr>
-						<td align="right" >						
-							<div class="fileUpload btn btn-primary" style="width:100%" <%=((responseXML2..*::getRelacion.*::resultadoRelacion.*::estatus_califica.toString()==1)?'disabled':'')%>>
+						<td align="right" >                     
+							<div class="fileUpload btn btn-primary" style="width:100%" >
 								<span>Seleccionar Archivo</span>
-								<input style="width:50%" id="uploadBtn" type="file" class="upload" accept="image/x-png,image/gif,image/jpeg" />
-							</div>
+								<input style="width:100%" id="uploadBtn" name="uploadBtn" type="file" multiple="" onchange="makeFileList()" class="upload" />
+							</div>                        
 						</td>
-						<td colspan="2">	
+						<td colspan="2">    
 							<input style="width:100%" type="text" id="txtPathArchivo" style="width:100%" class="form-control" disabled/>
 						</td>
 						<td>
-							<input style="width:100%"  class="btn btn-primary" type="button" value="Subir Archivo" id="btnUpArchivo" name="btnUpArchivo" <%=((responseXML2..*::getRelacion.*::resultadoRelacion.*::estatus_califica.toString()==1)?'disabled':'')%>/>
-						</td>					
+							<input style="width:100%"  class="btn btn-primary" type="button" value="Subir Archivo" id="btnUpArchivo" name="btnUpArchivo">
+						</td>                   
 					</tr>
 					<tr>
-						<td align="right">
-							Archivos subidos
-						</td>
-						<td colspan="2">						
-							<textarea id="txaComentario" rows="7" cols="60" class="form-control"	></textarea>	
-						</td>
-						<td valign="bottom" style="padding-bottom:8px">
-							<%print('<a href="irCalificacionCoincidencias?idConsulta='+nidB+'" style="width:100%"  class="btn btn-primary">Regresar</a>');%>
-						</td>
+						<td></td>
+						<td><div><ul id="fileList"></ul></div></td>
+						<td></td>
 					</tr>
 					<%}%>
+					<tr>
+						<td align="right" colspan="3">
+							
+							 <fieldset>
+								<legend>Archivos subidos</legend>
+								<table align="left" id="tblArchivos"  class="table-striped table-bordered table-list" style="margin-left:auto;  margin-right:auto; width:100%; font-size:10px;">
+									<thead>
+										<tr>
+											<th>ID</th>
+											<th>DESCRIPCIÓN</th>
+										</tr>
+									</thead>
+									<tbody>	
+									</tbody>
+								</table>
+							 </fieldset>
+						</td>
+						<%if(ntip !=2){%>
+						<td valign="bottom" style="padding-bottom:8px">
+							<%print('<a href="irCalificacionCoincidencias?idConsulta='+nidB +'&&tip='+ntip+'" style="width:100%"  class="btn btn-primary">Regresar</a>');%>
+						</td>
+						<%}%>
+					</tr>
 				</table>
 			</div>
 		</div>
@@ -229,23 +227,25 @@ var resultado="";
 var xx="<%=nXml%>";
 xx.replace(/'/g, '')
 var nXML = xx.split(",");
- 
-
+ var tipoList = "";	
+var obss='';
 	$('#listCoincidencias tbody tr').on('click', function(event) {
 			$(this).addClass('highlight').siblings().removeClass('highlight');
-			var folio = $(this).find("td").eq(6).html();
-			var tipo = $(this).find("td").eq(8).html();
+			var folio = $(this).find("td").eq(4).html();
+			var tipo = $(this).find("td").eq(7).html();
 			$('#txtFolio').val(folio);
-			$('#txtID_mbConsulta').val($(this).find("td").eq(10).html());
+			$('#txtID_mbConsulta').val($(this).find("td").eq(8).html());
+			obss = $(this).find("td").eq(5).html();
 			consultaListas(folio, tipo,'listasRespon')
 			
 	});
 	function consultaListas(folio, tipo,metod){
 		$('#ModalCargando').modal('show');
-	var payload ="";
-	var urn ="";
-	console.log("Consulta folio "+ folio + "tipo " + tipo)
-	switch (tipo) {		
+		var payload ="";
+		var urn ="";
+		tipoList = tipo;
+		console.log("Consulta folio "+ folio + "tipo " + tipo)
+			switch (tipo) {		
 				case "1":						
 					payload  = '<dat:getDetalleLNegra xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
 					payload += '<dat:tbCorr>' + folio + '</dat:tbCorr>';
@@ -279,7 +279,7 @@ var nXML = xx.split(",");
 					error: function (xhr, status, error) {},
 					data: payload
 			}); 			
-}
+	}
 
 function listasRespon(xmlHttpRequest, status){
 	console.log("listas response");
@@ -322,7 +322,7 @@ function listasRespon(xmlHttpRequest, status){
 			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("tb_dateadd").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "      	</tr>";
 			form += "	   	<tr>";
-			form += "			<td width=\"35%\">DIAS:</td>";
+			form += "			<td width=\"35%\">DÍAS:</td>";
 			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("tb_days").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "      	</tr>";
 			form += "	    <tr>";
@@ -334,7 +334,7 @@ function listasRespon(xmlHttpRequest, status){
 			form += "	        <td width=\"95%\"><input type=\"text\" id=\"txtName\" value = \"" + $(this).find("nombre").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "       </tr>";
 			form += "	    <tr>";
-			form += "			<td width=\"35%\">JUSTIFICACION:</td>";
+			form += "			<td width=\"35%\">JUSTIFICACIÓN:</td>";
 			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("justificacion").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "       </tr>";
 			form += "	    <tr>";
@@ -359,11 +359,11 @@ function listasRespon(xmlHttpRequest, status){
 			form += "       </tr>";
 			form += "       <tr>";
 			form += "			<td width=\"35%\">DÍAS PLAZO:</td>";
-			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("cnbv_diasplazo").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "	        <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("cnbv_DÍASplazo").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "       </tr>";
 			form += "       </tr>";
 			form += "			<td width=\"35%\">DÍAS PLAZO / AGG:</td>";
-			form += "           <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("cnbv_diasplagg").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           <td width=\"95%\"><input type=\"text\" value = \"" + $(this).find("cnbv_DÍASplagg").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "       </tr>";
 			form += "       </tr>";
 			form += "			<td width=\"35%\">FECHA PUBLICACIÓN:</td>";
@@ -479,7 +479,15 @@ function listasRespon(xmlHttpRequest, status){
 			form += "       </tr>";
 			form += "	    <tr>";
 			form += "			<td width=\"35%\">OBSERVACIONES (máximo 1000 caracteres):</td>";
+<<<<<<< HEAD
+			<%if(ntip !=2){%>
+				form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
+			<%}else {%>
+				form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" disabled=\"disabled\"></textarea></td>";
+			<%}%>
+=======
 			form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" onkeyup=\"validarTexto(this,1000)\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
+>>>>>>> fa0793f798ed9d3f9e724809b81e8b1eed52580c
 			form += "       </tr>";	
 			form += "	    <tr>";
 			form += "			<td colspan=\"2\" style=\"font-size:13px;\">Fecha de la consulta: " + date + "</td>";
@@ -516,7 +524,7 @@ function listasRespon(xmlHttpRequest, status){
 			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("tb_dateadd").text()  + "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "           </tr>";
 			form += "	        <tr>";
-			form += "				<td width=\"22%\">DIAS:</td>";
+			form += "				<td width=\"22%\">DÍAS:</td>";
 			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("tb_days").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "           </tr>";
 			form += "	        <tr>";
@@ -552,12 +560,20 @@ function listasRespon(xmlHttpRequest, status){
 			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("referencia").text()  + "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "           </tr>";
 			form += "			<tr>";
-			form += "				<td width=\"22%\">NUMERO EXPEDIENTE:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("cnbv_numeroexpedient").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "				<td width=\"22%\">NÚMERO EXPEDIENTE:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("cnbv_NÚMEROexpedient").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td width=\"22%\">OBSERVACIONES (máximo 1000 caracteres):</td>";
+<<<<<<< HEAD
+			<%if(ntip !=2){%>
+				form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
+			<%}else {%>
+				form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" disabled=\"disabled\"></textarea></td>";
+			<%}%>
+=======
 			form += "	            <td width=\"78%\"><textarea id=\"txtObservaciones\" onkeyup=\"validarTexto(this,1000)\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
+>>>>>>> fa0793f798ed9d3f9e724809b81e8b1eed52580c
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Fecha de la consulta: " + date + "</td>";
@@ -613,7 +629,7 @@ function listasRespon(xmlHttpRequest, status){
 			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("rfc").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "           </tr>";
 			form += "	        <tr>";
-			form += "				<td width=\"22%\">RELACION:</td>";
+			form += "				<td width=\"22%\">RELACIÓN:</td>";
 			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("relacion").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "           </tr>";
 			form += "	        <tr>";
@@ -657,8 +673,8 @@ function listasRespon(xmlHttpRequest, status){
 			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("cnbv_fecha_pub").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "           </tr>";
 			form += "	        <tr>";
-			form += "				<td width=\"22%\">CNBV_DIAS_PLAZO:</td>";
-			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("cnbv_dias_plazo").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "				<td width=\"22%\">CNBV_DÍAS_PLAZO:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("cnbv_DÍAS_plazo").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td width=\"22%\">AUTORIDAD_NOMBRE:</td>";
@@ -686,7 +702,15 @@ function listasRespon(xmlHttpRequest, status){
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td width=\"22%\">OBSERVACIONES (máximo 1000 caracteres):</td>";
+<<<<<<< HEAD
+			<%if(ntip !=2){%>
+				form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
+			<%}else {%>
+				form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" disabled=\"disabled\"></textarea></td>";
+			<%}%>
+=======
 			form += "	            <td width=\"78%\"><textarea id=\"txtObservaciones\" onkeyup=\"validarTexto(this,1000)\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
+>>>>>>> fa0793f798ed9d3f9e724809b81e8b1eed52580c
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Fecha de la consulta: " + date + "</td>";
@@ -737,7 +761,7 @@ function listasRespon(xmlHttpRequest, status){
 			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("alternative_spelling").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "           </tr>";
 			form += "	        <tr>";
-			form += "				<td width=\"22%\">CATEGORIA:</td>";
+			form += "				<td width=\"22%\">CATEGORÍA:</td>";
 			form += "	            <td width=\"78%\"><input type=\"text\" id=\"txtCategoria\"  value = \"" +$(this).find("category").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "           </tr>";
 			form += "	        <tr>";
@@ -745,11 +769,11 @@ function listasRespon(xmlHttpRequest, status){
 			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("title").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "           </tr>";
 			form += "	        <tr>";
-			form += "				<td width=\"22%\">SUB CATEGORIA:</td>";
+			form += "				<td width=\"22%\">SUB CATEGORÍA:</td>";
 			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" +$(this).find("sub_category").text()+ "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "           </tr>";
 			form += "	        <tr>";
-			form += "				<td width=\"22%\">POSICION:</td>";
+			form += "				<td width=\"22%\">POSICIÓN:</td>";
 			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("position").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "           </tr>";
 			form += "	        <tr>";
@@ -789,11 +813,11 @@ function listasRespon(xmlHttpRequest, status){
 			form += "	            <td width=\"78%\"><textarea disabled='true' rows=\"4\" maxlength=\"1000\" style=\"width:80%\" >" + $(this).find("further_information").text() + "</textarea></td>";
 			form += "           </tr>";
 			form += "	        <tr>";
-			form += "				<td width=\"22%\">FECHA DE CREACION:</td>";
+			form += "				<td width=\"22%\">FECHA DE CREACIÓN:</td>";
 			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("entered_date").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "           </tr>";
 			form += "	        <tr>";
-			form += "				<td width=\"22%\">FECHA DE MODIFICACION:</td>";
+			form += "				<td width=\"22%\">FECHA DE MODIFICACIÓN:</td>";
 			form += "	            <td width=\"78%\"><input type=\"text\" value = \"" + $(this).find("updated_date").text() + "\"disabled=\"true\"style=\"width:80%\"></td>";
 			form += "           </tr>";
 			form += "	        <tr>";
@@ -802,7 +826,15 @@ function listasRespon(xmlHttpRequest, status){
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td width=\"22%\">OBSERVACIONES (máximo 1000 caracteres):</td>";
+<<<<<<< HEAD
+			<%if(ntip !=2){%>
+				form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
+			<%}else {%>
+				form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" disabled=\"disabled\"></textarea></td>";
+			<%}%>
+=======
 			form += "	            <td width=\"78%\"><textarea id=\"txtObservaciones\" onkeyup=\"validarTexto(this,1000)\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
+>>>>>>> fa0793f798ed9d3f9e724809b81e8b1eed52580c
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Fecha de la consulta: " + date + "</td>";
@@ -820,11 +852,535 @@ function listasRespon(xmlHttpRequest, status){
 			$("#form").append(form);
 			$('#footer').show();
 			$('#ModalCargando').modal('hide');
+			
+			
 		});	
 	}else{
-		form = "	<h4>No se encontraron resultados</h4>";
+		//form = "	<h4>No se encontraron resultados</h4>";
+		switch (tipoList) {		
+				case "1":						
+					form += "<div><h4></h4></div>";
+						form += "<div><h4>LISTA NEGRA</h4>";
+						form += "	<hr>";
+						form += "</div>";
+						form += "<div id=\"detalleList\" style=\"float:left;  margin-left:3%\">";
+						form += "	<table id=\"tblDetalle\" style=\"margin-right:auto; width:100%\" class=\"table-content\">";
+						form += "   	<tr><td style='display:none'><input type=\"text\" id=\"txtTipo\" value =\"1\"></td><td style='display:none'></td></tr>";
+						form += "   	<tr>";
+						form += "			<td width=\"35%\">FOLIO:</td>";
+						form += "        	<td width=\"95%\"><input  type=\"text\" id=\"txtFolio\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "      	</tr>";
+						form += "	   	<tr>";
+						form += "			<td width=\"35%\">FECHA:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "      	</tr>";
+						form += "	   	<tr>";
+						form += "			<td width=\"35%\">DÍAS:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "      	</tr>";
+						form += "	    <tr>";
+						form += "			<td width=\"35%\">C55016:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "	    <tr>";
+						form += "			<td width=\"35%\">NOMBRE:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" id=\"txtName\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "	    <tr>";
+						form += "			<td width=\"35%\">JUSTIFICACIÓN:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "	    <tr>";
+						form += "	 		<td width=\"35%\">AUTORIDAD ESPECÍFICA NOMBRE:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "	    <tr>";
+						form += "			<td width=\"35%\">AUTORIDAD NOMBRE:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       <tr>";
+						form += "			<td width=\"35%\">ÁREA CLAVE:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       <tr>";
+						form += "			<td width=\"35%\">ÁREA CLAVE / AGG:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       <tr>";
+						form += "			<td width=\"35%\">AREA DESCRIPCIÓN:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       <tr>";
+						form += "			<td width=\"35%\">DÍAS PLAZO:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       </tr>";
+						form += "			<td width=\"35%\">DÍAS PLAZO / AGG:</td>";
+						form += "           <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       </tr>";
+						form += "			<td width=\"35%\">FECHA PUBLICACIÓN:</td>";
+						form += "           <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       </tr>";
+						form += "			<td width=\"35%\">FOLIO:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       </tr>";
+						form += "			<td width=\"35%\">FOLIO / AGG:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       </tr>";
+						form += "			<td width=\"35%\">NÚMERO EXPEDIENTE:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       </tr>";
+						form += "			<td width=\"35%\">NÚMERO OFICIO:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       </tr>";
+						form += "			<td width=\"35%\">OFICIO YEAR:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       </tr>";
+						form += "	    	<td width=\"35%\">OFICIO YEAR / AGG:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       </tr>";
+						form += "			<td width=\"35%\">SOLICITUD SIARA:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       </tr>";
+						form += "			<td width=\"35%\">NOMBRE SOLICITANTE:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       </tr>";
+						form += "			<td width=\"35%\">TIPO DE REQUERIMIENTO:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       </tr>";
+						form += "			<td width=\"35%\">REFERENCIA 1:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       </tr>";
+						form += "			<td width=\"35%\">REFERENCIA 2:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       </tr>";
+						form += "			<td width=\"35%\">REFERENCIA 3:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       </tr>";
+						form += "			<td width=\"35%\">CARACTER:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       </tr>";
+						form += "			<td width=\"35%\">COMPLEMENTARIOS:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       </tr>";
+						form += "			<td width=\"35%\">DOMICILIO:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       </tr>";
+						form += "			<td width=\"35%\">MATERNO:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "  	    </tr>";
+						form += "       </tr>";
+						form += "			<td width=\"35%\">NOMBRE:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "   	</tr>";
+						form += "       </tr>";
+						form += "			<td width=\"35%\">PATERNO:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       </tr>";
+						form += "			<td width=\"35%\">PERSONA ID:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       </tr>";
+						form += "			<td width=\"35%\">PERSONA ID / AGG:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       </tr>";
+						form += "			<td width=\"35%\">RELACIÓN:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       </tr>";
+						form += "			<td width=\"35%\">SOLICITUD ESPECÍFICA ID:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       </tr>";
+						form += "			<td width=\"35%\">SOLICITUD ESPECÍFICA ID / AGG:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       </tr>";
+						form += "			<td width=\"35%\">TIENE ASEGURAMIENTO:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       </tr>";
+						form += "			<td width=\"35%\">DÍA:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       </tr>";
+						form += "			<td width=\"35%\">MES:</td>";
+						form += "	 	    <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "       </tr>";
+						form += "			<td width=\"35%\">AÑO:</td>";
+						form += "	        <td width=\"95%\"><input type=\"text\" value = \"\" disabled=\"true\"style=\"width:80%\"></td>";
+						form += "       </tr>";
+						form += "	    <tr>";
+						form += "			<td width=\"35%\">OBSERVACIONES (máximo 1000 caracteres):</td>";
+						form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" disabled=\"disabled\"></textarea></td>";						
+						form += "       </tr>";	
+						form += "	    <tr>";
+						form += "			<td colspan=\"2\" style=\"font-size:13px;\">Fecha de la consulta: " + date + "</td>";
+						form += "       </tr>";
+						form += "	    <tr>";
+						form += "				<td colspan=\"2\" style=\"font-size:13px;\">Consulta realizada por: "+usuario+"</td>";
+						form += "       </tr>";
+						form += "	</table>";
+						form += "	<br/>";
+						form += "	<br/>";
+						form += "</div>";	
+						$("#form").append(form);
+						$('#footer').show();
+						$('#ModalCargando').modal('hide');
+						
+					
+					break;
+				case "2":
+					
+			form += "<div><h4></h4></div>";
+			form += "<div><h4>LISTA GRIS</h4>";
+			form += "	<hr>";
+			form += "</div>";
+			form += "<div id=\"detalleList\" style=\"float:left; margin-left:3%\">";
+			form += "	<table style=\"margin-right:auto; width:100%\" class=\"table-content\">";
+			form += "   	    <tr><td style='display:none'><input type=\"text\" id=\"txtTipo\" value =\"2\"></td><td style='display:none'></td></tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">FOLIO:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" id=\"txtFolio\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">FECHA:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">DÍAS:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">C55016:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">NOMBRE:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" id=\"txtName\" id=\"txtNombre\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">APELLIDO PATERNO:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" id=\"txtAPaterno\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "			<tr>";
+			form += "				<td width=\"22%\">APELLIDO MATERNO:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" id=\"txtAMaterno\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "			<tr>";
+			form += "				<td width=\"22%\">CARACTER:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "			<tr>";
+			form += "				<td width=\"22%\">COMPLEMENTARIOS:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "			<tr>";
+			form += "				<td width=\"22%\">TIPO PERSONA:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "			<tr>";
+			form += "				<td width=\"22%\">REFERENCIA:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "			<tr>";
+			form += "				<td width=\"22%\">NÚMERO EXPEDIENTE:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">OBSERVACIONES (máximo 1000 caracteres):</td>";
+			
+				form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" disabled=\"disabled\"></textarea></td>";
+			
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Fecha de la consulta: " + date + "</td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Consulta realizada por: "+usuario+"</td>";
+			form += "           </tr>";
+			form += "	</table>";
+			form += "	<br/>";
+			form += "	<br/>";
+			form += "	<br/>";
+			form += "</div>";
+			$("#form").append(form);
+			$('#footer').show();
+			$('#ModalCargando').modal('hide');
+		
+					break;
+				case "3":
+						form += "	<div><h4></h4></div>";
+			form += "	<div><h4>LISTA SITI</h4>";
+			form += "	<hr>";
+			form += "	</div>";
+			form += "	<div id=\"detalleList\" style=\"float:left;  margin-left:3%\">";
+			form += "		<table style=\"margin-right:auto; width:100%\" class=\"table-content\">";
+			form += "   	<tr><td style='display:none'><input type=\"text\" id=\"txtTipo\" value =\"3\"></td><td style='display:none'></td></tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">ID PERSONA:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" id=\"txtFolio\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">CARACTER:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">PERSONA:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">PATERNO:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" id=\"txtAPaterno\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">MATERNO:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" id=\"txtAMaterno\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">NOMBRE:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" id=\"txtName\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">RFC:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">RELACIÓN:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">DOMICILIO:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">COMPLEMENTARIOS:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">CNBV_NUM_OFICIO:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">CNBV_NUM_EXPEDIENTE:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">CNBV_SOL_SIARA:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">CNBV_FOLIO:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">CNBV_OFICIO_YEAR:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">CNBV_AREA_CLAVE:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">CNBV_AREA_DESC:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">CNBV_FECHA_PUB:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">CNBV_DÍAS_PLAZO:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">AUTORIDAD_NOMBRE:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">AUTORIDAD_ESP_NOMBRE:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">NOMBRE_SOLICITANTE:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">REFERENCIA:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">REFERENCIA1:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">REFERENCIA2:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">OBSERVACIONES (máximo 1000 caracteres):</td>";
+			
+				form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" disabled=\"disabled\"></textarea></td>";
+			
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Fecha de la consulta: " + date + "</td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Consulta realizada por: "+usuario+"</td>";
+			form += "           </tr>";
+			form += "        </tbody>";
+			form += "    </table>";
+			form += "	<br/>";
+			form += "	<br/>";
+			form += "	<br/>";
+			form += "</div>";
+			$("#form").append(form);
+			$('#footer').show();
+			$('#ModalCargando').modal('hide');
+
+					break;
+				case "4":
+					form += "	<div><h4></h4></div>";
+			form += "	<div><h4>LISTA WORLD CHECK</h4>";
+			form += "	<hr>";
+			form += "	</div>";
+			form += "	<div id=\"detalleList\" style=\"float:left;  margin-left:3%\">";
+			form += "		<table style=\"margin-right:auto; width:100%\" class=\"table-content\">";
+			form += "   	    <tr><td style='display:none'><input type=\"text\" id=\"txtTipo\" value =\"4\"></td><td style='display:none'></td></tr>";
+			form += "   	    <tr><td style='display:none'><input type=\"text\" id=\"txtUser\" value =\""+usuario+"\"></td><td style='display:none'></td></tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">FOLIO:</td>";
+			form += "	            <td width=\"95%\"><input id=\"txtFolio\" name=\"idFolio\" type=\"text\" value = \"\"disabled=\"true\" style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">NOMBRE:</td>";
+			form += "	            <td width=\"95%\"><input type=\"text\" id=\"txtName\" value = \"\"disabled=\"true\" style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">APELLIDO:</td>";
+			form += "	            <td width=\"95%\"><input type=\"text\" id=\"txtAPaterno\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">ALISASES:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">ALTERNATIVO:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">CATEGORÍA:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" id=\"txtCategoria\"  value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">TITULO:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">SUB CATEGORÍA:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">POSICIÓN:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">EDAD:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">FECHA DE NACIMIENTO:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">LUGAR DE NACIMIENTO:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">PASAPORTES:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">SEGURO SOCIAL:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">UBICACIONES:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">PAISES:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">TIPO DE PERSONA:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">INFO ADICIONAL:</td>";
+			form += "	            <td width=\"78%\"><textarea disabled='true' rows=\"4\" maxlength=\"1000\" style=\"width:80%\" ></textarea></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">FECHA DE CREACIÓN:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">FECHA DE MODIFICACIÓN:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">KEYWORDS:</td>";
+			form += "	            <td width=\"78%\"><input type=\"text\" value = \"\"disabled=\"true\"style=\"width:80%\"></td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td width=\"22%\">OBSERVACIONES (máximo 1000 caracteres):</td>";
+			
+				form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" disabled=\"disabled\"></textarea></td>";
+			
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Fecha de la consulta: " + date + "</td>";
+			form += "           </tr>";
+			form += "	        <tr>";
+			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Consulta realizada por: "+usuario+"</td>";
+			form += "           </tr>";
+			form += "        </tbody>";
+			form += "    </table>";
+			form += "	<br/>";
+			form += "	<br/>";	
+			form += "	<br/>";
+			form += "</div>";
 		$("#form").append(form);
+		$('#ModalCargando').modal('hide');
+		
+			}	
 	}	
+	/*if(obss =='OK'){
+				$('#txtObservaciones').prop('disabled', true);
+				//$('#txtObservaciones').attr('disabled','disabled');
+			}*/
+	
 }
 
 
@@ -848,11 +1404,22 @@ function listasRespon(xmlHttpRequest, status){
 
 
 	$("#btnGuardaComent").click(function() {
+		/*if(obss =='OK'){
+			 $("#idMsg").html('<div class="alert alert-warning">'+
+					'No se puede guardar informaciòn'+
+					'</div>');
+				$('#ModalInfo').modal('show');
+				 return false;
+		}*/
 		var payload="";
 		var cont = 0;
 		var coment = $("#txtObservaciones").val();	
 		var sId = $("#txtFolio").val();
+<<<<<<< HEAD
+		var tipo = $('.highlight').find('td').eq(7).text();
+=======
 		var tipo = $('.highlight').find('td').eq(8).text();
+>>>>>>> fa0793f798ed9d3f9e724809b81e8b1eed52580c
 		var usuario = "<%=user%>";
 		var nombre = $('.highlight').find('td').eq(0).text();
 		var paterno = $('.highlight').find('td').eq(1).text();
@@ -928,6 +1495,7 @@ function listasRespon(xmlHttpRequest, status){
 			'Se ha realizado la petición'+
 			'</div>');
 		$('#txtObservaciones').prop('disabled', true);
+		$('#btnGuardaComent').prop('disabled', true);
 		}else{
 			$("#idMsg").html('<div class="alert alert-danger">'+
 			'Sucedio un error '+$(this).find("estatus").text()+
@@ -935,13 +1503,14 @@ function listasRespon(xmlHttpRequest, status){
 		}
 		$('#ModalInfo').modal('show');		
 	}
-	function consulta(){
-		
+	function consultaC(){
+		$('#btnVerComntarios').prop('disabled', true);
 		var id = $("#txtFolio").val();
 		var idMB_C = $("#txtID_mbConsulta").val();
 		var tipo = $('.highlight').find('td').eq(8).text();
 
 		consultaComentarios(id, tipo,idMB_C);
+		$('#btnVerComntarios').prop('disabled', false);
 	}
 function AutorizaEstatus(){
 	var payload = '<dat:qConsultaEstatusAutoriaza xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
@@ -962,5 +1531,194 @@ function AutorizaEstatus(){
 }
 
 
+///carga imagenesLista
+var xmlF='';
+function makeFileList() {
+        var input = document.getElementById("uploadBtn");
+        var ul = document.getElementById("fileList");
+        var path ="";
+        var files = [];
+        var txtPath = document.getElementById("txtPathArchivo");
+        txtPath.innerHTML="";
+        while (ul.hasChildNodes()) {
+            ul.removeChild(ul.firstChild);
+        }
+        for (var i = 0; i < input.files.length; i++) {
+            var li = document.createElement("li"); 
+            var nameFile ="";
+            var file = input.files[i]; 
+                      
+           
+            nameFile = file.name;
+            var ext = nameFile.split('.').pop();
+            ext = ext.toLowerCase();
+
+            if (ext != "pdf" && ext != "jpg" && ext != "jepg") {
+                mensaje = "Archivo <strong>" + file.name + " </strong> no válido.";
+                li.innerHTML = mensaje;  
+                ul.appendChild(li);              
+            }else{
+                path += txtPath.value == ""?nameFile: ", "+ nameFile; 
+                files.push(file);
+            }
+
+            txtPath.value = path; 
+        }
+
+        fileList = files;
+		 if(fileList.length > 0){
+                for(i in fileList){
+                    var file = fileList[i];
+                    var name = fileList[i].name;
+                    console.log("file "+ name);
+
+                    //Convierte a base64
+                    var reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = function () {
+                        console.log(reader.result);
+						xmlF+="<imageData>";
+						xmlF+="<tipoDeDocumento>CumplimientoKYC</tipoDeDocumento>";
+						xmlF+="<imagenBase64>"+reader.result.replace('data:application/pdf;base64,','')+"</imagenBase64>";
+						xmlF+="<tipoArchivo>"+((file.type == 'image/jpeg' )?'image':'pdf')+"</tipoArchivo>";
+						xmlF+="</imageData>";
+						console.log("aquii"+xmlF);
+						//document.getElementById("demo").innerHTML = xmlF;
+                    };
+                    reader.onerror = function (error) {
+                     console.log('Error: ', error);
+                   };	                 
+                }
+				console.log("aqui 2"+xmlF);
+            }else{
+                $("#idMsg").html('<div class="alert alert-danger">No se encontraron archivos válidos para continuar.</div>');
+                $('#ModalInfo').modal('show');   
+            }
+    }
+
+    $('#btnUpArchivo').click(function(event) {
+	
+			if($('#txtPathArchivo').val()==""){
+				 $("#idMsg").html('<div class="alert alert-danger">Seleccione uno o más archivos para continuar.</div>');
+				$('#ModalInfo').modal('show');   
+			}else{
+					
+				var idConsul = '<%=nidcons%>';
+				var idCli = '<%=nidC%>';
+				var tipoCli = '<%=ntipoC%>';
+				console.log(xmlF);
+				LoadImage(idCli,xmlF.replace('undefined',''),'000'+tipoCli);
+			}
+    });
+
+    function getBase64(file) {
+       var reader = new FileReader();
+       var cod= "";
+       reader.readAsDataURL(file);
+       reader.onload = function () {
+        // console.log(reader.result);
+         cod = reader.result;
+       };
+       reader.onerror = function (error) {
+         console.log('Error: ', error);
+         return false;
+       };
+       return cod;
+    }
+
+var tipoArchivo = "";
+var base64 = "";
+
+function TipoArchivo(ta) {
+    tipoArchivo = ta;
+    $("#ArchivoAdjunto").val("");
+}
+
+function LoadImage(idc,ima,idType){
+    $('#ModalAdjuntarArchivo').modal('hide');
+    $('#ModalLoad').modal('show');
+    
+    var payload = '<sug:altaDocumentos xmlns:sug="http://www.sugarcrm.com/sugarcrm" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/">';
+    payload += '<session></session>';
+    payload += '<customerId>'+idc+'</customerId>';
+    payload += '<customerType>'+idType+'</customerType>';
+    payload += '<imageCollection>';
+    payload += '<imagenesLista>';
+    payload += ima;
+    payload += '</imagenesLista>';
+    payload += '</imageCollection>';
+    payload += '</sug:altaDocumentos>';
+    
+    $.ajax({
+            url: '/commons/postSOAP',
+            type: 'post',
+            headers: {'Destino':'SugarCRMimg', 'SOAPAction':'http://28.224.30.202/sugarcrm/custom/service/v4_1_custom/soap.php/altaDocumentos'},
+            dataType: 'xml',
+            complete: LoadImageComplete,
+            error: function (xhr, status, error) {},
+            data: payload
+        });
+}
+
+function LoadImageComplete(xmlHttpRequest, status) {
+    var estatus = "";
+    var cadenaRespuesta = "";
+    var almacenadosExito = "";
+    var totalRecibidos = "";
+    var row = "";
+    $(xmlHttpRequest.responseText).find('return').each(function(){
+        estatus = $(this).find("codigoRespuesta").text();
+        cadenaRespuesta = $(this).find("cadenaRespuesta").text();
+        almacenadosExito = $(this).find("almacenadosExito").text();
+        totalRecibidos = $(this).find("totalRecibidos").text();
+		
+		$(this).find('docGO').each(function(){
+			row = '<tr>';
+			row += '<td>' + $(this).find("id").text() + '</td>';
+			row += '<td>' + $(this).find("tipoDocGO").text() + '</td>';
+			row += '</tr>';
+		});
+    });
+    $('#tblArchivos').append(row);
+    if (estatus == "0") {
+        //alert("Error al cargar el archivo\n" + cadenaRespuesta);
+		$("#idMsg").html('<div class="alert alert-success">Mensaje : Almacenado con exito ' +'</div>'+
+						'<div class="alert alert-success">Archivos subidos :'+almacenadosExito+'</div>'+
+						'<div class="alert alert-success">Total recibidos :'+totalRecibidos+'</div>');
+		
+		
+    }else{
+		$("#idMsg").html('<div class="alert alert-warning">'+cadenaRespuesta +'</div>'+
+						'<div class="alert alert-warning">Archivos subidos :'+almacenadosExito+'</div>'+
+						'<div class="alert alert-warning">Total recibidos :'+totalRecibidos+'</div>');
+	}
+	$('#ModalLoad').modal('hide');
+	$('#ModalInfo').modal('show');
+	$('#txtPathArchivo').val('');
+}
 </script>
+
+<div class="modal fade col-centered" id="ModalLoad" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="H2"></h4>
+      </div>
+      <div class="modal-body col-centered">
+   <table class="styleModal" width="100%">
+    <tr>
+        <td align="center" width="100%">
+            <img src="images/loading-recarga.gif" alt="Mountain View" style="width:110px;height:110px;"></td>
+    </tr>
+    <tr>
+        <td align="center" width="100%">
+            Cargando...</td>
+        </td>
+    </tr>
+    </table>
+      </div>
+    </div>
+  </div>
+</div>
 

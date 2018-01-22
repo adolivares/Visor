@@ -70,7 +70,7 @@ var user = session.get("user");
                     <li><a href="irBandejaEntrada"><i class="glyphicon glyphicon-home"></i></a></li>
                     <li><a>Bandeja de entrada</a></li>
                 </ul>
-                <h4>Configuración de notificaciones</h4>
+                <h4>Generador de notificaciones</h4>
             </div>
         </div><!-- media -->
     </div><!-- pageheader -->
@@ -78,7 +78,7 @@ var user = session.get("user");
     <div class="contentpanel">
         <p class="mb20"></p>
         <div class="panel panel-primary-head">
-			<h2>Configuración de notificaciones</h2>
+			<h2>Generador de notificaciones</h2>
 			 <table id="example" cellspacing="0" class="table table-striped table-bordered" style="font-size: x-small;" width="100%">
                 <thead>
                     <tr>     
@@ -212,10 +212,10 @@ var user = session.get("user");
 									</td>
 								</tr>
 								<tr><td>Asunto: *</td>
-									<td><input type="text" id="txtAsunto" size="60"></td>
+									<td><input type="text" id="txtAsunto" size="60" onkeyup="validarTexto(this)"></td>
 								</tr>
 								<tr><td>Cuerpo del correo: *</td>
-									<td><textarea type="text" id="txtTexto" rows="6" cols="63"></textarea></td>
+									<td><textarea type="text" id="txtTexto" rows="6" cols="63" onkeyup="validarTexto(this)"></textarea></td>
 								</tr>
 								<tr>
 									<td colspan="2"><span align="left" style="font-size:10px;">* Campos obligatorios</span></td>
@@ -270,6 +270,18 @@ var user = session.get("user");
 			info:false,
 		});
 	});
+
+
+	function validarTexto(objetoTextarea){
+	 	var validChars = /[^a-zA-ZñÑáéíóúÁÉÍÓÚ0-9\\,\\.\\;\s]/g; 
+	  	var texto = objetoTextarea.value;  
+	    
+	        if (texto.match(validChars)) {
+	            objetoTextarea.value = objetoTextarea.value.replace(validChars, '');
+	        }
+	    
+	    	return  false;
+	}
 	
 	$("#btnAgregar").click(function() {
 		var correo =$('#txtCC').val();
@@ -441,6 +453,7 @@ var user = session.get("user");
 		tr = $("#example >tbody").find("tr").eq(indexTBL);
 		$('#txtIdNotificacion').val(tr.find("td").eq(0).text());
 		$('#cboPerfil').val(tr.find("td").eq(1).text());
+		Acciones(tr.find("td").eq(1).text());
 		$('#txtDestinatario').val(tr.find("td").eq(3).text());
 		var nXML = ((tr.find("td").eq(4).text() !="")?tr.find("td").eq(4).text().split(","):'');
 		$('#cboAccion').val(tr.find("td").eq(6).text());
