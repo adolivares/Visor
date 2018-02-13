@@ -48,7 +48,7 @@
       <param defaultValue="#{NULL}" name="idConsulta" ordinal="2" sqlType="STRING"/>
       <param defaultValue="#{NULL}" name="tipoBusqueda" ordinal="3" sqlType="STRING"/>
       <param name="cliente" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
-   </query>
+   </query>  
    <query id="qGetMBConsultaCliente" useConfig="visor">
       <sql>{? = call VISOR_PKG_BPMN_VISOR.get_mb_consulta_cliente(?)}</sql>
       <result element="getMBConsultaCliente" rowName="resultadoConsultaCliente">
@@ -64,11 +64,7 @@
          <element column="PORCENTAJE_COINCIDENCIA" name="porcentaje_coincidencias" xsdType="string"/>
          <element column="ID_MB_CAT_EVALUACION" name="id_mb_cat_evaluacion" xsdType="string"/>
          <element column="ID_CONFIGURACION_PERFIL" name="id_configuracion_perfil" xsdType="string"/>
-<<<<<<< HEAD
          <call-query href="qGetConfiguracion">
-=======
-       <call-query href="qGetConfiguracion">
->>>>>>> fa0793f798ed9d3f9e724809b81e8b1eed52580c
             <with-param name="idConfig" query-param="ID_CONFIGURACION_PERFIL"/>
          </call-query>
          <call-query href="qConsultaEvaluacion">
@@ -95,14 +91,9 @@
          <element column="ID_MB_CAT_EVALUACION" name="id_mb_cat_evaluacion" xsdType="string"/>
          <element column="ID_CLIENTE" name="id_cliente" xsdType="integer"/>
          <element column="TIPO_PERSONA" name="tipo_persona" xsdType="string"/>
-<<<<<<< HEAD
          <element column="ID_CONFIGURACION_PERFIL" name="id_configuracion_perfil" xsdType="string"/>
          <element column="ID_RELACION" name="id_relacion" xsdType="string"/>
          <call-query href="qGetConfiguracion">
-=======
-       <element column="ID_CONFIGURACION_PERFIL" name="id_configuracion_perfil" xsdType="string"/>
-       <call-query href="qGetConfiguracion">
->>>>>>> fa0793f798ed9d3f9e724809b81e8b1eed52580c
             <with-param name="idConfig" query-param="ID_CONFIGURACION_PERFIL"/>
          </call-query>
          <call-query href="qConsultaEvaluacion">
@@ -115,7 +106,7 @@
       </result>
       <param defaultValue="#{NULL}" name="idConsulta" ordinal="2" sqlType="STRING"/>
       <param name="cliente" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
-   </query>
+   </query>  
    <query id="qConsultaRelacion" useConfig="visor">
       <sql>{? = call VISOR_PKG_BPMN_VISOR.get_visor_relacion(?)}</sql>
       <result element="getRelacion" rowName="resultadoRelacion">
@@ -370,11 +361,7 @@
          <element column="PORCENTAJE_COINCIDENCIA" name="porcentaje_coincidencia" xsdType="string"/>
          <element column="ID_CONFIGURACION_PERFIL" name="id_configuracion_perfil" xsdType="string"/>
          <element column="OBS" name="obs" xsdType="string"/>
-<<<<<<< HEAD
          <call-query href="qGetConfiguracion">
-=======
-       <call-query href="qGetConfiguracion">
->>>>>>> fa0793f798ed9d3f9e724809b81e8b1eed52580c
             <with-param name="idConfig" query-param="ID_CONFIGURACION_PERFIL"/>
          </call-query>
       </result>
@@ -519,12 +506,35 @@
          <element column="AMATERNO_CLIENTE" name="amaterno_cliente" xsdType="string"/>
          <element column="ENCONTRADO_LISTA" name="encontrado_listas" xsdType="string"/>
          <element column="ESTATUS_CALIFICA" name="estatus_califica" xsdType="string"/>
+         <element column="ID_RELACION" name="id_relacion" xsdType="string"/>
       </result>
       <param defaultValue="#{NULL}" name="fechaini" ordinal="2" sqlType="STRING"/>
       <param defaultValue="#{NULL}" name="fechafin" ordinal="3" sqlType="STRING"/>
       <param defaultValue="#{NULL}" name="idCliente" ordinal="4" sqlType="STRING"/>
       <param defaultValue="#{NULL}" name="aplication" ordinal="5" sqlType="STRING"/>
       <param name="consultas" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
+   </query>
+   <query id="qGetConsultasBatch" useConfig="visor">
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.get_visor_consultas_batch(?,?,?,?)}</sql>
+      <result element="getConsultasBatchResponse" rowName="resultadoConsultasBatch">
+         <element column="ID_BANDEJA_VISOR" name="id_bandeja_visor" xsdType="string"/>
+         <element column="ID_MB_CONSULTA" name="id_mb_consulta" xsdType="string"/>
+         <element column="FECHA_CONSULTA" name="fecha_consulta" xsdType="string"/>
+         <element column="OPERACION" name="operacion" xsdType="string"/>
+         <element column="APLICACION" name="aplicacion" xsdType="string"/>
+         <element column="ID_CLIENTE_CRM" name="id_cliente" xsdType="string"/>
+         <element column="TIPO_BUSQUEDA" name="tipo_busqueda" xsdType="string"/>
+         <element column="NOMBRE_CLIENTE" name="nombre_cliente" xsdType="string"/>
+         <element column="APATERNO_CLIENTE" name="apaterno_cliente" xsdType="string"/>
+         <element column="AMATERNO_CLIENTE" name="amaterno_cliente" xsdType="string"/>
+         <element column="ENCONTRADO_LISTA" name="encontrado_listas" xsdType="string"/>
+         <element column="ESTATUS_CALIFICA" name="estatus_califica" xsdType="string"/>
+      </result>
+      <param defaultValue="#{NULL}" name="fechaini" ordinal="2" sqlType="STRING"/>
+      <param defaultValue="#{NULL}" name="fechafin" ordinal="3" sqlType="STRING"/>
+      <param defaultValue="#{NULL}" name="idCliente" ordinal="4" sqlType="STRING"/>
+      <param defaultValue="#{NULL}" name="aplication" ordinal="5" sqlType="STRING"/>
+      <param name="consultasBatch" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
    </query>
    <query id="qGetConfiguracion" useConfig="visor">
       <sql>{? = call VISOR_PKG_BPMN_VISOR.get_configuracion(?)}</sql>
@@ -542,7 +552,6 @@
    <query id="qGetObservaciones" useConfig="visor">
       <sql>{? = call VISOR_PKG_BPMN_VISOR.get_comentarios(?,?,?)}</sql>
       <result element="qGetComentsResponse" rowName="resultadoGetComents">
-<<<<<<< HEAD
          <element column="ID_LISTA" name="id_lista" xsdType="string"/>
          <element column="LISTA" name="lista" xsdType="string"/>
          <element column="ID_MB_CONSULTA" name="id_consulta" xsdType="string"/>
@@ -553,18 +562,6 @@
          <element column="FECHA_ALTA" name="fecha_alta" xsdType="string"/>
          <element column="USUARIO_ALTA" name="usuario_alta" xsdType="string"/>
          <element column="ESTATUS" name="estatus" xsdType="string"/>
-=======
-         <element column="ID_LISTA" name="id_lista" xsdType="string"/>    
-         <element column="LISTA" name="lista" xsdType="string"/>         
-         <element column="ID_MB_CONSULTA" name="id_consulta" xsdType="string"/>         
-         <element column="TB_CORR" name="tb_corr" xsdType="string"/>         
-         <element column="NOMBRE" name="nombre" xsdType="string"/>    
-         <element column="OBSERVACIONES" name="observaciones" xsdType="string"/>         
-         <element column="CATEGORIA" name="categoria" xsdType="string"/>         
-         <element column="FECHA_ALTA" name="fecha_alta" xsdType="string"/>         
-         <element column="USUARIO_ALTA" name="usuario_alta" xsdType="string"/>         
-         <element column="ESTATUS" name="estatus" xsdType="string"/>         
->>>>>>> fa0793f798ed9d3f9e724809b81e8b1eed52580c
       </result>
       <param defaultValue="#{NULL}" name="id_lista" ordinal="2" sqlType="STRING"/>
       <param defaultValue="#{NULL}" name="id_consulta" ordinal="3" sqlType="STRING"/>
@@ -572,7 +569,7 @@
       <param name="obsercaciones" ordinal="1" sqlType="ORACLE_REF_CURSOR" type="OUT"/>
    </query>
    <query id="qInsertaObservaciones" useConfig="visor">
-      <sql>{? = call VISOR_PKG_BPMN_VISOR.do_insert_coments(?,?,?,?,?,?,?,?,?) }</sql>
+      <sql>{? = call VISOR_PKG_BPMN_VISOR.do_insert_coments(?,?,?,?,?,?,?,?,?,?) }</sql>
       <result element="qInsertaComentLSResp" rowName="resultadoInsertComentLS">
          <element column="estatus" name="estatus" xsdType="string"/>
       </result>
@@ -585,6 +582,7 @@
       <param name="observacion" ordinal="8" sqlType="STRING"/>
       <param name="categoria" ordinal="9" sqlType="STRING"/>
       <param name="usuario" ordinal="10" sqlType="STRING"/>
+      <param name="obse" ordinal="11" sqlType="STRING"/>
       <param name="estatus" ordinal="1" sqlType="INTEGER" type="OUT"/>
    </query>
    <query id="qGetCoincidencias" useConfig="visor">
@@ -714,6 +712,7 @@
          <with-param name="observacion" query-param="observacion"/>
          <with-param name="categoria" query-param="categoria"/>
          <with-param name="usuario" query-param="usuario"/>
+         <with-param name="obse" query-param="obse"/>
       </call-query>
    </operation>
    <operation name="qConsultaEvaluacion">
@@ -868,6 +867,14 @@
    </operation>
    <operation name="qGetConsultas">
       <call-query href="qGetConsultas">
+         <with-param name="fechaini" query-param="fechaini"/>
+         <with-param name="fechafin" query-param="fechafin"/>
+         <with-param name="idCliente" query-param="idCliente"/>
+         <with-param name="aplication" query-param="aplication"/>
+      </call-query>
+   </operation>
+   <operation name="qGetConsultasBatch">
+      <call-query href="qGetConsultasBatch">
          <with-param name="fechaini" query-param="fechaini"/>
          <with-param name="fechafin" query-param="fechafin"/>
          <with-param name="idCliente" query-param="idCliente"/>

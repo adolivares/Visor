@@ -152,20 +152,20 @@ var payload2 = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap
 					<tr>
 						<td>
 						</td>
-						<td>
-							<button id="btnVerComntarios" type="button" class="btn btn-default" onclick="consultaC()">Ver comentarios</button>
+						<td>							
+							<input style="width:100%"  class="btn" type="button" value="Ver Comentarios" id="btnVerComntarios"  name="btnVerComntarios" onclick="consultaC(this)"/>
 						</td>
 						<td>						
-							<button id="btnGuardaComent" type="button" class="btn btn-default" <%=((responseXML2..*::getRelacion.*::resultadoRelacion.*::estatus_califica.toString()==1)?'disabled':'')%>>Guardar comentarios</button>
+							<input id="btnGuardaComent" type="button" class="btn" value="Guardar comentarios"  <%=((ntip ==2)?'disabled':'')%>/>
 						</td>
 						<td>
-							<button  type="button" class="btn btn-default" onclick="generarPDF()"  >Generar PDF</button>
+							<input  type="button" class="btn btn-default" value="Generar PDF" onclick="generarPDF()"  >
 						</td>					
 					</tr>
 					<%if(ntip !=2){%>
 					<tr>
 						<td align="right" >                     
-							<div class="fileUpload btn btn-primary" style="width:100%" >
+							<div class="fileUpload btn btn-default" style="width:100%" >
 								<span>Seleccionar Archivo</span>
 								<input style="width:100%" id="uploadBtn" name="uploadBtn" type="file" multiple="" onchange="makeFileList()" class="upload" />
 							</div>                        
@@ -174,7 +174,7 @@ var payload2 = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap
 							<input style="width:100%" type="text" id="txtPathArchivo" style="width:100%" class="form-control" disabled/>
 						</td>
 						<td>
-							<input style="width:100%"  class="btn btn-primary" type="button" value="Subir Archivo" id="btnUpArchivo" name="btnUpArchivo">
+							<input style="width:100%"  class="btn" type="button" value="Subir Archivo" id="btnUpArchivo" name="btnUpArchivo"/>
 						</td>                   
 					</tr>
 					<tr>
@@ -202,7 +202,7 @@ var payload2 = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap
 						</td>
 						<%if(ntip !=2){%>
 						<td valign="bottom" style="padding-bottom:8px">
-							<%print('<a href="irCalificacionCoincidencias?idConsulta='+nidB +'&&tip='+ntip+'" style="width:100%"  class="btn btn-primary">Regresar</a>');%>
+							<%print('<a href="irCalificacionCoincidencias?idConsulta='+nidB +'&&tip='+ntip+'" style="width:100%"  class="btn btn-default">Regresar</a>');%>
 						</td>
 						<%}%>
 					</tr>
@@ -229,6 +229,19 @@ xx.replace(/'/g, '')
 var nXML = xx.split(",");
  var tipoList = "";	
 var obss='';
+var indexTBL;
+	function validarTexto(objetoTextarea){
+	 	var validChars = /[^a-zA-ZñÑáéíóúÁÉÍÓÚ0-9\\,\\.\\;\s\\:]/g; 
+	  	var texto = objetoTextarea.value;  
+	    
+	        if (texto.match(validChars)) {
+	            objetoTextarea.value = objetoTextarea.value.replace(validChars, '');
+	        }
+	    
+	    	return  false;
+	}
+
+
 	$('#listCoincidencias tbody tr').on('click', function(event) {
 			$(this).addClass('highlight').siblings().removeClass('highlight');
 			var folio = $(this).find("td").eq(4).html();
@@ -237,6 +250,15 @@ var obss='';
 			$('#txtID_mbConsulta').val($(this).find("td").eq(8).html());
 			obss = $(this).find("td").eq(5).html();
 			consultaListas(folio, tipo,'listasRespon')
+			if(obss !=""){
+				$('#btnGuardaComent').prop('disabled', true);
+				$('#txtObservaciones').prop('disabled', true);
+			}else{
+				$('#btnGuardaComent').prop('disabled', false);
+				$('#txtObservaciones').prop('disabled', false);
+			}
+			indexTBL = $(this).closest('tr').index();
+			//alert(indexTBL);
 			
 	});
 	function consultaListas(folio, tipo,metod){
@@ -280,6 +302,7 @@ var obss='';
 					data: payload
 			}); 			
 	}
+	
 
 function listasRespon(xmlHttpRequest, status){
 	console.log("listas response");
@@ -479,15 +502,11 @@ function listasRespon(xmlHttpRequest, status){
 			form += "       </tr>";
 			form += "	    <tr>";
 			form += "			<td width=\"35%\">OBSERVACIONES (máximo 1000 caracteres):</td>";
-<<<<<<< HEAD
 			<%if(ntip !=2){%>
-				form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
+				form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\" onkeyup=\"validarTexto(this)\"></textarea></td>";
 			<%}else {%>
 				form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" disabled=\"disabled\"></textarea></td>";
 			<%}%>
-=======
-			form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" onkeyup=\"validarTexto(this,1000)\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
->>>>>>> fa0793f798ed9d3f9e724809b81e8b1eed52580c
 			form += "       </tr>";	
 			form += "	    <tr>";
 			form += "			<td colspan=\"2\" style=\"font-size:13px;\">Fecha de la consulta: " + date + "</td>";
@@ -565,15 +584,11 @@ function listasRespon(xmlHttpRequest, status){
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td width=\"22%\">OBSERVACIONES (máximo 1000 caracteres):</td>";
-<<<<<<< HEAD
 			<%if(ntip !=2){%>
-				form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
+				form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\" onkeyup=\"validarTexto(this)\"></textarea></td>";
 			<%}else {%>
 				form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" disabled=\"disabled\"></textarea></td>";
 			<%}%>
-=======
-			form += "	            <td width=\"78%\"><textarea id=\"txtObservaciones\" onkeyup=\"validarTexto(this,1000)\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
->>>>>>> fa0793f798ed9d3f9e724809b81e8b1eed52580c
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Fecha de la consulta: " + date + "</td>";
@@ -702,15 +717,11 @@ function listasRespon(xmlHttpRequest, status){
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td width=\"22%\">OBSERVACIONES (máximo 1000 caracteres):</td>";
-<<<<<<< HEAD
 			<%if(ntip !=2){%>
-				form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
+				form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\" onkeyup=\"validarTexto(this)\"></textarea></td>";
 			<%}else {%>
 				form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" disabled=\"disabled\"></textarea></td>";
 			<%}%>
-=======
-			form += "	            <td width=\"78%\"><textarea id=\"txtObservaciones\" onkeyup=\"validarTexto(this,1000)\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
->>>>>>> fa0793f798ed9d3f9e724809b81e8b1eed52580c
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Fecha de la consulta: " + date + "</td>";
@@ -826,15 +837,11 @@ function listasRespon(xmlHttpRequest, status){
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td width=\"22%\">OBSERVACIONES (máximo 1000 caracteres):</td>";
-<<<<<<< HEAD
 			<%if(ntip !=2){%>
-				form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
+				form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\" onkeyup=\"validarTexto(this)\"></textarea></td>";
 			<%}else {%>
 				form += "	        <td width=\"95%\"><textarea id=\"txtObservaciones\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" disabled=\"disabled\"></textarea></td>";
 			<%}%>
-=======
-			form += "	            <td width=\"78%\"><textarea id=\"txtObservaciones\" onkeyup=\"validarTexto(this,1000)\" name=\"txtObservaciones\" rows=\"4\" maxlength=\"1000\" style=\"width:80%\" required=\"required\"></textarea></td>";
->>>>>>> fa0793f798ed9d3f9e724809b81e8b1eed52580c
 			form += "           </tr>";
 			form += "	        <tr>";
 			form += "				<td colspan=\"2\" style=\"font-size:13px;\">Fecha de la consulta: " + date + "</td>";
@@ -1376,32 +1383,14 @@ function listasRespon(xmlHttpRequest, status){
 		
 			}	
 	}	
-	/*if(obss =='OK'){
+	
+	var tr = $("#listCoincidencias >tbody").find("tr").eq(indexTBL);
+		var t =tr.find('td').eq(5).html();
+	if(t =='OK'){
 				$('#txtObservaciones').prop('disabled', true);
-				//$('#txtObservaciones').attr('disabled','disabled');
-			}*/
+			}
 	
 }
-
-
-	 function validarTexto(objetoTextarea, maxLength){
-     var validChars = /[^a-zA-ZñÑáéíóúÁÉÍÓÚ0-9\\,\\.\\;\s]/g; 
-      var texto = objetoTextarea.value;    
-       
-        if(texto.length > maxLength) {
-          objetoTextarea.value = objetoTextarea.value.substr(0,maxLength);
-          alert('¡ATENCION!\n\n' +
-            'Se ha sobrepasado la longitud máxima permitida para el texto (' +
-            maxLength + ' caracteres)\n\n' +
-            'Se han truncado caracteres finales');
-        }else{
-            if (texto.match(validChars)) {
-                objetoTextarea.value = objetoTextarea.value.replace(validChars, '');
-            }
-        }
-        return  false;
-      } 
-
 
 	$("#btnGuardaComent").click(function() {
 		/*if(obss =='OK'){
@@ -1415,17 +1404,13 @@ function listasRespon(xmlHttpRequest, status){
 		var cont = 0;
 		var coment = $("#txtObservaciones").val();	
 		var sId = $("#txtFolio").val();
-<<<<<<< HEAD
 		var tipo = $('.highlight').find('td').eq(7).text();
-=======
-		var tipo = $('.highlight').find('td').eq(8).text();
->>>>>>> fa0793f798ed9d3f9e724809b81e8b1eed52580c
 		var usuario = "<%=user%>";
 		var nombre = $('.highlight').find('td').eq(0).text();
-		var paterno = $('.highlight').find('td').eq(1).text();
-		var materno = $('.highlight').find('td').eq(2).text();
-		var categoria = $('.highlight').find('td').eq(4).text();
-		var idConsulta = $("#txtID_mbConsulta").val();
+		var paterno = "";
+		var materno = "";
+		var categoria = $('.highlight').find('td').eq(2).text();
+		var idConsulta = "<%=nidB%>";
 		var val = "";
 		var tr;
 		var index;	
@@ -1433,7 +1418,7 @@ function listasRespon(xmlHttpRequest, status){
 		var urn = "";		
 		
 
-		nombre = $("#txtName").val();
+		//nombre = $("#txtName").val();
 
 			if(coment.trim() == ""){
 				 $("#idMsg").html('<div class="alert alert-warning">'+
@@ -1451,9 +1436,10 @@ function listasRespon(xmlHttpRequest, status){
         payload += '<dat:paterno>'  +paterno +'</dat:paterno>';
         payload += '<dat:materno>' + materno+'</dat:materno>';
         payload += '<dat:observacion>' + coment + '</dat:observacion>';
-					payload += '<dat:categoria>' + categoria + '</dat:categoria>';
-					payload += '<dat:comentarios>' + coment + '</dat:comentarios>';
-					payload += '<dat:usuario>' + usuario + '</dat:usuario>';
+		payload += '<dat:categoria>' + categoria + '</dat:categoria>';
+		payload += '<dat:comentarios>' + coment + '</dat:comentarios>';
+		payload += '<dat:usuario>' + usuario + '</dat:usuario>';
+		 payload += '<dat:obse>1</dat:obse>';	
         payload += '</dat:qInsertaObservaciones>';
         urn = 'urn:qInsertaObservaciones'; 
 		   $.ajax({
@@ -1496,6 +1482,9 @@ function listasRespon(xmlHttpRequest, status){
 			'</div>');
 		$('#txtObservaciones').prop('disabled', true);
 		$('#btnGuardaComent').prop('disabled', true);
+		var tr = $("#listCoincidencias >tbody").find("tr").eq(indexTBL);
+		
+				tr.find('td').eq(5).html("OK");
 		}else{
 			$("#idMsg").html('<div class="alert alert-danger">'+
 			'Sucedio un error '+$(this).find("estatus").text()+
@@ -1503,14 +1492,19 @@ function listasRespon(xmlHttpRequest, status){
 		}
 		$('#ModalInfo').modal('show');		
 	}
-	function consultaC(){
-		$('#btnVerComntarios').prop('disabled', true);
+	function consultaC(btn){
+		if(btn.disabled == false){
+	         btn.disabled = true;
+	         
+	         setTimeout(function(){
+	            btn.disabled = false;
+	        }, 2000)
+	    }
 		var id = $("#txtFolio").val();
+		var tipo = $("#txtTipo").val();
 		var idMB_C = $("#txtID_mbConsulta").val();
-		var tipo = $('.highlight').find('td').eq(8).text();
-
 		consultaComentarios(id, tipo,idMB_C);
-		$('#btnVerComntarios').prop('disabled', false);
+		
 	}
 function AutorizaEstatus(){
 	var payload = '<dat:qConsultaEstatusAutoriaza xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
@@ -1554,7 +1548,7 @@ function makeFileList() {
             ext = ext.toLowerCase();
 
             if (ext != "pdf" && ext != "jpg" && ext != "jepg") {
-                mensaje = "Archivo <strong>" + file.name + " </strong> no válido.";
+                mensaje = "Archivo <strong>" + file.name + " </strong> formato no válido, <strong>Formatos validos PDF Y JPG</strong>";
                 li.innerHTML = mensaje;  
                 ul.appendChild(li);              
             }else{
@@ -1577,10 +1571,11 @@ function makeFileList() {
                     reader.readAsDataURL(file);
                     reader.onload = function () {
                         console.log(reader.result);
+						var re = 'data:'+file.type+';base64,';
 						xmlF+="<imageData>";
-						xmlF+="<tipoDeDocumento>CumplimientoKYC</tipoDeDocumento>";
-						xmlF+="<imagenBase64>"+reader.result.replace('data:application/pdf;base64,','')+"</imagenBase64>";
-						xmlF+="<tipoArchivo>"+((file.type == 'image/jpeg' )?'image':'pdf')+"</tipoArchivo>";
+						xmlF+="<tipoDeDocumento><%=tipoDocumento%></tipoDeDocumento>";
+						xmlF+="<imagenBase64>"+reader.result.replace(re,'')+"</imagenBase64>";
+						xmlF+="<tipoArchivo>"+getTipeFile(file.type)+"</tipoArchivo>";
 						xmlF+="</imageData>";
 						console.log("aquii"+xmlF);
 						//document.getElementById("demo").innerHTML = xmlF;
@@ -1596,6 +1591,40 @@ function makeFileList() {
             }
     }
 
+	function getTipeFile(file){
+		var type='';
+		switch(file){
+			case 'image/png':
+				type='png';
+				   break;
+			case 'image/jpeg':
+				type='jpe';
+				   break;
+			case 'image/gif':
+				type='gif';
+				   break;
+			case 'image/bmp':
+				type='bmp';
+				   break;
+			case 'image/vnd.microsoft.icon':
+				type='ico';
+				   break;
+			case 'image/tiff':
+				type='tif-f';
+				   break;
+			case 'image/tiff':
+				type='tiff';
+				   break;
+			case 'image/svg+xml':
+				type='svg';
+				   break;
+			case 'application/pdf':
+				type='pdf';
+				   break;
+		}
+		return type;
+	}
+	
     $('#btnUpArchivo').click(function(event) {
 	
 			if($('#txtPathArchivo').val()==""){
@@ -1652,7 +1681,7 @@ function LoadImage(idc,ima,idType){
     $.ajax({
             url: '/commons/postSOAP',
             type: 'post',
-            headers: {'Destino':'SugarCRMimg', 'SOAPAction':'http://28.224.30.202/sugarcrm/custom/service/v4_1_custom/soap.php/altaDocumentos'},
+            headers: {'Destino':'SugarCRMimg', 'SOAPAction':'<%=sgCRMAltaDocs%>'},
             dataType: 'xml',
             complete: LoadImageComplete,
             error: function (xhr, status, error) {},
@@ -1682,7 +1711,7 @@ function LoadImageComplete(xmlHttpRequest, status) {
     $('#tblArchivos').append(row);
     if (estatus == "0") {
         //alert("Error al cargar el archivo\n" + cadenaRespuesta);
-		$("#idMsg").html('<div class="alert alert-success">Mensaje : Almacenado con exito ' +'</div>'+
+		$("#idMsg").html('<div class="alert alert-success">Mensaje : Almacenado con éxito ' +'</div>'+
 						'<div class="alert alert-success">Archivos subidos :'+almacenadosExito+'</div>'+
 						'<div class="alert alert-success">Total recibidos :'+totalRecibidos+'</div>');
 		
@@ -1695,6 +1724,8 @@ function LoadImageComplete(xmlHttpRequest, status) {
 	$('#ModalLoad').modal('hide');
 	$('#ModalInfo').modal('show');
 	$('#txtPathArchivo').val('');
+	fileList = [];
+		xmlF = '';
 }
 </script>
 

@@ -45,6 +45,7 @@ var aplication = request.getParameter("app");
     response.sendRedirect(application.get('serverAddress') + request.getRequestURI() + queryStr);
 }
 var responseXML = '';
+var responseXML2 = '';
 if(fechaini != '' && fechaini != null||fechafin !='' && fechafin != null||idC!='' && idC != null|| aplication != '' && aplication != null){
 
 	var payload = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dat="http://ws.wso2.org/dataservice">
@@ -69,6 +70,29 @@ if(fechaini != '' && fechaini != null||fechafin !='' && fechafin != null||idC!='
     ws.send(payload.toXMLString());
     responseXML = new XML(ws.responseText);
 	log.info("XML CONSULTAS: " + responseXML.toXMLString());
+	
+	var payload2 = 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dat="http://ws.wso2.org/dataservice">
+					   <soapenv:Header/>
+					   <soapenv:Body>
+						  <dat:qGetConsultasBatch>
+							 <dat:fechaini>{fechaini}</dat:fechaini>
+							 <dat:fechafin>{fechafin+'23:59:59'}</dat:fechafin>
+							 <dat:idCliente>{idC}</dat:idCliente>
+							 <dat:aplication>{aplication}</dat:aplication>
+						  </dat:qGetConsultasBatch>
+					   </soapenv:Body>
+					</soapenv:Envelope>;
+
+    var url2 = URL_ESB + "BpmnVisor";
+    var ws2 = new XMLHttpRequest();
+    var action2 = "urn:qGetConsultasBatch";
+    ws2.open("POST", url2, false);
+    ws2.setRequestHeader('SOAPAction', action2);
+    ws2.setRequestHeader('Content-Type','text/xml; charset=utf-8');
+
+    ws2.send(payload2.toXMLString());
+    responseXML2 = new XML(ws2.responseText);
+	log.info("XML CONSULTAS BATCH: " + responseXML2.toXMLString());
 }
  %>
 <link href="resources/plantilla/css/select2.css" rel="stylesheet" />
@@ -114,7 +138,7 @@ if(fechaini != '' && fechaini != null||fechafin !='' && fechafin != null||idC!='
                         <td style="width: 13%">Hasta: <input style="width: 55%;" type="text" id="txtFechaHasta" name="txtFechaHasta" value="<%=((fechafin !=null)?fechafin:'')%>"/></td>
 						<td style="width: 17%">ID Cliente: <input type="text" id="txtIdCliente" name="txtIdCliente"  value="<%=((idC!=null)?idC:'')%>"/></td>
                         <td style="width: 18%">Aplicación: <input type="text" id="txtAplicacion" name="txtAplicacion"  value="<%=((aplication !=null)?aplication:'')%>"/></td>
-						<td style="width: 13%"><div><img src="images/buscar.png" onclick="consulta();" /></div></td>
+						<td style="width: 10%"><div><img src="images/buscar.png" onclick="consulta();" /></div></td>
                     </tr>
                 </table>
 				<br>
@@ -132,7 +156,9 @@ if(fechaini != '' && fechaini != null||fechafin !='' && fechafin != null||idC!='
 							<th>Aplicación</th>                                                                
 							<th>Estatus calificado</th>                                                                    
 							<th></th>                                                          
-							<th><input name="select_all" value="1" type="checkbox"></th>                                                           
+							<th><input name="select_all" value="1" type="checkbox"></th>
+							<th style="display:none;"></th>   
+							<th style="display:none;"></th>   
 						</tr>
 					</thead>
 					<tbody>
@@ -149,12 +175,38 @@ if(fechaini != '' && fechaini != null||fechafin !='' && fechafin != null||idC!='
 								<td><%=responseXML..*::getConsultasResponse.*::resultadoConsultas[i].*::aplicacion.toString()%></td>
 								<td><%=((responseXML..*::getConsultasResponse.*::resultadoConsultas[i].*::estatus_califica.toString()==1)?'<input type="image" id="delete" src="images/checked.png" />':'')%></td>
 								<%if(responseXML..*::getConsultasResponse.*::resultadoConsultas[i].*::encontrado_listas.toString()!=0){%>
-									<td><a href="irCalificacionCoincidencias?idConsulta=<%=responseXML..*::getConsultasResponse.*::resultadoConsultas[i].*::id_mb_consulta.toString()%>&&tip=2" class="btn btn-primary">Detalle</a></td>
+									<td><a href="irCalificacionCoincidencias?idConsulta=<%=responseXML..*::getConsultasResponse.*::resultadoConsultas[i].*::id_mb_consulta.toString()%>&&tip=2&&rel=<%=responseXML..*::getConsultasResponse.*::resultadoConsultas[i].*::id_relacion.toString()%>&&idCl=<%=responseXML..*::getConsultasResponse.*::resultadoConsultas[i].*::id_cliente.toString()%>" class="btn btn-primary">Detalle</a></td>
 									<td><input type="radio" name="notificacion" onclick="getId(this)"></td>
 								<%}else{%>
 									<td></td>
 									<td></td>
 								<%}%>
+								<td style="display:none">1</td>
+								<td style="display:none"><%=responseXML..*::getConsultasResponse.*::resultadoConsultas[i].*::id_relacion.toString()%></td>
+							</tr>
+						<%}}%>
+						
+						<%if(responseXML2 !=""){for (i = 0; i < responseXML2..*::getConsultasBatchResponse.*::resultadoConsultasBatch.length(); i++) {%>
+							<tr>
+								<td><%=responseXML2..*::getConsultasBatchResponse.*::resultadoConsultasBatch[i].*::fecha_consulta.toString().substring(0,10)%></td>
+								<td><%=responseXML2..*::getConsultasBatchResponse.*::resultadoConsultasBatch[i].*::fecha_consulta.toString().substring(11,16)%></td>
+								<td><%=((responseXML2..*::getConsultasBatchResponse.*::resultadoConsultasBatch[i].*::tipo_busqueda.toString() ==1)?'online':'batch')%></td>
+								<td><%=responseXML2..*::getConsultasBatchResponse.*::resultadoConsultasBatch[i].*::id_mb_consulta.toString()%></td>
+								<td><%=responseXML2..*::getConsultasBatchResponse.*::resultadoConsultasBatch[i].*::id_cliente.toString()%></td>
+								<td><%=responseXML2..*::getConsultasBatchResponse.*::resultadoConsultasBatch[i].*::nombre_cliente.toString()%></td>
+								<td><%=responseXML2..*::getConsultasBatchResponse.*::resultadoConsultasBatch[i].*::apaterno_cliente.toString()%></td>
+								<td><%=responseXML2..*::getConsultasBatchResponse.*::resultadoConsultasBatch[i].*::amaterno_cliente.toString()%></td>
+								<td><%=responseXML2..*::getConsultasBatchResponse.*::resultadoConsultasBatch[i].*::aplicacion.toString()%></td>
+								<td><%=((responseXML2..*::getConsultasBatchResponse.*::resultadoConsultasBatch[i].*::estatus_califica.toString()==1)?'<input type="image" id="delete" src="images/checked.png" />':'')%></td>
+								<%if(responseXML2..*::getConsultasBatchResponse.*::resultadoConsultasBatch[i].*::encontrado_listas.toString()!=0){%>
+									<td><a href="irCalificacionCoincidenciasBatch?idConsulta=<%=responseXML2..*::getConsultasBatchResponse.*::resultadoConsultasBatch[i].*::id_mb_consulta.toString()%>&&tip=2" class="btn btn-primary">Detalle</a></td>
+									<td><input type="radio" name="notificacion" onclick="getId(this)"></td>
+								<%}else{%>
+									<td></td>
+									<td></td>
+								<%}%>
+								<td style="display:none">2</td>
+								<td style="display:none">2</td>
 							</tr>
 						<%}}%>
 					</tbody>
@@ -196,28 +248,45 @@ $(document).ready(function() {
             });
 		$('#ModalCargando').modal('hide');
 	 var table = $('#example').DataTable();
- 
-	 var buttons = new $.fn.dataTable.Buttons(table, {
-		buttons: [
-							{
-								extend: 'pdfHtml5',
-								orientation: 'landscape',
-								pageSize: 'LEGAL',
-								 exportOptions: {
-									columns: [ 0, 1, 2, 3,4,5,6,7,8,9]
-								},
-							   title: 'Consulta de Coincidencias en Listas'
-							},
-							{
-								extend: 'excelHtml5',
-								title: 'Consulta de Coincidencias en Listas',
-								exportOptions: {
-									columns: [ 0, 1, 2, 3,4,5,6,7,8,9]
-								},
-							}
-                        ]
-	}).container().appendTo($('#buttons'));
+ 	 var Index = '';
+
+ 	 showButtons(table, Index);
+	 
 });
+
+	function  getId(rbtn){		
+		Index = $(rbtn).closest('tr').index();
+		$('#buttons > .dt-buttons').remove();
+
+		var table = $('#example').DataTable();
+		showButtons(table, Index);
+	}
+
+	function showButtons(table, Index){
+		var buttons = new $.fn.dataTable.Buttons(table, {
+			buttons: [
+						{
+							extend: 'pdfHtml5',
+							orientation: 'landscape',
+							pageSize: 'LEGAL',
+							 exportOptions: {
+								columns: [ 0, 1, 2, 3,4,5,6,7,8,9],
+								 rows: [Index]
+
+							},
+						   title: 'Consulta de Coincidencias en Listas'
+						},
+						{
+							extend: 'excelHtml5',
+							title: 'Consulta de Coincidencias en Listas',
+							exportOptions: {
+								columns: [ 0, 1, 2, 3,4,5,6,7,8,9],
+								rows: [Index]
+							},
+						}
+	                ]
+		}).container().appendTo($('#buttons'));
+	}
 
 	function getTime() {
 		var d = new Date().toString();
@@ -275,10 +344,9 @@ $(document).ready(function() {
  	    }
         $('#ModalCargando').modal('show');
 		location.href = 'irConsultaCoincidencias?fini='+FechaDesde+'&&ffin='+FechaHasta+'&&idCliente='+idcliente+'&&app='+aplicacion;
-		
-
-
-}
+	}
+	
+	
 	function exampleResp(xmlHttpRequest, status){
 		var estatus = "";
         numeroLinea = "";
@@ -321,10 +389,6 @@ $(document).ready(function() {
         var dias = Math.floor(dif / (1000 * 60 * 60 * 24));
         return dias;
     }
- 
- 
-
-
 </script>	
 </body>
 </html>

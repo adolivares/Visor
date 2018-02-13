@@ -17,7 +17,7 @@
 
 		var url = URL_ESB + "SgCRM2";
 		var ws = new XMLHttpRequest();
-		var action = "http://28.224.30.202/sugarcrm/custom/service/globeone/soap.php/login";
+		var action = sgCRMLogin;
 		ws.open("POST", url, false);
 		ws.setRequestHeader('SOAPAction', action);
 		ws.setRequestHeader('Content-Type','text/xml; charset=utf-8');
@@ -41,7 +41,7 @@
 
 		var url = URL_ESB + "SgCRM2";
 		var ws = new XMLHttpRequest();
-		var action = "http://28.224.30.202/sugarcrm/custom/service/globeone/soap.php/logout";
+		var action = sgCRMLogout;
 		ws.open("POST", url, false);
 		ws.setRequestHeader('SOAPAction', action);
 		ws.setRequestHeader('Content-Type','text/xml; charset=utf-8');
@@ -76,7 +76,7 @@
 		log.info('XML ENVIO '+payload);
 		var url = URL_ESB + "SgCRM2";
 		var ws = new XMLHttpRequest();
-		var action = "http://28.224.30.202/sugarcrm/custom/service/globeone/soap.php/setResultadoListasNegrasGlobeOne";
+		var action = sgCRMGOResListasNegras;
 		ws.open("POST", url, false);
 		ws.setRequestHeader('SOAPAction', action);
 		ws.setRequestHeader('Content-Type','text/xml; charset=utf-8');
@@ -134,7 +134,7 @@
 		log.info('XML ENVIO '+payload);
 		var url = URL_ESB + "SgCRM2";
 		var ws = new XMLHttpRequest();
-		var action = "http://28.224.30.202/sugarcrm/custom/service/v4_1_custom/soap.php/setResultadodeListas";
+		var action = sgCRMResultadoListas;
 		ws.open("POST", url, false);
 		ws.setRequestHeader('SOAPAction', action);
 		ws.setRequestHeader('Content-Type','text/xml; charset=utf-8');

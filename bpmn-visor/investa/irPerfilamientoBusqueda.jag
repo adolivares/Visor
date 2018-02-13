@@ -350,12 +350,9 @@ var user = session.get("user");
 		var rowListas='';
 		var rowsAplicar=0;
 		var xmlPrioridad= new XMLHttpRequest();
-<<<<<<< HEAD
 		var nuevaConf=true;
 		var idListSelect ="";
 		var listaConfig = "";
-=======
->>>>>>> fa0793f798ed9d3f9e724809b81e8b1eed52580c
 		
 		// $('#porcentaje').click(function() {
 			// $('#tblListas tbody tr input').remove();
@@ -388,18 +385,13 @@ var user = session.get("user");
 		if($(this).hasClass("porcentaje")){
 			console.log("porcentaje " + porcentaje);
 			$('#txtPorcentaje').val(porcentaje);
-<<<<<<< HEAD
 			$('#txtId').val(idLista);
-=======
-			$('#txtId').val(id);
->>>>>>> fa0793f798ed9d3f9e724809b81e8b1eed52580c
 			$('#txtLista').val(lista);	
 			$('#ModalProcesando').modal('hide'); 		
 			$('#modalPorcentaje').modal({backdrop: 'static', keyboard: false})
 		}else if ($(this).hasClass("lista")){			
 			tr.addClass('highlight').siblings().removeClass('highlight');			
 			//console.log("Lista " + id);
-<<<<<<< HEAD
 			$('#tblCategoria tbody tr').remove();
 			if(idPerfil == 0){
 				$('#ModalProcesando').modal('hide'); 
@@ -413,11 +405,6 @@ var user = session.get("user");
 			getCategorias(idLista,idPerfil);
 			//getCategorias2(idLista);
 			
-=======
-			$('#tblCategoria tbody tr').remove();			
-			getCategorias(id);
-			getPrioridad();	
->>>>>>> fa0793f798ed9d3f9e724809b81e8b1eed52580c
 		}
 		
 		
@@ -965,11 +952,7 @@ var user = session.get("user");
 										'</div>');	
 				$('#ModalInfo').modal('show');	
 
-<<<<<<< HEAD
 				consultaConfig(idPerfil);			
-=======
-				getConfiguraciones();			
->>>>>>> fa0793f798ed9d3f9e724809b81e8b1eed52580c
 			}	
 		
 		
@@ -1037,29 +1020,7 @@ var user = session.get("user");
 	
 	
 	
-<<<<<<< HEAD
 	
-=======
-	function responseConfig(xmlHttpRequest, status) {
-		$("#tblConfiguracion >tbody").empty();
-		
-		$(xmlHttpRequest.responseText).find('resultadoConsultaConfiguracion').each(function() {
-		
-			var row = '<tr>';
-				row += '<td>'+$(this).find("perfil").text()+'</td>';
-				row += '<td>'+$(this).find("lista").text()+'</td>';
-				row += '<td>'+$(this).find("categoria").text()+'</td>';
-				row += '<td style="display:none">'+ $(this).find("id_configuracion_perfil").text()+'</td>';
-				row += '<td style="display:none">'+$(this).find("id_perfil").text()+'</td>';
-				row += '<td style="display:none">'+$(this).find("id_categ_listas").text()+'</td>';
-				row += '<td style="display:none">'+$(this).find("transaccion").text()+'</td>';
-				row += '<td style="display:none">'+$(this).find("id_prioridad").text()+'</td>';
-				row += '<td style="display:none">'+$(this).find("prioridad").text()+'</td>';
-				row += '</tr>';		
-			$('#tblConfiguracion tbody').append(row);
-        });
-	}
->>>>>>> fa0793f798ed9d3f9e724809b81e8b1eed52580c
 	
 	function confirmActualizaConf(){
 	//	$('detalleConfiguracion').hide();

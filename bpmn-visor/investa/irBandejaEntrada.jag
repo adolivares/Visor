@@ -290,7 +290,7 @@ include("/model/common.jag");
 						</tr>
 						<tr>
 							<td style="padding:2%" valign="top">Justificaci&oacute;n: </td>
-							<td><textarea id="txtaJustif1" rows="4" cols="50" ></textarea></td>									
+							<td><textarea id="txtaJustif1" rows="4" cols="50" onkeyup="validarTexto(this)" ></textarea></td>									
 						</tr>
 					</table>
 				  </div>
@@ -329,7 +329,7 @@ include("/model/common.jag");
 						</tr>						
 						<tr>
 							<td style="padding:2%" VALIGN="TOP">Instrucciones: </td>
-							<td><textarea id="txtaJustif2" rows="4" cols="50" ></textarea></td>									
+							<td><textarea id="txtaJustif2" rows="4" cols="50" onkeyup="validarTexto(this)" ></textarea></td>									
 						</tr>
 						<!--tr>
 							<td style="padding:2%">Receptor</td>
@@ -382,6 +382,17 @@ include("/model/common.jag");
             });
         } );
         
+
+        function validarTexto(objetoTextarea){
+		 	var validChars = /[^a-zA-ZñÑáéíóúÁÉÍÓÚ0-9\\,\\.\\;\s\\:]/g; 
+		  	var texto = objetoTextarea.value;  
+		    
+		        if (texto.match(validChars)) {
+		            objetoTextarea.value = objetoTextarea.value.replace(validChars, '');
+		        }
+		    
+		    	return  false;
+		}
 	
       var indexTBL = -1;  
       var indexTBL2 = -1;  

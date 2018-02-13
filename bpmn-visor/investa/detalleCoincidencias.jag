@@ -8,7 +8,7 @@
 			<div class="modal-body col-centered">	
 			<div><h4>Coincidencias</h4></div>		  
 			<div style="float:left;" class="list">				
-				<table id="listCoincidencias"  class="table-striped table-bordered table-list" style="margin-left:auto;  margin-right:auto;">
+				<table id="listCoincidencias2"  class="table-striped table-bordered table-list" style="margin-left:auto;  margin-right:auto;">
 					<thead>
 						<tr><th>LISTA</th>
 							<th>CATEGORIA</th>

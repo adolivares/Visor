@@ -4,7 +4,9 @@ include("/model/common.jag");
 var user = session.get("user");                        
 var idConsultaRes = request.getParameter("idConsulta");                            
 var idb = request.getParameter("idb");                            
-var tip = request.getParameter("tip");                             
+var tip = request.getParameter("tip");  
+var idRel = request.getParameter("rel");  
+var idCl = request.getParameter("idCl");  
 /*<!--
  ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
@@ -49,7 +51,34 @@ include("logComentarios.jag");
 include("Controller/CtrlVisorCalificacion.jag");    
     
     var xmlEvaluacion = getEvaluacionList("","");  
-    var payload =   <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dsb="dsBpmnVisor">
+
+  /*  if(tip == 2 && idRel != 0){
+
+        var payloadRel =   <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dsb="dsBpmnVisor">
+                       <soapenv:Header/>
+                       <soapenv:Body>
+                          <dsb:qGetMBConsultaRelacionado>
+                             <dsb:idConsulta>{idConsultaRes}</dsb:idConsulta>
+                             <dsb:tipoBusqueda></dsb:tipoBusqueda>
+                          </dsb:qGetMBConsultaRelacionado>
+                       </soapenv:Body>
+                    </soapenv:Envelope>;
+
+        var url = URL_ESB + "BpmnVisor";
+        var ws = new XMLHttpRequest();
+        var action = "urn:qGetMBConsultaRelacionado";
+        ws.open("POST", url, false);
+        ws.setRequestHeader('SOAPAction', action);
+        ws.setRequestHeader('Content-Type','text/xml; charset=utf-8');
+
+        ws.send(payloadRel.toXMLString());
+        var responseXML = new XML(ws.responseText);
+        log.info("XML CONSULTA RELACIONADO: " +payloadRel);
+        log.info("XML CONSULTA RELACIONADO: " + responseXML.toXMLString());
+    }else{ 
+  */ 
+    log.info("Entra cliente");       
+        var payload =   <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dsb="dsBpmnVisor">
                        <soapenv:Header/>
                        <soapenv:Body>
                           <dsb:qGetMBConsulta>
@@ -59,16 +88,18 @@ include("Controller/CtrlVisorCalificacion.jag");
                        </soapenv:Body>
                     </soapenv:Envelope>;
 
-    var url = URL_ESB + "BpmnVisor";
-    var ws = new XMLHttpRequest();
-    var action = "urn:qGetMBConsulta";
-    ws.open("POST", url, false);
-    ws.setRequestHeader('SOAPAction', action);
-    ws.setRequestHeader('Content-Type','text/xml; charset=utf-8');
+        var url = URL_ESB + "BpmnVisor";
+        var ws = new XMLHttpRequest();
+        var action = "urn:qGetMBConsulta";
+        ws.open("POST", url, false);
+        ws.setRequestHeader('SOAPAction', action);
+        ws.setRequestHeader('Content-Type','text/xml; charset=utf-8');
 
-    ws.send(payload.toXMLString());
-    var responseXML = new XML(ws.responseText);
-    log.info("XML CONSULTA: " + responseXML.toXMLString());
+        ws.send(payload.toXMLString());
+        var responseXML = new XML(ws.responseText);
+        log.info("XML CONSULTA: " + responseXML.toXMLString());
+
+   
  %>
  <script src="/bpmn-visor/js/mainFormatoCons.js"></script>
     <link href="resources/plantilla/css/select2.css" rel="stylesheet" />
@@ -106,17 +137,10 @@ include("Controller/CtrlVisorCalificacion.jag");
         <div class="panel panel-primary-head">
             
             <% if(tip ==2){%>
-<<<<<<< HEAD
 				<h1>Consulta del detalle de coincidencias en Listas</h1>
 			<%}else{%>
 				<h1>Análisis de Coincidencias en Listas</h1>
 			<%}%>
-=======
-                <h1>Consulta del detalle de coincidencias en Listas</h1>
-            <%}else{%>
-                <h1>Calificaci&oacute;n de Coincidencias en Listas</h1>
-            <%}%>
->>>>>>> fa0793f798ed9d3f9e724809b81e8b1eed52580c
             <table id="example" cellspacing="0" class="table table-striped table-bordered"  style="font-size: x-small">
                 <thead>
                     <tr>
@@ -146,22 +170,15 @@ include("Controller/CtrlVisorCalificacion.jag");
                         <th style="display:none;"></th>   
                     </tr>
                 </thead>
-                <tbody>                 
-                    <%=createTablacoincidencia(responseXML)%>                         
+                <tbody>                  
+                    <%=createTablacoincidencia(responseXML, idCl, idRel)%>  
                 </tbody>
             </table>
-<<<<<<< HEAD
-=======
-            <br>
-            <div id="buttons" align="right"></div>
-                     
-            <br/>
->>>>>>> fa0793f798ed9d3f9e724809b81e8b1eed52580c
             <br/>
             <table style="<%=((tip!=2)?'display:none':'')%>">
                 <tr>
                     <td style="padding: 15px;"><input id="btnPdf" type="button" value="Exportar PDF" class="btn btn-default"/></td>
-                    <td><input id="btnComentarios" type="button" value="Ver Comentarios" class="btn btn-default" onclick="consulta()"/></td>
+                    <td><input id="btnComentarios" type="button" value="Ver Comentarios" class="btn btn-default" onclick="consulta(this)"/></td>
                 </tr>                
             </table>
 			<table width="100%" id="ESDEl" style="<%=((tip==2)?'display:none':'')%>">
@@ -276,35 +293,32 @@ include("Controller/CtrlVisorCalificacion.jag");
 			 <br>
 			<div id="buttons" align="right"></div>
             
-            <table width="98%" class="table-content" id="tabBtn" style="<%=((tip==2)?'display:none':'')%>">
+            <table width="100%" class="table-content" id="tabBtn" style="<%=((tip==2)?'display:none':'')%>">
                 <tr>
                     <td>
-<<<<<<< HEAD
-                        <input style="width:100%"  class="btn btn-primary" type="button" value="Ver Comentarios" id="btnComentarios"  name="btnComentarios" onclick="consulta()"/>
-=======
-                        <input style="width:100%"  class="btn btn-primary" type="button" value="Ver Comentarios" id="btnComentarios" onclick="consulta();" name="btnComentarios">
->>>>>>> fa0793f798ed9d3f9e724809b81e8b1eed52580c
+                        <input style="width:100%"  class="btn btn-primary" type="button" value="Ver Comentarios" id="btnComentarios"  name="btnComentarios" onclick="consulta(this)"/>
                     </td>
                     <td colspan="3">                        
                         <textarea id="txaComentario" onkeyup="validarTexto(this,1000)" rows="3" cols="125" class="form-control"  placeholder="Ingrese comentario ..."></textarea>  
                     </td>
                     <td>
-                        <input style="width:100%"  class="btn btn-primary" type="button" value="Guardar Comentarios" id="btnGuardaComent" name="btnGuardaComent">
+                        <input style="width:100%" class="btn btn-primary" type="button" value="Guardar Comentarios" id="btnGuardaComent" name="btnGuardaComent">
                     </td>                   
                 </tr>
                 <tr>
 					
                     <td align="right" >                     
-                        <div class="fileUpload btn btn-primary" style="width:100%" >
+                        <div class="fileUpload btn btn-primary" style="width:100%">
                             <span>Seleccionar Archivo</span>
                             <input style="width:100%" id="uploadBtn" name="uploadBtn" type="file" multiple="" onchange="makeFileList()" class="upload" />
-                        </div>                        
+                        </div>
+                        
                     </td>
                     <td colspan="3">    
                         <input style="width:100%" type="text" id="txtPathArchivo" style="width:100%" class="form-control" disabled/>
                     </td>
                     <td>
-                        <input style="width:100%"  class="btn btn-primary" type="button" value="Subir Archivo" id="btnUpArchivo" name="btnUpArchivo">
+                        <input style="width:100%" class="btn btn-primary" type="button" value="Subir Archivo" id="btnUpArchivo" name="btnUpArchivo">
                     </td>                   
                 </tr>
                 <tr>
@@ -314,7 +328,21 @@ include("Controller/CtrlVisorCalificacion.jag");
                 </tr>
                 <tr>
                     
-                    <td colspan="2">                        
+                    <td colspan="4">
+						<fieldset class="col-md-12">
+							<legend>Documentos a subir</legend>
+							<div id="preview"></div>
+							<div><!--textarea id="demo1"></textarea-->
+								
+							</div>
+							
+						</fieldset>
+					</td>
+                    <td><input style="width:100%" class="btn btn-primary" type="button" value="Quitar archivos" id="btnDeleteArchivo" onclick="deletefilesI()"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>                        
                         <!--textarea id="txtListaArchivos" rows="7" cols="60" class="form-control" disabled></textarea-->    
 						<fieldset>
 								<legend>Archivos subidos</legend>
@@ -328,9 +356,10 @@ include("Controller/CtrlVisorCalificacion.jag");
 									<tbody>	
 									</tbody>
 								</table>
+								
 							 </fieldset>
                     </td>
-                    <td align="right" valign="bottom" style="padding-bottom:16px;width:66px">Calificar</td>
+                    <td align="right" valign="bottom" style="padding-bottom:16px;width:66px">Calificar :</td>
                     <td valign="bottom" style="width:166px">                    
                          <select id="cboCalificar" class="form-control">
                                     <option value="-2">- Seleccione -</option>
@@ -338,7 +367,7 @@ include("Controller/CtrlVisorCalificacion.jag");
                                 </select>
                     </td>   
                     <td valign="bottom" style="padding-bottom:8px">
-                        <input style="width:100%"  class="btn btn-primary" type="button" value="Enviar a CRM" id="btnEnviaCRM" name="btnEnviaCRM">
+                        <input style="width:100%" class="btn btn-primary" type="button" value="Enviar a CRM" id="btnEnviaCRM" name="btnEnviaCRM">
                     </td>
                 </tr>
             </table>
@@ -411,7 +440,7 @@ var indexTBL2 = "";
 var fileList = [];
 var resp = "";
 function validarTexto(objetoTextarea, maxLength){
-     var validChars = /[^a-zA-ZñÑáéíóúÁÉÍÓÚ0-9\\,\\.\\;\s]/g; 
+     var validChars = /[^a-zA-ZñÑáéíóúÁÉÍÓÚ0-9\\,\\.\\;\s\\:]/g; 
       var texto = objetoTextarea.value;    
        
         if(texto.length > maxLength) {
@@ -429,7 +458,70 @@ function validarTexto(objetoTextarea, maxLength){
       } 
 
 	var xmlF;
-    function makeFileList() {
+	var txt="";
+	var path ="";
+ function makeFileList() {
+
+	var preview = document.querySelector('#preview');
+	var files   = document.querySelector('input[type=file]').files;
+    //var files = [];
+    var txtPath = document.getElementById("txtPathArchivo");
+
+  function readAndPreview(file) {
+
+    // Make sure `file.name` matches our extensions criteria
+   
+    if ( /\.(jpe?g||pdf)$/i.test(file.name) ) {
+      var reader = new FileReader();
+		 
+      reader.addEventListener("load", function () {
+      
+		var ext = file.name.split('.').pop();
+            ext = ext.toLowerCase();
+		var re = 'data:'+file.type+';base64,';
+            
+                 
+        var image = new Image();
+        image.height = 100;
+        image.title = file.name;
+		if (ext != "pdf") {
+			image.src = this.result;
+		}else{
+			image.src = "data:image/png;base64,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";
+		}
+			preview.appendChild( image );
+			xmlF+="<imageData>";
+			xmlF+="<tipoDeDocumento><%=tipoDocumento%></tipoDeDocumento>";
+			xmlF+="<imagenBase64>"+this.result.replace(re,'')+"</imagenBase64>";
+			xmlF+="<tipoArchivo>"+getTipeFile(file.type)+"</tipoArchivo>";
+			xmlF+="</imageData>";
+		console.log(xmlF);
+		 path += txtPath.value == ""?file.name: ", "+ file.name; 
+		txtPath.value = path; 
+        //document.getElementById("demo1").innerHTML = xmlF;
+      }, false);
+
+      reader.readAsDataURL(file);
+    }else{
+        var ul = document.getElementById("fileList");
+         while (ul.hasChildNodes()) {
+            ul.removeChild(ul.firstChild);
+        }
+        var li = document.createElement("li");
+        mensaje = "Archivo <strong>" + file.name + " </strong> formato no válido, <strong>Formatos validos PDF Y JPG</strong>";
+        li.innerHTML = mensaje;  
+        ul.appendChild(li);                 
+    }
+
+  }
+
+  if (files) {
+    [].forEach.call(files, readAndPreview);
+  }
+
+}
+	
+    function makeFileList2() {
 		fileList = [];
 		xmlF = '';
         var input = document.getElementById("uploadBtn");
@@ -462,29 +554,64 @@ function validarTexto(objetoTextarea, maxLength){
 
             txtPath.value = path; 
         }
+	var txt;
+		if ('files' in input) {
+			if (input.files.length == 0) {
+				txt = "Select one or more files.";
+			} else {
+				for (var i = 0; i < input.files.length; i++) {
+					txt += "<br><strong>" + (i+1) + ". file</strong><br>";
+					var file = input.files[i];
+					if ('name' in file) {
+						txt += "name: " + file.name + "<br>";
+					}
+					if ('size' in file) {
+						txt += "size: " + file.size + " bytes <br>";
+					}
+					//Convierte a 
+					var reader  = new FileReader();
 
+					  reader.addEventListener("load", function () {
+						base64 = reader.result;
+						txt += "base 64: " + base64 + "  <br>";
+						console.log(txt);
+					  }, false);
+
+					  if (file) {
+						reader.readAsDataURL(file);
+					  }
+					
+                   
+						
+				}
+			}
+		}
+	
         fileList = files;
-		 if(fileList.length > 0){
+		document.getElementById("demo3").innerHTML = txt;
+		
+		 /*if(fileList.length > 0){
                 for(i in fileList){
                     var file = fileList[i];
                     var name = fileList[i].name;
-                    console.log("file "+ name);
+                    console.log("file ENTRANDO A COSNTRUIR EL XML===================================="+ name);
 
                     //Convierte a base64
                     var reader = new FileReader();
                     reader.readAsDataURL(file);
                     reader.onload = function () {
-                        console.log(reader.result);
+                        //console.log(reader.result);
                         console.log("tipo archivo"+file.type);
                         console.log("get type "+getTipeFile(file.type));
 						var re = 'data:'+file.type+';base64,';
 						xmlF+="<imageData>";
-						xmlF+="<tipoDeDocumento>CumplimientoKYC</tipoDeDocumento>";
+						xmlF+="<tipoDeDocumento><%=tipoDocumento%></tipoDeDocumento>";
 						xmlF+="<imagenBase64>"+reader.result.replace(re,'')+"</imagenBase64>";
 						xmlF+="<tipoArchivo>"+getTipeFile(file.type)+"</tipoArchivo>";
 						xmlF+="</imageData>";
-						console.log("aquii"+xmlF);
-						//document.getElementById("demo").innerHTML = xmlF;
+						console.log("aquii xml =======  "+xmlF);
+						document.getElementById("demo").innerHTML = xmlF;
+						console.log("file ENTRANDO A COSNTRUIR EL XML===================================="+ name);
                     };
                     reader.onerror = function (error) {
                      console.log('Error: ', error);
@@ -494,7 +621,7 @@ function validarTexto(objetoTextarea, maxLength){
             }else{
                 $("#idMsg").html('<div class="alert alert-danger">No se encontraron archivos válidos para continuar.</div>');
                 $('#ModalInfo').modal('show');   
-            }
+            }*/
     }
 	function getTipeFile(file){
 		var type='';
@@ -569,23 +696,6 @@ function validarTexto(objetoTextarea, maxLength){
        return cod;
     }
 
-function validarTexto(objetoTextarea, maxLength){
-     var validChars = /[^a-zA-ZñÑáéíóúÁÉÍÓÚ0-9\\,\\.\\;\s]/g; 
-      var texto = objetoTextarea.value;    
-       
-        if(texto.length > maxLength) {
-          objetoTextarea.value = objetoTextarea.value.substr(0,maxLength);
-          alert('¡ATENCION!\n\n' +
-            'Se ha sobrepasado la longitud máxima permitida para el texto (' +
-            maxLength + ' caracteres)\n\n' +
-            'Se han truncado caracteres finales');
-        }else{
-            if (texto.match(validChars)) {
-                objetoTextarea.value = objetoTextarea.value.replace(validChars, '');
-            }
-        }
-        return  false;
-      } 
 
 $(document).ready(function() {
 
@@ -597,10 +707,9 @@ $(document).ready(function() {
         "scrollY": 300,
         "scrollX": true
     });
-    var table = $('#example').DataTable();
+	var table = $('#example').DataTable();
     var mensaje = "";
     var myfile = "";
-<<<<<<< HEAD
 	var tb = "<%=tip%>";
 	/*
     if(tb ==2){
@@ -621,57 +730,12 @@ $(document).ready(function() {
 								consulta();
 							}
 					}
-=======
-    var tb = "<%=tip%>";
-    if(tb ==2){
-        var buttons = new $.fn.dataTable.Buttons(table, {
-        buttons: [
-                    {
-                        text: 'Exportar PDF',
-                        extend: 'pdfHtml5',
-                        orientation: 'landscape',
-                        pageSize: 'LEGAL',
-                        exportOptions: {
-                            columns: [ 0, 1, 2, 3,4,5,6,7,8,9,10,11,12]
-                        },
-                        title: 'Consulta del detalle de coincidencias en Listas'
-                    },{
-                            text: 'Ver comentarios',
-                            action: function ( ) {
-                                consulta();
-                            }
-                    }
->>>>>>> fa0793f798ed9d3f9e724809b81e8b1eed52580c
                     
                 ]
-        }).container().appendTo($('#buttons'));
-    }
+		}).container().appendTo($('#buttons'));
+	}
 
-<<<<<<< HEAD
     */
-=======
-     
-
-   
-    document.getElementById("uploadBtn").onchange = function() {
-        mensaje = "";
-        myfile = $(this).val();
-        var ext = myfile.split('.').pop();
-        if (ext != "pdf" && ext != "jpg" && ext != "jepg") {
-            mensaje = "Debe seleccionar un archivo válido.";
-        }
-        if (mensaje.trim().length != 0) {
-            $("#idMsg").html('<div class="alert alert-danger">' +
-                mensaje +
-                '</div>');
-            $('#ModalInfo').modal('show');
-            return false;
-        }
-        document.getElementById("txtPathArchivo").value = this.value;
-
-    };
-
->>>>>>> fa0793f798ed9d3f9e724809b81e8b1eed52580c
 });
 
 
@@ -681,8 +745,15 @@ $('#listCoincidencias tbody').on('click', 'tr', function() {
 });
 
 
-function consulta() {
-	$('#btnComentarios').prop('disabled', true);
+function consulta(btn) {
+    if(btn.disabled == false){
+         btn.disabled = true;
+         
+         setTimeout(function(){
+            btn.disabled = false;
+        }, 2000)
+    }
+	
     var count = 0;
     var index
     if (validaCheck()) {
@@ -707,7 +778,7 @@ function validaCheck() {
     if (!$("input[name=tabla1]").is(":checked")) {
 
         $("#idMsg").html('<div class="alert alert-warning">' +
-            'Seleccionar un elemento de la tabla de Calificación de coincidencias' +
+            'Seleccionar un elemento de la tabla de análisis Calificación de coincidencias' +
             '</div>');
         $('#ModalInfo').modal('show');
         return false;
@@ -735,7 +806,7 @@ $("#btnGuardaComent").click(function() {
     var index;
 
     if (validaCheck()) {
-        if (coment.trim() == "") {            
+        if (coment.trim() == "") {
             $("#idMsg").html('<div class="alert alert-warning">' +
                 'El campo Comentario no puede ser vacío' +
                 '</div>');
@@ -783,6 +854,7 @@ $("#btnGuardaComent").click(function() {
         payload += '<dat:observacion>' + coment + '</dat:observacion>';
         payload += '<dat:categoria>'+ categoria +'</dat:categoria>';
         payload += '<dat:usuario>'+ usuario +'</dat:usuario>';
+        payload += '<dat:obse>0</dat:obse>';
         payload += '</dat:qInsertaObservaciones>';
         urn = 'urn:qInsertaObservaciones'; 
         $.ajax({
@@ -1200,6 +1272,14 @@ function myFunction(){
 				index = $(this).val();
 			}
 		});
+
+        if (!$("input[name=usuarios" + tbl + "]").is(":checked")) {
+            $("#idMsg").html('<div class="alert alert-warning">' +
+                'Seleccionar opcion de envio' +
+                '</div>');
+            $('#ModalInfo').modal('show');
+            return false;
+        }
 		
 		
 		var tr;
@@ -1214,7 +1294,7 @@ function myFunction(){
 		if(seleccion==1){
 			$('#MyModalEscala').modal('show');
 		}else{
-			$('#MyModalEscala').modal('show');
+			$('#MyModalDelega').modal('show');
 		}
 		
 		$("#t1").val(tr.find("td").eq(4).text() + " "+ tr.find("td").eq(5).text()+ " "+ tr.find("td").eq(6).text());
@@ -1238,6 +1318,7 @@ function LoadImage(idc,ima,idType){
     $('#ModalAdjuntarArchivo').modal('hide');
     $('#ModalLoad').modal('show');
     
+
     var payload = '<sug:altaDocumentos xmlns:sug="http://www.sugarcrm.com/sugarcrm" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/">';
     payload += '<session></session>';
     payload += '<customerId>'+idc+'</customerId>';
@@ -1252,7 +1333,7 @@ function LoadImage(idc,ima,idType){
     $.ajax({
             url: '/commons/postSOAP',
             type: 'post',
-            headers: {'Destino':'SugarCRMimg', 'SOAPAction':'http://28.224.30.202/sugarcrm/custom/service/v4_1_custom/soap.php/altaDocumentos'},
+            headers: {'Destino':'SugarCRMimg', 'SOAPAction':'<%=sgCRMAltaDocs%>'},
             dataType: 'xml',
             complete: LoadImageComplete,
             error: function (xhr, status, error) {},
@@ -1282,7 +1363,7 @@ function LoadImageComplete(xmlHttpRequest, status) {
     $('#tblArchivos').append(row);
     if (estatus == "0") {
         //alert("Error al cargar el archivo\n" + cadenaRespuesta);
-		$("#idMsg").html('<div class="alert alert-success">Mensaje : Almacenado con exito ' +'</div>'+
+		$("#idMsg").html('<div class="alert alert-success">Mensaje : Almacenado con éxito ' +'</div>'+
 						'<div class="alert alert-success">Archivos subidos :'+almacenadosExito+'</div>'+
 						'<div class="alert alert-success">Total recibidos :'+totalRecibidos+'</div>');
 		
@@ -1413,6 +1494,24 @@ function listasRespon(xmlHttpRequest, status){
     }else{
         msg += 'No hay resultados para generar el pdf ';
     }
+}
+
+
+function deletefilesI(){
+	document.getElementById("preview").innerHTML = "";
+	fileList = [];
+	xmlF = '';
+    path ="";
+	$('#txtPathArchivo').val('');
+	var txtPath = document.getElementById("txtPathArchivo");
+	   txtPath.values="";
+    var files   = document.querySelector('input[type=file]');
+    files.values="";
+
+    var input = $('#uploadBtn');
+    var clon = input.clone();  // Creamos un clon del elemento original
+        input.replaceWith(clon);  
+
 }
 </script>
 

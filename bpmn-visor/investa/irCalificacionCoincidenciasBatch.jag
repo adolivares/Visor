@@ -70,7 +70,7 @@ include("Controller/CtrlVisorCalificacion.jag");
     var responseXML = new XML(ws.responseText);
     log.info("XML CONSULTA BATCH: " + responseXML.toXMLString());
  %>
- 
+    <script src="/bpmn-visor/js/mainFormatoCons.js"></script>
     <link href="resources/plantilla/css/select2.css" rel="stylesheet" />
         <link href="http://themepixels.com/demo/webpage/chain/css/style.datatables.css" rel="stylesheet">
         <link href="resources/plantilla/css/dataTables.responsive.css" rel="stylesheet">
@@ -106,10 +106,10 @@ include("Controller/CtrlVisorCalificacion.jag");
         <div class="panel panel-primary-head">
             
             <% if(tip ==2){%>
-				<h1>Consulta del detalle de coincidencias en Listas</h1>
-			<%}else{%>
-				<h1>Análisis de Coincidencias en Listas</h1>
-			<%}%>
+                <h1>Consulta del detalle de coincidencias en Listas</h1>
+            <%}else{%>
+                <h1>Análisis de Coincidencias en Listas</h1>
+            <%}%>
             <table id="example" cellspacing="0" class="table table-striped table-bordered"  style="font-size: x-small">
                 <thead>
                     <tr>
@@ -145,122 +145,128 @@ include("Controller/CtrlVisorCalificacion.jag");
                     <%=createTablacoincidenciaBatch(responseXML)%>                         
                 </tbody>
             </table>
-			<table width="100%" id="ESDEl" style="<%=((tip==2)?'display:none':'')%>">
-				<tr>
-					<td style="padding:2%; width:7%" valign="top">
-						<p>Asignaci&oacute;n</p>
-						<select id="slcAsignacion"  onchange="showbtnEscala(this)">	
-							<option value="0">- Seleccione -</option>
-								<%if (bDirector){%>																							
-									<option value="2">Delegar</option>
-								<%}else if (bAnalista){%>																									
-									<option value="1">Escalar</option>
-								<%}else{%>
-									<option value="1">Escalar</option>
-									<option value="2">Delegar</option>
-								<%}%>
-						</select>
-					</td>
-					<td style="padding:2%; width:10%">						
-						<div id="envAnalista1" style="display:none;"><label><input type="checkbox" id="cbAnalista1" name="usuarios1"> Env&iacute;o a Analista de cumplimiento</label></div>
-						<div id="envGerente1" style="display:none;"><label><input type="checkbox" id="cbGerente1" name="usuarios1"> Env&iacute;o a Gerente de cumplimiento</label></div>
-						<div id="envOficial1" style="display:none;"><label><input type="checkbox" id="cbOficial1" name="usuarios1"> Env&iacute;o a Oficial de cumplimiento</label></div>					
-						<div id="envDirector1" style="display:none;"><label><input type="checkbox" id="cbDirector1" name="usuarios1"> Env&iacute;o a Director de cumplimiento</label></div>
-					</td>
-					<td style="padding:2%; width:10%" valign="bottom">
-						<input style="display:none;" class="btn btn-primary" type="button" value="Enviar" id="btnEnviarAsig" name="btnEnviar"  onclick="getDatos(1)">
-					</td>
-				</tr>
-			</table>			
-			<div class="modal fade col-centered in" id="MyModalEscala" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog">
-			  <div class="modal-dialog" role="document">
-				<div class="modal-content">
-				  <div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<img alt="" src="resources/plantilla/images/logo_investa.png">
-				  </div>
-				  <div class="modal-body col-centered">
-					<table style="margin-left:auto; margin-right:auto;">
-						<tr>
-							<td colspan="2"><h3   id="H2">SOLICITUD DE ESCALAMIENTO</h3></td>
-							<td><input type="text" id="txtIDbandeja1" style="display:none" value="<%=idb%>"/></td>
-							<td><input type="text" id="txtTBL1" style="display:none" value="1"/></td>
-						</tr>					
-						<tr>
-							<td style="padding:2%">Fecha de b&uacute;squeda: </td>
-							<td id="txtFecha1"></td>
-						</tr>
-						<tr>
-							<td style="padding:2%">Cliente: </td>
-							<td id="txtCliente1"></td>
-						</tr>
-						<tr>
-							<td style="padding:2%">ID Cliente: </td>
-							<td id="txtIdCliente1"> </td>
-						</tr>
-						<tr>
-							<td style="padding:2%" valign="top">Justificaci&oacute;n: </td>
-							<td><textarea id="txtaJustif1" rows="4" cols="50" ></textarea></td>									
-						</tr>
-					</table>
-				  </div>
-				  <div class="modal-footer">
-					   <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-					  <button type="button" class="btn btn-default" onclick="escalar_delega(1)">Escalar</button>
-				  </div>
-				</div>
-			  </div>
-			</div>
-			<div class="modal fade col-centered" id="MyModalDelega" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog">
-			  <div class="modal-dialog " role="document">
-				<div class="modal-content">
-				  <div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<img alt="" src="resources/plantilla/images/logo_investa.png">
-				  </div>
-				  <div class="modal-body col-centered">
-					<table style="margin-left:auto; margin-right:auto;">	
-						<tr>
-							<td colspan="2"><h3 id="H2">DELEGACI&Oacute;N DE INVESTIGACI&Oacute;N</h3></td>
-							<td><input type="text" id="txtIDbandeja2" style="display:none" value="<%=idb%>"/></td>
-							<td><input type="text" id="txtTBL2" style="display:none" value="1"/></td>
-						</tr>
-						<tr>
-							<td style="padding:2%">Fecha de b&uacute;squeda: </td>
-							<td id="txtFecha2"></td>
-						</tr>
-						<tr>
-							<td style="padding:2%">Cliente: </td>
-							<td id="txtCliente2"></td>
-						</tr>
-						<tr>
-							<td style="padding:2%">ID Cliente: </td>
-							<td id="txtIdCliente2"></td>
-						</tr>						
-						<tr>
-							<td style="padding:2%" VALIGN="TOP">Instrucciones: </td>
-							<td><textarea id="txtaJustif2" rows="4" cols="50" ></textarea></td>									
-						</tr>
-						<!--tr>
-							<td style="padding:2%">Receptor</td>
-							<td><select style="width:305px"></select></td>
-						</tr-->
-					</table>
-				  </div>
-				  <div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-					   <button type="button" class="btn btn-default"onclick="escalar_delega(2)">Delegar</button>
-				  </div>
-				</div>
-			  </div>
-			</div>
-			 <br>
-			<div id="buttons" align="right"></div>
+            <table style="<%=((tip!=2)?'display:none':'')%>">
+                <tr>
+                    <td style="padding: 15px;"><input id="btnPdf" type="button" value="Exportar PDF" class="btn btn-default"/></td>
+                    <td><input id="btnComentarios" type="button" value="Ver Comentarios" class="btn btn-default" onclick="consulta(this)"/></td>
+                </tr>                
+            </table>
+            <table width="100%" id="ESDEl" style="<%=((tip==2)?'display:none':'')%>">
+                <tr>
+                    <td style="padding:2%; width:7%" valign="top">
+                        <p>Asignaci&oacute;n</p>
+                        <select id="slcAsignacion"  onchange="showbtnEscala(this)"> 
+                            <option value="0">- Seleccione -</option>
+                                <%if (bDirector){%>                                                                                         
+                                    <option value="2">Delegar</option>
+                                <%}else if (bAnalista){%>                                                                                                   
+                                    <option value="1">Escalar</option>
+                                <%}else{%>
+                                    <option value="1">Escalar</option>
+                                    <option value="2">Delegar</option>
+                                <%}%>
+                        </select>
+                    </td>
+                    <td style="padding:2%; width:10%">                      
+                        <div id="envAnalista1" style="display:none;"><label><input type="checkbox" id="cbAnalista1" name="usuarios1"> Env&iacute;o a Analista de cumplimiento</label></div>
+                        <div id="envGerente1" style="display:none;"><label><input type="checkbox" id="cbGerente1" name="usuarios1"> Env&iacute;o a Gerente de cumplimiento</label></div>
+                        <div id="envOficial1" style="display:none;"><label><input type="checkbox" id="cbOficial1" name="usuarios1"> Env&iacute;o a Oficial de cumplimiento</label></div>                    
+                        <div id="envDirector1" style="display:none;"><label><input type="checkbox" id="cbDirector1" name="usuarios1"> Env&iacute;o a Director de cumplimiento</label></div>
+                    </td>
+                    <td style="padding:2%; width:10%" valign="bottom">
+                        <input style="display:none;" class="btn btn-primary" type="button" value="Enviar" id="btnEnviarAsig" name="btnEnviar"  onclick="getDatos(1)">
+                    </td>
+                </tr>
+            </table>            
+            <div class="modal fade col-centered in" id="MyModalEscala" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <img alt="" src="resources/plantilla/images/logo_investa.png">
+                  </div>
+                  <div class="modal-body col-centered">
+                    <table style="margin-left:auto; margin-right:auto;">
+                        <tr>
+                            <td colspan="2"><h3   id="H2">SOLICITUD DE ESCALAMIENTO</h3></td>
+                            <td><input type="text" id="txtIDbandeja1" style="display:none" value="<%=idb%>"/></td>
+                            <td><input type="text" id="txtTBL1" style="display:none" value="1"/></td>
+                        </tr>                   
+                        <tr>
+                            <td style="padding:2%">Fecha de b&uacute;squeda: </td>
+                            <td id="txtFecha1"></td>
+                        </tr>
+                        <tr>
+                            <td style="padding:2%">Cliente: </td>
+                            <td id="txtCliente1"></td>
+                        </tr>
+                        <tr>
+                            <td style="padding:2%">ID Cliente: </td>
+                            <td id="txtIdCliente1"> </td>
+                        </tr>
+                        <tr>
+                            <td style="padding:2%" valign="top">Justificaci&oacute;n: </td>
+                            <td><textarea id="txtaJustif1" rows="4" cols="50" ></textarea></td>                                 
+                        </tr>
+                    </table>
+                  </div>
+                  <div class="modal-footer">
+                       <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                      <button type="button" class="btn btn-default" onclick="escalar_delega(1)">Escalar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal fade col-centered" id="MyModalDelega" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog">
+              <div class="modal-dialog " role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <img alt="" src="resources/plantilla/images/logo_investa.png">
+                  </div>
+                  <div class="modal-body col-centered">
+                    <table style="margin-left:auto; margin-right:auto;">    
+                        <tr>
+                            <td colspan="2"><h3 id="H2">DELEGACI&Oacute;N DE INVESTIGACI&Oacute;N</h3></td>
+                            <td><input type="text" id="txtIDbandeja2" style="display:none" value="<%=idb%>"/></td>
+                            <td><input type="text" id="txtTBL2" style="display:none" value="1"/></td>
+                        </tr>
+                        <tr>
+                            <td style="padding:2%">Fecha de b&uacute;squeda: </td>
+                            <td id="txtFecha2"></td>
+                        </tr>
+                        <tr>
+                            <td style="padding:2%">Cliente: </td>
+                            <td id="txtCliente2"></td>
+                        </tr>
+                        <tr>
+                            <td style="padding:2%">ID Cliente: </td>
+                            <td id="txtIdCliente2"></td>
+                        </tr>                       
+                        <tr>
+                            <td style="padding:2%" VALIGN="TOP">Instrucciones: </td>
+                            <td><textarea id="txtaJustif2" rows="4" cols="50" ></textarea></td>                                 
+                        </tr>
+                        <!--tr>
+                            <td style="padding:2%">Receptor</td>
+                            <td><select style="width:305px"></select></td>
+                        </tr-->
+                    </table>
+                  </div>
+                  <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                       <button type="button" class="btn btn-default"onclick="escalar_delega(2)">Delegar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+             <br>
+            <div id="buttons" align="right"></div>
             
             <table width="98%" class="table-content" id="tabBtn" style="<%=((tip==2)?'display:none':'')%>">
                 <tr>
                     <td>
-                        <input style="width:100%"  class="btn btn-primary" type="button" value="Ver Comentarios" id="btnComentarios" onclick="consulta();" name="btnComentarios">
+                        <input style="width:100%"  class="btn btn-primary" type="button" value="Ver Comentarios" id="btnComentarios" onclick="consulta(this);" name="btnComentarios">
                     </td>
                     <td colspan="3">                        
                         <textarea id="txaComentario" onkeyup="validarTexto(this,1000)" rows="3" cols="125" class="form-control"  placeholder="Ingrese comentario ..."></textarea>  
@@ -270,7 +276,7 @@ include("Controller/CtrlVisorCalificacion.jag");
                     </td>                   
                 </tr>
                 <tr>
-					
+                    
                     <td align="right" >                     
                         <div class="fileUpload btn btn-primary" style="width:100%" >
                             <span>Seleccionar Archivo</span>
@@ -290,22 +296,22 @@ include("Controller/CtrlVisorCalificacion.jag");
                     <td></td>
                 </tr>
                 <tr>
-                    
-                    <td colspan="2">                        
+                    <td></td>
+                    <td>                        
                         <!--textarea id="txtListaArchivos" rows="7" cols="60" class="form-control" disabled></textarea-->    
-						<fieldset>
-								<legend>Archivos subidos</legend>
-								<table align="left" id="tblArchivos"  class="table-striped table-bordered table-list" style="margin-left:auto;  margin-right:auto; width:100%; font-size:10px;">
-									<thead>
-										<tr>
-											<th>ID</th>
-											<th>DESCRIPCIÓN</th>
-										</tr>
-									</thead>
-									<tbody>	
-									</tbody>
-								</table>
-							 </fieldset>
+                        <fieldset>
+                                <legend>Archivos subidos</legend>
+                                <table align="left" id="tblArchivos"  class="table-striped table-bordered table-list" style="margin-left:auto;  margin-right:auto; width:100%; font-size:10px;">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>DESCRIPCIÓN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody> 
+                                    </tbody>
+                                </table>
+                             </fieldset>
                     </td>
                     <td align="right" valign="bottom" style="padding-bottom:16px;width:66px">Calificar</td>
                     <td valign="bottom" style="width:166px">                    
@@ -386,6 +392,7 @@ include("Controller/CtrlVisorCalificacion.jag");
 <script>
 var indexTBL2 = "";
 var fileList = [];
+var resp = "";
 function validarTexto(objetoTextarea, maxLength){
      var validChars = /[^a-zA-ZñÑáéíóúÁÉÍÓÚ0-9\\,\\.\\;\s]/g; 
       var texto = objetoTextarea.value;    
@@ -404,10 +411,10 @@ function validarTexto(objetoTextarea, maxLength){
         return  false;
       } 
 
-	var xmlF;
+    var xmlF;
     function makeFileList() {
-		fileList = [];
-		xmlF = '';
+        fileList = [];
+        xmlF = '';
         var input = document.getElementById("uploadBtn");
         var ul = document.getElementById("fileList");
         var path ="";
@@ -430,6 +437,7 @@ function validarTexto(objetoTextarea, maxLength){
             if (ext != "pdf" && ext != "jpg" && ext != "jepg") {
                 mensaje = "Archivo <strong>" + file.name + " </strong> formato no válido, <strong>*Formatos validos imagen JPG y PDF</strong>.";
                 li.innerHTML = mensaje;  
+                ul.appendChild(li);                
             }else{
                 path += txtPath.value == ""?nameFile: ", "+ nameFile; 
                 files.push(file);
@@ -439,7 +447,7 @@ function validarTexto(objetoTextarea, maxLength){
         }
 
         fileList = files;
-		 if(fileList.length > 0){
+         if(fileList.length > 0){
                 for(i in fileList){
                     var file = fileList[i];
                     var name = fileList[i].name;
@@ -450,78 +458,80 @@ function validarTexto(objetoTextarea, maxLength){
                     reader.readAsDataURL(file);
                     reader.onload = function () {
                         console.log(reader.result);
-						xmlF+="<imageData>";
-						xmlF+="<tipoDeDocumento>CumplimientoKYC</tipoDeDocumento>";
-						xmlF+="<imagenBase64>"+reader.result.replace('data:application/pdf;base64,','')+"</imagenBase64>";
-						xmlF+="<tipoArchivo>"+getTipeFile(file.type)+"</tipoArchivo>";
-						xmlF+="</imageData>";
-						console.log("aquii"+xmlF);
-						//document.getElementById("demo").innerHTML = xmlF;
+                        var re = 'data:'+file.type+';base64,';
+                        xmlF+="<imageData>";
+                        xmlF+="<tipoDeDocumento><%=tipoDocumento%></tipoDeDocumento>";
+                        xmlF+="<imagenBase64>"+reader.result.replace(re,'')+"</imagenBase64>";
+                        xmlF+="<tipoArchivo>"+getTipeFile(file.type)+"</tipoArchivo>";
+                        xmlF+="</imageData>";
+                        console.log("aquii"+xmlF);
+                        //document.getElementById("demo").innerHTML = xmlF;
                     };
                     reader.onerror = function (error) {
                      console.log('Error: ', error);
-                   };	                 
+                   };                    
                 }
-				console.log("aqui 2"+xmlF);
+                console.log("aqui 2"+xmlF);
             }else{
                 $("#idMsg").html('<div class="alert alert-danger">No se encontraron archivos válidos para continuar.</div>');
                 $('#ModalInfo').modal('show');   
             }
     }
-	
-	function getTipeFile(file){
-		var type='';
-		switch(file){
-			case 'image/png':
-				type='png';
-				   break;
-			case 'image/jpeg':
-				type='jpe';
-				   break;
-			case 'image/gif':
-				type='gif';
-				   break;
-			case 'image/bmp':
-				type='bmp';
-				   break;
-			case 'image/vnd.microsoft.icon':
-				type='ico';
-				   break;
-			case 'image/tiff':
-				type='tiff';
-			case 'image/tiff':
-				type='tiff';
-				   break;
-			case 'image/svg+xml':
-				type='svg';
-				   break;
-			case 'application/pdf':
-				type='pdf';
-				   break;
-		}
-		return type;
-	}
+    
+    function getTipeFile(file){
+        var type='';
+        switch(file){
+            case 'image/png':
+                type='png';
+                   break;
+            case 'image/jpeg':
+                type='jpe';
+                   break;
+            case 'image/gif':
+                type='gif';
+                   break;
+            case 'image/bmp':
+                type='bmp';
+                   break;
+            case 'image/vnd.microsoft.icon':
+                type='ico';
+                   break;
+            case 'image/tiff':
+                type='tif-f';
+                   break;
+            case 'image/tiff':
+                type='tiff';
+                   break;
+            case 'image/svg+xml':
+                type='svg';
+                   break;
+            case 'application/pdf':
+                type='pdf';
+                   break;
+        }
+        return type;
+    }
 
     $('#btnUpArchivo').click(function(event) {
-					
-		if (validaCheck()) {
+                    
+        if (validaCheck()) {
         $("input[name=tabla1]").each(function(inde) {
             if ($(this).is(':checked')) {
                 index = $(this).val();
             }
         });
-		var tr = $("#example >tbody").find("tr").eq(index);
-			if($('#txtPathArchivo').val()==""){
-				 $("#idMsg").html('<div class="alert alert-danger">Seleccione uno o más archivos para continuar.</div>');
-				$('#ModalInfo').modal('show');   
-			}else{
-					
-				var idConsul = tr.find("td").eq(2).text();
-				var idCli = tr.find("td").eq(3).text();
-				var tipoCli = tr.find("td").eq(20).text();
-				console.log(xmlF);
-				LoadImage(idCli,xmlF.replace('undefined',''),'000'+tipoCli);
-			}
+        var tr = $("#example >tbody").find("tr").eq(index);
+            if($('#txtPathArchivo').val()==""){
+                 $("#idMsg").html('<div class="alert alert-danger">Seleccione uno o más archivos para continuar.</div>');
+                $('#ModalInfo').modal('show');   
+            }else{
+                    
+                var idConsul = tr.find("td").eq(2).text();
+                var idCli = tr.find("td").eq(3).text();
+                var tipoCli = tr.find("td").eq(20).text();
+                console.log(xmlF);
+                LoadImage(idCli,xmlF.replace('undefined',''),'000'+tipoCli);
+            }
         }
     });
 
@@ -551,33 +561,33 @@ $(document).ready(function() {
         "scrollY": 300,
         "scrollX": true
     });
-	var table = $('#example').DataTable();
+    var table = $('#example').DataTable();
     var mensaje = "";
     var myfile = "";
-	var tb = "<%=tip%>";
-	/*
+    var tb = "<%=tip%>";
+    /*
     if(tb ==2){
-		var buttons = new $.fn.dataTable.Buttons(table, {
-		buttons: [
-					{
-						text: 'Exportar PDF',
-						extend: 'pdfHtml5',
-						orientation: 'landscape',
-						pageSize: 'LEGAL',
-					    exportOptions: {
-							columns: [ 0, 1, 2, 3,4,5,6,7,8,9,10,11,12]
-						},
-						title: 'Consulta del detalle de coincidencias en Listas'
-					},{
-							text: 'Ver comentarios',
-							action: function ( ) {
-								consulta();
-							}
-					}
+        var buttons = new $.fn.dataTable.Buttons(table, {
+        buttons: [
+                    {
+                        text: 'Exportar PDF',
+                        extend: 'pdfHtml5',
+                        orientation: 'landscape',
+                        pageSize: 'LEGAL',
+                        exportOptions: {
+                            columns: [ 0, 1, 2, 3,4,5,6,7,8,9,10,11,12]
+                        },
+                        title: 'Consulta del detalle de coincidencias en Listas'
+                    },{
+                            text: 'Ver comentarios',
+                            action: function ( ) {
+                                consulta();
+                            }
+                    }
                     
                 ]
-		}).container().appendTo($('#buttons'));
-	}
+        }).container().appendTo($('#buttons'));
+    }
 
     */
 });
@@ -590,7 +600,7 @@ $('#listCoincidencias tbody').on('click', 'tr', function() {
 
 
 function consulta() {
-	$('#btnComentarios').prop('disabled', true);
+    $('#btnComentarios').prop('disabled', true);
     var count = 0;
     var index
     if (validaCheck()) {
@@ -609,7 +619,7 @@ function consulta() {
 
         //$('#ComentariosModal').modal('show');
     }
-	$('#btnComentarios').prop('disabled', false);
+    $('#btnComentarios').prop('disabled', false);
 }
 
 function validaCheck() {
@@ -617,7 +627,7 @@ function validaCheck() {
     if (!$("input[name=tabla1]").is(":checked")) {
 
         $("#idMsg").html('<div class="alert alert-warning">' +
-            'Seleccionar un elemento de la tabla de Calificación de coincidencias' +
+            'Seleccionar un elemento de la tabla de análisis de calificación de coincidencias' +
             '</div>');
         $('#ModalInfo').modal('show');
         return false;
@@ -693,6 +703,7 @@ $("#btnGuardaComent").click(function() {
         payload += '<dat:observacion>' + coment + '</dat:observacion>';
         payload += '<dat:categoria>'+ categoria +'</dat:categoria>';
         payload += '<dat:usuario>'+ usuario +'</dat:usuario>';
+        payload += '<dat:obse>0</dat:obse>';
         payload += '</dat:qInsertaObservaciones>';
         urn = 'urn:qInsertaObservaciones'; 
         $.ajax({
@@ -738,7 +749,7 @@ function comentariosIRespon(xmlHttpRequest, status) {
             '</div>');
         $('#MyModal1').modal('hide');
         $('#MyModal2').modal('hide');
-		$("#txaComentario").val("");
+        $("#txaComentario").val("");
     } else {
         $("#idMsg").html('<div class="alert alert-danger">' +
             'Sucedio un error ' + $(this).find("estatus").text() +
@@ -884,81 +895,81 @@ function solicitarELIM() {
         $("#t6").val('Solicitó:');
     envio_escala_del(id, justificacion, _analista, _gerente, _oficial, _director);
 }
-	function escalar_delega(tip) {
-		var tipo_tra ='Escalar';
-		var tipo_tra2 ='Escaló';
-		var justificacion = $('#txtaJustif' + tip).val();
-		var tbl = $('#txtTBL' + tip).val();
-		if (justificacion == "") {
-			if(tip==1){
-			alert('Introducir justificacion');
-			}else{
-				alert('Introducir Instrucciones');
-			}
-			return false;
-		}
-		var id = '<%=idb%>';
-		var _analista = 0;
-		var _gerente = 0;
-		var _oficial = 0;
-		var _director = 0;
+    function escalar_delega(tip) {
+        var tipo_tra ='Escalar';
+        var tipo_tra2 ='Escaló';
+        var justificacion = $('#txtaJustif' + tip).val();
+        var tbl = $('#txtTBL' + tip).val();
+        if (justificacion == "") {
+            if(tip==1){
+            alert('Introducir justificacion');
+            }else{
+                alert('Introducir Instrucciones');
+            }
+            return false;
+        }
+        var id = '<%=idb%>';
+        var _analista = 0;
+        var _gerente = 0;
+        var _oficial = 0;
+        var _director = 0;
 
-		if ($('#cbAnalista' + tbl).prop('checked')) {
-			_analista = 1;
-		}
-		if ($('#cbGerente' + tbl).prop('checked')) {
-			_gerente = 1;
-		}
-		if ($('#cbOficial' + tbl).prop('checked')) {
-			_oficial = 1;
-		}
-		if ($('#cbDirector' + tbl).prop('checked')) {
-			_director = 1;
-		}
-		if(tip==2){
-			
-				tipo_tra ='Delega';
-				tipo_tra2 ='Delegó';
-			
-		}
-		$("#t3").val(tip);
-		$("#t5").val(justificacion);
-		$("#t6").val(tipo_tra2);
-	
-		envio_escala_del(id, justificacion, _analista, _gerente, _oficial, _director,tipo_tra);
-	}
+        if ($('#cbAnalista' + tbl).prop('checked')) {
+            _analista = 1;
+        }
+        if ($('#cbGerente' + tbl).prop('checked')) {
+            _gerente = 1;
+        }
+        if ($('#cbOficial' + tbl).prop('checked')) {
+            _oficial = 1;
+        }
+        if ($('#cbDirector' + tbl).prop('checked')) {
+            _director = 1;
+        }
+        if(tip==2){
+            
+                tipo_tra ='Delega';
+                tipo_tra2 ='Delegó';
+            
+        }
+        $("#t3").val(tip);
+        $("#t5").val(justificacion);
+        $("#t6").val(tipo_tra2);
+    
+        envio_escala_del(id, justificacion, _analista, _gerente, _oficial, _director,tipo_tra);
+    }
 
-	
-	
-	//funcion de escalamiento
-	var id ;
+    
+    
+    //funcion de escalamiento
+    var id ;
 function envio_escala_del(id, justificacion, _analista, _gerente, _oficial, _director,tipo_tra) {
-		
-		var payload = '<dat:doEscalaDelega xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
-		payload += '<dat:idBandeja>' + id + '</dat:idBandeja>';
-		payload += '<dat:tipo>'+tipo_tra+'</dat:tipo>';
-		payload += '<dat:anali>' + _analista + '</dat:anali>';
-		payload += '<dat:dir>' + _director + '</dat:dir>';
-		payload += '<dat:gerent>' + _gerente + '</dat:gerent>';
-		payload += '<dat:ofici>' + _oficial + '</dat:ofici>';
-		payload += '<dat:just>' + justificacion + '</dat:just>';
-		payload += '<dat:usu>' + '<%=Usuario_v%>' + '</dat:usu>';
-		payload += '</dat:doEscalaDelega>';
+        
+        var payload = '<dat:doEscalaDelega xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisor">';
+        payload += '<dat:idBandeja>' + id + '</dat:idBandeja>';
+        payload += '<dat:tipo>'+tipo_tra+'</dat:tipo>';
+        payload += '<dat:anali>' + _analista + '</dat:anali>';
+        payload += '<dat:dir>' + _director + '</dat:dir>';
+        payload += '<dat:gerent>' + _gerente + '</dat:gerent>';
+        payload += '<dat:ofici>' + _oficial + '</dat:ofici>';
+        payload += '<dat:just>' + justificacion + '</dat:just>';
+        payload += '<dat:usu>' + '<%=Usuario_v%>' + '</dat:usu>';
+        payload += '</dat:doEscalaDelega>';
 
 
-		$.ajax({
-			url: '/commons/postSOAP',
-			type: 'post',
-			headers: {
-				'Destino': 'BpmnVisor',
-				'SOAPAction': 'urn:doEscalaDelega'
-			},
-			dataType: 'xml',
-			complete: EscalaDelegacionRespon,
-			error: function(xhr, status, error) {},
-			data: payload
-		});
-	}
+        $.ajax({
+            url: '/commons/postSOAP',
+            type: 'post',
+            headers: {
+                'Destino': 'BpmnVisor',
+                'SOAPAction': 'urn:doEscalaDelega'
+            },
+            dataType: 'xml',
+            complete: EscalaDelegacionRespon,
+            error: function(xhr, status, error) {},
+            data: payload
+        });
+    }
 
 function EscalaDelegacionRespon(xmlHttpRequest, status) {
     //alert(xmlHttpRequest.responseText);
@@ -970,7 +981,7 @@ function EscalaDelegacionRespon(xmlHttpRequest, status) {
             $('#MyModalEscala').modal('hide');
             $('#MyModalDelega').modal('hide');
             //$('#EliminacionModal').modal('hide');
-			alert('Se ha realizado la petición');
+            alert('Se ha realizado la petición');
             $('#ModalCargando').modal('show');
             envioCorreo()
             location.href = 'irBandejaEntrada';
@@ -978,7 +989,7 @@ function EscalaDelegacionRespon(xmlHttpRequest, status) {
             $("#idMsg").html('<div class="alert alert-danger">' +
                 'Sucedio un error ' + $(this).find("estatus").text() +
                 '</div>');
-			$('#ModalInfo').modal('show');
+            $('#ModalInfo').modal('show');
         }
 
     });
@@ -1008,13 +1019,13 @@ function irDetalle(combo) {
         tr.find('td').eq(10).text(),
         tr.find('td').eq(11).text(),
         tr.find('td').eq(12).text()
-		
+        
     ];
     xml.push(array7);
     location.href = 'irDetalleBatch?id=' + tr.find('td').eq(4).text()+" "+tr.find('td').eq(5).text()+" "+
-								tr.find('td').eq(6).text()+'&&tip=' + tr.find("td").eq(17).text() + '&&xml=' + xml+
-								'&&idB=' + tr.find('td').eq(2).text()+'&&idTip=<%=tip%>'+'&&idtiporel='+tr.find('td').eq(23).text()+
-								'&&idc='+tr.find('td').eq(3).text()+'&&tipoC='+tr.find('td').eq(20).text()+'&&idcons='+tr.find('td').eq(2).text();
+                                tr.find('td').eq(6).text()+'&&tip=' + tr.find("td").eq(17).text() + '&&xml=' + xml+
+                                '&&idB=' + tr.find('td').eq(2).text()+'&&idTip=<%=tip%>'+'&&idtiporel='+tr.find('td').eq(23).text()+
+                                '&&idc='+tr.find('td').eq(3).text()+'&&tipoC='+tr.find('td').eq(20).text()+'&&idcons='+tr.find('td').eq(2).text();
 
 }
 
@@ -1048,99 +1059,107 @@ function myFunction(){
     }
     //document.getElementById("demo").innerHTML = txt;
 }
-	function showbtnEscala(modal) {
-		var target = "#MyModal" + modal.value;
-		var tab = 1;
-		displayEnvio(modal, tab);
-		$("#btnEnviarAsig").css("display", "block");
-		// $('#btnEnviarAsig').attr('data-target',target);
-	}
-	function displayEnvio(modal, tab) {
-		if (modal.value === '0') {
-			$("#envGerente" + tab).css("display", "none");
-			$("#envOficial" + tab).css("display", "none");
-			$("#envDirector" + tab).css("display", "none");
-			$("#envAnalista" + tab).css("display", "none");
-		}
-		if (modal.value === '1') {
-			clean(tab);
-			<%if(bAnalista){%>
-			$("#envGerente" + tab).css("display", "block");
-			$("#envOficial" + tab).css("display", "block");
-			$("#envDirector" + tab).css("display", "block");
-			<%}else if(bGerente){%>
-			$("#envOficial" + tab).css("display", "block");
-			$("#envDirector" + tab).css("display", "block");
-			<%}else if(bOficial){%>
-			$("#envDirector" + tab).css("display", "block");
-			<%}%>
-		}
-		if (modal.value === '2') {
-			clean(tab);
-			<%if(bDirector){%>
-			$("#envGerente" + tab).css("display", "block");
-			$("#envOficial" + tab).css("display", "block");
-			$("#envAnalista" + tab).css("display", "block");
-			<%}else if(bOficial){%>
-			$("#envAnalista" + tab).css("display", "block");
-			$("#envGerente" + tab).css("display", "block");
-			<%}else if(bGerente){%>
-			$("#envAnalista" + tab).css("display", "block");
-			<%}%>
-		}
-	}
-	function clean(tab){
-		$("#envGerente" + tab).css("display", "none");
-		$("#envOficial" + tab).css("display", "none");
-		$("#envDirector" + tab).css("display", "none");
-		$("#envAnalista" + tab).css("display", "none");
-	}
-	function getDatos(tbl) {
-		var seleccion = $("#slcAsignacion").val();
+    function showbtnEscala(modal) {
+        var target = "#MyModal" + modal.value;
+        var tab = 1;
+        displayEnvio(modal, tab);
+        $("#btnEnviarAsig").css("display", "block");
+        // $('#btnEnviarAsig').attr('data-target',target);
+    }
+    function displayEnvio(modal, tab) {
+        if (modal.value === '0') {
+            $("#envGerente" + tab).css("display", "none");
+            $("#envOficial" + tab).css("display", "none");
+            $("#envDirector" + tab).css("display", "none");
+            $("#envAnalista" + tab).css("display", "none");
+        }
+        if (modal.value === '1') {
+            clean(tab);
+            <%if(bAnalista){%>
+            $("#envGerente" + tab).css("display", "block");
+            $("#envOficial" + tab).css("display", "block");
+            $("#envDirector" + tab).css("display", "block");
+            <%}else if(bGerente){%>
+            $("#envOficial" + tab).css("display", "block");
+            $("#envDirector" + tab).css("display", "block");
+            <%}else if(bOficial){%>
+            $("#envDirector" + tab).css("display", "block");
+            <%}%>
+        }
+        if (modal.value === '2') {
+            clean(tab);
+            <%if(bDirector){%>
+            $("#envGerente" + tab).css("display", "block");
+            $("#envOficial" + tab).css("display", "block");
+            $("#envAnalista" + tab).css("display", "block");
+            <%}else if(bOficial){%>
+            $("#envAnalista" + tab).css("display", "block");
+            $("#envGerente" + tab).css("display", "block");
+            <%}else if(bGerente){%>
+            $("#envAnalista" + tab).css("display", "block");
+            <%}%>
+        }
+    }
+    function clean(tab){
+        $("#envGerente" + tab).css("display", "none");
+        $("#envOficial" + tab).css("display", "none");
+        $("#envDirector" + tab).css("display", "none");
+        $("#envAnalista" + tab).css("display", "none");
+    }
+    function getDatos(tbl) {
+        var seleccion = $("#slcAsignacion").val();
 
-		var index = 0;
-			if (!$("input[name=tabla1]").is(":checked")) {
+        var index = 0;
+            if (!$("input[name=tabla1]").is(":checked")) {
 
-			$("#idMsg").html('<div class="alert alert-warning">' +
-				'Seleccionar un elemento de la tabla de coincidencias' +
-				'</div>');
-			$('#ModalInfo').modal('show');
-			return false;
-		}
+            $("#idMsg").html('<div class="alert alert-warning">' +
+                'Seleccionar un elemento de la tabla de coincidencias' +
+                '</div>');
+            $('#ModalInfo').modal('show');
+            return false;
+        }
 
-		$("input[name=tabla1]").each(function(inde) {
-			if ($(this).is(':checked')) {
-				index = $(this).val();
-			}
-		});
-		
-		
-		var tr;
-		
-			tr = $("#example >tbody").find("tr").eq(index);
-		
-	
-		$("#txtaJustif" + seleccion).val('');
-		$("#txtIDbandeja" + seleccion).val(tr.find("td").eq(0).text());
-		$("#txtFecha" + seleccion).html(tr.find("td").eq(1).text());
-		$("#txtCliente" + seleccion).html(tr.find("td").eq(4).text() + ' ' + tr.find("td").eq(5).text() + ' ' + tr.find("td").eq(6).text());
-		$("#txtIdCliente" + seleccion).html(tr.find("td").eq(3).text());
-		if(seleccion==1){
-			$('#MyModalEscala').modal('show');
-		}else{
-			$('#MyModalEscala').modal('show');
-		}
-		
-		$("#t1").val(tr.find("td").eq(4).text() + " "+ tr.find("td").eq(5).text()+ " "+ tr.find("td").eq(6).text());
-		$("#t2").val(tr.find("td").eq(3).text());
-		$("#t4").val(tr.find("td").eq(1).text());
-		$("#t7").val(tr.find("td").eq(8).text());
+        $("input[name=tabla1]").each(function(inde) {
+            if ($(this).is(':checked')) {
+                index = $(this).val();
+            }
+        });
 
-	}
-	
-	
-	
-	
+        if (!$("input[name=usuarios" + tbl + "]").is(":checked")) {
+            $("#idMsg").html('<div class="alert alert-warning">' +
+                'Seleccionar opcion de envio' +
+                '</div>');
+            $('#ModalInfo').modal('show');
+            return false;
+        }
+        
+        
+        var tr;
+        
+            tr = $("#example >tbody").find("tr").eq(index);
+        
+    
+        $("#txtaJustif" + seleccion).val('');
+        $("#txtIDbandeja" + seleccion).val(tr.find("td").eq(0).text());
+        $("#txtFecha" + seleccion).html(tr.find("td").eq(1).text());
+        $("#txtCliente" + seleccion).html(tr.find("td").eq(4).text() + ' ' + tr.find("td").eq(5).text() + ' ' + tr.find("td").eq(6).text());
+        $("#txtIdCliente" + seleccion).html(tr.find("td").eq(3).text());
+        if(seleccion==1){
+            $('#MyModalEscala').modal('show');
+        }else{
+            $('#MyModalDelega').modal('show');
+        }
+        
+        $("#t1").val(tr.find("td").eq(4).text() + " "+ tr.find("td").eq(5).text()+ " "+ tr.find("td").eq(6).text());
+        $("#t2").val(tr.find("td").eq(3).text());
+        $("#t4").val(tr.find("td").eq(1).text());
+        $("#t7").val(tr.find("td").eq(8).text());
+
+    }
+    
+    
+    
+    
 
 var tipoArchivo = "";
 var base64 = "";
@@ -1171,7 +1190,7 @@ function LoadImage(idc,ima,idType){
     $.ajax({
             url: '/commons/postSOAP',
             type: 'post',
-            headers: {'Destino':'SugarCRMimg', 'SOAPAction':'http://28.224.30.202/sugarcrm/custom/service/v4_1_custom/soap.php/altaDocumentos'},
+            headers: {'Destino':'SugarCRMimg', 'SOAPAction':'<%=sgCRMAltaDocs%>'},
             dataType: 'xml',
             complete: LoadImageComplete,
             error: function (xhr, status, error) {},
@@ -1190,31 +1209,31 @@ function LoadImageComplete(xmlHttpRequest, status) {
         cadenaRespuesta = $(this).find("cadenaRespuesta").text();
         almacenadosExito = $(this).find("almacenadosExito").text();
         totalRecibidos = $(this).find("totalRecibidos").text();
-		$(this).find('docGO').each(function(){
-			row = '<tr>';
-			row += '<td>' + $(this).find("id").text() + '</td>';
-			row += '<td>' + $(this).find("tipoDocGO").text() + '</td>';
-			row += '</tr>';
-		});
-		
+        $(this).find('docGO').each(function(){
+            row = '<tr>';
+            row += '<td>' + $(this).find("id").text() + '</td>';
+            row += '<td>' + $(this).find("tipoDocGO").text() + '</td>';
+            row += '</tr>';
+        });
+        
     });
     $('#tblArchivos').append(row);
     if (estatus == "0") {
         //alert("Error al cargar el archivo\n" + cadenaRespuesta);
-		$("#idMsg").html('<div class="alert alert-success">Mensaje : Almacenado con exito ' +'</div>'+
-						'<div class="alert alert-success">Archivos subidos :'+almacenadosExito+'</div>'+
-						'<div class="alert alert-success">Total recibidos :'+totalRecibidos+'</div>');
-		
+        $("#idMsg").html('<div class="alert alert-success">Mensaje : Almacenado con exito ' +'</div>'+
+                        '<div class="alert alert-success">Archivos subidos :'+almacenadosExito+'</div>'+
+                        '<div class="alert alert-success">Total recibidos :'+totalRecibidos+'</div>');
+        
     }else{
-		$("#idMsg").html('<div class="alert alert-warning">'+cadenaRespuesta +'</div>'+
-						'<div class="alert alert-warning">Archivos subidos :'+almacenadosExito+'</div>'+
-						'<div class="alert alert-warning">Total recibidos :'+totalRecibidos+'</div>');
-	}
-	$('#ModalLoad').modal('hide');
-	$('#ModalInfo').modal('show');
-	$('#txtPathArchivo').val('');
-	fileList = [];
-		xmlF = '';
+        $("#idMsg").html('<div class="alert alert-warning">'+cadenaRespuesta +'</div>'+
+                        '<div class="alert alert-warning">Archivos subidos :'+almacenadosExito+'</div>'+
+                        '<div class="alert alert-warning">Total recibidos :'+totalRecibidos+'</div>');
+    }
+    $('#ModalLoad').modal('hide');
+    $('#ModalInfo').modal('show');
+    $('#txtPathArchivo').val('');
+    fileList = [];
+        xmlF = '';
 }
 
 

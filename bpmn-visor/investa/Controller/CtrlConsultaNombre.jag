@@ -8,11 +8,12 @@
 		}else{
 			permisiveMode = false;
 		}
+		log.info("_nombre: " + _nombre);
 		var payload = <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:prin="http://principal.pld.stallum.mx.com/">
 					   <soapenv:Header/>
 					   <soapenv:Body>
 						  <prin:doBusqCoincidenciaPorNombre>
-							 <nombre>{_nombre}</nombre>
+							 <nombre>{_nombre.replace('amp;', '')}</nombre>
 							 <permisiveMode>{permisiveMode}</permisiveMode>
 						  </prin:doBusqCoincidenciaPorNombre>
 					   </soapenv:Body>
@@ -20,7 +21,7 @@
 		log.info("XML envio " + payload);
 		var url = URL_ESB + "PLD";
 		var ws = new XMLHttpRequest();
-		var action = "http://principal.pld.stallum.mx.com/wsPLD/doBusqCoincidenciaPorNombre";
+		var action = pldBusquedaNombre;
 		ws.open("POST", url, false);
 		ws.setRequestHeader('SOAPAction', action);
 		ws.setRequestHeader('Content-Type','text/xml; charset=utf-8');

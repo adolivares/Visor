@@ -56,7 +56,14 @@ if(nombre == null){
 }
 include("detalleBusquedaNombre.jag");		
 include("Controller/CtrlConsultaNombre.jag");
-var lista = (nombre == "" || nombre == "null" || nombre == null ) ? "" : consultaNombre(nombre, modo);
+
+
+
+//nombre = nombre.replace('amp;', '&amp;');
+log.info("Nombre: " + nombre);
+
+var lista = (nombre == "" || nombre == "null" || nombre == null ) ? "" : consultaNombre(nombre , modo);
+//var lista = (nombre == "" || nombre == "null" || nombre == null ) ? "" : consultaNombre('<![CDATA['+ nombre +']]>', modo);
 log.info("lista: " + lista );
 
 log.info("Fecha inicio: " + currentDate);
@@ -122,7 +129,7 @@ log.info("tiempo: " + tiempo + " segundos.");
 				<div class="col-md-2" ><p>Nombre</p></div>
 			  </div>
 			  <div class="row">
-				<div class="col-md-4"><input style="width:100%" type="text" id="txtNombre" name="txtNombre" value="<%=nombre.toUpperCase()%>" /></div>
+				<div class="col-md-4"><input style="width:100%" type="text" id="txtNombre" name="txtNombre" value="<%=nombre.toUpperCase().replace('AMP;', '&amp;')%>" /></div>
 			  </div>
 			  <div class="row">
 				<div class="col-md-4" style="padding:1%"><!--label><input type="checkbox" id="chbModo" name="usuarios"> Modo permisivo</label--></div>
@@ -210,6 +217,7 @@ log.info("tiempo: " + tiempo + " segundos.");
 		if ($("#chbModo").is(":checked") ) {
 			modo = "ok";
 		}
+			nombre = nombre.replace('&', 'amp;');
 			location.href='irBuscarNombre?nombre=' + nombre + '&&modo='+modo+'&&fecha='+date;
 			
 			$('#example tbody tr').remove();
@@ -259,7 +267,7 @@ log.info("tiempo: " + tiempo + " segundos.");
 		//	console.log("Usuario " +usuario);
 			var payload="";
 			
-			payload  = '<dat:qInsertaObsBusqueda xmlns:dat="http://ws.wso2.org/dataservice" mlns:dsb="dsBpmnVisorComentarios">';
+			payload  = '<dat:qInsertaObsBusqueda xmlns:dat="http://ws.wso2.org/dataservice" xmlns:dsb="dsBpmnVisorComentarios">';
 					payload += '<dat:nombre>' +nombre+ '</dat:nombre>';
 					payload += '<dat:observaciones>'+ obs +'</dat:observaciones>';
 					payload += '<dat:usuario_alta>' + usuario + '</dat:usuario_alta>';
@@ -287,7 +295,7 @@ log.info("tiempo: " + tiempo + " segundos.");
 				if(res > 0){
 					actualizaObsDetalle(1, res);
 						$("#idMsg").html('<div class="alert alert-success">'+
-					'Se ha realizado la petición'+
+					'Se ha guardado la observación'+
 					'</div>');
 				}else{
 					$("#idMsg").html('<div class="alert alert-danger">'+
@@ -381,7 +389,7 @@ log.info("tiempo: " + tiempo + " segundos.");
 					payload +=      '<p:qInsertObsDetalle>';
 					payload +=         '<p:id>'+idRegis+'</p:id>';
 					payload +=         '<p:folio>'+folio+'</p:folio>';
-					payload +=         '<p:nombre>'+ nombre+'</p:nombre>';
+					payload +=         '<p:nombre>'+'<![CDATA['+nombre+']]>'+'</p:nombre>';
 					payload +=         '<p:lista>'+lista+'</p:lista>';
 					payload +=         '<p:porcentaje>'+porcentaje+'</p:porcentaje>';
 					payload +=      '</p:qInsertObsDetalle>';
